@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "neptunechain-network"
+  },
+  "targets": {
+    "neptunechain-network": {
+      "hosting": {
+        "dashboard": [
+          "neptunechain-dash"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
