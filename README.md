@@ -1,6 +1,5 @@
 # NeptuneChain Dashboard
 
-
 Changelog (September 10) - Major Changes:
  - Added Welcome Page, Register Page, and Log in Page
  - Firebase Email/Password Authentication Implementation
