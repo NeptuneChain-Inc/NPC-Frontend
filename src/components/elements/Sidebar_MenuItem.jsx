@@ -9,17 +9,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
     const [isRoute, setIsRoute] = useState(false);
 
     useEffect(() => {
-      if(!route.includes('/')){
-        setIsRoute(`/${route}`===location.pathname);
-      } else {
+      if(route[0]==='/'){
         setIsRoute(route===location.pathname);
+      } else {
+        setIsRoute(`/${route}`===location.pathname);
       }
     }, [route, location])
     
   
     const handleClick = () => {
       if(route && typeof route === 'string' && location.pathname!==`/${route}`){
-        if(route.includes('/')){
+        if(route[0]==='/'){
             navigate(route);
         } else {
             navigate(`/${route}`);

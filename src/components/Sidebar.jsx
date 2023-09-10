@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { faBell, faDollarSign, faExchange, faHome, faLeaf, faRotate, faShield } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import { Sidebar_MenuItem } from './elements';
 
@@ -15,14 +16,21 @@ import AppLogo from '../assets/logo.png';
 
 
 const Sidebar = ({isOpen, isMobile}) => {
+  const navigate = useNavigate();
+
+  const handleToWelcome = () => {
+    Cookies.remove('skipWelcome');
+    navigate('/');
+  }
+
   return (
     <StyledSidebar isOpen={isOpen} isMobile={isMobile}>
       <SidebarHeader>
-        <Logo alt='NeptuneChain Full Logo' src={AppLogo} />
+        <Logo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome}/>
       </SidebarHeader>
       <SidebarHeading>Menu</SidebarHeading>
       <Menu projVariant="list">
-        <Sidebar_MenuItem icon={faHome} itemName={"Dashboard"} route={'/'} />
+        <Sidebar_MenuItem icon={faHome} itemName={"Dashboard"} route={'overview'} />
         <Sidebar_MenuItem icon={faDollarSign} itemName={"Financial Metrics"} route={'financial-metrics'} />
         <Sidebar_MenuItem icon={faExchange} itemName={"Trading Activity"} route={'trading-activity'} />
         <Sidebar_MenuItem icon={faLeaf} itemName={"Environmental Metrics"} route={'environmental-metrics'} />

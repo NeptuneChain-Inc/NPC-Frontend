@@ -1,8 +1,14 @@
-# React + Vite
+# NeptuneChain Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+Changelog (September 10) - Major Changes:
+ - Added Welcome Page, Register Page, and Log in Page
+ - Firebase Email/Password Authentication Implementation
+ - Error/Alert/Notification Handling
+ - Added a confirmation popup to confirm critcal functions
+ - General User Experience Enhancements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ Notes:
+
+  - Clicking on the NeptuneChain logo from any page opens the welcome screen
+  - Where a database is not yet implemented, cookies are used.

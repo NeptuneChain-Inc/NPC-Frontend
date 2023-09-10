@@ -1,63 +1,29 @@
 import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+
+import { Confirmation, Navbar, Notification, Sidebar } from '../components'
+import renderDash from '../dashboards/renderDash'
+import Cookies from 'js-cookie'
 
 
-import Sidebar from './Sidebar'
-// import OverviewCard from './overview-card'
-// import DataCard from './data-card'
-// import RecordsCardFW from './records-card-fw'
-// import { projectStyleVariants, TOKENS } from '.style'
-
-import Navbar from './Navbar'
-import OverviewDash from '../routes/OverviewDash'
-import { environmentalDash, overviewDash } from '../data/dashData'
-
-const renderDash = (route) => {
-  switch (route) {
-    case 'financial-metrics':
-      return (
-        <h1>Financial Metrics</h1>
-      )
-    case 'trading-activity':
-      return (
-        <h1>Trading Activity</h1>
-      )
-    case 'environmental-metrics':
-      return (
-        <OverviewDash dashData={environmentalDash}/>
-      )
-    case 'operational-metrics':
-      return (
-        <h1>Operational Metrics</h1>
-      )
-    case 'notifications':
-      return (
-        <h1>Notifications and Alerts</h1>
-      )
-    case 'verifications':
-      return (
-        <h1>Blockchain & Verification</h1>
-      )
-    default:
-      return (
-        <OverviewDash dashData={overviewDash}/>
-      )
-  }
-}
-const HomeTemplate = () => {
+const Home = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, ] = useState(isMobileScreen());
+  const [isMobile,] = useState(isMobileScreen());
+  const [confirmation, setConfirmation] = useState(null);
+  const [notification, setNotification] = useState('');
+  const [error, setError] = useState('');
 
   const { dashID } = useParams();
 
   useEffect(() => {
-    if(isMobile){
+    if (isMobile) {
       setSidebarOpen(false);
     }
   }, [isMobile])
-  
+
 
   function isMobileScreen() {
     const maxWidth = 768;
@@ -68,12 +34,38 @@ const HomeTemplate = () => {
     setSidebarOpen(!sidebarOpen);
   }
 
+  const handleLogOut = () => {
+    const logOut = () => {
+      Cookies.remove('user');
+      navigate('/');
+    }
+    const confirmation_obj = {
+      msg: 'Are you sure you want to log out?',
+      action: logOut
+    }
+    setConfirmation(confirmation_obj);
+  }
+
+  const cancelConfirmation = () => {
+    setConfirmation(null);
+    setError('Action Denied');
+  }
+
   return (
     <Container>
       <App>
+        {notification && (
+          <Notification type='notification' message={notification} />
+        )}
+        {error && (
+          <Notification type='error' message={error} />
+        )}
+        {confirmation && (
+          <Confirmation isOpen={Boolean(confirmation)} message={confirmation.msg} onConfirm={confirmation.action} onCancel={cancelConfirmation} />
+        )}
         <Sidebar isOpen={sidebarOpen} isMobile={isMobile} />
         <Main isSidebarOpen={sidebarOpen} isMobile={isMobile}>
-          <Navbar handleSidebar={handleSidebar} sidebarOpen={sidebarOpen} />
+          <Navbar handleSidebar={handleSidebar} sidebarOpen={sidebarOpen} handleLogOut={handleLogOut} />
           {renderDash(dashID)}
         </Main>
       </App>
@@ -95,7 +87,7 @@ const HomeTemplate = () => {
   )
 }
 
-export default HomeTemplate
+export default Home;
 
 const Container = styled.div`
 width: 100vw;
@@ -125,7 +117,7 @@ const App = styled.div`
 
 const Main = styled.div`
   flex: 0 0 auto;
-  width: ${({isSidebarOpen, isMobile}) => (isSidebarOpen && isMobile) ? '50%' : (isSidebarOpen ? "80%" : "100%")};
+  width: ${({ isSidebarOpen, isMobile }) => (isSidebarOpen && isMobile) ? '50%' : (isSidebarOpen ? "80%" : "100%")};
   height: 100%;
   display: flex;
   box-sizing: border-box;

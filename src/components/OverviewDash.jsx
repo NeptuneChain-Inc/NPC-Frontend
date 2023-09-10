@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { OverviewCard, DataCard, RecordsCard } from '../components/elements';
-import { getIcon } from '../components/elements/lib';
+import { OverviewCard, DataCard, RecordsCard } from './elements';
+import { getIcon } from './elements/lib';
 
 const OverviewDash = ({dashData}) => {
   return (

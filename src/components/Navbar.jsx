@@ -1,13 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import appIcon from '../assets/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCaretDown, faSearch, faXmark, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ handleSidebar, sidebarOpen }) => {
-
+const Navbar = ({ handleSidebar, sidebarOpen, handleLogOut }) => {
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const loggedUser = Cookies.get('user');
+    if(loggedUser){
+      setUser(JSON.parse(loggedUser));
+    }
+  }, [])
+  
   return (
     <NavbarContainer data-thq="thq-navbar">
       {sidebarOpen ? (
@@ -33,7 +44,7 @@ const Navbar = ({ handleSidebar, sidebarOpen }) => {
           />
           <ProfileDropMenu>
             <DropdownToggle data-thq="thq-dropdown-toggle">
-              <Text>username</Text>
+              <Text>{user?.username ? user.username : 'logged out'}</Text>
               <DropdownArrow data-thq="thq-dropdown-arrow">
                 <Icon icon={faCaretDown} />
               </DropdownArrow>
@@ -57,7 +68,7 @@ const Navbar = ({ handleSidebar, sidebarOpen }) => {
             </DropdownList>
           </ProfileDropMenu>
         </UserProfile>
-        <LogOutButton>Logout</LogOutButton>
+        <LogOutButton onClick={handleLogOut}>Logout</LogOutButton>
       </DesktopMenu>
       <BurgerMenu icon={faBars} onClick={() => setIsMobileMenuOpen(true)} />
       <MobileMenu isOpen={isMobileMenuOpen}>
