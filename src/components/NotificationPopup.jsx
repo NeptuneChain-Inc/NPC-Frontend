@@ -28,24 +28,27 @@ const Container = styled(motion.div)`
   }
 `;
 
-const Notification = ({ message, type }) => {
-  const [isOpen, setIsOpen] = useState(true);
-
+const Notification = ({ message, type, clearNotification }) => {
+  
+  if(!message){
+    return;
+  }
+  
   // Auto close after 4 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsOpen(false);
+      clearNotification(type);
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
-    setIsOpen(false);
+    clearNotification(type);
   };
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {message && (
         <Container
           type={type}
           initial={{ opacity: 0, y: 50, scale: 0.3 }}

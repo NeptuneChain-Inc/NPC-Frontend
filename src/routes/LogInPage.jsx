@@ -26,14 +26,34 @@ const Form = styled(motion.form)`
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   width: 100%;
   max-width: 400px;
+
+  .option{
+    border-bottom: 1px solid #134b5f80;
+    width: 300px;
+
+    white-space: nowrap;
+    margin: auto;
+    font-size: 0.7rem;
+    margin-bottom: 24px; 
+    color: #134b5f;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+
+    &:hover{
+      
+      font-size: 0.69rem;
+    }
+  }
 `;
 
-export default function LogInPage() {
+export default function LogInPage({ APP }) {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [notification, setNotification] = useState('');
+  const [usernameInputType, setUsernameInputType] = useState(true); //false means input is email
 
   useEffect(() => {
     if (error) {
@@ -43,19 +63,43 @@ export default function LogInPage() {
     }
   }, [error])
 
+  const handleUsernameInput = () => {
+    const handleSwitch = () => {
+    //Clear Input before switch
+    if(usernameInputType){
+      setUsername('');
+    } else {
+      setEmail('');
+    }
+    setUsernameInputType(!usernameInputType);
+    }
+
+    if(username || email){
+      APP?.ACTIONS?.logConfirmation(`This will clear your current ${usernameInputType ? 'username' : 'email'} input`,handleSwitch);
+    } else {
+      handleSwitch();
+    }
+
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      //use username to retrieve email to login
-      
-      //Dummy db implementation
-      const email = Cookies.get(username)
-      
-      if(email){
-        await signInWithEmailAndPassword(auth, email, password);
-        const user = { username, email };
-        Cookies.set('user', JSON.stringify(user), { expires: 3 });
+      let emailLogin;
 
+      if(email){
+        emailLogin = email;
+      } else if(username) {
+        //use username to retrieve email to login
+        //Dummy db implementation
+        emailLogin = Cookies.get(username);
+      }
+      
+      if(emailLogin){
+        await signInWithEmailAndPassword(auth, emailLogin, password);
+        const user = { username, email: emailLogin };
+        Cookies.set('user', JSON.stringify(user), { expires: 3 });
+        APP?.ACTIONS?.getUser();
         setNotification('Login successful!');
         setTimeout(() => {
           navigate('/overview');
@@ -82,13 +126,26 @@ export default function LogInPage() {
         onSubmit={handleSubmit}
       >
         <WELCOME_HEADING>Log in to NeptuneChain</WELCOME_HEADING>
+        {usernameInputType ? (
         <INPUT
-          type="text"
-          placeholder="Username..."
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+        type="text"
+        placeholder="Username..."
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+        style={{marginBottom: 10}}
+      />
+        ) : (
+          <INPUT
+          type="email"
+          placeholder="Email Address..."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
+          style={{marginBottom: 10}}
         />
+        )}
+        <div className='option' onClick={handleUsernameInput}>Use {usernameInputType ? 'Email' : 'Username'} Instead</div>
         <INPUT
           type="password"
           placeholder="Password..."

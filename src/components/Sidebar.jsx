@@ -15,7 +15,7 @@ import AppLogo from '../assets/logo.png';
 
 
 
-const Sidebar = ({isOpen, isMobile}) => {
+const Sidebar = ({isOpen}) => {
   const navigate = useNavigate();
 
   const handleToWelcome = () => {
@@ -24,7 +24,7 @@ const Sidebar = ({isOpen, isMobile}) => {
   }
 
   return (
-    <StyledSidebar isOpen={isOpen} isMobile={isMobile}>
+    <StyledSidebar isOpen={isOpen}>
       <SidebarHeader>
         <Logo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome}/>
       </SidebarHeader>
@@ -44,7 +44,7 @@ const Sidebar = ({isOpen, isMobile}) => {
 
 const StyledSidebar = styled.div`
 flex: 0 0 auto;
-width: ${({isOpen, isMobile}) => (isOpen && isMobile) ? '50%' : (isOpen ? "20%" : "0")};
+width: ${({isOpen}) => isOpen ? '20vw' : "0"};
 height: 100%;
 display: flex;
 overflow: hidden;
@@ -60,6 +60,10 @@ background-color: #134b5f;
 border-left-width: 0px;
 border-bottom-width: 0px;
 transition: 0.3s ease-in-out;
+
+@media (max-width: 767px) {
+  width: ${({isOpen}) => isOpen ? '50vw' : "0"};
+}
 `;
 
 const SidebarHeader = styled('div')({

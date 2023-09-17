@@ -8,15 +8,18 @@ const Overlay = styled(motion.div)`
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
   z-index: 999;
 `;
 
 const Dialog = styled(motion.div)`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 25%;
+  width:50%;
+  margin: auto;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -24,7 +27,9 @@ const Dialog = styled(motion.div)`
   z-index: 1000;
   text-align: center;
   max-width: 80%;
+  box-sizing: border-box; // For better size calculation
 `;
+
 
 const Button = styled.button`
   padding: 10px 20px;
@@ -36,10 +41,20 @@ const Button = styled.button`
   color: white;
 `;
 
-const Confirmation = ({ isOpen, message, onConfirm, onCancel }) => {
+const Confirmation = ({ message, onConfirm, onCancel }) => {
+
+  const handleConfirm = () => {
+    onConfirm();
+    onCancel(true);
+  }
+
+  if (!message) {
+    return;
+  }
+
   return (
     <AnimatePresence>
-      {isOpen && (
+      {message && (
         <>
           <Overlay
             initial={{ opacity: 0 }}
@@ -53,11 +68,13 @@ const Confirmation = ({ isOpen, message, onConfirm, onCancel }) => {
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            <p>{message}</p>
-            <Button primary onClick={onConfirm}>
-              Confirm
-            </Button>
-            <Button onClick={onCancel}>
+            <p>{message ? message : "No Message"}</p>
+            {onConfirm && (
+              <Button primary onClick={handleConfirm}>
+                Confirm
+              </Button>
+            )}
+            <Button onClick={() => onCancel(false)}>
               Cancel
             </Button>
           </Dialog>

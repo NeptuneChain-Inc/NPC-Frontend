@@ -3,72 +3,43 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Confirmation, Navbar, Notification, Sidebar } from '../components'
+import { Navbar, Sidebar, Notification, Confirmation, NotificationBar } from '../components'
 import renderDash from '../dashboards/renderDash'
 import Cookies from 'js-cookie'
 
 
-const Home = () => {
+const Home = ({ APP }) => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile,] = useState(isMobileScreen());
-  const [confirmation, setConfirmation] = useState(null);
-  const [notification, setNotification] = useState('');
-  const [error, setError] = useState('');
-
   const { dashID } = useParams();
 
-  useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
-  }, [isMobile])
+  const { isMobile, user, sidebarOpen, notificationBarOpen, confirmation, notification, alert, error } = APP ? APP.STATES : {};
+  
+  const {
+    getUser,
+    handleSidebar,
+    handleNotificationsBar,
+    logConfirmation,
+    cancelConfirmation,
+    logNotification,
+    handleLogOut,
+  } = APP ? APP.ACTIONS : {};
 
-
-  function isMobileScreen() {
-    const maxWidth = 768;
-    return window.innerWidth <= maxWidth;
-  }
-
-  const handleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  }
-
-  const handleLogOut = () => {
-    const logOut = () => {
-      Cookies.remove('user');
-      navigate('/');
-    }
-    const confirmation_obj = {
-      msg: 'Are you sure you want to log out?',
-      action: logOut
-    }
-    setConfirmation(confirmation_obj);
-  }
-
-  const cancelConfirmation = () => {
-    setConfirmation(null);
-    setError('Action Denied');
+  if(!user){
+    navigate('/')
   }
 
   return (
     <Container>
-      <App>
-        {notification && (
-          <Notification type='notification' message={notification} />
-        )}
-        {error && (
-          <Notification type='error' message={error} />
-        )}
-        {confirmation && (
-          <Confirmation isOpen={Boolean(confirmation)} message={confirmation.msg} onConfirm={confirmation.action} onCancel={cancelConfirmation} />
-        )}
-        <Sidebar isOpen={sidebarOpen} isMobile={isMobile} />
-        <Main isSidebarOpen={sidebarOpen} isMobile={isMobile}>
-          <Navbar handleSidebar={handleSidebar} sidebarOpen={sidebarOpen} handleLogOut={handleLogOut} />
+      {user && (
+        <App>
+        <Sidebar isOpen={sidebarOpen} />
+        <NotificationBar APP={APP}/>
+        <Main isSidebarOpen={sidebarOpen}>
+          <Navbar APP={APP} />
           {renderDash(dashID)}
         </Main>
       </App>
+      )}
       <Footer>
         <Text09>© 2023 NeptuneChain, All Rights Reserved.</Text09>
         <IconGroup1>
@@ -117,10 +88,11 @@ const App = styled.div`
 
 const Main = styled.div`
   flex: 0 0 auto;
-  width: ${({ isSidebarOpen, isMobile }) => (isSidebarOpen && isMobile) ? '50%' : (isSidebarOpen ? "80%" : "100%")};
+  width: ${({ isSidebarOpen }) => isSidebarOpen ? '80vw' : "100vw"};
   height: 100%;
   display: flex;
   box-sizing: border-box;
+  overflow-x: hidden;
   overflow-y: auto;
   align-items: flex-start;
   flex-direction: column;
@@ -131,6 +103,11 @@ const Main = styled.div`
   transition: 0.3s ease-in-out;
 
   border: 2px solid green;
+
+  @media(max-width: 767px) {
+    width: ${({ isSidebarOpen }) => isSidebarOpen ? '50vw' : "100vw"};
+  }
+
 `;
 
 const Footer = styled.footer`
@@ -185,10 +162,4 @@ const IconGroup1 = styled.div`
   flex-direction: row;
   padding-bottom: 0px;
   justify-content: space-between;
-`;
-
-const Icon16 = styled.svg`
-  width: auto;
-  height: 0.8rem;
-  margin-right: 1rem;
 `;
