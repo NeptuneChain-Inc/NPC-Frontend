@@ -11,6 +11,7 @@ import { Notification } from '../components';
 
 //Temp DB 
 import Cookies from 'js-cookie';
+import { createUser } from '../apis/database';
 
 const Container = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const Form = styled(motion.form)`
 `;
 
 
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -40,25 +42,31 @@ export default function RegisterPage() {
   const [notification, setNotification] = useState('');
 
   useEffect(() => {
-    if(error){
+    if (error) {
       setTimeout(() => {
         setError('')
       }, 5000);
     }
   }, [error])
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      //save username to database
-
-      //Dummy Database
-      Cookies.set(username, email);
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const userData = user?.user;
+      //convert username to lower case
+      const fUser = { 
+        uid: userData.uid,
+        username: username?.toLowerCase(),
+        email: userData.email?.toLowerCase(),
+        emailVerified: userData.emailVerified
+      };
+      console.log(fUser);
+      await createUser(fUser);
 
       setNotification('Registration successful!');
-      
+
       setTimeout(() => {
         navigate('/login');
       }, 3000);
@@ -71,7 +79,7 @@ export default function RegisterPage() {
     <Container>
       {error && <Notification type='error' message={error} />}
       {notification && <Notification type='notification' message={notification} />}
-      <WELCOME_LOGO src={appLogo} alt='NeptuneChain logo' onClick={() => navigate('/')}/>
+      <WELCOME_LOGO src={appLogo} alt='NeptuneChain logo' onClick={() => navigate('/')} />
       <Form
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

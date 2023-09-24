@@ -1,7 +1,14 @@
 # NeptuneChain Dashboard
 
 Changelog () - Major Changes:
---
+- Livepeer Integration - Video Upload/Streaming
+- Database Integration - Userdata/Asset Data
+-
+
+
+Changelog () - Major Changes:
+- Added Notification Bar
+-
 
 
 Changelog (September 10) - Major Changes:

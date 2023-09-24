@@ -5,7 +5,7 @@ import notificationDash from "./dashData/notificationDash";
 import operationalMetricsDash from "./dashData/operationalMetricsDash";
 import tradingActivityDash from "./dashData/tradingActivityDash";
 import verificationDash from "./dashData/verificationDash";
-
+import mediaDash from "./dashData/mediaDash";
 
 export {
     overviewDash,
@@ -14,5 +14,6 @@ export {
     notificationDash,
     operationalMetricsDash,
     tradingActivityDash,
-    verificationDash
+    verificationDash,
+    mediaDash
 }

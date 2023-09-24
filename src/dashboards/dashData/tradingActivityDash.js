@@ -70,7 +70,6 @@ const tradingActivityDash = {
                             { date: "2023-09-01", amount: 100, status: "Success" },
                             { date: "2023-09-02", amount: 200, status: "Pending" },
                             { date: "2023-09-03", amount: 150, status: "Failed" },
-                            // ... more records
                         ]
                     }
                 }

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getIcon } from './lib'
 import { motion, AnimatePresence } from 'framer-motion';
+import ObjectViewer from './DisplayObject'
+import { timestampToLocalString } from '../../functions/helpers'
 
 const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
   return (
@@ -37,7 +39,11 @@ const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
             <ContentList>
               {contents?.map((content, index) => (
                 <Content key={index}>
-                  {content}
+                  {(typeof content === 'object' && content?.id) ? (
+                    <a href={`/media/${content?.playbackId}`} target='_blank'>{`${content?.name} : ${timestampToLocalString(content?.createdAt)}`}</a>
+                  ) : (
+                    content
+                  )}
                 </Content>
               ))}
             </ContentList>
@@ -50,7 +56,7 @@ const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
 
 const CardContainer = styled(motion.div)`
     flex: 0 0 auto;
-    width: ${({width}) => width ? width : '30%'};
+    width: ${({ width }) => width ? width : '30%'};
     height: 400px;
     margin: 0.5rem;
     display: flex;

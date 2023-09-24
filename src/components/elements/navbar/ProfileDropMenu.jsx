@@ -3,18 +3,36 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
+// import { testFunction } from '../../../functions/verifierFunctions';
 
 const UserProfile = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  height: 50px;
+  justify-content: flex-start;
   cursor: pointer;
   flex-wrap: nowrap;
+  z-index: 999;
+
+  .user-type {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 0.7rem;
+    //border: 1px solid black;
+
+  }
+
+  .error {
+    color: red;
+    font-size: 0.5rem;
+  }
 `;
 
 const ProfilePicture = styled.img`
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   margin-right: 0.5rem;
 `;
@@ -24,11 +42,13 @@ const ProfileDropMenuContainer = styled.div`
   width: auto;
   min-width: 150px;
   height: 100%;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   flex-wrap: nowrap;
   position: relative;
   transition: 0.3s ease-in-out;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #33333380;
 
   @media (max-width: 767px){
     width: 80%;
@@ -36,13 +56,13 @@ const ProfileDropMenuContainer = styled.div`
  
 
   span {
-    font-size: 1rem;
+    font-size: 0.8rem;
     white-space: nowrap;
   overflow: hidden;
     width: 100px;
     margin-right: 0.5rem;
     text-overflow: ellipsis;
-     border-bottom: 1px solid #33333380;
+
   }
 `;
 
@@ -85,6 +105,7 @@ const variants = {
 
 export const ProfileDropMenu = ({user}) => {
   const [isOpen, setIsOpen] = useState(false);
+const navigate = useNavigate();
 
   return (
     <UserProfile>
@@ -94,7 +115,7 @@ export const ProfileDropMenu = ({user}) => {
           src="https://play.teleporthq.io/static/svg/default-img.svg"
         />
         <span>{user?.username ? user.username : user?.email ? user.email : 'logged out'}</span>
-        <Icon icon={faCaretDown}/>
+        <Icon icon={faCaretDown} isOpen={isOpen}/>
       <AnimatePresence>
         {isOpen && (
           <ProfileDropMenuItems
@@ -109,14 +130,23 @@ export const ProfileDropMenu = ({user}) => {
                 <ListItem>Edit Profile</ListItem>
               </DropdownSection>
               <DropdownSection>
+                <SectionHeader>Media</SectionHeader>
+                <ListItem onClick={()=>navigate('/features/upload-video')}>Upload Video</ListItem>
+                <ListItem onClick={()=>navigate('/features/stream')}>Start Stream</ListItem>
+              </DropdownSection>
+              <DropdownSection>
                 <SectionHeader>Settings</SectionHeader>
+                <ListItem>Alert settings</ListItem>
                 <ListItem>Change Password</ListItem>
+                <ListItem>Data Sharing</ListItem>
                 <ListItem>Privacy Settings</ListItem>
+                {/* <ListItem onClick={testFunction}>Test Verifier Function</ListItem> */}
               </DropdownSection>
           </ProfileDropMenuItems>
         )}
       </AnimatePresence>
     </ProfileDropMenuContainer>
+    <div className={`user-type ${!user?.type && 'error'}`}>{user?.type ? user.type : 'account type not defined'}</div>
     </UserProfile>
   );
 };

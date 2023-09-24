@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
 import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/elements/lib/global-styled-components';
 import { Notification } from '../components';
+import { getUser, getUsername } from '../apis/database';
 
 const Container = styled.div`
   display: flex;
@@ -90,20 +91,23 @@ export default function LogInPage({ APP }) {
       if(email){
         emailLogin = email;
       } else if(username) {
-        //use username to retrieve email to login
-        //Dummy db implementation
-        emailLogin = Cookies.get(username);
+        const _user = await getUsername(username);
+        if(_user){
+          emailLogin = _user?.email;
+        }
       }
       
       if(emailLogin){
-        await signInWithEmailAndPassword(auth, emailLogin, password);
-        const user = { username, email: emailLogin };
-        Cookies.set('user', JSON.stringify(user), { expires: 3 });
+        const userData = await signInWithEmailAndPassword(auth, emailLogin, password);
+        const user = await getUser(userData?.user?.uid)
+        if(user) {
+          Cookies.set('user', JSON.stringify(user), { expires: 3 });
         APP?.ACTIONS?.getUser();
         setNotification('Login successful!');
         setTimeout(() => {
           navigate('/overview');
         }, 3000);
+        }
         
       } else {
         setError('Username Does Not Exist');

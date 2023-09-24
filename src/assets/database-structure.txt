@@ -1,0 +1,23 @@
+database structure
+
+users: [{
+UID,
+type,
+username,
+emailAddress,
+webTokenKey
+}]
+
+createdStreams: [{
+host,
+streamInfo
+}]
+
+uploadedVideos: [{
+publisher,
+assetInfo
+}]
+
+userId: 41b16368-7264-4991-8eba-478894b98526
+renditions: ▶
+id: 87e3c6b6-1880-4c33-a1fd-bbbe026ee25c
