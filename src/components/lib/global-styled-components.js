@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 
 export const WELCOME_LOGO = styled.img`
@@ -51,5 +52,28 @@ background-color: #007bff;
 
 &:hover {
   background-color: #0056b3;
+}
+`;
+
+export const CardContainer = styled(motion.div)`
+flex: 0 0 auto;
+width: ${({ width }) => width ? width : '300px'};
+height: 400px;
+margin: auto;
+display: flex;
+padding: 0.5rem;
+min-width: 300px;
+position: relative;
+box-shadow: 0px 0px 10px 0px #d4d4d4;
+box-sizing: border-box;
+align-items: flex-start;
+border-radius: 4px;
+flex-direction: column;
+background-color: #ffffff;
+overflow-y: auto;
+overflow-x: hidden;
+
+@media (max-width: 768px) {
+  width: 300px;
 }
 `;

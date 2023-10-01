@@ -75,15 +75,20 @@ const overviewDash = {
             alignment: 'center',
             cards: [
                 {
-                    type: 'records',
+                    type: 'tx-history',
+                    styles: {
+                        width: '60vw',
+                        alignItems: 'center'
+                    },
                     data: {
                         title: 'Transaction History',
-                        records: [
-                            { date: "2023-09-01", amount: 100, status: "Success" },
-                            { date: "2023-09-02", amount: 200, status: "Pending" },
-                            { date: "2023-09-03", amount: 150, status: "Failed" },
-                            // ... more records
-                        ]
+                        // Dummy transaction data
+                        transactions:  [
+                            { id: 1, type: 'Minted', amount: '200', date: '2022-01-01' },
+                            { id: 2, type: 'Sold', amount: '100', date: '2022-01-02' },
+                            { id: 3, type: 'Withdrawal', amount: '50', date: '2022-01-03' },
+                            // ... more transactions
+                          ]
                     }
                 }
             ]

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faBell, faBellSlash, faClose, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faBell, faBellSlash, faClose, faGear, faGears, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ProfileDropMenu from './ProfileDropMenu';
 
@@ -26,7 +26,11 @@ const MenuIcon = styled(FontAwesomeIcon)`
   color: #000;
   cursor: pointer;
   transition: color 0.3s ease;
-  
+  ${({sidebarOpen}) => sidebarOpen && `
+  position: fixed;
+  right: 10px;
+  `}
+  z-index: 9999;
 
   &:hover {
     scale: 1.01;
@@ -57,25 +61,26 @@ flex-direction: column;
 justify-content: center;
   width: 100%;
   margin-bottom: 2rem;
-  // border: 2px solid black;
 `;
 
 const MenuHeader = styled.h2`
   font-size: 1.5rem;
+  border-bottom: 1px solid #333;
   margin-bottom: 1rem;
+  margin-top: 0;
   color: #333;
 `;
 
 const MenuItem = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 1rem;
   width: 100%;
 `;
 
 const MenuItemIcon = styled(FontAwesomeIcon)`
   font-size: 1.5rem;
-  margin-right: 1rem;
   color: #333;
 `;
 
@@ -112,7 +117,6 @@ const LogOutButton = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 20px;
 
   &:hover {
     background-color: #e44d26;
@@ -146,20 +150,21 @@ const variants = {
 const MobileMenu = ({ APP }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { user, notificationBarOpen } = APP ? APP.STATES : {};
+  const { user, notificationBarOpen, sidebarOpen, settingsMenuOpen} = APP ? APP.STATES : {};
   const {
     handleNotificationsBar,
+    handleSettingsMenu,
     handleLogOut,
   } = APP ? APP.ACTIONS : {};
 
-  const notificationBarHandle = () => {
+  const handleAction = (action) => {
     setIsOpen(false)
-    handleNotificationsBar();
+    action();
   }
 
   return (
     <MobileMenuContainer>
-      <MenuIcon icon={isOpen ? faClose : faBars} onClick={() => setIsOpen(!isOpen)} />
+      <MenuIcon icon={isOpen ? faClose : faBars} onClick={() => setIsOpen(!isOpen)} sidebarOpen={sidebarOpen} />
       <AnimatePresence>
         {isOpen && (
           <SideMenu
@@ -168,19 +173,18 @@ const MobileMenu = ({ APP }) => {
             exit="closed"
             variants={variants}
           >
-            <MenuItem style={{justifyContent: 'flex-end'}}>
-                <MenuItemIcon style={{marginRight: 0}} icon={faTimes} onClick={() => setIsOpen(false)}/>
-              </MenuItem>
             <MenuSection>
               <MenuHeader>Profile</MenuHeader>
-              <ProfileDropMenu user={user} />
+              <ProfileDropMenu APP={APP} />
             </MenuSection>
 
             <MenuSection>
               <MenuHeader>Utilities</MenuHeader>
-              <MenuItem onClick={notificationBarHandle}>
+              <MenuItem onClick={()=>handleAction(handleNotificationsBar)}>
                 <MenuItemIcon icon={notificationBarOpen ? faBellSlash : faBell} />
-                <MenuItemLabel>Notifications</MenuItemLabel>
+              </MenuItem>
+              <MenuItem onClick={()=>handleAction(handleSettingsMenu)}>
+                <MenuItemIcon icon={settingsMenuOpen ? faGear : faGears} />
               </MenuItem>
             </MenuSection>
 

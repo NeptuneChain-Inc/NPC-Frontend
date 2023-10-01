@@ -6,7 +6,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
-import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/elements/lib/global-styled-components';
+import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/lib/global-styled-components';
 import { Notification } from '../components';
 import { getUser, getUsername } from '../apis/database';
 

@@ -5,7 +5,7 @@ import { auth } from '../apis/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
-import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/elements/lib/global-styled-components';
+import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/lib/global-styled-components';
 import { Notification } from '../components';
 
 

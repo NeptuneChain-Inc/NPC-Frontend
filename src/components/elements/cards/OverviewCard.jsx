@@ -51,20 +51,22 @@ const fadeIn = keyframes`
 
 const MotionOverviewCard = styled(motion.div)`
   flex: 0 0 auto;
-  width: ${({width}) => width ? width : 'calc(20% - 1rem)'};
+  width: ${({width}) => width ? width : '30%'};
   height: auto;
   padding: 1.5rem;
-  margin: 0.5rem;
+  margin: auto;
   display: flex;
-  min-width: 200px;
+  min-width: 300px;
   position: relative;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  box-sizing: border-box;
   flex-direction: column;
   justify-content: space-between;
   background-color: #ffffff;
   transition: all 0.3s ease;
   cursor: pointer;
+
 
   &:hover {
     box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.1);
@@ -73,6 +75,7 @@ const MotionOverviewCard = styled(motion.div)`
 
   @media (max-width: 767px) {
     width: 100%;
+    min-width: 300px;
   }
 `;
 

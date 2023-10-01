@@ -37,7 +37,7 @@ const Sidebar = ({isOpen}) => {
         <Sidebar_MenuItem icon={faRotate} itemName={"Operational Metrics"} route={'operational-metrics'} />
         <Sidebar_MenuItem icon={faBell} itemName={"Notifications and Alerts"} route={'notifications'} />
         <Sidebar_MenuItem icon={faShield} itemName={"Blockchain & Verification"} route={'verifications'} />
-        <Sidebar_MenuItem icon={faVideo} itemName={"Media"} route={'my-media'} />
+        <Sidebar_MenuItem icon={faVideo} itemName={"My Media"} route={'my-media'} />
       </Menu>
     </StyledSidebar>
   )

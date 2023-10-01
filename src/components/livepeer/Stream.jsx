@@ -2,89 +2,13 @@ import { useMemo, useState, useEffect } from 'react';
 import { Player, useCreateStream } from '@livepeer/react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectDisplay from '../elements/DisplayObject';
+import ObjectDisplay from '../elements/display/DisplayObject';
 import { StreamBroadcast } from './StreamBroadcast';
-import { SaveStream } from '../../apis/database';
+import { saveStream } from '../../apis/database';
+import { StreamPlayer } from './elements';
 
 
-const StreamInformation = ({ stream }) => {
-  const [isExtendedData, setIsExtendedData] = useState(false);
 
-  // Styles
-const StreamInformationContainer = styled(motion.div)`
-padding: 20px;
-background-color: #f4f4f4;
-border-radius: 8px;
-`;
-
-const StreamBasicInfo = styled.table`
-width: 100%;
-margin-bottom: 20px;
-
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-`;
-
-const ExtendedData = styled(motion.div)`
-border-top: 1px solid #ccc;
-padding-top: 20px;
-overflow: hidden;
-`;
-
-const ViewButton = styled(motion.button)`
-padding: 8px 16px;
-margin-top: 10px;
-margin-bottom: 10px;
-cursor: pointer;
-border: none;
-background-color: #007bff;
-color: white;
-border-radius: 4px;
-`;
-
-  return (
-    <StreamInformationContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <StreamBasicInfo>
-        <tbody>
-          <tr>
-            <th>Stream Name</th>
-            <td>{stream?.name}</td>
-          </tr>
-          <tr>
-            <th>Stream Status</th>
-            <td>{stream?.isActive ? 'Active' : 'Not Active'}</td>
-          </tr>
-          <tr>
-            <th>Stream Key</th>
-            <td>{stream?.streamKey}</td>
-          </tr>
-          <tr>
-            <th>PlaybackId</th>
-            <td>{stream?.playbackId}</td>
-          </tr>
-          <tr>
-            <th>Stream Link</th>
-            <td><a href={stream?.playbackUrl}>{stream?.playbackUrl}</a></td>
-          </tr>
-        </tbody>
-      </StreamBasicInfo>
-      <ViewButton onClick={() => setIsExtendedData(!isExtendedData)}>
-        {!isExtendedData ? 'View More' : 'View Less'}
-      </ViewButton>
-      <AnimatePresence>
-        {isExtendedData && (
-          <ExtendedData initial={{ height: 0 }} animate={{ height: '300px' }} exit={{ height: 0 }}>
-            <ObjectDisplay data={stream} />
-          </ExtendedData>
-        )}
-      </AnimatePresence>
-    </StreamInformationContainer>
-  );
-};
  
 
 const StreamContainer = styled(motion.div)`
@@ -125,13 +49,10 @@ const StreamButton = styled(motion.button)`
   }
 `;
 
-const BroadcastButton = styled(StreamButton)`
-background-color: red;
-`;
+
 
 export const Stream = ({APP}) => {
   const [streamName, setStreamName] = useState('');
-  const [isWebBroadcast, setIsWebBroadcast] = useState(false);
   const { mutate: createStream, data: stream, status } = useCreateStream(streamName ? { name: streamName } : null);
 
   const isLoading = useMemo(() => status === 'loading', [status]);
@@ -139,20 +60,16 @@ export const Stream = ({APP}) => {
   useEffect(() => {
     if (stream?.playbackId) {
       console.log(stream);
-      _SaveStream();
+      _saveStream();
     }
   }, [stream]);
 
-  const webBroadcast = {
-    isWebBroadcast,
-    setIsWebBroadcast
-  }
 
-  const _SaveStream = async()=>{
+  const _saveStream = async()=>{
     if(!user?.uid){
       return false;
     }
-    const isSaved = await SaveStream(stream, user?.uid);
+    const isSaved = await saveStream(stream, user?.uid);
     if(isSaved){
       APP?.ACTIONS?.logNotification('', "Stream Created");
     } else if (isSaved?.error) {
@@ -164,6 +81,7 @@ export const Stream = ({APP}) => {
 
   return (
     <StreamContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+
       {!stream?.playbackId && (
         <StreamInput
         type="text"
@@ -171,12 +89,7 @@ export const Stream = ({APP}) => {
         onChange={(e) => setStreamName(e.target.value)}
       />
       )}
-      <AnimatePresence>
-        {stream?.playbackId && (
-          <Player title={stream?.name} playbackId={stream?.playbackId} autoPlay muted />
-        )}
-      </AnimatePresence>
-      
+    
       <ActionContainer>
         {!stream && (
           <StreamButton
@@ -188,10 +101,14 @@ export const Stream = ({APP}) => {
             Create Stream
           </StreamButton>
         )}
-        {stream?.playbackId && <StreamInformation stream={stream} />}
-        {stream?.streamKey && <BroadcastButton onClick={()=>setIsWebBroadcast(!isWebBroadcast)}>Broadcast Stream</BroadcastButton>}
-        {(isWebBroadcast && stream?.streamKey) && <StreamBroadcast streamKey={stream.streamKey} webBroadcast={webBroadcast} />}
+        
       </ActionContainer>
+
+      <AnimatePresence>
+        {(stream?.playbackId && stream?.streamKey) && (
+          <StreamPlayer stream={stream} />
+        )}
+      </AnimatePresence>
     </StreamContainer>
   );
 };

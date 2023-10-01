@@ -3,8 +3,8 @@ import { Player, useAssetMetrics, useCreateAsset } from '@livepeer/react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectViewer from '../elements/DisplayObject';
-import { SaveVideo } from '../../apis/database';
+import ObjectViewer from '../elements/display/DisplayObject';
+import { saveVideo } from '../../apis/database';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 const DropZoneContainer = styled(motion.div)`
@@ -60,6 +60,7 @@ justify-content: center;
 text-align: center;
 font-size: 18px;
 padding: 2em;
+box-sizing: border-box;
 
 @media (max-width: 768px) {
     flex-direction: column;
@@ -226,7 +227,7 @@ export const VideoUpload = ({ APP }) => {
     if (asset?.[0]?.playbackId) {
       // Save/Handle Video Asset 
       console.log(asset, metadata);
-      _SaveVideo();
+      _saveVideo();
     }
   }, [asset])
 
@@ -237,11 +238,11 @@ export const VideoUpload = ({ APP }) => {
     }
   }, [video])
 
-  const _SaveVideo = async () => {
+  const _saveVideo = async () => {
     if (!user?.uid) {
       return false;
     }
-    const isSaved = await SaveVideo(asset?.[0], user?.uid);
+    const isSaved = await saveVideo(asset?.[0], user?.uid);
     if (isSaved) {
       APP?.ACTIONS?.logNotification('', "Video Now Live");
     } else if (isSaved?.error) {

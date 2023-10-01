@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Navbar, Sidebar, Notification, Confirmation, NotificationBar } from '../components'
-import RenderDash from "../dashboards/RenderDash"
+//import RenderDash from "../dashboards/RenderDash"
 import Cookies from 'js-cookie'
+import RenderDash from '../dashboards/renderDash'
 
 
 const Home = ({ APP }) => {
@@ -39,7 +40,6 @@ const Home = ({ APP }) => {
         <Main isSidebarOpen={sidebarOpen}>
           <Navbar APP={APP} />
           <RenderDash route={dashID} uid={user?.uid} />
-          {/* {renderDash(dashID)} */}
         </Main>
       </App>
       )}

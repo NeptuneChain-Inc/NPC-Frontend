@@ -1,103 +1,98 @@
-import React, { useState, useEffect } from 'react'
-import { Player } from '@livepeer/react'
-import ObjectViewer from '../../elements/DisplayObject'
-import styled from 'styled-components'
-import { motion } from 'framer-motion'
-import { getViewership } from '../../../apis/livepeer_calls'
-import { AnimatePresence } from 'framer-motion'
+import React, { useState, useEffect } from 'react';
+import { Player } from '@livepeer/react';
+import ObjectViewer from '../../elements/display/DisplayObject';
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getViewership } from '../../../apis/livepeer_calls';
+import { getVideo } from '../../../apis/database';
 
 const Container = styled(motion.div)`
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const MediaDetailsContainer = styled(ObjectViewer)`
-padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 100px;
+  box-sizing: border-box;
+  background-color: #f4f4f4;
 `;
 
 const MetricsContainer = styled(motion.div)`
   display: flex;
-  flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   padding: 10px;
-  width: fit-content;
-  margin: 20px;
+  background-color: #2c3e50;
+  border-radius: 5px;
+  color: white;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Metric = styled.div`
-  font-size: 16px;
-  color: #fff;
+  font-size: 1rem;
 `;
 
-const ViewershipMetrics = ({ metrics }) => {
-
-    const { viewCount, playtimeMins } = metrics ? metrics : {};
-
-    return (
-        <MetricsContainer>
-            <Metric>Views: {viewCount}</Metric>
-            <Metric>Watch Time: {playtimeMins}</Metric>
-            {/* Add Functon to Render all metrics from the prop */}
-        </MetricsContainer>
-    )
-}
-
 const Button = styled.button`
-  background: #333;
-  color: #fff;
+  margin-top: 10px;
+  background: #27ae60;
+  color: white;
   border: none;
-  padding: 10px;
+  border-radius: 5px;
+  padding: 8px 16px;
   cursor: pointer;
 `;
 
-//use data to retrieve asset and metrics
-const MediaPlayer = ({ playbackId }) => {
-    const [isExtendedData, setIsExtendedData] = useState(false);
-    const [metrics, setMetrics] = useState(null);
-    
-    useEffect(() => {
-        getMetrics();
-    }, [playbackId])
-    
+const MediaPlayer = ({ playbackID }) => {
+  const [isExtendedData, setIsExtendedData] = useState(false);
+  const [metrics, setMetrics] = useState(null);
+  const [video, setVideo] = useState(null);
+
+  useEffect(() => {
     const getMetrics = async () => {
-        const _metrics = await getViewership(playbackId);
-        setMetrics(_metrics);
-    }
+      const _metrics = await getViewership(playbackID);
+      setMetrics(_metrics);
+    };
+    const getVideoAsset = async () => {
+      const _video = await getVideo(playbackID);
+      setVideo(_video);
+    };
 
-    return (
-        <Container>
-            <Player title={"Video"} playbackId={playbackId} />
-            {metrics && <ViewershipMetrics metrics={metrics} />}
-            <Button onClick={() => setIsExtendedData(!isExtendedData)}>{`${!isExtendedData ? "View" : "Hide"} Data`}</Button>
-            <AnimatePresence>
-                {isExtendedData && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <MediaDetailsContainer data={metrics} />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </Container>
-    )
-}
+    getMetrics();
+    getVideoAsset();
+  }, [playbackID]);
 
-// //Simple Implementation
-// const MediaPlayer = ({ playbackId }) => {
+  return (
+    <Container>
+      <Player
+        style={{ width: '100%', height: 'auto' }}
+        title="Title"
+        playbackId={playbackID}
+      />
+      <MetricsContainer>
+        {metrics && (
+          <>
+            <Metric>Views: {metrics.viewCount}</Metric>
+            <Metric>Watch Time: {metrics.playtimeMins} mins</Metric>
+          </>
+        )}
+      </MetricsContainer>
+      <Button onClick={() => setIsExtendedData(!isExtendedData)}>
+        {`${!isExtendedData ? 'View' : 'Hide'} Extended Data`}
+      </Button>
+      <AnimatePresence>
+        {isExtendedData && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            {video && <ObjectViewer data={video} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Container>
+  );
+};
 
-//     return (
-//         <Container>
-//             <Player title={playbackId} playbackId={playbackId} />
-//         </Container>
-//     )
-// }
-
-export {
-    MediaPlayer
-}
+export { MediaPlayer };

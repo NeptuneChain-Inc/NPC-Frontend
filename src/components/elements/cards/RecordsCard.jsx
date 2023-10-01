@@ -30,18 +30,19 @@ const CardContainer = styled(motion.div)`
     flex: 0 0 auto;
     width: ${({width}) => width ? width : '90%'};
     height: 400px;
-    margin: 0.5rem;
+    margin: auto;
     display: flex;
     padding: 0.5rem;
     min-width: 300px;
     position: relative;
     box-shadow: 0px 0px 10px 0px #d4d4d4;
+    box-sizing: border-box;
     align-items: flex-start;
     border-radius: 4px;
     flex-direction: column;
     background-color: #ffffff;
   
-    @media (max-width: 991px) {
+    @media (max-width: 768px) {
       width: 100%;
     }
   `;

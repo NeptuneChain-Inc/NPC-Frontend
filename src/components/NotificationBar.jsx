@@ -17,7 +17,7 @@ const NotificationContainer = styled.div`
   right: 0;
   width: 60%;
   height: 100%;
-  z-index: 20;
+  z-index: 1000;
   background: #fff;
   overflow: auto;
 

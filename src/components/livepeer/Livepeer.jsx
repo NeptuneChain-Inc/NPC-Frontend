@@ -13,6 +13,8 @@ import styled from 'styled-components';
 import Sidebar from '../Sidebar';
 import NotificationBar from '../NotificationBar';
 import Navbar from '../Navbar';
+import { BasicStreamPlayer } from './elements';
+//import { MediaPlayer } from './elements/MediaPLayer';
 
 const livepeerClient = createReactClient({
   provider: studioProvider({
@@ -21,7 +23,7 @@ const livepeerClient = createReactClient({
 });
 
 function Livepeer({ APP }) {
-  const { serviceID, playbackID } = useParams();
+  const { serviceID, playbackID, liveID } = useParams();
   const { user, sidebarOpen } = APP ? APP.STATES : {};
   
   const renderService = (serviceID) => {
@@ -41,7 +43,7 @@ function Livepeer({ APP }) {
     }
   }
 
-  console.log({ serviceID, playbackID });
+  console.log({ serviceID, playbackID, liveID });
 
 
 
@@ -56,6 +58,7 @@ function Livepeer({ APP }) {
               <Navbar APP={APP} />
               {serviceID && renderService(serviceID)}
               {playbackID && <MediaPlayer playbackID={playbackID} />}
+              {liveID && <BasicStreamPlayer playbackId={liveID} /> }
             </Main>
           </App>
         )}

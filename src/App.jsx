@@ -6,6 +6,7 @@ import { Home, WelcomePage, RegisterPage, LogInPage } from './routes'
 import { Notification, Confirmation } from './components'
 import { Livepeer } from './components/livepeer'
 import styled from 'styled-components'
+import SettingsMenu from './components/SettingsMenu'
 
 const Footer = styled.footer`
   width: 100%;
@@ -67,6 +68,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
+  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('Profile Settings');
   const [confirmation, setConfirmation] = useState(null);
   const [notification, setNotification] = useState('');
   const [alert, setAlert] = useState('');
@@ -84,9 +87,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-   console.log(user);
+    console.log(user);
   }, [user])
-  
 
   function isMobileScreen() {
     const maxWidth = 768;
@@ -109,6 +111,15 @@ function App() {
     setNotificationBarOpen(!notificationBarOpen);
   }
 
+  const handleSettingsMenu = () => {
+    setSettingsMenuOpen(!settingsMenuOpen);
+  }
+
+  const handleSettingsTab = (tab) => {
+    setSettingsTab(tab);
+    setSettingsMenuOpen(true);
+  }
+
   const logConfirmation = (message, action) => {
     const confirmation_obj = {
       msg: message,
@@ -119,7 +130,7 @@ function App() {
 
   const cancelConfirmation = (accepted) => {
     setConfirmation(null);
-    if(!accepted){
+    if (!accepted) {
       setError('Action Denied');
     }
   }
@@ -166,6 +177,8 @@ function App() {
       user,
       sidebarOpen,
       notificationBarOpen,
+      settingsMenuOpen,
+      settingsTab,
       confirmation,
       notification,
       alert,
@@ -175,6 +188,8 @@ function App() {
       getUser,
       handleSidebar,
       handleNotificationsBar,
+      handleSettingsMenu,
+      handleSettingsTab,
       logConfirmation,
       cancelConfirmation,
       logNotification,
@@ -184,16 +199,20 @@ function App() {
 
   return (
     <Router>
-        <Notification type='notification' message={notification} clearNotification={clearNotification} />
-        <Notification type='alert' message={alert} clearNotification={clearNotification} />
-        <Notification type='error' message={error} clearNotification={clearNotification} />
-        <Confirmation message={confirmation?.msg} onConfirm={confirmation?.action} onCancel={cancelConfirmation} />
+      <Notification type='notification' message={notification} clearNotification={clearNotification} />
+      <Notification type='alert' message={alert} clearNotification={clearNotification} />
+      <Notification type='error' message={error} clearNotification={clearNotification} />
+      <Confirmation message={confirmation?.msg} onConfirm={confirmation?.action} onCancel={cancelConfirmation} />
+      {user && settingsMenuOpen && (
+        <SettingsMenu APP={APP} />
+      )}
       <Routes>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LogInPage APP={APP} />} />
-        <Route path="/features/:serviceID" element={<Livepeer APP={APP}/>} />
-        <Route path="/media/:playbackID" element={<Livepeer APP={APP}/>} />
+        <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />
+        <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />
+        <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />
         <Route path="/:dashID" element={<Home APP={APP} />} />
       </Routes>
       <Footer>

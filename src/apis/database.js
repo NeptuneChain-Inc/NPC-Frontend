@@ -1,4 +1,4 @@
-import { ref, set, get, push } from "firebase/database";
+import { ref, set, get } from "firebase/database";
 import { db } from "../apis/firebase"
 
 // Retrieve Streams
@@ -36,11 +36,11 @@ const createUser = async (userData) => {
     if (userData?.uid) {
         let userLogged;
         const isSaved = await saveData(`dashboard/users/data/${userData?.uid}`, userData);
-        if(isSaved){
+        if (isSaved) {
             userLogged = await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid);
         }
-        console.log({isSaved, userLogged});
-        return {isSaved, userLogged};
+        console.log({ isSaved, userLogged });
+        return { isSaved, userLogged };
     } else {
         return null;
     }
@@ -57,13 +57,13 @@ const getUsername = async (username) => {
 }
 
 // Save Stream
-const SaveStream = async (streamData, creatorUID) => {
+const saveStream = async (streamData, creatorUID) => {
     try {
-        if (streamData?.id && creatorUID) {
+        if (streamData?.playbackId && creatorUID) {
             let userLogged;
-            const isSaved = await saveData(`dashboard/livepeer/streams/${streamData.id}`, streamData);
-            if(isSaved){
-                userLogged = await saveData(`dashboard/users/data/${creatorUID}/streams/${streamData.id}`, streamData.id);
+            const isSaved = await saveData(`dashboard/livepeer/streams/${streamData.playbackId}`, streamData);
+            if (isSaved) {
+                userLogged = await saveData(`dashboard/users/data/${creatorUID}/streams/${streamData.playbackId}`, streamData.playbackId);
             }
             return userLogged;
         } else {
@@ -80,20 +80,25 @@ const getUserStreams = async (uid) => {
     const streamIDs = await getData(`dashboard/users/data/${uid}/streams/`);
     const streams = [];
     for (const streamID of Object.keys(streamIDs || {})) {
-        const stream = await getData(`dashboard/livepeer/streams/${streamID}`);
+        const stream = await getStream(streamID);
         streams.push(stream);
-      }
-      return streams;
+    }
+    return streams;
+}
+
+const getStream = async (playbackId) => {
+    const stream = await getData(`dashboard/livepeer/streams/${playbackId}`);
+    return stream;
 }
 
 // Save Video
-const SaveVideo = async (videoAsset, creatorUID) => {
+const saveVideo = async (videoAsset, creatorUID) => {
     try {
-        if (videoAsset?.id && creatorUID) {
+        if (videoAsset?.playbackId && creatorUID) {
             let userLogged;
-            const isSaved = await saveData(`dashboard/livepeer/videos/${videoAsset.id}`, videoAsset);
-            if(isSaved){
-                userLogged = await saveData(`dashboard/users/data/${creatorUID}/videos/${videoAsset.id}`, videoAsset.id);
+            const isSaved = await saveData(`dashboard/livepeer/videos/${videoAsset.playbackId}`, videoAsset);
+            if (isSaved) {
+                userLogged = await saveData(`dashboard/users/data/${creatorUID}/videos/${videoAsset.playbackId}`, videoAsset.playbackId);
             }
             return userLogged;
         } else {
@@ -106,22 +111,29 @@ const SaveVideo = async (videoAsset, creatorUID) => {
     }
 }
 
+const getVideo = async (playbackId) => {
+    const video = await getData(`dashboard/livepeer/videos//${playbackId}`);
+    return video;
+}
+
 const getUserVideos = async (uid) => {
     const videoIDs = await getData(`dashboard/users/data/${uid}/videos/`);
     const videos = [];
     for (const videoID of Object.keys(videoIDs || {})) {
-        const video = await getData(`dashboard/livepeer/videos//${videoID}`);
+        const video = await getVideo(videoID);
         videos.push(video);
-      }
-      return videos;
+    }
+    return videos;
 }
 
 export {
     createUser,
     getUser,
     getUsername,
-    SaveStream,
+    saveStream,
+    getStream,
     getUserStreams,
-    SaveVideo,
+    saveVideo,
+    getVideo,
     getUserVideos
 };

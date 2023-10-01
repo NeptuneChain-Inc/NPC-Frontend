@@ -15,6 +15,7 @@ const mediaDash = async (uid) => {
             cards: [
                 {
                     type: 'data',
+                    width: '500px',
                     data: {
                         cardTitle: 'Videos',
                         icon: 'chart-simple',
@@ -23,6 +24,7 @@ const mediaDash = async (uid) => {
                 },
                 {
                     type: 'data',
+                    width: '500px',
                     data: {
                         cardTitle: 'Streams',
                         icon: 'chart-simple',

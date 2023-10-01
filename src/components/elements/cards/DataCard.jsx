@@ -2,10 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getIcon } from './lib'
+import { getIcon } from '../../lib'
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectViewer from './DisplayObject'
-import { timestampToLocalString } from '../../functions/helpers'
+import ObjectViewer from '../display/DisplayObject'
+import { timestampToLocalString } from '../../../functions/helpers'
+import { StreamItem, VideoItem } from './data-card'
+import { CardContainer } from '../../lib/global-styled-components'
 
 const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
   return (
@@ -40,7 +42,11 @@ const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
               {contents?.map((content, index) => (
                 <Content key={index}>
                   {(typeof content === 'object' && content?.id) ? (
-                    <a href={`/media/${content?.playbackId}`} target='_blank'>{`${content?.name} : ${timestampToLocalString(content?.createdAt)}`}</a>
+                    content?.kind === 'stream' ? (
+                      <StreamItem stream={content} />
+                    ) : (
+                      <VideoItem data={content} />
+                    )
                   ) : (
                     content
                   )}
@@ -54,30 +60,10 @@ const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
   );
 };
 
-const CardContainer = styled(motion.div)`
-    flex: 0 0 auto;
-    width: ${({ width }) => width ? width : '30%'};
-    height: 400px;
-    margin: 0.5rem;
-    display: flex;
-    padding: 0.5rem;
-    min-width: 300px;
-    position: relative;
-    box-shadow: 0px 0px 10px 0px #d4d4d4;
-    align-items: flex-start;
-    border-radius: 4px;
-    flex-direction: column;
-    background-color: #ffffff;
-  
-    @media (max-width: 991px) {
-      width: 100%;
-    }
-  `;
-
 const DataCardHeader = styled.div`
     flex: 0 0 auto;
     width: 100%;
-    height: 15%;
+    height: 50px;
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
@@ -86,7 +72,7 @@ const DataCardHeader = styled.div`
 
 const CardTitle = styled.span`
     margin: 1rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-style: normal;
     font-family: 'Work Sans';
     font-weight: 500;
@@ -102,26 +88,26 @@ const CardIcon = styled(FontAwesomeIcon)`
 const CardContent = styled.div`
     flex: 0 0 auto;
     width: 100%;
-    height: 85%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: flex-start;
-
+    height: 80%;
     overflow: auto;
   `;
 
 const ContentList = styled.ul`
-    height: 100%;
-    margin: 0px;
-    padding-top: 1rem;
-    padding-right: 1rem;
-    list-style-position: outside;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    
   `;
 
 const Content = styled.li`
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    // margin-top: 1rem;
+    // margin-bottom: 1rem;
   `;
 
 const StyledTable = styled.table`

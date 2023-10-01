@@ -31,7 +31,7 @@ const Navbar = ({ APP }) => {
   }
 
   return (
-    <NavbarContainer >
+    <NavbarContainer sidebarOpen={sidebarOpen}>
 
       {/* Sidebar Components */}
       {sidebarOpen ? (
@@ -63,22 +63,23 @@ const Navbar = ({ APP }) => {
 }
 
 const NavbarContainer = styled.header`
-  width: 100%;
-  height: 60px;
+  position: fixed;
+width: ${({sidebarOpen})=>sidebarOpen ? '80' : '100'}%;
+  height: 40px;
   display: flex;
   box-shadow: 0px 2px 2px 0px #d4d4d4;
   max-height: 75px;
   align-items: center;
-  padding: 1rem;
+  padding: 1.5rem;
   justify-content: flex-start;
   background-color: #ffffff;
 
   box-sizing: border-box;
-  
-  //border: 2px solid yellow;
+  z-index: 999;
+
 
   @media (max-width: 767px) {
-    padding: 2rem;
+    //padding: 2rem;
   }
 
   @media (max-width: 479px) {
@@ -102,13 +103,17 @@ const Logo = styled.img`
 
 const HeaderSearchContainer = styled.div`
   flex: 0 0 auto;
-  width: 288px;
+  width: 60%;
   height: 30px;
   display: flex;
   align-items: flex-start;
   border-radius: 4px;
   background-color: #eeeeee;
   margin-left: 0.5rem;
+
+  @media (min-width: 767px) {
+    width: 25%;
+  }
 `;
 
 const SearchIcon = styled(FontAwesomeIcon)`
@@ -130,7 +135,6 @@ const Searchbar = styled.input`
   font-size: 14px;
   font-family: 'Work Sans';
   border-width: 0px;
-  padding-left: 0.5rem;
   border-radius: 2px;
   background-color: transparent;
 `;
