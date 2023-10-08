@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
+import ProfileSettingsTab from './setting-tabs/ProfileSettings';
+import { AccountSettingsTab, DataSettingsTab, PersonalizationTab, PrivacySettingsTab } from './setting-tabs';
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -33,6 +35,7 @@ const TabList = styled.div`
   display: flex;
   background-color: #63c3d1; // Neptune Blue
   flex-direction: row;
+  border: 1px solid #ddd;
   overflow: hidden;
   white-space: nowrap;
 
@@ -48,24 +51,20 @@ const Tab = styled(motion.div)`
   text-align: center;
   cursor: pointer;
   background-color: ${(props) => (props.active ? '#ffffff' : '#63c3d1')};
+  border-left: ${(props) => (props.active ? '2px #000' : '1px #ddd')} solid;
   color: ${(props) => (props.active ? '#63c3d1' : '#ffffff')};
   box-sizing: border-box;
+
 `;
 
 const Content = styled.div`
-  padding: 20px;
   height: calc(100% - 40px);
-
-  @media (max-width: 768px) {
-    padding: 10px;
-  }
+  overflow: auto;
 `;
 
 const ExitIcon = styled(FontAwesomeIcon)`
 margin: 10px;
 padding: 2px;
-border-radius: 50%;
-border: 2px solid black;
 transition: 0.3s ease-in-out;
 
 &:hover {
@@ -74,56 +73,56 @@ transition: 0.3s ease-in-out;
 `;
 
 const SettingsMenu = ({ APP }) => {
-    const { settingsTab } = APP ? APP.STATES : {};
-    const { handleSettingsTab, handleSettingsMenu } = APP ? APP.ACTIONS : {};
+  const { settingsTab } = APP ? APP.STATES : {};
+  const { handleSettingsTab, handleSettingsMenu } = APP ? APP.ACTIONS : {};
 
 
-    const tabData = [
-        'Profile Settings',
-        'Personalization',
-        'Data Settings',
-        'Privacy Settings',
-        'Account Settings',
-    ];
+  const tabData = [
+    'Profile Settings',
+    'Personalization',
+    'Data Settings',
+    'Privacy Settings',
+    'Account Settings',
+  ];
 
-    const renderContent = () => {
-        switch (settingsTab) {
-            case 'Profile Settings':
-                return <p>Profile settings content</p>;
-            case 'Personalization':
-                return <p>Personalization settings content</p>;
-            case 'Data Settings':
-                return <p>Data settings content</p>;
-            case 'Privacy Settings':
-                return <p>Privacy settings content</p>;
-            case 'Account Settings':
-                return <p>Account settings content</p>;
-            default:
-                return null;
-        }
-    };
+  const renderContent = () => {
+    switch (settingsTab) {
+      case 'Profile Settings':
+        return <ProfileSettingsTab APP={APP} />;
+      case 'Personalization':
+        return <PersonalizationTab APP={APP} />;
+      case 'Data Settings':
+        return <DataSettingsTab APP={APP} />;
+      case 'Privacy Settings':
+        return <PrivacySettingsTab APP={APP} />;
+      case 'Account Settings':
+        return <AccountSettingsTab APP={APP} />;
+      default:
+        return null;
+    }
+  };
 
-    return (
-        <Container initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Menu>
-                <ExitIcon icon={faClose} onClick={handleSettingsMenu} />
-                <TabList>
-                    {tabData.map((tab, index) => (
-                        <Tab
-                            key={index}
-                            active={tab === settingsTab}
-                            onClick={() => handleSettingsTab(tab)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.9 }}
-                        >
-                            {tab}
-                        </Tab>
-                    ))}
-                </TabList>
-                <Content>{renderContent()}</Content>
-            </Menu>
-        </Container>
-    );
+  return (
+    <Container initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <Menu>
+        <ExitIcon icon={faClose} onClick={handleSettingsMenu} />
+        <TabList>
+          {tabData.map((tab, index) => (
+            <Tab
+              key={index}
+              active={tab === settingsTab}
+              onClick={() => handleSettingsTab(tab)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {tab}
+            </Tab>
+          ))}
+        </TabList>
+        <Content>{renderContent()}</Content>
+      </Menu>
+    </Container>
+  );
 };
 
 export default SettingsMenu;

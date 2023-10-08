@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { pushLocalNotification } from '../functions/notifications';
 
-// Container for the Notification Bar
 const NotificationContainer = styled.div`
   position: fixed;
   display: flex;
@@ -33,7 +32,6 @@ const NotificationContainer = styled.div`
   }
 `;
 
-// Individual Notification styled component
 const NotificationItem = styled.div`
   display: flex;
   justify-content: space-between;
@@ -46,7 +44,6 @@ const NotificationItem = styled.div`
   background-color: ${props => (props.type === 'error' ? '#ffebee' : props.type === 'alert' ? '#e8f5e9' : '#A5F8D3')};
 `;
 
-// Notification Icon
 const NotificationIcon = styled(FontAwesomeIcon)`
   font-size: 1.5rem;
   cursor: pointer;
@@ -58,31 +55,25 @@ const notificationVariants = {
   closed: { opacity: 0, x: '100%' },
 };
 
-const NotificationBar = ({APP}) => {
+const NotificationBar = ({ APP }) => {
   const [notifications, setNotifications] = useState([]);
+  const { notificationBarOpen } = APP ? APP.STATES : {};
 
-  const { isMobile, user, sidebarOpen, notificationBarOpen, confirmation, notification, alert, error } = APP ? APP.STATES : {};
-  
   const {
-    getUser,
-    handleSidebar,
     handleNotificationsBar,
-    logConfirmation,
-    cancelConfirmation,
     logNotification,
-    handleLogOut,
   } = APP ? APP.ACTIONS : {};
 
-  
+
 
   useEffect(() => {
     getNotifications();
   }, [APP])
-  
+
 
   const getNotifications = () => {
     const _notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-      setNotifications(_notifications);
+    setNotifications(_notifications);
   }
 
   const handleSmapleNotification = (type) => {
@@ -105,16 +96,16 @@ const NotificationBar = ({APP}) => {
 
             {/* Create Sample notifications */}
             <h5>**For Testing Only**</h5>
-            <button onClick={()=>handleSmapleNotification("")}>Send Sample Message Notification</button>
-            <button onClick={()=>handleSmapleNotification("alert")}>Send Sample Alert Notification</button>
-            <button onClick={()=>handleSmapleNotification("error")}>Send Sample Error Notification</button>
+            <button onClick={() => handleSmapleNotification("")}>Send Sample Message Notification</button>
+            <button onClick={() => handleSmapleNotification("alert")}>Send Sample Alert Notification</button>
+            <button onClick={() => handleSmapleNotification("error")}>Send Sample Error Notification</button>
             <h5>********************</h5>
             {notifications.map((notification, index) => (
-            <NotificationItem key={index} type={notification.type}>
-              <p>{notification.message}</p>
-              <small>{notification.time}</small>
-            </NotificationItem>
-          ))}
+              <NotificationItem key={index} type={notification.type}>
+                <p>{notification.message}</p>
+                <small>{notification.time}</small>
+              </NotificationItem>
+            ))}
           </NotificationContainer>
         )}
       </AnimatePresence>

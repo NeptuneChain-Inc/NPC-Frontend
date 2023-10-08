@@ -2,32 +2,37 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import appIcon from '../assets/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCaretDown, faSearch, faXmark, faTimes, faClose, faBellSlash } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { faSearch, faXmark, faEraser } from '@fortawesome/free-solid-svg-icons';
 import { DesktopMenu, MobileMenu } from './elements/navbar';
+import { filterObjectByQuery } from '../functions/search';
+import { findValueByKey } from '../functions/helpers';
 
 const Navbar = ({ APP }) => {
-  const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const path = window.location.pathname.replace(/^\//, '');
 
 
-  const { isMobile, user, sidebarOpen, notificationBarOpen, confirmation, notification, alert, error } = APP ? APP.STATES : {};
-  
+  const { user, searchResults, sidebarOpen } = APP ? APP.STATES : {};
+
   const {
-    getUser,
     handleSidebar,
-    handleNotificationsBar,
-    logConfirmation,
-    cancelConfirmation,
-    logNotification,
-    handleLogOut,
+    setSearchResults,
   } = APP ? APP.ACTIONS : {};
 
-  const handleSearch = () => {
+  useEffect(() => {
+    if (searchResults) {
+      handleSearch();
+    }
+  }, [path])
 
+
+  const handleSearch = () => {
+    const currentDash = findValueByKey(user?.dashData, path);
+    setSearchResults(filterObjectByQuery(currentDash, search))
+  }
+  const clearSearch = () => {
+    setSearch('');
+    setSearchResults(null);
   }
 
   return (
@@ -42,7 +47,7 @@ const Navbar = ({ APP }) => {
 
       {/* Search Components */}
       <HeaderSearchContainer>
-        <SearchIcon icon={faSearch} onClick={handleSearch}/>
+        <SearchIcon icon={faSearch} onClick={handleSearch} />
         <Searchbar
           type="text"
           name="searcg"
@@ -50,13 +55,14 @@ const Navbar = ({ APP }) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        {(search || searchResults) && <SearchIcon icon={faEraser} onClick={clearSearch} />}
       </HeaderSearchContainer>
 
       {/* Desktop Components */}
       <DesktopMenu APP={APP} />
 
       {/* Mobile Components */}
-        <MobileMenu APP={APP}/>
+      <MobileMenu APP={APP} />
 
     </NavbarContainer>
   )
@@ -64,7 +70,7 @@ const Navbar = ({ APP }) => {
 
 const NavbarContainer = styled.header`
   position: fixed;
-width: ${({sidebarOpen})=>sidebarOpen ? '80' : '100'}%;
+width: ${({ sidebarOpen }) => sidebarOpen ? '80' : '100'}%;
   height: 40px;
   display: flex;
   box-shadow: 0px 2px 2px 0px #d4d4d4;

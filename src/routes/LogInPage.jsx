@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { auth } from '../apis/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
 import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/lib/global-styled-components';
 import { Notification } from '../components';
-import { getUser, getUsername } from '../apis/database';
+import { getUsername } from '../apis/database';
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +30,6 @@ const Form = styled(motion.form)`
   .option{
     border-bottom: 1px solid #134b5f80;
     width: 300px;
-
     white-space: nowrap;
     margin: auto;
     font-size: 0.7rem;
@@ -41,7 +39,6 @@ const Form = styled(motion.form)`
     transition: 0.3s ease-in-out;
 
     &:hover{
-      
       font-size: 0.69rem;
     }
   }
@@ -66,17 +63,16 @@ export default function LogInPage({ APP }) {
 
   const handleUsernameInput = () => {
     const handleSwitch = () => {
-    //Clear Input before switch
-    if(usernameInputType){
-      setUsername('');
-    } else {
-      setEmail('');
-    }
-    setUsernameInputType(!usernameInputType);
+      if (usernameInputType) {
+        setUsername('');
+      } else {
+        setEmail('');
+      }
+      setUsernameInputType(!usernameInputType);
     }
 
-    if(username || email){
-      APP?.ACTIONS?.logConfirmation(`This will clear your current ${usernameInputType ? 'username' : 'email'} input`,handleSwitch);
+    if (username || email) {
+      APP?.ACTIONS?.logConfirmation(`This will clear your current ${usernameInputType ? 'username' : 'email'} input`, handleSwitch);
     } else {
       handleSwitch();
     }
@@ -88,31 +84,29 @@ export default function LogInPage({ APP }) {
     try {
       let emailLogin;
 
-      if(email){
+      if (email) {
         emailLogin = email;
-      } else if(username) {
+      } else if (username) {
         const _user = await getUsername(username);
-        if(_user){
+        if (_user) {
           emailLogin = _user?.email;
         }
       }
-      
-      if(emailLogin){
+
+      if (emailLogin) {
         const userData = await signInWithEmailAndPassword(auth, emailLogin, password);
-        const user = await getUser(userData?.user?.uid)
-        if(user) {
-          Cookies.set('user', JSON.stringify(user), { expires: 3 });
-        APP?.ACTIONS?.getUser();
-        setNotification('Login successful!');
-        setTimeout(() => {
-          navigate('/overview');
-        }, 3000);
+        if (await APP?.ACTIONS?.updateUser(userData?.user?.uid)) {
+          setNotification('Login successful!');
+          setTimeout(() => {
+            navigate('/main');
+          }, 3000);
+        } else {
+          setError('Could Not Load User');
         }
-        
       } else {
         setError('Username Does Not Exist');
       }
-      
+
     } catch (error) {
       setError(error.message);
     }
@@ -131,23 +125,23 @@ export default function LogInPage({ APP }) {
       >
         <WELCOME_HEADING>Log in to NeptuneChain</WELCOME_HEADING>
         {usernameInputType ? (
-        <INPUT
-        type="text"
-        placeholder="Username..."
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-        style={{marginBottom: 10}}
-      />
+          <INPUT
+            type="text"
+            placeholder="Username..."
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            style={{ marginBottom: 10 }}
+          />
         ) : (
           <INPUT
-          type="email"
-          placeholder="Email Address..."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{marginBottom: 10}}
-        />
+            type="email"
+            placeholder="Email Address..."
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{ marginBottom: 10 }}
+          />
         )}
         <div className='option' onClick={handleUsernameInput}>Use {usernameInputType ? 'Email' : 'Username'} Instead</div>
         <INPUT

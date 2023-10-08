@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Define color codes for types
 const COLORS = {
   notification: "#729ABD", // Neptune Blue
   alert: "#FFC107", // Amber
   error: "#F44336", // Red
 };
 
-// Styled Container
 const Container = styled(motion.div)`
   position: fixed;
   bottom: 20px;
@@ -29,11 +27,11 @@ const Container = styled(motion.div)`
 `;
 
 const Notification = ({ message, type, clearNotification }) => {
-  
-  if(!message){
+
+  if (!message) {
     return;
   }
-  
+
   // Auto close after 4 seconds
   useEffect(() => {
     const timer = setTimeout(() => {

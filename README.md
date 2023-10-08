@@ -1,5 +1,22 @@
 # NeptuneChain Dashboard
 
+Changelog (October 8) - Major Changes:
+- Reworked account system to handle account types
+- Implemented system to load dashboard content and settings based on user types. 
+- Structured templates for the different user dashboards
+- Updated Registration and login system
+- Updated User management and local storage.
+- Migrated Dashboard data to databases for dynamic rendering
+- Added new database functions to handle user dashes
+- Enhanced App Security (non-users revolked access to app routes)
+- Integrated search algorithm to search dash content based on search query and route.
+- Updated the Sidebar component to indicate user type and dynamically render dash links based in the user database.
+- Populated the Settings Menu Tabs with modal settings (Not Yet Implemented)
+
+*NB: Due the change of account systems, old user accounts will not work. (Preffered Action: Database reset).
+
+
+
 Changelog (October 1) - Major Changes:
 - UI Enhancements (Navbar, Sidebar, Mobile Responsiveness, layout, etc)
 - Added Settings Menu (Still Needs To Be implemented)

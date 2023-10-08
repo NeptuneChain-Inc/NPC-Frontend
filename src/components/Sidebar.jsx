@@ -1,8 +1,6 @@
 import React from 'react'
-
 import styled from 'styled-components'
-import { faBell, faDollarSign, faExchange, faHome, faLeaf, faRotate, faShield, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell, faCircleCheck, faDollarSign, faExchange, faHome, faLeaf, faQuestion, faRotate, faShield, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -12,10 +10,18 @@ import PropTypes from 'prop-types'
 
 import AppLogo from '../assets/logo.png';
 
+const ensureKeyFirst = (obj, key) => {
+  if (obj.hasOwnProperty(key)) {
+    return {
+      [key]: obj[key],
+      ...obj
+    };
+  }
+  return obj;
+};
 
 
-
-const Sidebar = ({isOpen}) => {
+const Sidebar = ({isOpen, user}) => {
   const navigate = useNavigate();
 
   const handleToWelcome = () => {
@@ -23,21 +29,39 @@ const Sidebar = ({isOpen}) => {
     navigate('/');
   }
 
+  const renderIcon = (dashRoute) => {
+    switch (dashRoute) {
+      case 'main':
+        return faHome;
+
+        case 'financial':
+        return faDollarSign
+
+        case 'environmental':
+        return faLeaf
+
+        case 'verification':
+        return faCircleCheck
+  
+      default:
+        return faQuestion
+    }
+  }
+
   return (
     <StyledSidebar isOpen={isOpen}>
       <SidebarHeader>
         <Logo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome}/>
       </SidebarHeader>
-      <SidebarHeading>Menu</SidebarHeading>
+      <SidebarHeading>{user?.type.toUpperCase()}</SidebarHeading>
       <Menu projVariant="list">
-        <Sidebar_MenuItem icon={faHome} itemName={"Dashboard"} route={'overview'} />
-        <Sidebar_MenuItem icon={faDollarSign} itemName={"Financial Metrics"} route={'financial-metrics'} />
-        <Sidebar_MenuItem icon={faExchange} itemName={"Trading Activity"} route={'trading-activity'} />
-        <Sidebar_MenuItem icon={faLeaf} itemName={"Environmental Metrics"} route={'environmental-metrics'} />
-        <Sidebar_MenuItem icon={faRotate} itemName={"Operational Metrics"} route={'operational-metrics'} />
-        <Sidebar_MenuItem icon={faBell} itemName={"Notifications and Alerts"} route={'notifications'} />
-        <Sidebar_MenuItem icon={faShield} itemName={"Blockchain & Verification"} route={'verifications'} />
-        <Sidebar_MenuItem icon={faVideo} itemName={"My Media"} route={'my-media'} />
+        {Object.entries(ensureKeyFirst(user?.dashData, 'main'))?.map(([dash, data], index) => {
+          const icon = renderIcon(dash);
+          console.log({dash, data, index, icon});
+          return (
+            <Sidebar_MenuItem icon={icon} itemName={data?.name} route={dash} />
+          )
+        })}
       </Menu>
     </StyledSidebar>
   )
@@ -98,23 +122,9 @@ const SidebarHeading = styled('h1')({
 })
 
 const Menu = styled('ul')({
-  'padding-left': '1rem',
-  'padding-right': '1rem',
+  padding: '1rem',
 })
 
-
-const SidebarIconLogoWhenClosed = styled('svg')({
-  width: '21px',
-  height: '21px',
-  padding: '3px',
-  'border-color': 'grey',
-  'border-width': '1px',
-  'border-radius': '50%',
-  'background-color': '#eeeeee',
-})
-//////////
-
-//////////
 const MenuItem1 = styled('li')({
   height: 'auto',
   display: 'flex',

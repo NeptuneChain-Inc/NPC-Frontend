@@ -1,0 +1,325 @@
+{
+    "main": {
+        "name": "Dashboard",
+        "sections": [
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "overview",
+                        "data": {
+                            "cardTitle": "Credit Balance",
+                            "metricValue": "0",
+                            "metricUnit": "credits",
+                            "icon": ""
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "data": {
+                            "cardTitle": "Total Credits Sold",
+                            "metricValue": "0",
+                            "metricUnit": "credits",
+                            "icon": ""
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "data": {
+                            "cardTitle": "Average Credit Price",
+                            "metricValue": "$0,00",
+                            "metricUnit": "Price",
+                            "icon": ""
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "data": {
+                            "cardTitle": "Total Earnings",
+                            "metricValue": "$0,00",
+                            "metricUnit": "Earned",
+                            "icon": ""
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "data": {
+                            "cardTitle": "Overall Nutrient Rating",
+                            "metricValue": "0",
+                            "metricUnit": "Rating",
+                            "icon": ""
+                        }
+                    }
+                ]
+            },
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "data",
+                        "data": {
+                            "cardTitle": "Credit Activity",
+                            "icon": "chart-simple",
+                            "contents": []
+                        }
+                    },
+                    {
+                        "type": "data-table",
+                        "data": {
+                            "cardTitle": "Environmental Metrics",
+                            "icon": "chart-simple",
+                            "contents": []
+                        }
+                    },
+                    {
+                        "type": "data",
+                        "data": {
+                            "cardTitle": "Financial Metrics",
+                            "icon": "chart-simple",
+                            "contents": []
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "environmental": {
+        "name": "Environmental Metrics",
+        "sections": [
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "MPC Buoy",
+                            "metricValue": "Online",
+                            "metricUnit": "Status",
+                            "icon": "leaf"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "In-Situ VuLink Telemetry Device",
+                            "metricValue": "Online",
+                            "metricUnit": "Status",
+                            "icon": "leaf"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "DragonFly Drone",
+                            "metricValue": "Online",
+                            "metricUnit": "Status",
+                            "icon": "leaf"
+                        }
+                    }
+                ]
+            },
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "data-table",
+                        "data": {
+                            "cardTitle": "MPC BUOY Data",
+                            "icon": "chart-simple",
+                            "contents": [
+                                {
+                                    "Timestamp": "2023-09-01 8:00",
+                                    "Chlorophyll-a": 12.5,
+                                    "Phycocyanin": 8.3,
+                                    "pH Level": 7.2,
+                                    "Water Temperature": 20.5,
+                                    "Turbidity": 12.8,
+                                    "Dissolved Oxygen": 8.9
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "data-table",
+                        "data": {
+                            "cardTitle": "In-Situ VuLink Telemetry Device Data",
+                            "icon": "chart-simple",
+                            "contents": [
+                                {
+                                    "Timestamp": "2023-09-01 8:00",
+                                    "Temperature": 20.1,
+                                    "Conductivity": 450,
+                                    "pH Level": 7.4,
+                                    "Dissolved Oxygen": 9,
+                                    "Turbidity": 12
+                                },
+                                {
+                                    "Timestamp": "2023-09-01 12:00",
+                                    "Temperature": 21.3,
+                                    "Conductivity": 460,
+                                    "pH Level": 7.5,
+                                    "Dissolved Oxygen": 9.3,
+                                    "Turbidity": 11.2
+                                },
+                                {
+                                    "Timestamp": "2023-09-01 16:00",
+                                    "Temperature": 19.7,
+                                    "Conductivity": 445,
+                                    "pH Level": 7.3,
+                                    "Dissolved Oxygen": 8.8,
+                                    "Turbidity": 12.5
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "data-table",
+                        "data": {
+                            "cardTitle": "DraganFly Drone Data",
+                            "icon": "chart-simple",
+                            "contents": [
+                                {
+                                    "Timestamp": "2023-09-01 8:00",
+                                    "Chlorophyll-a": 12.5,
+                                    "Phycocyanin": 8.3,
+                                    "pH Level": 7.2,
+                                    "Water Temperature": 20.5,
+                                    "Turbidity": 12.8,
+                                    "Dissolved Oxygen": 8.9
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "financial": {
+        "name": "Finacial Metrics",
+        "sections": [
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "overview",
+                        "width": "92%",
+                        "data": {
+                            "cardTitle": "Total Revenue Generated",
+                            "metricValue": "0",
+                            "metricUnit": "Earningd",
+                            "icon": "wallet"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "92%",
+                        "data": {
+                            "cardTitle": "Average Credit Price",
+                            "metricValue": "$0,00",
+                            "metricUnit": "Price",
+                            "icon": "money-bill-1"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "92%",
+                        "data": {
+                            "cardTitle": "Pending Transactions",
+                            "metricValue": "0",
+                            "metricUnit": "Pending",
+                            "icon": "hourglass-half"
+                        }
+                    }
+                ]
+            },
+            {
+                "alignment": "center",
+                "cards": [
+                    {
+                        "type": "tx-history",
+                        "styles": {
+                            "width": "60vw",
+                            "alignItems": "center"
+                        },
+                        "data": {
+                            "title": "Transaction History",
+                            "transactions": [
+                                {
+                                    "id": 1,
+                                    "type": "Minted",
+                                    "amount": "200",
+                                    "date": "2022-01-01"
+                                },
+                                {
+                                    "id": 2,
+                                    "type": "Sold",
+                                    "amount": "100",
+                                    "date": "2022-01-02"
+                                },
+                                {
+                                    "id": 3,
+                                    "type": "Withdrawal",
+                                    "amount": "50",
+                                    "date": "2022-01-03"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "verification": {
+        "name": "Verification Data",
+        "sections": [
+            {
+                "alignment": "flex-start",
+                "cards": [
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "Total Streams",
+                            "metricValue": "0",
+                            "metricUnit": "streams",
+                            "icon": "video"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "Totals Videos",
+                            "metricValue": "0",
+                            "metricUnit": "Videos",
+                            "icon": "video"
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "30%",
+                        "data": {
+                            "cardTitle": "Total Documents",
+                            "metricValue": "0",
+                            "metricUnit": "Documents",
+                            "icon": ""
+                        }
+                    },
+                    {
+                        "type": "overview",
+                        "width": "92%",
+                        "data": {
+                            "cardTitle": "Total Verifications",
+                            "metricValue": "0",
+                            "metricUnit": "Verifications",
+                            "icon": ""
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

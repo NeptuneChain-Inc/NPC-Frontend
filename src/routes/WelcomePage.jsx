@@ -72,7 +72,7 @@ export default function WelcomePage() {
     const [username, setUsername] = useState('Guest');
 
     useEffect(() => {
-        const _userString = Cookies.get('user');
+        const _userString = localStorage.getItem('user');
         let user;
         if (_userString) {
             user = JSON.parse(_userString)
@@ -84,7 +84,7 @@ export default function WelcomePage() {
         }
 
         if (Cookies.get('skipWelcome')) {
-            navigate('/overview');
+            navigate('/main');
         }
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -101,7 +101,7 @@ export default function WelcomePage() {
     }, [navigate]);
 
     const handleOpen = () => {
-        navigate('/overview');
+        navigate('/main');
     };
 
     const handleSkip = (e) => {

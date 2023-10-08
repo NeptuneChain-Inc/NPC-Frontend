@@ -1,20 +1,14 @@
 import { ref, set, get } from "firebase/database";
 import { db } from "../apis/firebase"
 
-// Retrieve Streams
 const getData = async (path) => {
-    try {
-        const dataRef = ref(db, path);
-        const snapshot = await get(dataRef);
-        if (snapshot.val()) {
-            return snapshot.val();
-        } else {
-            return null;
-        }
-    } catch (error) {
-        return {
-            error: error
-        }
+    const dataRef = ref(db, path);
+    const snapshot = await get(dataRef);
+    if (snapshot.val()) {
+        return snapshot.val();
+    } else {
+        console.warn({ snapshot });
+        return false;
     }
 }
 
@@ -25,30 +19,31 @@ const saveData = async (path, data) => {
         await set(dataRef, data);
         return true;
     } catch (error) {
-        console.log(error)
-        return {
-            error: error
-        }
+        console.error(error)
+        return false;
     }
 }
 
 const createUser = async (userData) => {
     if (userData?.uid) {
-        let userLogged;
         const isSaved = await saveData(`dashboard/users/data/${userData?.uid}`, userData);
         if (isSaved) {
-            userLogged = await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid);
+            if (await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid)) {
+                return await loadDefaultUserDashes(userData.uid, userData.type);
+            } else {
+                return false;
+            }
+        } else {
+            return isSaved;
         }
-        console.log({ isSaved, userLogged });
-        return { isSaved, userLogged };
     } else {
-        return null;
+        console.warn({ userData });
+        return false;
     }
 }
 
 const getUser = async (uid) => {
-    const user = await getData(`dashboard/users/data/${uid}`);
-    return user;
+    return await getData(`dashboard/users/data/${uid}`);
 }
 
 const getUsername = async (username) => {
@@ -56,23 +51,31 @@ const getUsername = async (username) => {
     return await getUser(uid);
 }
 
+const getUserDashes = async (uid) => {
+    return await getData(`dashboard/users/data/${uid}/dashData/`);
+}
+
+const loadDefaultUserDashes = async (uid, accountType) => {
+    const defaultUserDashes = await getData(`dashboard/defaults/dashes/${accountType}`);
+    if (defaultUserDashes) {
+        return await saveData(`dashboard/users/data/${uid}/dashData/`,defaultUserDashes);
+    } else {
+        return defaultUserDashes
+    }
+}
+
 // Save Stream
 const saveStream = async (streamData, creatorUID) => {
-    try {
-        if (streamData?.playbackId && creatorUID) {
-            let userLogged;
-            const isSaved = await saveData(`dashboard/livepeer/streams/${streamData.playbackId}`, streamData);
-            if (isSaved) {
-                userLogged = await saveData(`dashboard/users/data/${creatorUID}/streams/${streamData.playbackId}`, streamData.playbackId);
-            }
-            return userLogged;
+    if (streamData?.playbackId && creatorUID) {
+        const isSaved = await saveData(`dashboard/livepeer/streams/${streamData.playbackId}`, streamData);
+        if (isSaved) {
+            return await saveData(`dashboard/users/data/${creatorUID}/streams/${streamData.playbackId}`, streamData.playbackId);
         } else {
-            return null;
+            return isSaved;
         }
-    } catch (error) {
-        return {
-            error: error
-        }
+    } else {
+        console.warn({ streamData, creatorUID });
+        return false;
     }
 }
 
@@ -87,33 +90,26 @@ const getUserStreams = async (uid) => {
 }
 
 const getStream = async (playbackId) => {
-    const stream = await getData(`dashboard/livepeer/streams/${playbackId}`);
-    return stream;
+    return await getData(`dashboard/livepeer/streams/${playbackId}`);
 }
 
 // Save Video
 const saveVideo = async (videoAsset, creatorUID) => {
-    try {
-        if (videoAsset?.playbackId && creatorUID) {
-            let userLogged;
-            const isSaved = await saveData(`dashboard/livepeer/videos/${videoAsset.playbackId}`, videoAsset);
-            if (isSaved) {
-                userLogged = await saveData(`dashboard/users/data/${creatorUID}/videos/${videoAsset.playbackId}`, videoAsset.playbackId);
-            }
-            return userLogged;
+    if (videoAsset?.playbackId && creatorUID) {
+        const isSaved = await saveData(`dashboard/livepeer/videos/${videoAsset.playbackId}`, videoAsset);
+        if (isSaved) {
+            return await saveData(`dashboard/users/data/${creatorUID}/videos/${videoAsset.playbackId}`, videoAsset.playbackId);
         } else {
-            return null;
+            return isSaved;
         }
-    } catch (error) {
-        return {
-            error
-        }
+    } else {
+        console.warn({ videoAsset, creatorUID })
+        return false;
     }
 }
 
 const getVideo = async (playbackId) => {
-    const video = await getData(`dashboard/livepeer/videos//${playbackId}`);
-    return video;
+    return await getData(`dashboard/livepeer/videos//${playbackId}`);
 }
 
 const getUserVideos = async (uid) => {

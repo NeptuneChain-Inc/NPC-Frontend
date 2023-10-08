@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Cookies from 'js-cookie'
-import { Home, WelcomePage, RegisterPage, LogInPage } from './routes'
+import { Home, WelcomePage, RegisterPage, LogInPage, NotFound } from './routes'
 import { Notification, Confirmation } from './components'
 import { Livepeer } from './components/livepeer'
 import styled from 'styled-components'
 import SettingsMenu from './components/SettingsMenu'
+import { getUser } from './apis/database'
 
 const Footer = styled.footer`
   width: 100%;
@@ -67,6 +68,7 @@ function App() {
   const [isMobile,] = useState(isMobileScreen());
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchResults, setSearchResults] = useState(null);
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState('Profile Settings');
@@ -83,11 +85,14 @@ function App() {
   }, [isMobile])
 
   useEffect(() => {
-    getUser();
+    getUserSave();
   }, [])
 
   useEffect(() => {
     console.log(user);
+    if(user?.uid){
+
+    }
   }, [user])
 
   function isMobileScreen() {
@@ -96,11 +101,28 @@ function App() {
   }
 
   //ACTIONS
-  const getUser = () => {
-    const loggedUser = Cookies.get('user');
+  const getUserSave = () => {
+    //const loggedUser = Cookies.get('user');
+    const loggedUser = localStorage.getItem('user');
     if (loggedUser) {
       setUser(JSON.parse(loggedUser));
+      return true;
+    } else {
+      return false;
     }
+  }
+
+  const updateUser = async (uid) => {
+     try {
+      const _userUpdate = await getUser(uid);
+      localStorage.setItem('user', JSON.stringify(_userUpdate))
+      //Cookies.set('user', JSON.stringify(_userUpdate), { expires: 3 });
+      setUser(_userUpdate);
+      return true;
+     } catch (error) {
+      console.error(error)
+      return false
+     }
   }
 
   const handleSidebar = () => {
@@ -166,7 +188,9 @@ function App() {
   const handleLogOut = () => {
     const logOut = () => {
       setUser(null);
-      Cookies.remove('user');
+      // Cookies.remove('user');
+      localStorage.removeItem('user')
+      window.location.href = '/';
     }
     logConfirmation('Are you sure you want to log out?', logOut);
   }
@@ -175,6 +199,7 @@ function App() {
     STATES: {
       isMobile,
       user,
+      searchResults,
       sidebarOpen,
       notificationBarOpen,
       settingsMenuOpen,
@@ -185,7 +210,9 @@ function App() {
       error
     },
     ACTIONS: {
-      getUser,
+      getUserSave,
+      updateUser,
+      setSearchResults,
       handleSidebar,
       handleNotificationsBar,
       handleSettingsMenu,
@@ -210,10 +237,11 @@ function App() {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LogInPage APP={APP} />} />
-        <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />
-        <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />
-        <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />
-        <Route path="/:dashID" element={<Home APP={APP} />} />
+        {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
+        {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}
+        {user?.uid && <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />}
+        {user?.uid && <Route path="/:dashID" element={<Home APP={APP} />} />}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer>
         <FooterContent>© 2023 NeptuneChain, All Rights Reserved.</FooterContent>

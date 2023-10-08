@@ -38,10 +38,10 @@ const Link = styled.a`
   }
 `;
 
-const OverviewDash = ({ dashData }) => {
+const Dash = ({ dashData }) => {
   return (
     <DashContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <SectionHeading>{dashData.name}</SectionHeading>
+      <SectionHeading>{dashData?.name}</SectionHeading>
       <AnimatePresence>
         {dashData?.sections?.map((section, index) => (
           <DashSection key={index} alignment={section?.alignment} >
@@ -197,4 +197,4 @@ const DashSection = styled(motion.div)`
 `;
 
 
-export default OverviewDash
+export default Dash

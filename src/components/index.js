@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import OverviewDash from "./OverviewDash";
+import Dash from "./Dash";
 import Notification from "./NotificationPopup";
 import Confirmation from "./ConfirmationPopup";
 import NotificationBar from "./NotificationBar";
@@ -8,7 +8,7 @@ import NotificationBar from "./NotificationBar";
 export {
     Navbar,
     Sidebar,
-    OverviewDash,
+    Dash,
     Notification,
     Confirmation,
     NotificationBar

@@ -8,9 +8,6 @@ import appLogo from '../assets/logo.png'
 import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/lib/global-styled-components';
 import { Notification } from '../components';
 
-
-//Temp DB 
-import Cookies from 'js-cookie';
 import { createUser } from '../apis/database';
 
 const Container = styled.div`
@@ -31,6 +28,13 @@ const Form = styled(motion.form)`
   width: 300px;
 `;
 
+const Dropdown = styled.select`
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
 
 
 export default function RegisterPage() {
@@ -38,6 +42,7 @@ export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [accountType, setAccountType] = useState('farmer');
   const [error, setError] = useState('');
   const [notification, setNotification] = useState('');
 
@@ -55,21 +60,19 @@ export default function RegisterPage() {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
       const userData = user?.user;
-      //convert username to lower case
-      const fUser = { 
+      const fUser = {
         uid: userData.uid,
         username: username?.toLowerCase(),
         email: userData.email?.toLowerCase(),
-        emailVerified: userData.emailVerified
+        emailVerified: userData.emailVerified,
+        type: accountType
       };
-      console.log(fUser);
-      await createUser(fUser);
-
-      setNotification('Registration successful!');
-
-      setTimeout(() => {
-        navigate('/login');
-      }, 3000);
+      if (await createUser(fUser)) {
+        setNotification('Registration successful!');
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -101,6 +104,7 @@ export default function RegisterPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+
         <INPUT
           type="password"
           placeholder="Password"
@@ -108,6 +112,11 @@ export default function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <Dropdown value={accountType} onChange={(e) => setAccountType(e.target.value)} required>
+          <option value="farmer">Farmer</option>
+          <option value="verifier">Distributor</option>
+          <option value="violator">Retailer</option>
+        </Dropdown>
         <BUTTON type="submit">Register</BUTTON>
         <h3>Or</h3>
         <BUTTON_SEC onClick={() => navigate('/login')}>Log in</BUTTON_SEC>

@@ -19,12 +19,11 @@ export function sanitizeObject(obj, depth = 0, maxDepth = 32, cache = new WeakMa
     return obj;
   }
 
+  export function findValueByKey(obj, keyName) {
+    return obj.hasOwnProperty(keyName) ? obj[keyName] : undefined;
+  }
+
   export function timestampToLocalString(timestamp) {
-    // Create a new Date object using the provided timestamp.
     const date = new Date(timestamp);
-  
-    // Use toLocaleString to convert the date object to a local date-time string.
-    const localString = date.toLocaleString();
-  
-    return localString;
+    return date.toLocaleString();
   }
