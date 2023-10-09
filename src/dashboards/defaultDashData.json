@@ -99,12 +99,7 @@
                                     "metricUnit": "Status",
                                     "icon": "leaf"
                                 }
-                            }
-                        ]
-                    },
-                    {
-                        "alignment": "flex-start",
-                        "cards": [
+                            },
                             {
                                 "type": "overview",
                                 "width": "30%",
@@ -114,12 +109,7 @@
                                     "metricUnit": "Status",
                                     "icon": "leaf"
                                 }
-                            }
-                        ]
-                    },
-                    {
-                        "alignment": "flex-start",
-                        "cards": [
+                            },
                             {
                                 "type": "overview",
                                 "width": "30%",
@@ -323,9 +313,9 @@
                                 "type": "overview",
                                 "width": "92%",
                                 "data": {
-                                    "cardTitle": "Current Verification Status",
-                                    "metricValue": "Pending",
-                                    "metricUnit": "Verification ID/Name",
+                                    "cardTitle": "Total Verifications",
+                                    "metricValue": "0",
+                                    "metricUnit": "Verifications",
                                     "icon": ""
                                 }
                             }

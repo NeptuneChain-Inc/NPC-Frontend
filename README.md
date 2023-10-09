@@ -8,7 +8,7 @@ Changelog (October 8) - Major Changes:
 - Updated User management and local storage.
 - Migrated Dashboard data to databases for dynamic rendering
 - Added new database functions to handle user dashes
-- Enhanced App Security (non-users revolked access to app routes)
+- Enhanced App Security (non-users revoked access to app routes)
 - Integrated search algorithm to search dash content based on search query and route.
 - Updated the Sidebar component to indicate user type and dynamically render dash links based in the user database.
 - Populated the Settings Menu Tabs with modal settings (Not Yet Implemented)
