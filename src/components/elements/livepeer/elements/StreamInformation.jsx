@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import ObjectViewer from "../../elements/display/DisplayObject";
+import ObjectViewer from "../../../elements/display/DisplayObject";
 
 const StreamInformationContainer = styled(motion.div)`
 width: 50%;

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Navbar, Sidebar, NotificationBar } from '../components'
-import RenderDash from '../dashboards/renderDash'
+import RenderDash from '../dashboards/RenderDash'
 
 
 const Home = ({ APP }) => {

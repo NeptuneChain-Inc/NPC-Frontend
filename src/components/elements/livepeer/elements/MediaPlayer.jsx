@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Player } from '@livepeer/react';
-import ObjectViewer from '../../elements/display/DisplayObject';
+import ObjectViewer from '../../display/DisplayObject';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getViewership } from '../../../apis/livepeer_calls';
-import { getVideo } from '../../../apis/database';
+import { getViewership } from '../../../../apis/livepeer_calls';
+import { getVideo } from '../../../../apis/database';
 
 const Container = styled(motion.div)`
   width: 100%;

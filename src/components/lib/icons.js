@@ -1,4 +1,4 @@
-import { faChartSimple, faHourglassHalf, faLeaf, faMoneyBill1, faQuestion, faSackDollar, faWallet } from '@fortawesome/free-solid-svg-icons';
+import { faChartSimple, faCircleCheck, faDollarSign, faHome, faHourglassHalf, faLeaf, faMoneyBill1, faQuestion, faSackDollar, faWallet } from '@fortawesome/free-solid-svg-icons';
 
 const getIcon = (icon) => {
   switch (icon) {
@@ -19,4 +19,26 @@ const getIcon = (icon) => {
   }
 }
 
-export default getIcon;
+const renderDashIcon = (dashRoute) => {
+  switch (dashRoute) {
+    case 'main':
+      return faHome;
+
+      case 'financial':
+      return faDollarSign
+
+      case 'environmental':
+      return faLeaf
+
+      case 'verification':
+      return faCircleCheck
+
+    default:
+      return faQuestion
+  }
+}
+
+export {
+  getIcon,
+  renderDashIcon
+}

@@ -6,8 +6,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
 import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC } from '../components/lib/global-styled-components';
-import { Notification } from '../components';
-
+import { Notification } from '../components/popups';
 import { createUser } from '../apis/database';
 
 const Container = styled.div`

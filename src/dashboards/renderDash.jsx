@@ -1,64 +1,71 @@
-import React, { useEffect, useState } from 'react'
-import { Dash } from '../components'
-//import { Dash, environmentalDash, financialDash, tradingActivityDash, operationalMetricsDash, notificationDash, verificationDash, mediaDash } from './dashData'
-import { mediaDash } from './dashData'
+import React, { useEffect, useState, useCallback } from 'react';
+import { Dash } from '../components';
+import farmerDashData from './default/farmerDashData.json';
+// import { mediaDash } from './dashData';
 
+/**
+ * Renders the appropriate dashboard based on various props.
+ * 
+ * @param {Object} props - The props for the component.
+ * @param {string} props.route - The route to determine which data to display.
+ * @param {string} props.uid - The User ID to fetch media data.
+ * @param {Object} props.userDashes - The user-specific dashboards.
+ * @param {Object} props.searchResults - The data to display if in search mode.
+ *
+ * @returns {JSX.Element} - Rendered dashboard.
+ */
 const RenderDash = ({ route, uid, userDashes, searchResults }) => {
+  // State to hold the data to be displayed on the dashboard
   const [dashData, setDashData] = useState({});
-  console.log({ route, uid, userDashes, dashData, searchResults });
 
+  userDashes = farmerDashData;
+
+  // || FOR DEBUGGING ||
+  // console.log({ route, uid, userDashes, dashData, searchResults });
+
+  // Function to load default data
+  const loadDefaultData = useCallback(() => setDashData(userDashes?.main), [userDashes]);
+
+  // Function to load media data
+  // const getMediaData = useCallback(async () => {
+  //   if (uid) {
+  //     const mediaData = await mediaDash(uid);
+  //     setDashData(mediaData);
+  //   } else {
+  //     loadDefaultData();
+  //   }
+  // }, [uid, loadDefaultData]);
+
+  // Effect to handle dashboard data loading
   useEffect(() => {
     if (route && !searchResults) {
       switch (route) {
         case 'financial':
-          setDashData(userDashes?.financial)
+          setDashData(userDashes?.financial);
           break;
-        // case 'trading-activity':
-        //   setDashData(tradingActivityDash)
-        //   break;
         case 'environmental':
-          setDashData(userDashes?.environmental)
+          setDashData(userDashes?.environmental);
           break;
-        // case 'operational-metrics':
-        //   setDashData(operationalMetricsDash)
-        //   break;
-        // case 'notifications':
-        //   setDashData(notificationDash)
-        //   break;
         case 'verification':
-          setDashData(userDashes?.verification)
+          setDashData(userDashes?.verification);
           break;
-        // case 'search':
-        //   dashData = handleSearch(route)
+        // case 'my-media':
+        //   getMediaData();
         //   break;
-        case 'my-media':
-          getMediaData()
-          break;
         default:
-          loadDefaultData()
+          loadDefaultData();
           break;
       }
-    } else if(searchResults){
+    } else if (searchResults) {
       setDashData(searchResults);
-    } else {
-      loadDefaultData()
-    }
-  }, [route, userDashes, searchResults])
-
-  const getMediaData = async () => {
-    if (uid) {
-      const mediaData = await mediaDash(uid);
-      setDashData(mediaData);
     } else {
       loadDefaultData();
     }
-  }
-
-  const loadDefaultData = () => setDashData(userDashes?.main);
+  }, [route, userDashes, searchResults, loadDefaultData]);
 
   return (
     <Dash dashData={dashData} />
-  )
-}
+  );
+};
 
-export default RenderDash
+export default RenderDash;

@@ -4,26 +4,34 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * Sidebar_MenuItem Component
+ * 
+ * Renders a sidebar menu item with optional route navigation.
+ * 
+ * @param {Object} props
+ * @param {any} props.icon - The FontAwesome icon to display
+ * @param {string} props.itemName - The label for the menu item
+ * @param {string} props.route - The route to navigate to when clicked
+ */
 const Sidebar_MenuItem = ({ icon, itemName, route }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRoute, setIsRoute] = useState(false);
 
+  // Effect to check if the current route matches the given route
   useEffect(() => {
-    if (route[0] === '/') {
-      setIsRoute(route === location.pathname);
-    } else {
-      setIsRoute(`/${route}` === location.pathname);
-    }
+    const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
+    setIsRoute(normalizedRoute === location.pathname);
   }, [route, location]);
 
+  /**
+   * Handles the click event for navigation.
+   */
   const handleClick = () => {
-    if (route && typeof route === 'string' && location.pathname !== `/${route}`) {
-      if (route[0] === '/') {
-        navigate(route);
-      } else {
-        navigate(`/${route}`);
-      }
+    const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
+    if (route && typeof route === 'string' && location.pathname !== normalizedRoute) {
+      navigate(normalizedRoute);
     }
   };
 
@@ -44,6 +52,10 @@ const Sidebar_MenuItem = ({ icon, itemName, route }) => {
   );
 };
 
+/**
+ * ActiveIndicator Styled Component
+ * Displays a visual indicator for the active menu item.
+ */
 const ActiveIndicator = styled(motion.div)`
   position: absolute;
   left: 0;
@@ -55,6 +67,10 @@ const ActiveIndicator = styled(motion.div)`
   transform: translateY(-50%);
 `;
 
+/**
+ * MenuItem Styled Component
+ * Styles the menu item container and includes responsive design.
+ */
 const MenuItem = styled(motion.li)`
   position: relative;
   height: auto;
@@ -78,6 +94,10 @@ const MenuItem = styled(motion.li)`
   }
 `;
 
+/**
+ * Icon Styled Component
+ * Styles the FontAwesome icon displayed in the menu item.
+ */
 const Icon = styled(FontAwesomeIcon)`
   width: 1rem;
   height: 1rem;
@@ -87,6 +107,10 @@ const Icon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `;
 
+/**
+ * RouteName Styled Component
+ * Styles the label for the menu item.
+ */
 const RouteName = styled.span`
   height: auto;
   font-size: 0.8rem;
@@ -94,7 +118,8 @@ const RouteName = styled.span`
   font-family: 'Work Sans';
   font-weight: 700;
   margin-left: 0.5rem;
-text-align: left;
+  text-align: left;
+
   @media (max-width: 768px) {
     font-size: 0.8rem;
   }

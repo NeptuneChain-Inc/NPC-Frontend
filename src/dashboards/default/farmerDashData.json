@@ -51,35 +51,6 @@
                         }
                     }
                 ]
-            },
-            {
-                "alignment": "flex-start",
-                "cards": [
-                    {
-                        "type": "data",
-                        "data": {
-                            "cardTitle": "Credit Activity",
-                            "icon": "chart-simple",
-                            "contents": []
-                        }
-                    },
-                    {
-                        "type": "data-table",
-                        "data": {
-                            "cardTitle": "Environmental Metrics",
-                            "icon": "chart-simple",
-                            "contents": []
-                        }
-                    },
-                    {
-                        "type": "data",
-                        "data": {
-                            "cardTitle": "Financial Metrics",
-                            "icon": "chart-simple",
-                            "contents": []
-                        }
-                    }
-                ]
             }
         ]
     },
@@ -125,11 +96,12 @@
                 "alignment": "flex-start",
                 "cards": [
                     {
-                        "type": "data-table",
+                        "type": "chart-card",
                         "data": {
                             "cardTitle": "MPC BUOY Data",
+                            "chartType": "line",
                             "icon": "chart-simple",
-                            "contents": [
+                            "data": [
                                 {
                                     "Timestamp": "2023-09-01 8:00",
                                     "Chlorophyll-a": 12.5,
@@ -143,11 +115,12 @@
                         }
                     },
                     {
-                        "type": "data-table",
+                        "type": "chart-card",
                         "data": {
                             "cardTitle": "In-Situ VuLink Telemetry Device Data",
+                            "chartType": "doughnut",
                             "icon": "chart-simple",
-                            "contents": [
+                            "data": [
                                 {
                                     "Timestamp": "2023-09-01 8:00",
                                     "Temperature": 20.1,
@@ -176,12 +149,12 @@
                         }
                     },
                     {
-                        "type": "data-table",
+                        "type": "chart-card",
                         "data": {
                             "cardTitle": "DraganFly Drone Data",
+                            "chartType": "bar",
                             "icon": "chart-simple",
-                            "contents": [
-                                {
+                            "data": [{
                                     "Timestamp": "2023-09-01 8:00",
                                     "Chlorophyll-a": 12.5,
                                     "Phycocyanin": 8.3,
@@ -189,8 +162,16 @@
                                     "Water Temperature": 20.5,
                                     "Turbidity": 12.8,
                                     "Dissolved Oxygen": 8.9
-                                }
-                            ]
+                                },
+                                {
+                                    "Timestamp": "2023-09-01 12:00",
+                                    "Chlorophyll-a": 17.5,
+                                    "Phycocyanin": 28.3,
+                                    "pH Level": 17.2,
+                                    "Water Temperature": 30.5,
+                                    "Turbidity": 32.8,
+                                    "Dissolved Oxygen": 18.9
+                                }]
                         }
                     }
                 ]

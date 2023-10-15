@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import StreamInformation from './StreamInformation';
 import { StreamBroadcast } from '../StreamBroadcast';
-import { getStream } from '../../../apis/database';
+import { getStream } from '../../../../apis/database';
 
 // Main container for the stream player
 const Container = styled(motion.div)`

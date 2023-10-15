@@ -2,8 +2,73 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { pushLocalNotification } from '../functions/notifications';
+
+/**
+ * NotificationBar Component to render application notifications from storage
+ * 
+ * @param {Object} APP - Contains STATES and ACTIONS for the application
+ */
+const NotificationBar = ({ APP }) => {
+  const [notifications, setNotifications] = useState([]);
+  const { notificationBarOpen } = APP ? APP.STATES : {};
+  const { handleNotificationsBar, logNotification } = APP ? APP.ACTIONS : {};
+
+
+
+  useEffect(() => {
+    // Fetch stored notifications
+    const _notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    if (_notifications) {
+      setNotifications(_notifications);
+    }
+  }, [APP])
+
+  const handleSmapleNotification = (type) => {
+    const _notification = pushLocalNotification(type, `This is a sample ${type} notification`);
+    logNotification(_notification.type, _notification.message);
+  }
+
+  // Framer Motion variants
+  const notificationVariants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: '100%' },
+  };
+
+  return (
+    <>
+      <AnimatePresence>
+        {notificationBarOpen && (
+          <NotificationContainer
+            as={motion.div}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={notificationVariants}
+          >
+            <NotificationIcon icon={faTimes} onClick={handleNotificationsBar} />
+
+            {/* Create Sample notifications */}
+            <h5>**For Testing Only**</h5>
+            <button onClick={() => handleSmapleNotification("")}>Send Sample Message Notification</button>
+            <button onClick={() => handleSmapleNotification("alert")}>Send Sample Alert Notification</button>
+            <button onClick={() => handleSmapleNotification("error")}>Send Sample Error Notification</button>
+            <h5>********************</h5>
+
+            {notifications?.map((notification, index) => (
+              <NotificationItem key={index} type={notification.type}>
+                <p>{notification.message}</p>
+                <small>{notification.time}</small>
+              </NotificationItem>
+            ))}
+
+          </NotificationContainer>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
 
 const NotificationContainer = styled.div`
   position: fixed;
@@ -48,70 +113,6 @@ const NotificationIcon = styled(FontAwesomeIcon)`
   font-size: 1.5rem;
   cursor: pointer;
 `;
-
-// Framer Motion variants
-const notificationVariants = {
-  open: { opacity: 1, x: 0 },
-  closed: { opacity: 0, x: '100%' },
-};
-
-const NotificationBar = ({ APP }) => {
-  const [notifications, setNotifications] = useState([]);
-  const { notificationBarOpen } = APP ? APP.STATES : {};
-
-  const {
-    handleNotificationsBar,
-    logNotification,
-  } = APP ? APP.ACTIONS : {};
-
-
-
-  useEffect(() => {
-    getNotifications();
-  }, [APP])
-
-
-  const getNotifications = () => {
-    const _notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-    setNotifications(_notifications);
-  }
-
-  const handleSmapleNotification = (type) => {
-    const _notification = pushLocalNotification(type, `This is a sample ${type} notification`);
-    logNotification(_notification.type, _notification.message);
-  }
-
-  return (
-    <>
-      <AnimatePresence>
-        {notificationBarOpen && (
-          <NotificationContainer
-            as={motion.div}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={notificationVariants}
-          >
-            <NotificationIcon icon={faTimes} onClick={handleNotificationsBar} />
-
-            {/* Create Sample notifications */}
-            <h5>**For Testing Only**</h5>
-            <button onClick={() => handleSmapleNotification("")}>Send Sample Message Notification</button>
-            <button onClick={() => handleSmapleNotification("alert")}>Send Sample Alert Notification</button>
-            <button onClick={() => handleSmapleNotification("error")}>Send Sample Error Notification</button>
-            <h5>********************</h5>
-            {notifications.map((notification, index) => (
-              <NotificationItem key={index} type={notification.type}>
-                <p>{notification.message}</p>
-                <small>{notification.time}</small>
-              </NotificationItem>
-            ))}
-          </NotificationContainer>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
 
 export default NotificationBar;
 

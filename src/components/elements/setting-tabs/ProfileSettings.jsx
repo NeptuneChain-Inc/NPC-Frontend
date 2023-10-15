@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import NeptuneIcon from '../../assets/icon.png';
+import NeptuneIcon from '../../../assets/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,6 +18,8 @@ const ProfileContainer = styled.div`
 
 const Section = styled.div`
 width: 50%;
+height: 60vh;
+//overflow: auto;
 display: flex;
 flex-direction: column;
 align-items: center;

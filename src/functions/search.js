@@ -30,7 +30,7 @@ const containsQuery = (obj, query) => {
  */
 export const filterObjectByQuery = (obj, query) => {
     if (typeof obj !== 'object' || obj === null) {
-        return obj; // Return the value as is
+        return obj; 
     }
 
     if (Array.isArray(obj)) {

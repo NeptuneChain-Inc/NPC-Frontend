@@ -1,46 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import appIcon from '../assets/icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faXmark, faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faEraser } from '@fortawesome/free-solid-svg-icons';
 import { DesktopMenu, MobileMenu } from './elements/navbar';
-import { filterObjectByQuery } from '../functions/search';
-import { findValueByKey } from '../functions/helpers';
+import { OBJECTS } from '../functions/helpers';
 
+/**
+ * Navbar Component
+ * 
+ * @param {Object} APP - Contains STATES and ACTIONS for the application
+ */
 const Navbar = ({ APP }) => {
   const [search, setSearch] = useState('');
   const path = window.location.pathname.replace(/^\//, '');
-
-
   const { user, searchResults, sidebarOpen } = APP ? APP.STATES : {};
+  const { handleSidebar, setSearchResults } = APP ? APP.ACTIONS : {};
 
-  const {
-    handleSidebar,
-    setSearchResults,
-  } = APP ? APP.ACTIONS : {};
-
+  // Handle search whenever path changes
   useEffect(() => {
     if (searchResults) {
       handleSearch();
     }
-  }, [path])
+  }, [path]);
 
-
+  // Filter search results based on query
   const handleSearch = () => {
-    const currentDash = findValueByKey(user?.dashData, path);
-    setSearchResults(filterObjectByQuery(currentDash, search))
-  }
+    const currentDash = OBJECTS.findValueByKey(user?.dashData, path);
+    setSearchResults(OBJECTS.SEARCH.filterObjectByQuery(currentDash, search));
+  };
+
+  // Clear the search query and results
   const clearSearch = () => {
     setSearch('');
     setSearchResults(null);
-  }
+  };
 
   return (
     <NavbarContainer sidebarOpen={sidebarOpen}>
-
-      {/* Sidebar Components */}
+      {/* Sidebar Toggle */}
       {sidebarOpen ? (
-        <Icon icon={faXmark} onClick={handleSidebar} />
+        <Icon icon={faTimes} onClick={handleSidebar} />
       ) : (
         <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
       )}
@@ -50,7 +50,7 @@ const Navbar = ({ APP }) => {
         <SearchIcon icon={faSearch} onClick={handleSearch} />
         <Searchbar
           type="text"
-          name="searcg"
+          name="search"
           placeholder="Search..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -58,15 +58,15 @@ const Navbar = ({ APP }) => {
         {(search || searchResults) && <SearchIcon icon={faEraser} onClick={clearSearch} />}
       </HeaderSearchContainer>
 
-      {/* Desktop Components */}
+      {/* Desktop Menu */}
       <DesktopMenu APP={APP} />
 
-      {/* Mobile Components */}
+      {/* Mobile Menu */}
       <MobileMenu APP={APP} />
-
     </NavbarContainer>
-  )
-}
+  );
+};
+
 
 const NavbarContainer = styled.header`
   position: fixed;
@@ -82,11 +82,6 @@ width: ${({ sidebarOpen }) => sidebarOpen ? '80' : '100'}%;
 
   box-sizing: border-box;
   z-index: 999;
-
-
-  @media (max-width: 767px) {
-    //padding: 2rem;
-  }
 
   @media (max-width: 479px) {
     padding: 1rem;

@@ -3,8 +3,8 @@ import { Player, useAssetMetrics, useCreateAsset } from '@livepeer/react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectViewer from '../elements/display/DisplayObject';
-import { saveVideo } from '../../apis/database';
+import ObjectViewer from '../display/DisplayObject';
+import { saveVideo } from '../../../apis/database';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 const DropZoneContainer = styled(motion.div)`

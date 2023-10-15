@@ -4,17 +4,13 @@ import {
   studioProvider,
 } from '@livepeer/react';
 import * as React from 'react';
-import { LIVEPEER_API_KEY } from '../../apis/livepeer';
+import { useParams } from 'react-router-dom'
+import styled from 'styled-components';
+import { Navbar, NotificationBar, Sidebar } from '../../';
+import { LIVEPEER_API_KEY } from '../../../apis/livepeer';
 import { Stream } from './Stream';
 import { VideoUpload } from './VideoUpload';
-import { useParams, useNavigate } from 'react-router-dom'
-import { MediaPlayer } from './elements/MediaPlayer';
-import styled from 'styled-components';
-import Sidebar from '../Sidebar';
-import NotificationBar from '../NotificationBar';
-import Navbar from '../Navbar';
-import { BasicStreamPlayer } from './elements';
-//import { MediaPlayer } from './elements/MediaPLayer';
+import { MediaPlayer,BasicStreamPlayer } from './elements';
 
 const livepeerClient = createReactClient({
   provider: studioProvider({

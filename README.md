@@ -1,4 +1,11 @@
 # NeptuneChain Dashboard
+( * ) => Ongoing Implementation
+
+Changelog (October 15) - Minor Changes:
+- Adding Code Documentation (Comments)
+- (Farmer Dashboard) Enhance Metric Components *
+- (Farmer Dashboard) Setup Data generation testing algorithm *
+- (Farmer Dashboard) Database integration for data retrieval/updates *
 
 Changelog (October 8) - Major Changes:
 - Reworked account system to handle account types

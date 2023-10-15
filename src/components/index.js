@@ -1,15 +1,13 @@
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Dash from "./Dash";
-import Notification from "./NotificationPopup";
-import Confirmation from "./ConfirmationPopup";
 import NotificationBar from "./NotificationBar";
+import SettingsMenu from "./SettingsMenu";
 
 export {
     Navbar,
     Sidebar,
     Dash,
-    Notification,
-    Confirmation,
-    NotificationBar
+    NotificationBar,
+    SettingsMenu
 }

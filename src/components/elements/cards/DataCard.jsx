@@ -2,10 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getIcon } from '../../lib'
+import { getIcon } from '../../lib/icons'
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectViewer from '../display/DisplayObject'
-import { timestampToLocalString } from '../../../functions/helpers'
 import { StreamItem, VideoItem } from './data-card'
 import { CardContainer } from '../../lib/global-styled-components'
 

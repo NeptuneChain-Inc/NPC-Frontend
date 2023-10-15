@@ -1,10 +1,8 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Player, useCreateStream } from '@livepeer/react';
+import { useCreateStream } from '@livepeer/react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import ObjectDisplay from '../elements/display/DisplayObject';
-import { StreamBroadcast } from './StreamBroadcast';
-import { saveStream } from '../../apis/database';
+import { saveStream } from '../../../apis/database';
 import { StreamPlayer } from './elements';
 
 
