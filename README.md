@@ -4,6 +4,7 @@
 Changelog (October 15) - Minor Changes:
 - Adding Code Documentation (Comments)
 - (Farmer Dashboard) Enhance Metric Components *
+- Integrated/Optimized Chart Componets
 - (Farmer Dashboard) Setup Data generation testing algorithm *
 - (Farmer Dashboard) Database integration for data retrieval/updates *
 
