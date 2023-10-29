@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Dash } from '../components';
-import farmerDashData from './default/farmerDashData.json';
+//import farmerDashData from './default/farmerDashData.json';
 // import { mediaDash } from './dashData';
 
 /**
@@ -18,7 +18,7 @@ const RenderDash = ({ route, uid, userDashes, searchResults }) => {
   // State to hold the data to be displayed on the dashboard
   const [dashData, setDashData] = useState({});
 
-  userDashes = farmerDashData;
+  //userDashes = farmerDashData;
 
   // || FOR DEBUGGING ||
   // console.log({ route, uid, userDashes, dashData, searchResults });
@@ -39,22 +39,11 @@ const RenderDash = ({ route, uid, userDashes, searchResults }) => {
   // Effect to handle dashboard data loading
   useEffect(() => {
     if (route && !searchResults) {
-      switch (route) {
-        case 'financial':
-          setDashData(userDashes?.financial);
-          break;
-        case 'environmental':
-          setDashData(userDashes?.environmental);
-          break;
-        case 'verification':
-          setDashData(userDashes?.verification);
-          break;
-        // case 'my-media':
-        //   getMediaData();
-        //   break;
-        default:
-          loadDefaultData();
-          break;
+      const userDash = userDashes?.[route];
+      if(userDash){
+        setDashData(userDash);
+      } else {
+        loadDefaultData();
       }
     } else if (searchResults) {
       setDashData(searchResults);

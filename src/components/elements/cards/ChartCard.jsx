@@ -1,27 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Chart, BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, LineController, LineElement, PointElement, DoughnutController, ArcElement } from 'chart.js';
-import { TIME } from '../../../functions/helpers';
-import { CardContainer } from '../../lib/global-styled-components'
+import {
+  Chart,
+  BarController,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  LineController,
+  LineElement,
+  PointElement,
+  DoughnutController,
+  ArcElement,
+  Filler
+} from 'chart.js';
+import { CardContainer } from '../../lib/global-styled-components';
+import 'font-awesome/css/font-awesome.min.css';
 
-// Define the default modules as objects
 const defaultModules = { BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }; //Bar
 const lineModules = { LineController, LineElement, PointElement };
 const doughnutModules = { DoughnutController, ArcElement };
-// Utility function to register modules
-const registerChartModules = (...moduleSets) => {
-  const allModules = Object.values(moduleSets).flat().reduce((acc, moduleSet) => {
-    return [...acc, ...Object.values(moduleSet)];
-  }, []);
+const interactionModules = { Filler };
 
+const registerChartModules = (...moduleSets) => {
+  const allModules = Object.values(moduleSets).flat().reduce((acc, moduleSet) => [...acc, ...Object.values(moduleSet)], []);
   Chart.register(...allModules);
 };
 
-// Register modules
-registerChartModules(defaultModules, lineModules, doughnutModules);
+registerChartModules(defaultModules, lineModules, doughnutModules, interactionModules);
 
-// Function to transform data array into Chart.js datasets
 const transformDataToDatasets = (dataArray, backgroundColor) => {
   return dataArray.map(dataset => {
     const label = dataset?.Timestamp || ''
@@ -35,9 +45,10 @@ const transformDataToDatasets = (dataArray, backgroundColor) => {
     };
   });
 };
+
 const transformDataToLabels = (dataArray) => {
   const labels = [];
-  Object.keys(dataArray).forEach(label => {
+  Object.keys(dataArray || [])?.forEach(label => {
     if (label !== 'Timestamp') {
       labels.push(label);
     }
@@ -45,12 +56,71 @@ const transformDataToLabels = (dataArray) => {
   return labels;
 };
 
+const renderTooltip = (tooltipModel) => {
+  let tooltipEl = document.getElementById('chartjs-tooltip');
+
+  if (!tooltipEl) {
+    tooltipEl = document.createElement('div');
+    tooltipEl.id = 'chartjs-tooltip';
+    tooltipEl.innerHTML = '<table></table>';
+    document.body.appendChild(tooltipEl);
+  }
+
+  if (tooltipModel.opacity === 0) {
+    tooltipEl.style.opacity = 0;
+    return;
+  }
+
+  tooltipEl.classList.remove('above', 'below', 'no-transform');
+  if (tooltipModel.yAlign) {
+    tooltipEl.classList.add(tooltipModel.yAlign);
+  } else {
+    tooltipEl.classList.add('no-transform');
+  }
+
+  if (tooltipModel.body) {
+    const titleLines = tooltipModel.title || [];
+    const bodyLines = tooltipModel.body.map(item => item.lines);
+
+    let innerHtml = '<thead>';
+
+    titleLines.forEach((title) => {
+      innerHtml += '<tr><th>' + title + '</th></tr>';
+    });
+    innerHtml += '</thead><tbody>';
+
+    bodyLines.forEach((body, i) => {
+      const colors = tooltipModel.labelColors[i];
+      let style = 'background:' + colors.backgroundColor;
+      style += '; border-color:' + colors.borderColor;
+      style += '; border-width: 2px';
+      const span = '<span style="' + style + '"></span>';
+      innerHtml += '<tr><td>' + span + body + '</td></tr>';
+    });
+    innerHtml += '</tbody>';
+
+    const tableRoot = tooltipEl.querySelector('table');
+    tableRoot.innerHTML = innerHtml;
+  }
+
+  const position = this._chart.canvas.getBoundingClientRect();
+
+  tooltipEl.style.opacity = 1;
+  tooltipEl.style.position = 'absolute';
+  tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+  tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+  tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+  tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+  tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+  tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+};
+
 const ChartCardComponent = ({
   label = 'Chart Card',
   type = 'doughnut',
   data,
   options = {},
-  backgroundColor = ['red', 'green', 'blue', 'yellow', 'purple']
+  backgroundColor = ['#2E8BC0', '#B1D4E0', '#496F5E', '#1F2E2E', '#16262E']
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -77,10 +147,7 @@ const ChartCardComponent = ({
       const labels = transformDataToLabels(data[0]);
       console.log(labels);
       setLabels(labels);
-      
 
-      // setLabels((data.map(object => Object.keys(object)))[0]);
-      // console.log((data.map(object => Object.keys(object)))[0]);
 
     } else if (typeof data === 'object' && !Array.isArray(data)) {
       setDatasets([
@@ -124,6 +191,16 @@ const ChartCardComponent = ({
           },
           ...options.scales,
         },
+        plugins: {
+          tooltip: {
+            enabled: true,
+            custom: renderTooltip
+          },
+          legend: {
+            display: true,
+            position: 'top',
+          },
+        },
         ...options,
       }
     });
@@ -134,12 +211,6 @@ const ChartCardComponent = ({
   }, [data, label, type, options, backgroundColor, dimensions]);
 
   return (
-    // <motion.div ref={containerRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-    //   <SCardContainer>
-    //     <Canvas ref={canvasRef} role="img" aria-label="Chart Information" />
-    //   </SCardContainer>
-    // </motion.div>
-
     <SCardContainer
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -147,7 +218,10 @@ const ChartCardComponent = ({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
-      <Header>{label}</Header>
+      <Header>
+        <i className="fa fa-bar-chart" aria-hidden="true"></i>
+        {label}
+      </Header>
       <CanvasWrapper>
         <Canvas ref={canvasRef}></Canvas>
       </CanvasWrapper>
@@ -158,14 +232,14 @@ const ChartCardComponent = ({
 const SCardContainer = styled(CardContainer)`
 justify-content: flex-start;
 align-items: center;
-padding: 0;
 min-height: 400px;
 height: auto;
 padding: 5px;
+width: 60vw;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const Header = styled.div`
-  font-size: 1rem;
   font-weight: 600;
   padding: 12px;
   box-sizing: border-box;
@@ -173,19 +247,32 @@ const Header = styled.div`
   width: 100%;
   background-color: #f1f1f1;
   border-bottom: 1px solid #ddd;
+
+  color: #333;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  i {
+    margin-right: 10px;
+    color: #007bff;
+  }
 `;
 
-const CanvasWrapper = styled.div`
+const CanvasWrapper = styled(motion.div)`
   flex-grow: 1;
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
+  padding: 10px;
 `;
 
 const Canvas = styled.canvas`
   width: 90%;
   height: 90%;
+  max-width: 100%;
 `;
 
 export default React.memo(ChartCardComponent);

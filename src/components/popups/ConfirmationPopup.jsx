@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,18 +21,16 @@ const Confirmation = ({ message, onConfirm, onCancel }) => {
     onCancel(true);
   }
 
+
   return (
     <AnimatePresence>
       {message && (
-        <>
-          {/* Overlay for the background dim */}
-          <Overlay
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onCancel}
-          />
-
+        <Overlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onCancel}
+        >
           {/* Main Dialog */}
           <Dialog
             initial={{ opacity: 0, scale: 0.7 }}
@@ -50,7 +48,7 @@ const Confirmation = ({ message, onConfirm, onCancel }) => {
               Cancel
             </Button>
           </Dialog>
-        </>
+        </Overlay>
       )}
     </AnimatePresence>
   );
@@ -72,17 +70,16 @@ const Overlay = styled(motion.div)`
   bottom: 0;
   width: 100vw;
   height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
-  z-index: 999;
+  z-index: 9999;
 `;
 
 // Dialog Styles
 const Dialog = styled(motion.div)`
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;

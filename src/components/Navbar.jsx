@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faEraser } from '@fortawesome/free-solid-svg-icons';
 import { DesktopMenu, MobileMenu } from './elements/navbar';
 import { OBJECTS } from '../functions/helpers';
+import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * Navbar Component
@@ -13,21 +14,42 @@ import { OBJECTS } from '../functions/helpers';
  */
 const Navbar = ({ APP }) => {
   const [search, setSearch] = useState('');
+  const [hideSearch, setHideSearch] = useState(false);
   const path = window.location.pathname.replace(/^\//, '');
-  const { user, searchResults, sidebarOpen } = APP ? APP.STATES : {};
-  const { handleSidebar, setSearchResults } = APP ? APP.ACTIONS : {};
+  const { user, searchResults, sidebarOpen } = APP?.STATES || {};
+  const { handleSidebar, setSearchResults } = APP?.ACTIONS || {};
+
+  const noSearchBarRoutes = [
+    'features/upload-video',
+    'features/stream'
+  ];
 
   // Handle search whenever path changes
   useEffect(() => {
     if (searchResults) {
       handleSearch();
     }
+    console.log({ path });
+    if (noSearchBarRoutes.includes(path)) {
+      setHideSearch(true);
+    } else if (hideSearch) {
+      setHideSearch(false);
+    }
   }, [path]);
+
+  useEffect(() => {
+    if(search){
+      handleSearch()
+    }
+  }, [search])
+  
 
   // Filter search results based on query
   const handleSearch = () => {
     const currentDash = OBJECTS.findValueByKey(user?.dashData, path);
-    setSearchResults(OBJECTS.SEARCH.filterObjectByQuery(currentDash, search));
+    const results = OBJECTS.SEARCH.filterObjectByQuery(currentDash, search);
+    setSearchResults(results);
+    console.log('Search Results', {results})
   };
 
   // Clear the search query and results
@@ -46,17 +68,17 @@ const Navbar = ({ APP }) => {
       )}
 
       {/* Search Components */}
-      <HeaderSearchContainer>
-        <SearchIcon icon={faSearch} onClick={handleSearch} />
-        <Searchbar
-          type="text"
-          name="search"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {(search || searchResults) && <SearchIcon icon={faEraser} onClick={clearSearch} />}
-      </HeaderSearchContainer>
+          <HeaderSearchContainer initial={{ opacity: 0 }} animate={{ opacity: hideSearch ? 0 : 1, display: hideSearch ? 'none' : 'flex' }} exit={{ opacity: 0 }}>
+            <SearchIcon icon={faSearch} onClick={handleSearch} />
+            <Searchbar
+              type="text"
+              name="search"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {(search || searchResults) && <SearchIcon icon={faEraser} onClick={clearSearch} />}
+          </HeaderSearchContainer>
 
       {/* Desktop Menu */}
       <DesktopMenu APP={APP} />
@@ -102,7 +124,7 @@ const Logo = styled.img`
   height: auto;
 `;
 
-const HeaderSearchContainer = styled.div`
+const HeaderSearchContainer = styled(motion.div)`
   flex: 0 0 auto;
   width: 60%;
   height: 30px;

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// Common Card Styles
 const CardContainer = styled.div`
 flex: 0 0 auto;
 width: ${({ width }) => width ? width : '300px'};
@@ -45,7 +44,6 @@ const ActionButton = styled.button`
   }
 `;
 
-// Simple Bar Graph Component
 const BarGraph = styled.div`
   display: flex;
   justify-content: space-between;
@@ -60,7 +58,7 @@ const Bar = styled.div`
   height: 30px;
 `;
 
-// Simple Pie Chart Component (For example)
+
 const PieChart = styled.div`
   width: 50px;
   height: 50px;
@@ -71,7 +69,6 @@ const PieChart = styled.div`
   );
 `;
 
-// Individual Dashboard Cards with more metrics and visualization
 const FinancialMetricsCard = () => (
   <CardContainer>
     <CardTitle>Financial Metrics</CardTitle>
@@ -116,5 +113,4 @@ const OperationalMetricsCard = () => (
   </CardContainer>
 );
 
-// Export all cards
 export { EnvironmentalMetricsCard, OperationalMetricsCard };

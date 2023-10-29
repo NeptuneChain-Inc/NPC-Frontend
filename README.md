@@ -1,6 +1,14 @@
 # NeptuneChain Dashboard
 ( * ) => Ongoing Implementation
 
+Changelog (October 29) - Polishing:
+- Enhanced UX (Login, Registration. Dashboard)
+- Settings Menu Enhancements 
+- Media Upload enhance
+- Rendering & Performance Enhancements
+- Added Reset Password feature
+- Dash UI Responsiveness Enhancements
+
 Changelog (October 15) - Minor Changes:
 - Adding Code Documentation (Comments)
 - (Farmer Dashboard) Enhance Metric Components *

@@ -61,39 +61,33 @@
                 "alignment": "flex-start",
                 "cards": [
                     {
-                        "type": "overview",
-                        "width": "30%",
+                        "type": "status",
                         "data": {
                             "cardTitle": "MPC Buoy",
-                            "metricValue": "Online",
-                            "metricUnit": "Status",
+                            "status": "Online",
                             "icon": "leaf"
                         }
                     },
                     {
-                        "type": "overview",
-                        "width": "30%",
+                        "type": "status",
                         "data": {
                             "cardTitle": "In-Situ VuLink Telemetry Device",
-                            "metricValue": "Online",
-                            "metricUnit": "Status",
+                            "status": "Online",
                             "icon": "leaf"
                         }
                     },
                     {
-                        "type": "overview",
-                        "width": "30%",
+                        "type": "status",
                         "data": {
                             "cardTitle": "DragonFly Drone",
-                            "metricValue": "Online",
-                            "metricUnit": "Status",
+                            "status": "Online",
                             "icon": "leaf"
                         }
                     }
                 ]
             },
             {
-                "alignment": "flex-start",
+                "alignment": "center",
                 "cards": [
                     {
                         "type": "chart-card",
@@ -154,7 +148,8 @@
                             "cardTitle": "DraganFly Drone Data",
                             "chartType": "bar",
                             "icon": "chart-simple",
-                            "data": [{
+                            "data": [
+                                {
                                     "Timestamp": "2023-09-01 8:00",
                                     "Chlorophyll-a": 12.5,
                                     "Phycocyanin": 8.3,
@@ -171,7 +166,8 @@
                                     "Water Temperature": 30.5,
                                     "Turbidity": 32.8,
                                     "Dissolved Oxygen": 18.9
-                                }]
+                                }
+                            ]
                         }
                     }
                 ]
@@ -302,5 +298,8 @@
                 ]
             }
         ]
+    },
+    "uploads": {
+        "name": "Your Uploads"
     }
 }

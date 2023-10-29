@@ -234,7 +234,7 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<RegisterPage APP={APP}/>} />
         <Route path="/login" element={<LogInPage APP={APP} />} />
         {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}

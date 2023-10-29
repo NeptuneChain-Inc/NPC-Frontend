@@ -98,7 +98,7 @@ const ProfileDropMenuItems = styled(motion.div)`
   width: 250px;
   top: 75px;
   right: 0;
-  z-index: 1;
+  z-index: 9999;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;

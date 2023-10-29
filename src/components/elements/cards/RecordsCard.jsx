@@ -2,6 +2,20 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
+import 'font-awesome/css/font-awesome.min.css';
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'completed':
+      return 'green';
+    case 'pending':
+      return 'orange';
+    case 'failed':
+      return 'red';
+    default:
+      return 'gray';
+  }
+}
 
 const RecordsCard = ({ title, records, width }) => {
   return (
@@ -16,7 +30,10 @@ const RecordsCard = ({ title, records, width }) => {
               <Content key={index}>
                 <span>{record.date}</span>
                 <span>{record.amount}</span>
-                <span>{record.status}</span>
+                <Status>
+                  <i className={`fa ${record.status === 'completed' ? 'fa-check-circle' : record.status === 'pending' ? 'fa-clock-o' : 'fa-times-circle'}`} style={{ color: getStatusColor(record.status) }} />
+                  <Tooltip>{record.status}</Tooltip>
+                </Status>
               </Content>
             ))}
           </ContentList>
@@ -28,7 +45,7 @@ const RecordsCard = ({ title, records, width }) => {
 
 const CardContainer = styled(motion.div)`
     flex: 0 0 auto;
-    width: ${({width}) => width ? width : '90%'};
+    width: ${({ width }) => width ? width : '90%'};
     height: 400px;
     margin: auto;
     display: flex;
@@ -47,7 +64,7 @@ const CardContainer = styled(motion.div)`
     }
   `;
 
-  const CardHeader = styled.div`
+const CardHeader = styled.div`
     flex: 0 0 auto;
     width: 100%;
     height: 15%;
@@ -84,9 +101,35 @@ const ContentList = styled.ul`
   `;
 
 const Content = styled.li`
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  `;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const Status = styled.span`
+  position: relative;
+  cursor: pointer;
+
+  &:hover > div {
+    display: block;
+  }
+`;
+
+const Tooltip = styled.div`
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+`;
 
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },

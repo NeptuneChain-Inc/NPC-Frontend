@@ -6,6 +6,7 @@ import { Sidebar_MenuItem } from './elements';
 import AppLogo from '../assets/logo.png';
 import { OBJECTS } from '../functions/helpers';
 import { renderDashIcon } from './lib/icons';
+import farmerDashData from '../dashboards/default/farmerDashData.json';
 
 /**
  * Sidebar component to render the sidebar contents.
@@ -18,11 +19,24 @@ import { renderDashIcon } from './lib/icons';
 const Sidebar = ({isOpen, user}) => {
   const navigate = useNavigate();
 
+  console.log(user?.dashData)
+
   // Handler to reset a cookie and navigate to the home page
   const handleToWelcome = () => {
     Cookies.remove('skipWelcome');
     navigate('/');
   };
+
+  const appRoutes = {
+    upload: {
+      route: '/features/upload-video',
+      cta: 'Upload Media'
+    },
+    stream: {
+      route: '/features/stream',
+      cta: 'Broadcast Live'
+    }
+  }
 
   return (
     <StyledSidebar isOpen={isOpen}>
@@ -31,12 +45,21 @@ const Sidebar = ({isOpen, user}) => {
       </SidebarHeader>
       <SidebarHeading>{user?.type.toUpperCase()}</SidebarHeading>
       <Menu>
-        {Object.entries(OBJECTS.ensureKeyFirst(user?.dashData, 'main'))?.map(([dash, data], index) => {
+        {Object.entries(OBJECTS.ensureKeyFirst({...user?.dashData, ...appRoutes}, 'main') || {})?.map(([dash, data], index) => {
+          console.log({dash, data})
+          const icon = renderDashIcon(dash);
+          return (
+            <Sidebar_MenuItem key={index} icon={icon} itemName={data?.name || data?.cta} route={data?.route || dash} />
+          );
+        })}
+
+        {/* {appRoutes?.map((route, index) => {
           const icon = renderDashIcon(dash);
           return (
             <Sidebar_MenuItem key={index} icon={icon} itemName={data?.name} route={dash} />
-          );
-        })}
+          )
+        })} */}
+
       </Menu>
     </StyledSidebar>
   );

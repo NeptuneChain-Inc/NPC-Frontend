@@ -2,11 +2,11 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { OverviewCard, DataCard, RecordsCard } from './elements';
 import { getIcon } from './lib/icons';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStream, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { EnvironmentalMetricsCard, OperationalMetricsCard } from './elements/cards/cards';
-import { ChartCard, TransactionHistoryCard } from './elements/cards';
+import { ChartCard, StatusCard, TransactionHistoryCard } from './elements/cards';
 
 /**
  * Dash Component
@@ -26,9 +26,9 @@ const Dash = ({ dashData }) => {
   return (
     <DashContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <SectionHeading>{dashData?.name}</SectionHeading>
-      <AnimatePresence>
-        {renderedSections}
-      </AnimatePresence>
+
+      {/* Render Dynamic Sections */}
+      {renderedSections}
 
       {/**Media Creation Floating Buttons */}
       {dashData?.name === 'Your Media' && (
@@ -62,6 +62,12 @@ const renderCard = (card, index) => {
           const iconObj = getIcon(icon);
           return <OverviewCard key={index} {...{ cardTitle, metricValue, metricUnit, icon: iconObj }} width={card?.width} />;
         }
+      case 'status':
+        {
+          const { cardTitle, status, icon } = card.data || {};
+          const iconObj = getIcon(icon);
+          return <StatusCard key={index} {...{ title: cardTitle, status, icon: iconObj }} width={card?.width} />;
+        }
       case 'data':
         {
           const { cardTitle, icon, contents } = card.data ? card.data : {};
@@ -80,10 +86,10 @@ const renderCard = (card, index) => {
         {
           const { cardTitle, icon, chartType, data } = card.data ? card.data : {};
           const iconObj = getIcon(icon);
-            return (
-              <ChartCard key={index} {...{ label: cardTitle, type: chartType, data, icon: iconObj }} />
-            )
-          
+          return (
+            <ChartCard key={index} {...{ label: cardTitle, type: chartType, data, icon: iconObj }} />
+          )
+
         }
       case 'environmental-metrics':
         {

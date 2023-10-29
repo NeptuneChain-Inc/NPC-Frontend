@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Player, useAssetMetrics, useCreateAsset } from '@livepeer/react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ObjectViewer from '../display/DisplayObject';
 import { saveVideo } from '../../../apis/database';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx/xlsx.mjs';
 
 const DropZoneContainer = styled(motion.div)`
   width: 80%;
@@ -172,21 +174,128 @@ width: 50%;
 transition: all 0.5s ease-in-out;
 `;
 
-// Your main component
+const TabContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  // border: 1px solid black;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  overflow-x: auto;
+
+  @media (max-width: 767px) {
+    justify-content: flex-start;
+  }
+`;
+
+const TabButton = styled.button`
+  margin-right: 10px;
+  background-color: ${props => props.active ? '#2A93D5' : '#e1e1e1'};
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    background-color: #007bff;
+  }
+`;
+
+const ImagePreview = styled.div`
+  width: 100px;
+  height: 100px;
+  background-image: url(${props => props.src});
+  background-size: cover;
+  background-position: center;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const TextInput = styled(VideoInputField)`
+max-width: 500px;
+  margin-top: 20px;
+`;
+
+const DataFileUpload = () => {
+
+  const onProcessDataDrop = (files) => {
+    const file = files[0];
+
+    if (file) {
+      const fileType = file.name.split('.').pop();
+
+      switch (fileType) {
+        case 'csv':
+          Papa.parse(file, {
+            complete: result => {
+              console.log('Parsed CSV Result:', result.data);
+
+            },
+            header: true
+          });
+          break;
+        case 'xlsx':
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const data = event.target.result;
+            const workbook = XLSX.read(data, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0];
+            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            console.log('Parsed Excel Data:', jsonData);
+          };
+          reader.readAsBinaryString(file);
+          break;
+        default:
+          console.log('Unsupported file type:', fileType);
+          break;
+      }
+    }
+  }
+
+  const processDataDropzone = useDropzone({
+    accept: '.csv, .xlsx',
+    onDrop: onProcessDataDrop
+  });
+
+  return (
+    <DropZoneContainer
+      {...processDataDropzone.getRootProps()}
+      data-tooltip-id="tooltip"
+      data-tooltip-content="Drag and drop a csv or excel data file here or click to browse"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <input {...processDataDropzone.getInputProps()} />
+      <p>Drag & drop a CSV or Excel file here, or click to select one</p>
+    </DropZoneContainer>
+  );
+}
+
+
 export const VideoUpload = ({ APP }) => {
-  const [video, setVideo] = useState();
-  const [videoName, setVideoName] = useState('untitled');
-  const [videoDescription, setVideoDescription] = useState('');
+  const [activeTab, setActiveTab] = useState('video');
+  const [videos, setVideos] = useState(null);
+  const [landImages, setLandImages] = useState([]);
+  const [waterImages, setWaterImages] = useState([]);
+  const [activeFile, setActiveFile] = useState(null);
+  const [pointSourceData, setPointSourceData] = useState('');
+  const [sensorData, setSensorData] = useState('');
+  const [uploadName, setUploadName] = useState('untitled');
+  const [uploadDescription, setUploadDescription] = useState('');
   const [previewURL, setPreviewURL] = useState(null);
   const [isAppLoading, setIsAppLoading] = useState(false);
   const [viewAssetData, setViewAssetData] = useState(false);
 
-  const { user } = APP ? APP.STATES : {};
+  // Using refs to keep track of the previous state values
+  const prevVideos = useRef(videos);
+  const prevLandImages = useRef(landImages);
+  const prevWaterImages = useRef(waterImages);
+  const prevPointSourceData = useRef(pointSourceData);
 
-  const metadata = {
-    videoName,
-    videoDescription
-  }
+  const tabs = ['video', 'land', 'water', 'source', 'sensor'];
+
+  const { user } = APP ? APP.STATES : {};
 
   useEffect(() => {
     return () => {
@@ -196,6 +305,25 @@ export const VideoUpload = ({ APP }) => {
     };
   }, [previewURL]);
 
+  useEffect(() => {
+    let _activeFile;
+
+    // Compare the previous and current values to determine the most recently changed state
+    if (prevVideos.current !== videos) _activeFile = videos?.[0];
+    else if (prevLandImages.current !== landImages) _activeFile = landImages?.[0];
+    else if (prevWaterImages.current !== waterImages) _activeFile = waterImages?.[0];
+    else if (prevPointSourceData.current !== pointSourceData) _activeFile = pointSourceData;
+
+    console.log({ activeFile });
+    setActiveFile(_activeFile)
+
+    // Update the refs with the current state values for the next render cycle
+    prevVideos.current = videos;
+    prevLandImages.current = landImages;
+    prevWaterImages.current = waterImages;
+    prevPointSourceData.current = pointSourceData;
+  }, [videos, landImages, waterImages, pointSourceData]);
+
 
   const {
     mutate: createAsset,
@@ -204,17 +332,17 @@ export const VideoUpload = ({ APP }) => {
     progress,
     error,
   } = useCreateAsset(
-    video
+    activeFile
       ? {
         sources: [
           {
-            name: video.name,
-            file: video,
+            name: activeFile.name,
+            file: activeFile,
             storage: {
               ipfs: true,
               metadata: {
-                name: metadata.videoName,
-                description: metadata.videoDescription,
+                name: uploadName,
+                description: uploadDescription,
               }
             }
           }
@@ -226,17 +354,17 @@ export const VideoUpload = ({ APP }) => {
   useEffect(() => {
     if (asset?.[0]?.playbackId) {
       // Save/Handle Video Asset 
-      console.log(asset, metadata);
+      console.log(asset, uploadName);
       _saveVideo();
     }
   }, [asset])
 
 
   useEffect(() => {
-    if (video?.name) {
-      setVideoName(video.name);
+    if (activeFile?.name) {
+      setUploadName(activeFile.name);
     }
-  }, [video])
+  }, [activeFile])
 
   const _saveVideo = async () => {
     if (!user?.uid) {
@@ -258,8 +386,8 @@ export const VideoUpload = ({ APP }) => {
   });
 
   const onDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles && acceptedFiles.length > 0 && acceptedFiles?.[0]) {
-      setVideo(acceptedFiles[0]);
+    if (acceptedFiles?.[0]) {
+      setVideos(acceptedFiles);
       const objectURL = URL.createObjectURL(acceptedFiles[0]);
       setPreviewURL(objectURL);
     }
@@ -302,6 +430,29 @@ export const VideoUpload = ({ APP }) => {
     }
   }, [progress])
 
+  const onImageDrop = useCallback((acceptedFiles, type) => {
+    if (acceptedFiles?.[0]) {
+      if (type === 'land') setLandImages([...landImages, ...acceptedFiles]);
+      else if (type === 'water') setWaterImages([...waterImages, ...acceptedFiles]);
+      const objectURL = URL.createObjectURL(acceptedFiles[0]);
+      setPreviewURL(objectURL);
+    }
+  }, [landImages, waterImages]);
+
+  const landDropzone = useDropzone({
+    accept: 'image/*',
+    onDrop: files => onImageDrop(files, 'land')
+  });
+
+  const waterDropzone = useDropzone({
+    accept: 'image/*',
+    onDrop: files => onImageDrop(files, 'water')
+  });
+
+  const Dropzone = useDropzone({
+    accept: 'image/*',
+    onDrop: files => onImageDrop(files, 'water')
+  });
 
   const handleUpload = () => {
     setIsAppLoading(true);
@@ -312,6 +463,18 @@ export const VideoUpload = ({ APP }) => {
   return (
     <AssetContainer>
       <Tooltip id='tooltip' place='bottom' />
+      {/* Tab Navigation */}
+      <TabContainer>
+        {tabs?.map(tab => (
+          <TabButton
+            key={tab}
+            active={tab === activeTab}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </TabButton>
+        ))}
+      </TabContainer>
 
       {/* Loading Spinner */}
       <AnimatePresence>
@@ -322,19 +485,93 @@ export const VideoUpload = ({ APP }) => {
         )}
       </AnimatePresence>
 
-      {/* Dropzone */}
-      {!asset && (
-        <DropZoneContainer
-          {...getRootProps()}
-          data-tooltip-id="tooltip"
-          data-tooltip-content="Drag and drop video files here or click to browse"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          isPreview={Boolean(previewURL)}
-        >
-          <input {...getInputProps()} />
-          <p>Drag and drop or browse files</p>
-        </DropZoneContainer>
+
+      {/* Video Upload Section */}
+      {activeTab === 'video' && (
+        <>
+          {!asset && (
+            <DropZoneContainer
+              {...getRootProps()}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Drag and drop video files here or click to browse"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              isPreview={Boolean(previewURL)}
+            >
+              <input {...getInputProps()} />
+              <p>Drag and drop or browse video files</p>
+            </DropZoneContainer>
+          )}
+        </>
+      )}
+
+      {/* Land Images Upload Section */}
+      {activeTab === 'land' && (
+        <>
+          <DropZoneContainer
+            {...landDropzone.getRootProps()}
+            data-tooltip-id="tooltip"
+            data-tooltip-content="Drag and drop image files here or click to browse"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <input {...landDropzone.getInputProps()} />
+            <p>Drag & drop or browse land images</p>
+          </DropZoneContainer>
+          <div>
+            {landImages.map((img, index) => (
+              <ImagePreview key={index} src={URL.createObjectURL(img)} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Water Images Upload Section */}
+      {activeTab === 'water' && (
+        <>
+          <DropZoneContainer
+            {...waterDropzone.getRootProps()}
+            data-tooltip-id="tooltip"
+            data-tooltip-content="Drag and drop image files here or click to browse"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <input {...waterDropzone.getInputProps()} />
+            <p>Drag & drop or browse water images</p>
+          </DropZoneContainer>
+          <div>
+            {waterImages.map((img, index) => (
+              <ImagePreview key={index} src={URL.createObjectURL(img)} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Point Source Data Upload Section */}
+      {activeTab === 'source' && (
+        <>
+          <DataFileUpload />
+          <TextInput
+            type="text"
+            placeholder="Enter information on point source or non-point source activities"
+            value={pointSourceData}
+            onChange={(e) => setPointSourceData(e.target.value)}
+          />
+        </>
+
+      )}
+
+      {/* Sensor Data Upload Section */}
+      {activeTab === 'sensor' && (
+        <>
+          <DataFileUpload />
+          <TextInput
+            type="text"
+            placeholder="Enter sensor data from drones, MPC buoys, etc."
+            value={sensorData}
+            onChange={(e) => setSensorData(e.target.value)}
+          />
+        </>
       )}
 
       <div>
@@ -350,41 +587,42 @@ export const VideoUpload = ({ APP }) => {
           >
             <video controls width="400">
               <source src={previewURL} type="video/mp4" />
+              <img src={previewURL} alt='Uploaded Image' />
               Your browser does not support the video tag.
             </video>
           </PreviewPlayer>
 
         )}
 
-        {!asset?.id && <p>{video ? (metadata.videoName ? metadata.videoName : video.name) : 'Select a video file to upload.'}</p>}
+        {!asset?.id && <p>{activeFile?.name || 'Select a file to upload.'}</p>}
 
-        {(video && !asset && !progressFormatted) && (
+        {(activeFile && !asset && !progressFormatted) && (
           <VideoInputContainer>
             <VideoInputField
               type="text"
-              placeholder="Enter video name"
-              value={videoName}
-              onChange={(e) => setVideoName(e.target.value)}
+              placeholder="Enter a title"
+              value={uploadName}
+              onChange={(e) => setUploadName(e.target.value)}
             />
             <VideoInputField
               type="text"
-              placeholder="Enter video description"
-              value={videoDescription}
-              onChange={(e) => setVideoDescription(e.target.value)}
+              placeholder="Enter a description"
+              value={uploadDescription}
+              onChange={(e) => setUploadDescription(e.target.value)}
             />
           </VideoInputContainer>
         )}
 
         {progressFormatted && <p>{progressFormatted}</p>}
 
-        {(video?.name && !asset?.id && !progressFormatted && !asset?.[0]?.playbackId) && (
+        {(activeFile?.name && !asset?.id && !progressFormatted && !asset?.[0]?.playbackId) && (
           <UploadButton
             onClick={handleUpload}
             //disabled={isLoading || !video}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             data-tooltip-id="tooltip"
-            data-tooltip-content="Click to upload video"
+            data-tooltip-content={`Click to upload files`}
 
           >
             Upload

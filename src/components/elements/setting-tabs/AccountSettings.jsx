@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { getAdditionalUserInfo, signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
+import { auth } from '../../../apis/firebase';
 
 const AccountContainer = styled.div`
   display: flex;
@@ -36,7 +38,7 @@ const ToggleButton = styled(motion.div)`
   }
 `;
 
-const ActionButton = styled(motion.div)`
+const ActionButton = styled(motion.button)`
   padding: 10px 20px;
   border-radius: 5px;
   color: #fff;
@@ -76,13 +78,50 @@ const Input = styled.input`
   text-align: center;
 `;
 
-const AccountSettingsTab = ({APP}) => {
+const AccountSettingsTab = ({ APP }) => {
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  const { user } = APP?.STATES || {};
+  const { logNotification } = APP?.ACTIONS || {};
 
   const togglePasswordFields = () => {
     setShowPasswordFields(!showPasswordFields);
   };
+
+  const resetPasswordInputs = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmNewPassword('');
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handlePasswordChange();
+  };
+
+  const handlePasswordChange = async () => {
+    if (newPassword === confirmNewPassword) {
+      try {
+        const fbUser = await signInWithEmailAndPassword(auth, user?.email, currentPassword);
+        if (fbUser?.user) {
+          console.log(fbUser)
+          await updatePassword(fbUser.user, newPassword);
+          logNotification('alert', 'Password Changed!');
+          resetPasswordInputs()
+        } else {
+          logNotification('error', `SignIn Error: Check Password for ${user?.email}`);
+        }
+      } catch (error) {
+        logNotification('error', error.message);
+      }
+    } else {
+      logNotification('error', 'Passwords do not match');
+    }
+  }
 
   const handle2FAToggle = () => {
     // Logic to enable/disable 2FA would be added here
@@ -104,21 +143,21 @@ const AccountSettingsTab = ({APP}) => {
   return (
     <AccountContainer>
       <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} active={showPasswordFields} onClick={togglePasswordFields}>Change Password <FontAwesomeIcon icon={showPasswordFields ? faCaretUp : faCaretDown} /></ActionButton>
-        {showPasswordFields && (
-          <ProfileForm>
-            <Label htmlFor="currentPassword">Current Password:</Label>
-            <Input type="password" id="currentPassword" />
+      {showPasswordFields && (
+        <ProfileForm onSubmit={handleFormSubmit}>
+          <Label htmlFor="currentPassword">Current Password:</Label>
+          <Input type="password" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
 
-            <Label htmlFor="newPassword">New Password:</Label>
-            <Input type="password" id="newPassword" />
+          <Label htmlFor="newPassword">New Password:</Label>
+          <Input type="password" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
 
-            <Label htmlFor="confirmNewPassword">Confirm New Password:</Label>
-            <Input type="password" id="confirmNewPassword" />
-            <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              Save Password Changes
-            </ActionButton>
-          </ProfileForm>
-        )}
+          <Label htmlFor="confirmNewPassword">Confirm New Password:</Label>
+          <Input type="password" id="confirmNewPassword" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} required />
+          <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type='submit'>
+            Save Password Changes
+          </ActionButton>
+        </ProfileForm>
+      )}
 
       <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         Manage Email Settings

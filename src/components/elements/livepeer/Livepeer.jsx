@@ -48,7 +48,7 @@ function Livepeer({ APP }) {
       <Container>
         {user && (
           <App>
-            <Sidebar isOpen={sidebarOpen} />
+            <Sidebar isOpen={sidebarOpen} user={user} />
             <NotificationBar APP={APP} />
             <Main isSidebarOpen={sidebarOpen}>
               <Navbar APP={APP} />

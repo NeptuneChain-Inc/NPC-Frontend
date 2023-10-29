@@ -86,6 +86,7 @@ const MobileMenuContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
+  box-sizing: border-box;
   transition: all 0.3s ease;
 
   @media (max-width: 767px) {
@@ -115,14 +116,15 @@ const SideMenu = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  width: 30%;
-  max-width: 400px;
-  height: 100%;
+  width: 50%;
+  // max-width: 400px;
+  height: 100vh;
   align-items: flex-start;
   background-color: #fff;
   box-shadow: -5px 0px 15px rgba(0, 0, 0, 0.2);
   z-index: 20;
-  overflow: auto;
+  box-sizing: border-box;
+  overflow: visible;
   padding: 2rem;
   font-family: 'Arial', sans-serif;
 `;

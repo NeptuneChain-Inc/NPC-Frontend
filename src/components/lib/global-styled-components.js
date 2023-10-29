@@ -5,20 +5,24 @@ import { motion } from "framer-motion";
 export const WELCOME_LOGO = styled.img`
 width: ${({width}) => width ? width : '200px'};
   height: auto;
-  
+  cursor: pointer;
   margin: 20px 0;
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    scale: 1.05;
+  }
 `;
 
 export const WELCOME_HEADING = styled.h1`
 font-size: ${({ size }) => size ? size : '1.25rem'};
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   color: #333;
 `;
 
 export const INPUT = styled.input`
 width: 80%;
 padding: 12px 16px;
-margin-bottom: 24px;
 font-size: 16px;
 border: 1px solid #ccc;
 border-radius: 4px;
@@ -36,13 +40,20 @@ transition: border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
 export const BUTTON = styled.button`
-width: 100%;
-padding: 10px;
-background-color: blue;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
+  color: #FFF;
+  background-color: #0077b6;
+  padding: 15px 30px;
+  border-radius: 50px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+    color: white;
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
 
 `;
 
@@ -76,4 +87,17 @@ overflow-x: hidden;
 @media (max-width: 768px) {
   width: 300px;
 }
+`;
+
+export const LOADING_ANIMATION = styled(motion.div)`
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  transition: 0.5s ease-in-out;
 `;

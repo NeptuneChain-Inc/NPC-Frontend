@@ -63,7 +63,7 @@ const Container = styled(motion.div)`
   border-radius: 8px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   font-size: 1rem;
-  z-index: 1000;
+  z-index: 9999;
   max-width: calc(100% - 40px);
   
   @media (max-width: 768px) {
