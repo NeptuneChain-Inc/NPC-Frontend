@@ -23,7 +23,7 @@ const Home = ({ APP }) => {
           <NotificationBar APP={APP} />
           <Main isSidebarOpen={sidebarOpen}>
             <Navbar APP={APP} />
-            <RenderDash route={dashID} uid={user?.uid} userDashes={user?.dashData} searchResults={searchResults} />
+            <RenderDash route={dashID} uid={user?.uid} userDashes={user?.dashData} searchResults={searchResults} APP={APP}/>
           </Main>
         </App>
       )}

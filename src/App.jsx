@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { Home, WelcomePage, RegisterPage, LogInPage, NotFound } from './routes'
+import { Home, WelcomePage, RegisterPage, LogInPage, NotFound, Marketplace } from './routes'
 import { Notification, Confirmation } from './components/popups'
 import { Livepeer } from './components/elements/livepeer'
 import styled from 'styled-components'
 import { SettingsMenu } from './components'
 import { getUser } from './apis/database'
+import { VerificationUI } from './components/elements/contractUI'
+import { getSigner } from './apis/ethers'
 
 const Footer = styled.footer`
   width: 100%;
@@ -63,19 +65,22 @@ const FooterIconGroup = styled.div`
 `;
 
 function App() {
-  //States
   const [isMobile,] = useState(isMobileScreen());
   const [user, setUser] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [networkProvider, setNetworkProvider] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchResults, setSearchResults] = useState(null);
+
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [verificationUIOpen, setVerificationUIOpen] = useState(false);
+
   const [settingsTab, setSettingsTab] = useState('Profile Settings');
   const [confirmation, setConfirmation] = useState(null);
   const [notification, setNotification] = useState('');
   const [alert, setAlert] = useState('');
   const [error, setError] = useState('');
-
 
   useEffect(() => {
     if (isMobile) {
@@ -85,11 +90,12 @@ function App() {
 
   useEffect(() => {
     getUserSave();
+    connectSigner();
   }, [])
 
   useEffect(() => {
     console.log(user);
-    if(user?.uid){
+    if (user?.uid) {
 
     }
   }, [user])
@@ -99,9 +105,18 @@ function App() {
     return window.innerWidth <= maxWidth;
   }
 
+  const connectSigner = async () => {
+    try {
+      const connection = await getSigner();
+      setNetworkProvider(connection.provider)
+      setSigner(connection.signer)
+    } catch (error) {
+      //Handle Error
+    }
+  }
+
   //ACTIONS
   const getUserSave = () => {
-    //const loggedUser = Cookies.get('user');
     const loggedUser = localStorage.getItem('user');
     if (loggedUser) {
       setUser(JSON.parse(loggedUser));
@@ -112,16 +127,15 @@ function App() {
   }
 
   const updateUser = async (uid) => {
-     try {
+    try {
       const _userUpdate = await getUser(uid);
       localStorage.setItem('user', JSON.stringify(_userUpdate))
-      //Cookies.set('user', JSON.stringify(_userUpdate), { expires: 3 });
       setUser(_userUpdate);
       return true;
-     } catch (error) {
+    } catch (error) {
       console.error(error)
       return false
-     }
+    }
   }
 
   const handleSidebar = () => {
@@ -130,6 +144,10 @@ function App() {
 
   const handleNotificationsBar = () => {
     setNotificationBarOpen(!notificationBarOpen);
+  }
+
+  const handleVerificationUI = () => {
+    setVerificationUIOpen(!verificationUIOpen);
   }
 
   const handleSettingsMenu = () => {
@@ -187,7 +205,6 @@ function App() {
   const handleLogOut = () => {
     const logOut = () => {
       setUser(null);
-      // Cookies.remove('user');
       localStorage.removeItem('user')
       window.location.href = '/';
     }
@@ -198,9 +215,12 @@ function App() {
     STATES: {
       isMobile,
       user,
+      networkProvider,
+      signer,
       searchResults,
       sidebarOpen,
       notificationBarOpen,
+      verificationUIOpen,
       settingsMenuOpen,
       settingsTab,
       confirmation,
@@ -214,6 +234,7 @@ function App() {
       setSearchResults,
       handleSidebar,
       handleNotificationsBar,
+      handleVerificationUI,
       handleSettingsMenu,
       handleSettingsTab,
       logConfirmation,
@@ -229,16 +250,18 @@ function App() {
       <Notification type='alert' message={alert} clearNotification={clearNotification} />
       <Notification type='error' message={error} clearNotification={clearNotification} />
       <Confirmation message={confirmation?.msg} onConfirm={confirmation?.action} onCancel={cancelConfirmation} />
+      {signer && <VerificationUI signer={signer} open={verificationUIOpen} APP={APP} />}
       {user && settingsMenuOpen && (
         <SettingsMenu APP={APP} />
       )}
       <Routes>
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/register" element={<RegisterPage APP={APP}/>} />
+        <Route path="/register" element={<RegisterPage APP={APP} />} />
         <Route path="/login" element={<LogInPage APP={APP} />} />
         {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />}
+        {user?.uid && <Route path="/marketplace/:id" element={<Marketplace APP={APP} />} />}
         {user?.uid && <Route path="/:dashID" element={<Home APP={APP} />} />}
         <Route path="*" element={<NotFound />} />
       </Routes>

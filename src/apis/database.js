@@ -1,6 +1,29 @@
 import { ref, set, get } from "firebase/database";
 import { db } from "../apis/firebase"
 
+const AppConfigs = {
+     get: async () => {
+        const dataRef = ref(db, `dashboard/configs`);
+        const snapshot = await get(dataRef);
+        if (snapshot.val()) {
+            return snapshot.val();
+        } else {
+            return false;
+        }
+    }
+}
+
+const getAppConfigs = async (path) => {
+    const dataRef = ref(db, `dashboard/configs/data/${userData?.uid}`);
+    const snapshot = await get(dataRef);
+    if (snapshot.val()) {
+        return snapshot.val();
+    } else {
+        console.warn({ snapshot });
+        return false;
+    }
+}
+
 const getData = async (path) => {
     const dataRef = ref(db, path);
     const snapshot = await get(dataRef);
@@ -109,7 +132,7 @@ const saveVideo = async (videoAsset, creatorUID) => {
 }
 
 const getVideo = async (playbackId) => {
-    return await getData(`dashboard/livepeer/videos//${playbackId}`);
+    return await getData(`dashboard/livepeer/videos/${playbackId}`);
 }
 
 const getUserVideos = async (uid) => {
@@ -123,6 +146,7 @@ const getUserVideos = async (uid) => {
 }
 
 export {
+    AppConfigs,
     createUser,
     getUser,
     getUsername,

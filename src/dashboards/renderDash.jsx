@@ -14,7 +14,7 @@ import { Dash } from '../components';
  *
  * @returns {JSX.Element} - Rendered dashboard.
  */
-const RenderDash = ({ route, uid, userDashes, searchResults }) => {
+const RenderDash = ({ route, uid, userDashes, searchResults, APP }) => {
   // State to hold the data to be displayed on the dashboard
   const [dashData, setDashData] = useState({});
 
@@ -53,7 +53,7 @@ const RenderDash = ({ route, uid, userDashes, searchResults }) => {
   }, [route, userDashes, searchResults, loadDefaultData]);
 
   return (
-    <Dash dashData={dashData} />
+    <Dash dashData={dashData} APP={APP} />
   );
 };
 

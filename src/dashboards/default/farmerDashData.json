@@ -250,7 +250,7 @@
         ]
     },
     "verification": {
-        "name": "Verification Data",
+        "name": "Verification",
         "sections": [
             {
                 "alignment": "flex-start",

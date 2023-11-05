@@ -75,6 +75,15 @@ export const OBJECTS = {
   }
 };
 
+export const STRING = {
+  toTitleCase: (str) => {
+    // Insert a space before all caps and trim the resulting string
+    return str
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase()) // Capitalize the first letter
+      .trim();
+  }
+}
 
 export const TIME = {
   /**

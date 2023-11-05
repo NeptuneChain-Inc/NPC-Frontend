@@ -1,6 +1,13 @@
 # NeptuneChain Dashboard
 ( * ) => Ongoing Implementation
 
+Changelog (November 6) - Credit Verification and Marketplace Integration:
+- Integration with blockchain backend
+- Smart Contract development (Verification & Marketplace)
+- Added Marketplace UI routing
+- Integrated User control for certain functions such as submission, approval etc
+-
+
 Changelog (October 29) - Polishing:
 - Enhanced UX (Login, Registration. Dashboard)
 - Settings Menu Enhancements 

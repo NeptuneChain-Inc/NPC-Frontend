@@ -1,0 +1,33 @@
+{
+    "NeptuneChainVerification": {
+        "ABI": [
+            "constructor(string name, string symbol)",
+
+            "function VERIFIER_ROLE() view returns (bytes32)",
+            "function qTime() view returns (int256)",
+            "function ADMIN_ROLE() view returns (bytes32)",
+            "function verifierReputation(address) view returns (uint256)",
+            "function verifications(uint256) view returns (tuple(address farmer, string ipfsMetadataHash, bool approved))",
+            "function lastSubmission(address) view returns (uint256)",
+    
+            "event DataSubmitted(uint256 indexed dataId, address indexed farmer)",
+            "event Verified(uint256 indexed dataId, address indexed verifier)",
+            "event DisputeRaised(uint256 indexed dataId, address indexed farmer, string reason)",
+            "event DisputeResolved(uint256 indexed dataId, address indexed admin, bool approved)",
+    
+            "function submitData(string ipfsMetadataHash) external returns (uint256)",
+            "function approveData(uint256 dataId) external",
+            "function raiseDispute(uint256 dataId, string reason) external",
+            "function resolveDispute(uint256 dataId, bool approved) external",
+            "function addVerifier(address verifier) external",
+            "function removeVerifier(address verifier) external",
+            "function pause() external",
+            "function unpause() external",
+            "function emergencyWithdraw() external",
+            "function supportsInterface(bytes4 interfaceId) public view returns (bool)"
+        ],
+        "Addresses": [
+            "0x4b27981b62098EAF794742C1228A625AC519fA16"
+        ]
+    }
+}

@@ -4,7 +4,7 @@ import { OverviewCard, DataCard, RecordsCard } from './elements';
 import { getIcon } from './lib/icons';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStream, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faStream, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { EnvironmentalMetricsCard, OperationalMetricsCard } from './elements/cards/cards';
 import { ChartCard, StatusCard, TransactionHistoryCard } from './elements/cards';
 
@@ -13,7 +13,9 @@ import { ChartCard, StatusCard, TransactionHistoryCard } from './elements/cards'
  * This is the main dashboard component that renders various cards within sections based on the data provided.
  * @param {Object} dashData - Contains sections and cards data for the dashboard.
  */
-const Dash = ({ dashData }) => {
+const Dash = ({ dashData, APP }) => {
+
+  const { handleVerificationUI } = APP?.ACTIONS || {};
 
   const renderedSections = useMemo(() => {
     return dashData?.sections?.map((section, index) => (
@@ -39,6 +41,14 @@ const Dash = ({ dashData }) => {
           <Link href={'/features/stream'} target='_blank'>
             <FontAwesomeIcon icon={faStream} /> Start Stream
           </Link>
+        </FloatingLinks>
+      )}
+
+      {dashData?.name === 'Verification' && handleVerificationUI && (
+        <FloatingLinks>
+          <FloatButton onClick={()=>handleVerificationUI()}>
+            <FontAwesomeIcon icon={faCheckCircle} /> Open Verification
+          </FloatButton>
         </FloatingLinks>
       )}
 
@@ -222,6 +232,30 @@ const Link = styled.a`
 
   svg {
     margin-right: 8px;
+  }
+`;
+
+const FloatButton = styled.div`
+  background: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+
+  user-select: none;
+    -webkit-user-select: none;  // For Safari
+    -moz-user-select: none;     // For Firefox
+    -ms-user-select: none;      // For IE/Edge
+
+  &:hover {
+    background: #555;
+    color: white;
+    scale: 1.01;
   }
 `;
 

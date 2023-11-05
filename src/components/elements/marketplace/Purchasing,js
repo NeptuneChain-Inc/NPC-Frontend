@@ -1,0 +1,14 @@
+async function purchaseNFT(nftId, price, signer) {
+    if (!signer) return;
+
+    const marketplaceContract = new ethers.Contract(MARKETPLACE_CONTRACT_ADDRESS, MARKETPLACE_ABI, signer);
+    try {
+        const tx = await marketplaceContract.purchaseNFT(nftId, {
+            value: price
+        });
+        await tx.wait();
+        alert('NFT purchased successfully!');
+    } catch (error) {
+        console.error('Error purchasing NFT:', error);
+    }
+}
