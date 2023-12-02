@@ -238,7 +238,7 @@ export default function WelcomePage() {
     }
 
     if (Cookies.get('skipWelcome')) {
-      navigate('/main');
+      navigate('/dashboard/main');
     }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -280,7 +280,7 @@ export default function WelcomePage() {
   };
 
   const handleOpen = () => {
-    navigate('/main');
+    navigate('/dashboard/main');
   };
 
   const handleSkip = (e) => {

@@ -9,6 +9,11 @@ import { SettingsMenu } from './components'
 import { getUser } from './apis/database'
 import { VerificationUI } from './components/elements/contractUI'
 import { getSigner } from './apis/ethers'
+import { getMarketInteractions } from './apis/contracts/marketplaceInteractions'
+import configs from './configs'
+import { ethers } from 'ethers'
+import SellerDashboard from './components/elements/marketplace/SellerDashboard'
+import ListingPage from './components/elements/marketplace/ListingPage'
 
 const Footer = styled.footer`
   width: 100%;
@@ -64,6 +69,10 @@ const FooterIconGroup = styled.div`
   justify-content: space-between;
 `;
 
+if (typeof global === 'undefined') {
+  window.global = window;
+}
+
 function App() {
   const [isMobile,] = useState(isMobileScreen());
   const [user, setUser] = useState(null);
@@ -71,6 +80,10 @@ function App() {
   const [networkProvider, setNetworkProvider] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchResults, setSearchResults] = useState(null);
+
+  const [marketInteractions, setMarketInteractions] = useState(getMarketInteractions(new ethers.JsonRpcProvider(configs.networks.polygon.testnet)));
+  const [signedMarketInteractions, setSignedMarketInteractions] = useState(null);
+  const [signedUser, setSignedUser] = useState(null);
 
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
@@ -109,9 +122,16 @@ function App() {
     try {
       const connection = await getSigner();
       setNetworkProvider(connection.provider)
-      setSigner(connection.signer)
+      const _signer = connection.signer;
+      setSigner(_signer)
+
+      const signerAddress = await _signer.getAddress();
+      setSignedUser(signerAddress);
+      setSignedMarketInteractions(getMarketInteractions(_signer));
     } catch (error) {
       //Handle Error
+      console.error(error)
+      throw error
     }
   }
 
@@ -217,6 +237,9 @@ function App() {
       user,
       networkProvider,
       signer,
+      signedUser,
+      marketInteractions,
+      signedMarketInteractions,
       searchResults,
       sidebarOpen,
       notificationBarOpen,
@@ -244,6 +267,11 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    console.log({APP})
+  }, [APP])
+  
+
   return (
     <Router>
       <Notification type='notification' message={notification} clearNotification={clearNotification} />
@@ -258,11 +286,14 @@ function App() {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/register" element={<RegisterPage APP={APP} />} />
         <Route path="/login" element={<LogInPage APP={APP} />} />
+        {user?.uid && <Route path="/dashboard/:dashID" element={<Home APP={APP} />} />}
         {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />}
-        {user?.uid && <Route path="/marketplace/:id" element={<Marketplace APP={APP} />} />}
-        {user?.uid && <Route path="/:dashID" element={<Home APP={APP} />} />}
+        {user?.uid && <Route path="/marketplace" element={<Marketplace APP={APP} />} />}
+        {user?.uid && <Route path="/marketplace/listing/:id" element={<ListingPage APP={APP} />} />}
+        {user?.uid && <Route path="/marketplace/seller-dashboard" element={<SellerDashboard APP={APP} />} />}
+
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer>

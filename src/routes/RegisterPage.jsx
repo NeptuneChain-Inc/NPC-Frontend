@@ -5,7 +5,7 @@ import { auth } from '../apis/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
-import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC, LOADING_ANIMATION } from '../components/lib/global-styled-components';
+import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC, LOADING_ANIMATION } from '../components/lib/styled';
 import { Notification } from '../components/popups';
 import { createUser } from '../apis/database';
 import Lottie from 'react-lottie';
@@ -101,7 +101,7 @@ export default function RegisterPage({APP}) {
           setNotification('Registration successful!');
           setIsSuccess(true);
           setTimeout(() => {
-            navigate('/main');
+            navigate('/dashobard/main');
           }, 3000);
         }
       }

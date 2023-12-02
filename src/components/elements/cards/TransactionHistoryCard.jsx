@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { CardContainer } from '../../lib/global-styled-components';
+import { CardContainer } from '../../lib/styled';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import 'font-awesome/css/font-awesome.min.css'; // Import the font-awesome CSS

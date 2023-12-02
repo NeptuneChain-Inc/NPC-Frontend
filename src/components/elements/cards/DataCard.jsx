@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getIcon } from '../../lib/icons'
 import { motion, AnimatePresence } from 'framer-motion';
 import { StreamItem, VideoItem } from './data-card'
-import { CardContainer } from '../../lib/global-styled-components'
+import { CardContainer } from '../../lib/styled'
 
 const DataCard = ({ cardTitle, icon, contents, isTable, width }) => {
   return (

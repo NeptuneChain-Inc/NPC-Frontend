@@ -1,106 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ethers } from 'ethers';
+import { NFTCard } from './elements';
+import { useNavigate } from 'react-router-dom';
 
 const NFTGrid = styled.div`
-    display: grid;
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+
+  @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 `;
 
-const NFTCard = styled.div`
-    border: 1px solid #eaeaea;
-    padding: 20px;
-    border-radius: 10px;
-    transition: transform 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+const LoadingIndicator = styled.div`
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: auto;
 
-    &:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 `;
 
-const BuyButton = styled.button`
-    background-color: #007BFF;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #0056b3;
-    }
+const ErrorMsg = styled.p`
+    color: red;
 `;
 
-const MarketBrowser = ({ provider, contract }) => {
+const MarketBrowser = ({ marketEvents }) => {
+    const navigate = useNavigate();
     const [nfts, setNfts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const marketplaceContract = contract?.Instance
 
     useEffect(() => {
-        async function fetchNFTs() {
-            if (provider && contract) {
-                try {
-                    setLoading(true);
-                    const filter = marketplaceContract.filters.NFTListed();
-                    const logs = await provider.getLogs({
-                        fromBlock: 0,
-                        toBlock: 'latest',
-                        address: contract.address,
-                        topics: filter.topics
-                    });
+        fetchData()
+    }, [marketEvents])
 
-                    const _nfts = logs.map(log => {
-                        const decoded = marketplaceContract.interface.parseLog(log);
-                        return decoded.args;
-                    });
 
-                    setNfts(_nfts);
-                } catch (err) {
-                    setError(err.message);
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                return;
-            }
-        }
-
-        fetchNFTs();
-    }, [provider, contract]);
-
-    const handleBuyNow = async (tokenId, price) => {
-        if (!signer) {
-            console.error("No signer available");
-            return;
-        }
-
+    const fetchData = async () => {
+        setLoading(true);
         try {
-            const tx = await marketplaceContract.buyNFT(tokenId, { value: ethers.utils.parseEther(price.toString()) });
-            const receipt = await tx.wait();
-            console.log("Transaction receipt:", receipt);
+            const fetchedNfts = await marketEvents?.listAvailableNFTs() || [];
+            setNfts(fetchedNfts);
         } catch (err) {
-            console.error("Error buying NFT:", err);
+            console.error(err)
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    if (loading) return <p>Loading NFTs...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return <LoadingIndicator />
+    if (error) return <ErrorMsg>Error: {error}</ErrorMsg>
 
     return (
         <NFTGrid>
-            {nfts.map((nft) => (
-                <NFTCard key={nft.tokenId}>
-                    <img src={nft.imageURL} alt={nft.name} />
-                    <h3>{nft.name}</h3>
-                    <p>Price: {ethers.utils.formatEther(nft.price)} ETH</p>
-                    <BuyButton onClick={() => handleBuyNow(nft.tokenId, nft.price)}>Buy Now</BuyButton>
-                </NFTCard>
-            ))}
-        </NFTGrid>
+                {nfts.length > 0 ? (
+                    nfts.map(nft => <NFTCard key={nft.tokenID} nft={nft} navigate={navigate}/>)
+                ) : <p>No Assets Available</p>}
+            </NFTGrid>
     );
 }
 

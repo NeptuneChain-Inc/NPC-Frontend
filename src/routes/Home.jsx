@@ -3,6 +3,16 @@ import styled from 'styled-components'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Navbar, Sidebar, NotificationBar } from '../components'
 import RenderDash from '../dashboards/RenderDash'
+import { faShop } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { motion } from 'framer-motion'
+import { logoColors } from '../styles/colors'
+
+const colors = {
+  antiqueWhite: '#FFE8D1',
+  airForceBlue: '#568EA3',
+  rawUmber: '#826251',
+ }
 
 
 const Home = ({ APP }) => {
@@ -24,6 +34,17 @@ const Home = ({ APP }) => {
           <Main isSidebarOpen={sidebarOpen}>
             <Navbar APP={APP} />
             <RenderDash route={dashID} uid={user?.uid} userDashes={user?.dashData} searchResults={searchResults} APP={APP}/>
+            
+            <FloatingContainer>
+          <FloatButton
+            onClick={() => navigate('/marketplace')}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <FontAwesomeIcon icon={faShop} />
+          </FloatButton>
+          </FloatingContainer>
+
           </Main>
         </App>
       )}
@@ -74,5 +95,40 @@ const Main = styled.div`
     width: ${({ isSidebarOpen }) => isSidebarOpen ? '50vw' : "100vw"};
   }
 
+`;
+
+const FloatingContainer = styled(motion.div)`
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 60px;
+  border-radius: 50%;
+  border: 1px solid ${colors.antiqueWhite};
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+  z-index: 1000; 
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  font-size: 24px; // Icon size
+`;
+
+const FloatButton = styled(motion.div)`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: ${logoColors.accent};
+  color: white;
+  border: 1px solid ${logoColors.accent};
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+  z-index: 1000; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px; // Icon size
 `;
 

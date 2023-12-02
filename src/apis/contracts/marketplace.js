@@ -1,5 +1,5 @@
-
 import { ethers } from 'ethers';
+import { Contract as nft_Contract } from './verification'; 
 
 const Contract = {
     Address: '0xc5bCcEC73b5458d15244783A1A0964C3783eF2bb',
@@ -10,20 +10,17 @@ const Contract = {
         // Events
         "event NFTListed(uint256 indexed tokenId, address indexed seller, uint256 price)",
         "event NFTPurchased(uint256 indexed tokenId, address indexed buyer, address indexed seller, uint256 price)",
-        "event NFTDelisted(uint256 indexed tokenId, address indexed seller)",
-        "event PriceUpdated(uint256 indexed tokenId, address indexed seller, uint256 newPrice)",
-
-        // Structs
-        "struct Listing { address seller; uint256 price; }",
-
-        // State variables
-        "mapping(uint256 => Listing) public listings",
+        "event NFTDelisted(uint256 indexed tokenId)",
+        "event NFTBidPlaced(uint256 indexed tokenId, address indexed bidder, uint256 amount)",
+        "event NFTBidRemoved(uint256 indexed tokenId, address indexed bidder)",
 
         // Functions
-        "function listNFT(address nftAddress, uint256 tokenId, uint256 price) external",
+        "function listNFT(uint256 tokenId, uint256 price) external",
+        "function buyNFT(uint256 tokenId) external payable",
+        "function placeBid(uint256 tokenId) external payable",
+        "function removeBid(uint256 tokenId) external",
+        "function acceptBid(uint256 tokenId) external",
         "function delistNFT(uint256 tokenId) external",
-        "function updatePrice(uint256 tokenId, uint256 newPrice) external",
-        "function purchaseNFT(uint256 tokenId) external payable",
         "function getListing(uint256 tokenId) view returns (address seller, uint256 price)",
         "function onERC721Received(address operator, address from, uint256 tokenId, bytes data) external returns (bytes4)"
     ]
@@ -35,8 +32,38 @@ const getMarketInteractions = (signer) => {
         address: Contract.Address,
         Instance: contract,
         Functions: {
-            listNFT: async (nftAddress, tokenId, price) => {
-                const tx = await contract.listNFT(nftAddress, tokenId, price);
+            approveAndListNFT: async (tokenId, price) => {
+                // Step 1: Approve the marketplace contract to transfer the NFT
+                const nftContract = new ethers.Contract(nft_Contract.Address, nft_Contract.ABI, signer);
+                const approvalTx = await nftContract.approve(Contract.Address.address, tokenId);
+                await approvalTx.wait();
+            
+                // Step 2: List the NFT on the marketplace
+                const listTx = await contract.listNFT(tokenId, price);
+                return await listTx.wait();
+            },            
+            listNFT: async (tokenId, price) => {
+                const tx = await contract.listNFT(tokenId, price);
+                return await tx.wait();
+            },
+
+            buyNFT: async (tokenId, value) => {
+                const tx = await contract.buyNFT(tokenId, { value });
+                return await tx.wait();
+            },
+
+            placeBid: async (tokenId, value) => {
+                const tx = await contract.placeBid(tokenId, { value });
+                return await tx.wait();
+            },
+
+            removeBid: async (tokenId) => {
+                const tx = await contract.removeBid(tokenId);
+                return await tx.wait();
+            },
+
+            acceptBid: async (tokenId) => {
+                const tx = await contract.acceptBid(tokenId);
                 return await tx.wait();
             },
 
@@ -45,22 +72,10 @@ const getMarketInteractions = (signer) => {
                 return await tx.wait();
             },
 
-            updatePrice: async (tokenId, newPrice) => {
-                const tx = await contract.updatePrice(tokenId, newPrice);
-                return await tx.wait();
-            },
-
-            purchaseNFT: async (tokenId, value) => {
-                const tx = await contract.purchaseNFT(tokenId, { value });
-                return await tx.wait();
-            },
-
             getListing: async (tokenId) => {
                 return await contract.getListing(tokenId);
             },
 
-            // This function is for the contract to handle received NFTs, 
-            // but including it for completeness.
             onERC721Received: async (operator, from, tokenId, data) => {
                 const tx = await contract.onERC721Received(operator, from, tokenId, data);
                 return await tx.wait();
@@ -68,8 +83,14 @@ const getMarketInteractions = (signer) => {
         },
         Listeners: {
             onNFTListed: (callback) => {
-                contract.on("NFTListed", (seller, nftAddress, tokenId, price, event) => {
-                    callback({ seller, nftAddress, tokenId, price, event });
+                contract.on("NFTListed", (tokenId, seller, price, event) => {
+                    callback({ tokenId, seller, price, event });
+                });
+            },
+
+            onNFTPurchased: (callback) => {
+                contract.on("NFTPurchased", (tokenId, buyer, seller, price, event) => {
+                    callback({ tokenId, buyer, seller, price, event });
                 });
             },
 
@@ -79,18 +100,18 @@ const getMarketInteractions = (signer) => {
                 });
             },
 
-            onNFTSold: (callback) => {
-                contract.on("NFTSold", (buyer, seller, nftAddress, tokenId, price, event) => {
-                    callback({ buyer, seller, nftAddress, tokenId, price, event });
+            onBidPlaced: (callback) => {
+                contract.on("NFTBidPlaced", (tokenId, bidder, amount, event) => {
+                    callback({ tokenId, bidder, amount, event });
                 });
             },
 
-            onPriceUpdated: (callback) => {
-                contract.on("PriceUpdated", (tokenId, newPrice, event) => {
-                    callback({ tokenId, newPrice, event });
+            onBidRemoved: (callback) => {
+                contract.on("NFTBidRemoved", (tokenId, bidder, event) => {
+                    callback({ tokenId, bidder, event });
                 });
             },
-            
+
             removeAllListeners: () => {
                 contract.removeAllListeners();
             }

@@ -17,7 +17,7 @@ import {
   ArcElement,
   Filler
 } from 'chart.js';
-import { CardContainer } from '../../lib/global-styled-components';
+import { CardContainer } from '../../lib/styled';
 import 'font-awesome/css/font-awesome.min.css';
 
 const defaultModules = { BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }; //Bar
