@@ -1,15 +1,11 @@
-import WelcomePage from "./WelcomePage";
+import Welcome from "./Welcome";
 import Home from "./Home";
 import Marketplace from "./Marketplace";
-import LogInPage from "./LogInPage";
-import RegisterPage from "./RegisterPage";
 import NotFound from "./NotFound";
 
 export {
-    WelcomePage,
+    Welcome,
     Marketplace,
     Home,
-    LogInPage,
-    RegisterPage,
     NotFound
 }

@@ -19,19 +19,22 @@ const Sidebar_MenuItem = ({ icon, itemName, route }) => {
   const navigate = useNavigate();
   const [isRoute, setIsRoute] = useState(false);
 
+  const normalizedRoute = route.startsWith('/') ? route : `/dashboard/${route}`;
+
   // Effect to check if the current route matches the given route
   useEffect(() => {
-    const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
-    setIsRoute(normalizedRoute === location.pathname);
+    if(route){
+      setIsRoute(normalizedRoute === location.pathname);
+    }
   }, [route, location]);
 
   /**
    * Handles the click event for navigation.
    */
   const handleClick = () => {
-    const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
-    if (route && typeof route === 'string' && location.pathname !== normalizedRoute) {
-      navigate(normalizedRoute);
+    console.log(typeof route, route)
+    if (route && typeof route === 'string' && !isRoute) {
+      navigate(normalizedRoute)
     }
   };
 

@@ -43,7 +43,7 @@ export const BUTTON = styled.button`
   color: #FFF;
   background-color: #0077b6;
   padding: 15px 30px;
-  border-radius: 50px;
+  //border-radius: 50px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -55,14 +55,27 @@ export const BUTTON = styled.button`
     transform: translateY(-2px);
   }
 
+
+
+
+  border: none;
+  border-radius: 4px;
+
 `;
 
-export const BUTTON_SEC = styled(BUTTON)`
-width: 50%;
-background-color: #007bff;
+export const BUTTON_SEC = styled.span`
+background-color: transparent;
+color: #0077b6;
+text-decoration: underline;
+margin-bottom: 0;
+transition: 0.3s ease-in-out;
+cursor: pointer;
+
 
 &:hover {
-  background-color: #0056b3;
+  background-color: transparent;
+  color: #005f8a;
+  transform: translateY(-2px);
 }
 `;
 

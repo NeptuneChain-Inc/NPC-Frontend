@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { auth } from '../apis/firebase';
+import { auth } from '../../apis/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Lottie from 'react-lottie';
 import appLogo from '../assets/logo.png';
-import { environmentalRotation } from '../assets/animations';
+import { environmentalRotation } from '../../assets/animations';
 import * as THREE from 'three';
+import backgroundImage from '../assets/wallpapers/neptune_ocean.png'
 
 
 const Container = styled(motion.div)`
@@ -18,15 +19,11 @@ const Container = styled(motion.div)`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: #89CFF0a1;
-  color: #FFF; 
+  background-image: ${backgroundImage};
+  background-size: cover;
+  background-position: center;
+  color: #FFF;
   box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 1);
-
-  .rememberPrompt {
-    margin-top: 15px;
-    font-size: 0.8rem;
-    color: #222;
-  }
 `;
 
 const WelcomeContainer = styled(motion.div)`
@@ -51,14 +48,13 @@ const BackgroundAnimation = styled.div`
   
 `;
 
-// Background div for Three.js
 const ThreeBackground = styled(motion.div)`
   position: absolute;
   width: 100vw;
   height: 100vh;
   top: 0;
   left: 0;
-  background: #fff;
+  background: transparent;
   overflow: hidden;
 `;
 
@@ -66,15 +62,13 @@ const WelcomeMessage = styled.h1`
   font-size: 1.5rem;
   margin-bottom: 20px;
   z-index: 1;
-  // background: #ffffff50;
-  // backdrop-filter: blur(20px);
   padding: 5px 10px;
   border-radius: 5px;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
-const Logo = styled.img`
+const Logo = styled(motion.img)`
   height: 50px;
   width: auto;
   margin-bottom: 10px;
@@ -128,6 +122,17 @@ const containerVariant = {
   exit: { opacity: 0, y: '10vh' },
 };
 
+const floatAnimation = {
+  animate: {
+    y: ["-3%", "3%"],
+    transition: {
+      duration: 2.5,
+      yoyo: Infinity,
+      ease: "easeInOut"
+    }
+  }
+};
+
 export default function WelcomePage() {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
@@ -158,11 +163,11 @@ export default function WelcomePage() {
 
     // Number of divisions along each axis
     const widthSegments = 32;
-    const heightSegments = 32;
+    const heightSegments = 42;
 
     // Size of the plane
-    const width = 5;
-    const height = 5;
+    const width = 3;
+    const height = 7;
 
     // Array to hold vertices
     const _vertices = [];
@@ -188,7 +193,7 @@ export default function WelcomePage() {
     water.rotation.x = -Math.PI / 2;  // Make sure the plane is rotated correctly
     scene.add(water);
 
-    camera.position.z = 5;
+    camera.position.z = 4;
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -258,19 +263,6 @@ export default function WelcomePage() {
   }, [])
 
 
-  // Dynamic welcome message based on time of day
-  const getDynamicWelcomeMessage = (username) => {
-    const hours = new Date().getHours();
-    let timeOfDay = 'Day';
-    if (hours < 12) {
-      timeOfDay = 'Morning';
-    } else if (hours < 18) {
-      timeOfDay = 'Afternoon';
-    } else {
-      timeOfDay = 'Evening';
-    }
-    return `Good ${timeOfDay}, ${username}`;
-  };
 
   // Define Lottie options
   const lottieOptions = {
@@ -289,40 +281,30 @@ export default function WelcomePage() {
 
   return (
     <Container>
-      <ThreeBackground 
-      ref={threeRef}
-      variants={containerVariant}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      />
+      <ThreeBackground ref={threeRef} variants={containerVariant} initial="hidden" animate="visible" exit="exit" />
       <BackgroundAnimation loading={isLoading}>
         <Lottie options={lottieOptions} height={100} width={100} />
       </BackgroundAnimation>
       {!isLoading && (
-        <WelcomeContainer
-          variants={containerVariant}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
+        <WelcomeContainer variants={containerVariant} initial="hidden" animate="visible" exit="exit">
           <WelcomeMessage>{getDynamicWelcomeMessage(username)}</WelcomeMessage>
-          <Logo src={appLogo} alt="NeptuneChain Logo" />
+          <Logo src={appLogo} alt="NeptuneChain Logo" variants={floatAnimation} animate="animate" />
           <ButtonContainer>
-            {!loggedIn && (
+            {!loggedIn ? (
               <>
                 <StyledLink to="/register">Register</StyledLink>
                 <StyledLink to="/login">Log In</StyledLink>
               </>
+            ) : (
+              <>
+                <StyledButton onClick={handleOpen}>Open Dashboard</StyledButton>
+                <div className='rememberPrompt'>
+                  <input type="checkbox" onChange={handleSkip} />
+                  <label>Skip Welcome Page Next Time</label>
+                </div>
+              </>
             )}
-            {loggedIn && <StyledButton onClick={handleOpen}>Open Dashboard</StyledButton>}
           </ButtonContainer>
-          {loggedIn && (
-            <div className='rememberPrompt'>
-              <input type="checkbox" onChange={handleSkip} />
-              <label>Skip Welcome Page Next Time</label>
-            </div>
-          )}
         </WelcomeContainer>
       )}
     </Container>

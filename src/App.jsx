@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { Home, WelcomePage, RegisterPage, LogInPage, NotFound, Marketplace } from './routes'
+import { Welcome, Home, Marketplace, NotFound } from './routes'
 import { Notification, Confirmation } from './components/popups'
 import { Livepeer } from './components/elements/livepeer'
 import styled from 'styled-components'
@@ -283,9 +283,7 @@ function App() {
         <SettingsMenu APP={APP} />
       )}
       <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/register" element={<RegisterPage APP={APP} />} />
-        <Route path="/login" element={<LogInPage APP={APP} />} />
+        <Route path="/" element={<Welcome APP={APP}/>} />
         {user?.uid && <Route path="/dashboard/:dashID" element={<Home APP={APP} />} />}
         {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
         {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}

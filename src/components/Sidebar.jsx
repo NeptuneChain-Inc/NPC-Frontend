@@ -8,20 +8,9 @@ import { OBJECTS } from '../functions/helpers';
 import { renderDashIcon } from './lib/icons';
 import farmerDashData from '../dashboards/default/farmerDashData.json';
 
-/**
- * Sidebar component to render the sidebar contents.
- *
- * @param {boolean} isOpen - Flag to determine if the sidebar is open or closed.
- * @param {Object} user - User data containing type and dashData.
- * 
- * @returns {JSX.Element} The rendered sidebar component.
- */
 const Sidebar = ({isOpen, user}) => {
   const navigate = useNavigate();
 
-  console.log(user?.dashData)
-
-  // Handler to reset a cookie and navigate to the home page
   const handleToWelcome = () => {
     Cookies.remove('skipWelcome');
     navigate('/');
@@ -40,10 +29,13 @@ const Sidebar = ({isOpen, user}) => {
 
   return (
     <StyledSidebar isOpen={isOpen}>
+
       <SidebarHeader>
         <Logo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome}/>
       </SidebarHeader>
+
       <SidebarHeading>{user?.type.toUpperCase()}</SidebarHeading>
+
       <Menu>
         {Object.entries(OBJECTS.ensureKeyFirst({...user?.dashData, ...appRoutes}, 'main') || {})?.map(([dash, data], index) => {
           console.log({dash, data})
@@ -52,15 +44,8 @@ const Sidebar = ({isOpen, user}) => {
             <Sidebar_MenuItem key={index} icon={icon} itemName={data?.name || data?.cta} route={data?.route || dash} />
           );
         })}
-
-        {/* {appRoutes?.map((route, index) => {
-          const icon = renderDashIcon(dash);
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={data?.name} route={dash} />
-          )
-        })} */}
-
       </Menu>
+      
     </StyledSidebar>
   );
 };

@@ -48,20 +48,17 @@ const saveData = async (path, data) => {
 }
 
 const createUser = async (userData) => {
-    if (userData?.uid) {
-        const isSaved = await saveData(`dashboard/users/data/${userData?.uid}`, userData);
-        if (isSaved) {
-            if (await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid)) {
-                return await loadDefaultUserDashes(userData.uid, userData.type);
-            } else {
-                return false;
-            }
-        } else {
-            return isSaved;
-        }
-    } else {
-        console.warn({ userData });
-        return false;
+    try {
+        if (userData?.uid) {
+            if (await saveData(`dashboard/users/data/${userData?.uid}`, userData)) {
+                if (await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid)) {
+                    await loadDefaultUserDashes(userData.uid, userData.type);
+                    return true;
+                }
+            } 
+        } 
+    } catch (error) {
+        throw error
     }
 }
 

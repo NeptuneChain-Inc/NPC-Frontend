@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { auth } from '../apis/firebase';
+import { auth } from '../../apis/firebase';
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '../assets/logo.png'
-import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC, LOADING_ANIMATION } from '../components/lib/styled';
-import { Notification } from '../components/popups';
-import { getUsername } from '../apis/database';
+import { WELCOME_LOGO, WELCOME_HEADING, INPUT, BUTTON, BUTTON_SEC, LOADING_ANIMATION } from '../../components/lib/styled';
+import { Notification } from '../../components/popups';
+import { getUsername } from '../../apis/database';
 import Lottie from 'react-lottie';
-import { environmentalRotation } from '../assets/animations';
+import { environmentalRotation } from '../../assets/animations';
 
 const Container = styled.div`
   display: flex;
@@ -21,13 +21,11 @@ const Container = styled.div`
   background-color: #f2f2f2;
 `;
 
-
-
 const Form = styled(motion.form)`
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
