@@ -6,7 +6,7 @@ The NPRC-Marketplace repository serves as the core platform for the NeptuneChain
 ## Changelog Overview
 
 ### Latest Update (November 16)
-** Transfer of Ownership and Formalized Organization **
+**Transfer of Ownership and Formalized Organization**
 - Repository transfered from AMako
 
 ### November 6 - Credit Verification and Marketplace Integration
