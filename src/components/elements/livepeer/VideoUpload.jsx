@@ -548,31 +548,10 @@ export const VideoUpload = ({ APP }) => {
       )}
 
       {/* Point Source Data Upload Section */}
-      {activeTab === 'source' && (
-        <>
-          <DataFileUpload />
-          <TextInput
-            type="text"
-            placeholder="Enter information on point source or non-point source activities"
-            value={pointSourceData}
-            onChange={(e) => setPointSourceData(e.target.value)}
-          />
-        </>
-
-      )}
+      {activeTab === 'source' && <DataFileUpload />}
 
       {/* Sensor Data Upload Section */}
-      {activeTab === 'sensor' && (
-        <>
-          <DataFileUpload />
-          <TextInput
-            type="text"
-            placeholder="Enter sensor data from drones, MPC buoys, etc."
-            value={sensorData}
-            onChange={(e) => setSensorData(e.target.value)}
-          />
-        </>
-      )}
+      {activeTab === 'sensor' && <DataFileUpload />}
 
       <div>
 

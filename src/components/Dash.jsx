@@ -14,7 +14,6 @@ import { ChartCard, StatusCard, TransactionHistoryCard } from './elements/cards'
  * @param {Object} dashData - Contains sections and cards data for the dashboard.
  */
 const Dash = ({ dashData, APP }) => {
-
   const { handleVerificationUI } = APP?.ACTIONS || {};
 
   const renderedSections = useMemo(() => {
@@ -144,43 +143,56 @@ const renderCard = (card, index) => {
 
 const DashContainer = styled(motion.div)`
   width: 100%;
-  max-width: 1440px;
+  height: 100%;
   margin: auto;
   padding: 1rem; 
      
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   box-sizing: border-box;
-  padding-top: 2.5rem;
+  gap: 50px;
+  padding-top: 10rem;
+  overflow-y: auto;
   
-    @media (min-width: 1201px) {
-      padding: 2rem 2.5rem;
-    }
+//     @media (min-width: 1201px) {
+//       padding: 2rem 2.5rem;
+//     }
 
-    @media (min-width: 769px) and (max-width: 1200px) {
-      padding: 2rem 1.5rem;
-    }
+//     @media (min-width: 769px) and (max-width: 1200px) {
+//       padding: 2rem 1.5rem;
+//     }
     
-    @media (max-width: 768px) {
-      padding: 2rem 0.5rem;
-    }
-`;
+//     @media (max-width: 768px) {
+//       padding: 2rem 0.5rem;
+//     }
+// `;
 
 const SectionHeading = styled(motion.span)`
-  font-size: 2rem;
-  margin-top: 1.5rem;
+position: fixed;
+top: 5rem;
+    right: 8rem;
+  font-size: 1.5rem;
+  width: 40%;
+  height: 4rem;
   font-weight: 700;
-  margin: 1.5rem;
-  color: #000;
+  color: #fff;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow: 1px 2px 2px 0px #000;
+  background-color: #134b5f;
+  z-index: 10;
 
     @media (max-width: 768px) {
-      font-size: 1.5rem;
+      font-size: 1rem;
+      right: 1rem;
+      height: auto;
     }
 `;
 
 const DashSection = styled(motion.div)`
   width: 100%;
-  height: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -191,7 +203,8 @@ const DashSection = styled(motion.div)`
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   transition: 1s ease-in-out;
-  overflow-y: auto;
+  //
+  //overflow-y: auto;
 
     @media (max-width: 768px) {
       flex-direction: column;

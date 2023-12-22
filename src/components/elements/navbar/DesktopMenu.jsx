@@ -12,6 +12,11 @@ import styled from 'styled-components';
 import { ProfileDropMenu } from './elements';
 import { motion } from 'framer-motion';
 
+const iconVariants = {
+  hover: { scale: 1.1 },
+  tap: { scale: 0.9 }
+};
+
 /**
  * Desktop Menu Component
  *
@@ -33,26 +38,26 @@ const DesktopMenu = ({ APP }) => {
     <DesktopMenuContainer>
 
       {/* Notification Icon */}
-      <NotificationIcon whileHover={{ scale: 1.1 }}>
+      <IconContainer whileHover='hover' whileTap="tap">
         <FontAwesomeIcon
           icon={notificationBarOpen ? faBellSlash : faBell}
           onClick={handleNotificationsBar}
         />
-      </NotificationIcon>
+      </IconContainer>
 
       {/* Settings Icon */}
-      <NotificationIcon whileHover={{ scale: 1.1 }}>
+      <IconContainer whileHover='hover' whileTap="tap">
         <FontAwesomeIcon
           icon={settingsMenuOpen ? faGear : faGears}
           onClick={handleSettingsMenu}
         />
-      </NotificationIcon>
+      </IconContainer>
 
       {/* Profile DropMenu */}
       <ProfileDropMenu APP={APP} />
 
       {/* Logout Button */}
-      <LogOutButton whileHover={{ scale: 1.05 }} onClick={handleLogOut}>
+      <LogOutButton whileHover='hover' whileTap="tap" onClick={handleLogOut}>
         <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '8px' }} />
         Logout
       </LogOutButton>
@@ -66,21 +71,30 @@ DesktopMenu.propTypes = {
 };
 
 const DesktopMenuContainer = styled.div`
+  // width: 100%;
+  // display: flex;
+  // height: 25px;
+  // align-items: center;
+  // justify-content: flex-end;
+  // gap: 10px;
+  
   width: 100%;
   display: flex;
-  height: 25px;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 15px;
+  padding-right: 20px;
 
   @media (max-width: 767px) {
     display: none;
   }
 `;
 
-const NotificationIcon = styled(motion.div)`
+const IconContainer = styled(motion.div)`
   cursor: pointer;
   font-size: 1.5rem;
+  color: #333;
+  transition: color 0.3s ease;
 
   &:hover {
     color: #007bff;
@@ -89,14 +103,19 @@ const NotificationIcon = styled(motion.div)`
 
 const LogOutButton = styled(motion.button)`
   color: black;
+  background-color: transparent;
   border: none;
   border-radius: 4px;
   padding: 0;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 
   &:hover {
     color: #007bff;
+    background-color: #f8f9fa;
   }
 `;
 

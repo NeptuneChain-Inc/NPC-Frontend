@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import appIcon from '../assets/icon.png';
+import AppLogo from '../assets/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faEraser } from '@fortawesome/free-solid-svg-icons';
 import { DesktopMenu, MobileMenu } from './elements/navbar';
 import { OBJECTS } from '../functions/helpers';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { style_template } from './lib/style_templates';
 
 /**
  * Navbar Component
@@ -14,17 +17,26 @@ import { AnimatePresence, motion } from 'framer-motion';
  */
 const Navbar = ({ APP }) => {
   const [search, setSearch] = useState('');
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [hideSearch, setHideSearch] = useState(false);
+  const [isMobile, setisMobile] = useState(false);
+  const navigate = useNavigate();
   const path = window.location.pathname.replace(/^\//, '');
   const { user, searchResults, sidebarOpen } = APP?.STATES || {};
   const { handleSidebar, setSearchResults } = APP?.ACTIONS || {};
+
 
   const noSearchBarRoutes = [
     'features/upload-video',
     'features/stream'
   ];
 
-  // Handle search whenever path changes
+  useEffect(() => {
+    const maxWidth = 768;
+    setisMobile(window.innerWidth <= maxWidth)
+  }, [])
+
+
   useEffect(() => {
     if (searchResults) {
       handleSearch();
@@ -38,52 +50,83 @@ const Navbar = ({ APP }) => {
   }, [path]);
 
   useEffect(() => {
-    if(search){
+    if (search) {
       handleSearch()
     }
   }, [search])
-  
 
-  // Filter search results based on query
+  const handleToWelcome = () => navigate('/')
+
   const handleSearch = () => {
     const currentDash = OBJECTS.findValueByKey(user?.dashData, path);
     const results = OBJECTS.SEARCH.filterObjectByQuery(currentDash, search);
     setSearchResults(results);
-    console.log('Search Results', {results})
+    console.log('Search Results', { results })
   };
 
-  // Clear the search query and results
   const clearSearch = () => {
     setSearch('');
     setSearchResults(null);
   };
 
+  // Toggle the expandable search bar
+  const toggleSearch = () => setIsSearchExpanded(!isSearchExpanded);
+
+  // Style variations for the search bar animation
+  const searchBarVariants = {
+    expanded: { opacity: 1, transition: { duration: 0.5 } },
+    collapsed: { opacity: 0, transition: { duration: 0.5 } }
+  };
+
   return (
     <NavbarContainer sidebarOpen={sidebarOpen}>
-      {/* Sidebar Toggle */}
+
+      <NavActions>
       {sidebarOpen ? (
-        <Icon icon={faTimes} onClick={handleSidebar} />
+        <>
+            <SidebarHeader>
+              <FullLogo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome} />
+            </SidebarHeader>
+          <Icon icon={faTimes} onClick={handleSidebar} />
+        </>
       ) : (
         <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
       )}
 
-      {/* Search Components */}
-          <HeaderSearchContainer initial={{ opacity: 0 }} animate={{ opacity: hideSearch ? 0 : 1, display: hideSearch ? 'none' : 'flex' }} exit={{ opacity: 0 }}>
-            <SearchIcon icon={faSearch} onClick={handleSearch} />
-            <Searchbar
-              type="text"
-              name="search"
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {(search || searchResults) && <SearchIcon icon={faEraser} onClick={clearSearch} />}
-          </HeaderSearchContainer>
+      <SearchContainer>
+        <SearchIcon icon={faSearch} onClick={toggleSearch} />
+        <AnimatePresence>
+          {isSearchExpanded && (
+            <SearchIcons>
+              <SearchInput
+                initial="collapsed"
+                animate="expanded"
+                exit="collapsed"
+                variants={searchBarVariants}
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              {search && (
+                <motion.div
+                  initial="collapsed"
+                  animate="expanded"
+                  exit="collapsed"
+                  variants={searchBarVariants}
+                >
+                  <ClearIcon icon={faEraser} onClick={clearSearch} />
+                </motion.div>
+              )}
+            </SearchIcons>
+          )}
+        </AnimatePresence>
 
-      {/* Desktop Menu */}
+      </SearchContainer>
+      </NavActions>
+
       <DesktopMenu APP={APP} />
 
-      {/* Mobile Menu */}
       <MobileMenu APP={APP} />
     </NavbarContainer>
   );
@@ -92,22 +135,67 @@ const Navbar = ({ APP }) => {
 
 const NavbarContainer = styled.header`
   position: fixed;
+  top: 0;
+  right: 0;
 width: ${({ sidebarOpen }) => sidebarOpen ? '80' : '100'}%;
-  height: 40px;
-  display: flex;
-  box-shadow: 0px 2px 2px 0px #d4d4d4;
+  height: 50px;
+  ${style_template.flex_display.row_custom('space-between')}
+  gap: 0.8rem;
+  box-shadow: 0px 2px 0px 0px #d4d4d4;
   max-height: 75px;
-  align-items: center;
-  padding: 1.5rem;
-  justify-content: flex-start;
+  
+  padding: 1rem;
+  padding-left: 0;
+  padding-right: 1.5rem;
+  box-sizing: border-box;
+  
   background-color: #ffffff;
 
-  box-sizing: border-box;
-  z-index: 999;
+  z-index: 1000;
 
   @media (max-width: 479px) {
+    width: 100%;
     padding: 1rem;
   }
+`;
+
+const NavActions = styled.div`${style_template.flex_display.row_custom()}gap: 10px;`;
+
+const SidebarHeader = styled.div`
+  display: none;
+  width: 100%;
+  height: 50px;
+
+  padding: 1.5rem;
+  box-sizing: border-box;
+
+  box-shadow: 0px 2px 0px 0px #d4d4d4;
+  //border:1px solid black;
+
+  @media (max-width: 768px) {
+    width: 50%;
+    ${style_template.flex_display.row_custom('flex-start')}
+    padding: 1rem;
+    
+  }
+`;
+
+const FullLogo = styled.img`
+  width: 40%;
+  height: auto;
+  object-fit: cover;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const SearchIcons = styled.div`
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0rem 1rem;
+
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -120,46 +208,30 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 const Logo = styled.img`
-  width: 40px;
-  height: auto;
+  width: 50px;
+  cursor: pointer;
 `;
 
-const HeaderSearchContainer = styled(motion.div)`
-  flex: 0 0 auto;
-  width: 60%;
-  height: 30px;
+const SearchContainer = styled.div`
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  border-radius: 4px;
-  background-color: #eeeeee;
-  margin-left: 0.5rem;
-
-  @media (min-width: 767px) {
-    width: 25%;
-  }
+  align-items: center;
 `;
 
 const SearchIcon = styled(FontAwesomeIcon)`
-  width: auto;
-  height: 60%;
-  margin: auto;
-  margin-left: 5px;
-  padding: 5px;
-  transition: 0.3s ease-in-out;
-
-  &:hover {
-    scale: 1.15;
-  }
+  cursor: pointer;
 `;
 
-const Searchbar = styled.input`
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  font-family: 'Work Sans';
-  border-width: 0px;
-  border-radius: 2px;
-  background-color: transparent;
+const ClearIcon = styled(FontAwesomeIcon)`
+
+  cursor: pointer;
 `;
 
-export default Navbar
+const SearchInput = styled(motion.input)`
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+`;
+
+export default Navbar;

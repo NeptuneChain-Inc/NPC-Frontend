@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faClose, faDatabase, faMaskFace, faPalette, faPerson, faUser, faUserGear, faUserLock } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faClose, faDatabase, faMaskFace, faPalette, faPerson, faUpload, faUser, faUserGear, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import ProfileSettingsTab from './elements/setting-tabs/ProfileSettings';
-import { AccountSettingsTab, DataSettingsTab, PersonalizationTab, PrivacySettingsTab } from './elements/setting-tabs';
+import { AccountSettingsTab, DataSettingsTab, PersonalizationTab, PrivacySettingsTab, UploadsTab } from './elements/setting-tabs';
 
 /**
  * SettingsMenu Component to render setting tabs
@@ -12,11 +12,12 @@ import { AccountSettingsTab, DataSettingsTab, PersonalizationTab, PrivacySetting
  * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
 const SettingsMenu = ({ APP }) => {
-  const { settingsTab } = APP ? APP.STATES : {};
+  const { user, settingsTab } = APP ? APP.STATES : {};
   const { handleSettingsTab, handleSettingsMenu } = APP ? APP.ACTIONS : {};
 
   const tabData = [
     { name: 'Profile Settings', icon: faUser, component: <ProfileSettingsTab APP={APP} /> },
+    { name: 'Uploads', icon: faUpload, component: <UploadsTab userId={user?.uid} /> },
     { name: 'Personalization', icon: faPalette, component: <PersonalizationTab APP={APP} /> },
     { name: 'Data Settings', icon: faDatabase, component: <DataSettingsTab APP={APP} /> },
     { name: 'Privacy Settings', icon: faUserLock, component: <PrivacySettingsTab APP={APP} /> },
@@ -40,7 +41,7 @@ const SettingsMenu = ({ APP }) => {
               </option>
             ))}
           </TabDropdown>
-          <DropdownIcon icon={faChevronDown} />
+          <DropdownIcon icon={faChevronUp} />
         </DropdownContainer>
 
       <Menu role="dialog" aria-labelledby="settingsMenuTitle">
@@ -78,49 +79,49 @@ const Container = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 `;
 
 const DropdownContainer = styled.div`
   display: none; 
-  position: relative;
-  
+
   @media (max-width: 768px) {
     display: flex;
-    align-items: center;
-    justify-content: center;
     position: absolute;
-    top: 10px;
+    bottom: 15px; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
   }
 `;
 
+
 const TabDropdown = styled.select`
-  padding: 10px 30px 10px 10px;
+  padding: 12px 40px 12px 15px;
   font-size: 16px;
   border-radius: 5px;
   border: 1px solid #ddd;
   appearance: none;
   background-color: #f7f7f7;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.15);
-  }
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; 
 
   &:focus {
     outline: none;
     border-color: #63c3d1;
   }
 
-  @media (min-width: 769px) {
-    display: none;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: -1;
   }
 `;
+
+
 
 const DropdownIcon = styled(FontAwesomeIcon)`
   position: absolute;
@@ -140,47 +141,49 @@ justify-content: center;
   border-radius: 10px;
   overflow: hidden;
 
-  @media (min-width: 769px) { // Tablet and above
+  @media (min-width: 769px) {
     width: 80%;
     height: 80%;
   }
 `;
 
 const TabList = styled.div`
-flex: 0.3;
-  border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
   background-color: #f7f7f7;
-  overflow: hidden;
-  white-space: nowrap;
 
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
+
 const Tab = styled(motion.div)`
-  flex: 1;
+  flex-grow: 1;
   text-align: center;
   cursor: pointer;
-  background-color: ${(props) => (props.active ? '#63c3d1' : '#134b5f')};
-  border-left: ${(props) => (props.active ? '2px #000' : '1px #ddd')} solid;
-  color: ${(props) => (props.active ? '#000' : '#ffffff')};
-  box-sizing: border-box;
+  padding: 15px;
+  font-weight: 500;
+  color: ${props => props.active ? '#000' : '#fff'};
+  background-color: ${props => props.active ? '#63c3d1' : '#134b5f'};
+  transition: background-color 0.2s ease;
 
   display: flex;
   align-items: center;
-  padding: 15px;
-  font-weight: 500;
-  transition: background 0.2s;
-  
+  justify-content: center;
+
   &:hover {
     background-color: #e5e5e5;
     color: #222;
   }
 
+  @media (max-width: 768px) {
+    flex: 1 0 auto;
+  }
 `;
+
 
 const TabIcon = styled(FontAwesomeIcon)`
   margin-right: 10px;
@@ -188,31 +191,32 @@ const TabIcon = styled(FontAwesomeIcon)`
 
 
 const Content = styled.div`
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
 
-padding: 25px;
-overflow-y: auto;
-
-@media (min-width: 767px) {
-  flex: 0.7;
-}
-`;
-
-const ExitIcon = styled(FontAwesomeIcon)`
-position: absolute;
-  top: 10px;
-  right: 10px;
-  margin: 10px;
-  padding: 5px;
-  background-color: #222;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  transition: 0.3s ease-in-out;
-  font-size: 24px;
-
-  &:hover {
-    scale: 1.1;
-    border: 2px solid red;
+  @media (max-width: 768px) {
+    padding: 15px;
   }
 `;
+
+
+const ExitIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 8px;
+  font-size: 24px;
+  color: #fff;
+  background-color: #222;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f00;
+  }
+`;
+
 
 export default SettingsMenu;

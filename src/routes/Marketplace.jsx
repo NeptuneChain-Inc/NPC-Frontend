@@ -12,20 +12,19 @@ import { MARKETPLACE_HEADER } from '../components/elements/marketplace/elements/
 
 
 const MarketplaceContainer = styled.div`
-width: 100vw;
-        height: 100vh;
+    width: 100%;
+        height: 100%;
         padding: 60px 20px;
         display: flex;
         flex-direction: column;
+        justify-content: flex-start;
         align-items: center;
-        background: linear-gradient(120deg, ${logoColors.primary} 0%, ${logoColors.accent} 100%);
         color: #B2B2B2;
         font-family: 'Roboto', sans-serif;
         box-sizing: border-box;
         overflow: auto;
 
         @media (max-width: 768px) {
-            padding: 10px;
         }
 `;
 
@@ -62,18 +61,6 @@ color: #568EA3;
 margin-left: 10px;
 `
 
-const NFTCard = styled.div`
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px;
-    transition: transform 0.3s;
-
-    &:hover {
-        transform: scale(1.05);
-    }
-`;
-
 const EventsButton = styled.button`
 background-color: ${colors.deepBlue};
 color: white;
@@ -95,34 +82,6 @@ margin: 10px 0;
 }
 `
 
-const FloatingButton = styled(motion.button)`
-position: fixed;
-bottom: 50px;
-left: -10px;
-width: 50px;
-padding: 10px 20px;
-border: none;
-border-radius: 30px;
-background-color: ${colors.deepBlue};
-color: white;
-font-size: 0.8rem;
-cursor: pointer;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-transition: 0.3s;
-
-&:hover {
-    background-color: #826251;
-    transform: translateY(-2px);
-    left: 20px;
-}
-
-@media (max-width: 768px) {
-    width: 40px;
-    bottom: 10px;
-    left: 5px;
-    padding: 10px;
-}
-`;
 
 const Marketplace = ({ APP }) => {
     const navigate = useNavigate();
@@ -160,8 +119,6 @@ const Marketplace = ({ APP }) => {
 
     return (
         <MarketplaceContainer>
-            <MARKETPLACE_HEADER>NeptuneChain Marketplace <FontAwesomeIcon icon={faHome} onClick={() => navigate('/dashboard/main')} /></MARKETPLACE_HEADER>
-
             <SearchBarContainer>
                 <SearchBar placeholder="Search for NPCs..." />
                 <SearchIcon icon={faSearch} />
@@ -176,10 +133,6 @@ const Marketplace = ({ APP }) => {
             {showEventsPopup && (
                 <EventsPopup events={events} onClose={toggleEventsPopup} fetchEvents={fetchEvents} marketEvents={marketEvents} />
             )}
-
-            <FloatingButton onClick={() => navigate('seller-dashboard')}>
-                <FontAwesomeIcon icon={faDolly} />
-            </FloatingButton>
         </MarketplaceContainer>
     );
 }

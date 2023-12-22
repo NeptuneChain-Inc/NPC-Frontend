@@ -20,12 +20,11 @@ const colors = {
   };
   
   const DashboardWrapper = styled(Tabs)`
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 20px;
-      background: linear-gradient(120deg, ${logoColors.primary} 0%, ${logoColors.accent} 100%);
     box-sizing: border-box;
     align-items: center;
     justify-content: center;
@@ -158,6 +157,8 @@ const FloatingButton = styled(motion.button)`
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition:  0.3s;
+
+  z-index: 1000;
 
   &:hover {
     transform: translateY(-2px);
@@ -310,7 +311,6 @@ const SellerDashboard = ({ APP }) => {
 
     return (
         <DashboardWrapper>
-            <MARKETPLACE_HEADER>Seller Dashboard <FontAwesomeIcon icon={faHome} onClick={() => navigate('/dashboard/main')} /></MARKETPLACE_HEADER>
             <StyledTabList>
                 <StyledTab>Owned</StyledTab>
                 <StyledTab>Listed</StyledTab>

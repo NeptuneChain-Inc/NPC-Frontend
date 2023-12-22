@@ -14,12 +14,12 @@ import { motion, AnimatePresence } from 'framer-motion';
  * @param {string} props.itemName - The label for the menu item
  * @param {string} props.route - The route to navigate to when clicked
  */
-const Sidebar_MenuItem = ({ icon, itemName, route }) => {
+const Sidebar_MenuItem = ({ icon, itemName, route, handleSidebar, onClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRoute, setIsRoute] = useState(false);
 
-  const normalizedRoute = route.startsWith('/') ? route : `/dashboard/${route}`;
+  const normalizedRoute = route?.startsWith('/') ? route : `/dashboard/${route}`;
 
   // Effect to check if the current route matches the given route
   useEffect(() => {
@@ -32,9 +32,13 @@ const Sidebar_MenuItem = ({ icon, itemName, route }) => {
    * Handles the click event for navigation.
    */
   const handleClick = () => {
-    console.log(typeof route, route)
     if (route && typeof route === 'string' && !isRoute) {
       navigate(normalizedRoute)
+    } else if(onClick) {
+      onClick();
+    }
+    if(handleSidebar){
+      handleSidebar();
     }
   };
 
@@ -76,6 +80,7 @@ const ActiveIndicator = styled(motion.div)`
  */
 const MenuItem = styled(motion.li)`
   position: relative;
+  width: ${({ isRoute }) => (isRoute ? '100%' : '90%')};
   height: auto;
   display: flex;
   padding: 0.5rem 1rem;
@@ -122,6 +127,9 @@ const RouteName = styled.span`
   font-weight: 700;
   margin-left: 0.5rem;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 0.8rem;

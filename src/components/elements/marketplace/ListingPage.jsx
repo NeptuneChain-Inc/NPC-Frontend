@@ -3,13 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { ethers } from 'ethers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faHome } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import PoSPopup from './elements/PoSPopup';
 import { formatLongString } from '../../../functions/utils';
 import { colors } from '../../../styles/colors';
 import { MARKETPLACE_HEADER } from './elements/styled';
 import { ACTION_BUTTON } from '../../global_styled';
+import placeholder from '../../../assets/icon.png';
 
 const logoColors = {
   primary: '#005A87',  
@@ -42,9 +43,7 @@ const ListingPageWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 80px 20px;
-  background: linear-gradient(120deg, ${logoColors.primary} 0%, ${logoColors.accent} 100%);
-  height: 100vh;
-  width: 100vw;
+  width: 100%;
   box-sizing: border-box;
   animation: ${fadeIn} 0.6s ease-out;
   overflow: auto;
@@ -65,34 +64,65 @@ const BlurredBack = styled(motion.div)`
 
   const MainContent = styled.div`
   width: 80%;
+  height: auto;
   margin-right: 20px;
   animation: ${fadeIn} 0.8s ease-out;
   border-bottom: 1px solid ${logoColors.secondary};
   border-radius: 4px;
   overflow: auto;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100vh;
+  }
 `;
 
-  const Sidebar = styled.div`
-  position: sticky;
+const Sidebar = styled.div`
   width: 20%;
-  background-color: ${logoColors.secondary};
   padding: 20px;
-  border-radius: 8px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: auto;
+  transition: transform 0.3s ease;
+  position: sticky;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    width: 80%;
+    padding-top: 100px;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    transform: translateX(${props => props.isOpen ? '0' : '100%'});
+    z-index: 20;
+    background-color: #fff;
+  }
 `;
-  const Section = styled.section`
+
+const DrawerToggleButton = styled.button`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 55px;
+    right: 10px;
+    z-index: 100;
+    background: ${logoColors.primary};
+    color: #fff;
+  }
+`;
+
+
+
+  const Section = styled.div`
+  height: auto;
   margin-bottom: 30px;
   padding: 20px;
   border-radius: 8px;
-  background-color: white;
+  // background-color: ${logoColors.secondary};
   box-sizing: border-box;
-  max-height: 300px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-left: 4px solid ${logoColors.accent};
   transition: all 0.3s ease;
-  overflow: auto;
 
   &:hover {
     transform: translateY(-2px);
@@ -100,6 +130,22 @@ const BlurredBack = styled(motion.div)`
   }
 `;
 
+const HeroSection = styled(Section)`
+  display: flex;
+  gap: 50px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const TokenImage = styled(motion.img)`
+  min-height: 200px;
+  min-width: 200px;
+  max-width: 400px;
+  height: auto;
+  border: 1px solid black;
+`;
 
 const SectionTitle = styled.h2`
   margin-bottom: 15px;
@@ -128,29 +174,6 @@ const ItemData = styled.span`
   font-weight: 100;
 `;
 
-const FloatingButton = styled(motion.button)`
-  position: fixed;
-  bottom: 50px;
-  left: -10px;
-  width: 50px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 30px;
-  background-color: ${colors.deepBlue};
-  color: white;
-  font-size: 0.8rem;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition:  0.3s;
-
-  &:hover {
-    transform: translateY(-2px);
-    left: 20px;
-  }
-`;
-
-
-
 const ListingPage = ({ APP }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -161,6 +184,13 @@ const ListingPage = ({ APP }) => {
   const [showPoSPopup, setShowPoSPopup] = useState(false);
   const [userBidHistory, setUserBidHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+const toggleDrawer = () => {
+  setIsDrawerOpen(!isDrawerOpen);
+};
+
 
   const { signedUser, marketInteractions, signedMarketInteractions } = APP?.STATES || {};
   //   const [transferHistory, setTransferHistory] = useState([]);
@@ -242,18 +272,21 @@ const ListingPage = ({ APP }) => {
 
   return (
     <ListingPageWrapper>
-<MARKETPLACE_HEADER>NeptuneChain Marketplace <FontAwesomeIcon icon={faHome} onClick={() => navigate('/dashboard/main')} /></MARKETPLACE_HEADER>
       {isLoading ? (
         <Spinner />
       ):(
         <MainContent>
-        <Section>
+          
+        <HeroSection>
+          <TokenImage src={placeholder}/>
+          <div>
           <SectionTitle>Listing #{id}</SectionTitle>
           <Item>
             <ItemLabel>Token ID: <ItemData>{listingDetails.tokenId}</ItemData></ItemLabel>
             <ItemLabel>Price: <ItemData>{listingDetails.price} Matic</ItemData></ItemLabel>
           </Item>
-        </Section>
+          </div>
+        </HeroSection>
 
         <Section>
           <SectionTitle>Bid History</SectionTitle>
@@ -281,9 +314,13 @@ const ListingPage = ({ APP }) => {
       </MainContent>
       )}
 
-      <Sidebar>
-        <Section>
-          <h3>Get Asset</h3>
+<DrawerToggleButton onClick={toggleDrawer}>
+  <FontAwesomeIcon icon={isDrawerOpen ? faArrowLeft : faArrowRight} />
+</DrawerToggleButton>
+
+      <Sidebar isOpen={isDrawerOpen}>
+        <Section style={{backgroundColor: '#134b5f'}}>
+          <h3 style={{color: '#fff'}}>Purchase Credit</h3>
           <ACTION_BUTTON 
             whileHover={{ scale: 1.05 }} 
             whileTap={{ scale: 0.95 }} 
@@ -298,7 +335,7 @@ const ListingPage = ({ APP }) => {
             onClick={() => openPoSPopup('bid')} 
             disabled={isLoading}
           >
-            Place Bid
+            Bid
           </ACTION_BUTTON>
           {/* Additional user actions */}
         </Section>
@@ -333,11 +370,6 @@ const ListingPage = ({ APP }) => {
           <PoSPopup closePopup={closePoSPopup} actionType={actionType} listingId={id} listingPrice={listingDetails.price} buyNFT={buyNFT} placeBid={placeBid} />
         </BlurredBack>
       )}
-
-      <FloatingButton onClick={navigateBack}>
-        <FontAwesomeIcon icon={faArrowLeft} />
-      </FloatingButton>
-
     </ListingPageWrapper>
   );
 };

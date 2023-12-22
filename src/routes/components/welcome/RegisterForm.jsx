@@ -1,43 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../apis/firebase';
 import { createUser } from '../../../apis/database';
-import NotificationPopup from '../../../components/popups/NotificationPopup';
+import Notification from '../../../components/popups/NotificationPopup';
 import Lottie from 'react-lottie';
 import environmentalRotation from '../../../assets/animations/environmental-friendly-animation.json';
 import successAnimation from '../../../assets/animations/success-animation.json';
-import { BUTTON, BUTTON_SEC, INPUT, LOADING_ANIMATION } from '../../../components/lib/styled';
+import { BUTTON, INPUT, LOADING_ANIMATION, PROMPT_FORM, TEXT_LINK } from '../../../components/lib/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faUser } from '@fortawesome/free-regular-svg-icons';
 import { faLock, faPeopleGroup } from '@fortawesome/free-solid-svg-icons';
-
-const Form = styled(motion.form)`
-width: 50%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 2rem;
-  border-radius: 10px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: 60vh;
-  overflow: auto;
-
-  border: 1px solid black;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  color: #0077b6;
-  margin-right: 10px;
-`;
+import { formVariant, loadingVariant } from './motion_variants';
 
 const InputGroup = styled.div`
   display: flex;
@@ -49,6 +24,11 @@ const InputGroup = styled.div`
   border-radius: 4px;
   padding: 5px;
   box-sizing: border-box;
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  color: #0077b6;
+  margin-right: 10px;
 `;
 
 const Dropdown = styled.select`
@@ -71,17 +51,6 @@ const Dropdown = styled.select`
 }
 `;
 
-const formVariant = {
-  hidden: { opacity: 0, y: '-10vh' },
-  visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: '10vh' },
-};
-
-const notificationVariant = {
-  hidden: { opacity: 0, scale: 0.5 },
-  visible: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.5 },
-};
 
 
 const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
@@ -110,7 +79,6 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userData = userCredential.user;
 
-      // Construct user data for the database
       const newUser = {
         uid: userData.uid,
         username: username.toLowerCase(),
@@ -118,10 +86,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
         type: accountType
       };
 
-      if(await createUser(newUser)){
-        setIsSuccess(Boolean(await updateUser?.()))
+      if (await createUser(newUser)) {
+        setIsSuccess(Boolean(await updateUser?.(newUser.uid)))
       }
-      
+
 
     } catch (error) {
       setError(error.message);
@@ -144,30 +112,26 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
 
   return (
     <AnimatePresence>
-      {error && (
-        <NotificationPopup type="error" message={error} />
-      )}
+      
+      <Notification type='error' message={error} />
 
       {isLoading ? (
-        // Loading animation
         <LOADING_ANIMATION
           initial="hidden"
           animate="visible"
           exit="exit"
-          variants={notificationVariant}
+          variants={loadingVariant}
         >
           <Lottie options={lottieOptions} height={100} width={100} />
         </LOADING_ANIMATION>
       ) : !isSuccess ? (
-        <Form
+        <PROMPT_FORM
           variants={formVariant}
           initial="hidden"
           animate="visible"
           exit="exit"
           onSubmit={handleSubmit}
         >
-
-
           <InputGroup>
             <Icon icon={faUser} />
             <INPUT
@@ -215,16 +179,16 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
           </InputGroup>
 
           <BUTTON type="submit">Register</BUTTON>
-          <BUTTON_SEC type="button" onClick={onSwitchToLogin}>
+          <TEXT_LINK type="button" onClick={onSwitchToLogin}>
             Already have an account? Log in
-          </BUTTON_SEC>
-        </Form>
+          </TEXT_LINK>
+        </PROMPT_FORM>
       ) : (
         <LOADING_ANIMATION
           initial="hidden"
           animate="visible"
           exit="exit"
-          variants={notificationVariant}
+          variants={loadingVariant}
         >
           <Lottie options={lottieSuccessOptions} height={100} width={100} />
         </LOADING_ANIMATION>

@@ -12,9 +12,10 @@ const FullScreenWrapper = styled.div`
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  z-index: 99;
+  z-index: 100;
 `;
 
 const PopupWrapper = styled.div`
@@ -30,18 +31,17 @@ const PopupWrapper = styled.div`
   border-radius: 15px;
   box-sizing: border-box;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  z-index: 101;
   overflow-y: auto;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: flex-start; 
   
 
   @media (max-width: 768px) {
     width: 95%;
-    top: 2%;
     padding: 20px;
   }
 `;

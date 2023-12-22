@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../apis/firebase';
 import Lottie from 'react-lottie';
@@ -10,91 +10,8 @@ import Notification from '../../../components/popups/NotificationPopup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { LOADING_ANIMATION } from '../../../components/lib/styled';
-
-const Input = styled.input`
-width: 80%;
-padding: 12px 16px;
-font-size: 16px;
-border: 1px solid #ccc;
-outline: none;
-transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-&::placeholder {
-  color: #999;
-}
-
-&:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-`;
-
-const BUTTON = styled.button`
-color: #FFF;
-background-color: #0077b6;
-padding: 15px 30px;
-//border-radius: 50px;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-transition: all 0.3s ease;
-cursor: pointer;
-
-&:hover {
-  background-color: #0056b3;
-  color: white;
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
-}
-
-
-
-
-border: none;
-border-radius: 4px;
-margin-bottom: 1rem;
-
-`;
-
-const BUTTON_SEC = styled.span`
-background-color: transparent;
-color: #0077b6;
-text-decoration: underline;
-margin-bottom: 0;
-transition: 0.3s ease-in-out;
-cursor: pointer;
-
-
-&:hover {
-  background-color: transparent;
-  color: #005f8a;
-  transform: translateY(-2px);
-}
-`;
-
-const Form = styled(motion.form)`
-width: 50%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 2rem;
-  border-radius: 10px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: 60vh;
-
-  border: 1px solid black;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin: auto;
-  color: #fff;
-`;
+import { BUTTON, INPUT, LOADING_ANIMATION, PROMPT_FORM, TEXT_LINK } from '../../../components/lib/styled';
+import { formVariant, loadingVariant } from './motion_variants';
 
 const InputGroup = styled.div`
   position: relative;
@@ -107,17 +24,11 @@ const InputGroup = styled.div`
   border: 1px solid #ccc;
 `;
 
-const notificationVariant = {
-  hidden: { opacity: 0, scale: 0.5 },
-  visible: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.5 },
-};
-
-const formVariant = {
-  hidden: { opacity: 0, y: '-10vh' },
-  visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: '10vh' },
-};
+const Icon = styled(FontAwesomeIcon)`
+  margin: auto;
+  min-width: 30px;
+  color: #fff;
+`;
 
 function isValidEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -184,28 +95,19 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   return (
     <AnimatePresence>
 
-      {error && (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={notificationVariant}
-        >
-          <Notification type='error' message={error} />
-        </motion.div>
-      )}
+      <Notification type='error' message={error} />
 
       {isLoading ? (
         <LOADING_ANIMATION
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={notificationVariant}
-      >
-        <Lottie options={lottieOptions} height={100} width={100} />
-      </LOADING_ANIMATION>
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={loadingVariant}
+        >
+          <Lottie options={lottieOptions} height={100} width={100} />
+        </LOADING_ANIMATION>
       ) : !isSuccess ? (
-        <Form
+        <PROMPT_FORM
           variants={formVariant}
           initial="hidden"
           animate="visible"
@@ -214,7 +116,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
         >
           <InputGroup>
             <Icon icon={faEnvelope} />
-            <Input
+            <INPUT
               type='email'
               placeholder='Email'
               value={email}
@@ -225,7 +127,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
 
           <InputGroup>
             <Icon icon={faLock} />
-            <Input
+            <INPUT
               type="password"
               placeholder="Password"
               value={password}
@@ -236,19 +138,19 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
 
 
           <BUTTON type="submit">Log In</BUTTON>
-          <BUTTON_SEC type="button" onClick={handleResetPassword}>
+          <TEXT_LINK type="button" onClick={handleResetPassword}>
             Forgot Password?
-          </BUTTON_SEC>
-          <BUTTON_SEC type="button" onClick={onSwitchToRegister}>
+          </TEXT_LINK>
+          <TEXT_LINK type="button" onClick={onSwitchToRegister}>
             Need an account? Register
-          </BUTTON_SEC>
-        </Form>
+          </TEXT_LINK>
+        </PROMPT_FORM>
       ) : (
         <LOADING_ANIMATION
           initial="hidden"
           animate="visible"
           exit="exit"
-          variants={notificationVariant}
+          variants={loadingVariant}
         >
           <Lottie options={lottieSuccessOptions} height={100} width={100} />
         </LOADING_ANIMATION>

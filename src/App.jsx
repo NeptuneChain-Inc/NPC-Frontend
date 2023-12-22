@@ -5,7 +5,7 @@ import { Welcome, Home, Marketplace, NotFound } from './routes'
 import { Notification, Confirmation } from './components/popups'
 import { Livepeer } from './components/elements/livepeer'
 import styled from 'styled-components'
-import { SettingsMenu } from './components'
+import { Navbar, NotificationBar, NutrientCalculator, SettingsMenu, Sidebar } from './components'
 import { getUser } from './apis/database'
 import { VerificationUI } from './components/elements/contractUI'
 import { getSigner } from './apis/ethers'
@@ -14,6 +14,79 @@ import configs from './configs'
 import { ethers } from 'ethers'
 import SellerDashboard from './components/elements/marketplace/SellerDashboard'
 import ListingPage from './components/elements/marketplace/ListingPage'
+import { style_template } from './components/lib/style_templates'
+import FloatingMenu from './components/FloatingMenu'
+import { faInfo } from '@fortawesome/free-solid-svg-icons'
+import { motion } from 'framer-motion'
+import { colors } from './styles/colors'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
+const AppContainer = styled.div`
+${style_template.flex_display.column_custom('center', 'flex-start')}
+width: 100vw;
+height: 100vh;
+`;
+
+const FlexRow = styled.div`
+  ${style_template.flex_display.row_custom('flex-start', 'center')}
+  
+  //background: black;
+`;
+
+const Main = styled.div`
+// position: fixed;
+  width: ${({ isSidebarOpen }) => isSidebarOpen ? '80vw' : "100vw"};
+  height: 100vh;
+  display: flex;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-bottom: 25px;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  transition: 0.3s ease-in-out;
+
+  overflow: auto;
+
+  @media(max-width: 767px) {
+    width:100vw;
+  }
+
+`;
+
+const FloatingButton = styled(motion.button)`
+position: fixed;
+bottom: 50px;
+left: -10px;
+width: 50px;
+padding: 10px 20px;
+border: none;
+border-radius: 30px;
+background-color: ${colors.deepBlue};
+color: white;
+font-size: 0.8rem;
+cursor: pointer;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+transition: 0.3s;
+
+&:hover {
+    transform: translateY(-2px);
+    left: 20px;
+}
+
+z-index: 1000; 
+
+@media (max-width: 768px) {
+    width: 40px;
+    bottom: 10px;
+    left: 5px;
+    padding: 10px;
+}
+`;
+
 
 const Footer = styled.footer`
   width: 100%;
@@ -29,6 +102,8 @@ const Footer = styled.footer`
   padding-bottom: 0.5rem;
   justify-content: space-between;
   background-color: #fff;
+
+  z-index: 999;
 
   @media(max-width: 767px) {
     padding-left: 2rem;
@@ -78,16 +153,17 @@ function App() {
   const [user, setUser] = useState(null);
   const [signer, setSigner] = useState(null);
   const [networkProvider, setNetworkProvider] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
 
-  const [marketInteractions, setMarketInteractions] = useState(getMarketInteractions(new ethers.JsonRpcProvider(configs.networks.polygon.testnet)));
+  const [marketInteractions,] = useState(getMarketInteractions(new ethers.JsonRpcProvider(configs.networks.polygon.testnet)));
   const [signedMarketInteractions, setSignedMarketInteractions] = useState(null);
   const [signedUser, setSignedUser] = useState(null);
 
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [verificationUIOpen, setVerificationUIOpen] = useState(false);
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   const [settingsTab, setSettingsTab] = useState('Profile Settings');
   const [confirmation, setConfirmation] = useState(null);
@@ -179,6 +255,8 @@ function App() {
     setSettingsMenuOpen(true);
   }
 
+  const toggleCalculator = () => setCalculatorOpen(!calculatorOpen);
+
   const logConfirmation = (message, action) => {
     const confirmation_obj = {
       msg: message,
@@ -245,6 +323,7 @@ function App() {
       notificationBarOpen,
       verificationUIOpen,
       settingsMenuOpen,
+      calculatorOpen,
       settingsTab,
       confirmation,
       notification,
@@ -260,6 +339,7 @@ function App() {
       handleVerificationUI,
       handleSettingsMenu,
       handleSettingsTab,
+      toggleCalculator,
       logConfirmation,
       cancelConfirmation,
       logNotification,
@@ -268,38 +348,64 @@ function App() {
   }
 
   useEffect(() => {
-    console.log({APP})
+    console.log({ APP })
   }, [APP])
-  
+
 
   return (
     <Router>
-      <Notification type='notification' message={notification} clearNotification={clearNotification} />
-      <Notification type='alert' message={alert} clearNotification={clearNotification} />
-      <Notification type='error' message={error} clearNotification={clearNotification} />
-      <Confirmation message={confirmation?.msg} onConfirm={confirmation?.action} onCancel={cancelConfirmation} />
-      {signer && <VerificationUI signer={signer} open={verificationUIOpen} APP={APP} />}
-      {user && settingsMenuOpen && (
-        <SettingsMenu APP={APP} />
-      )}
-      <Routes>
-        <Route path="/" element={<Welcome APP={APP}/>} />
-        {user?.uid && <Route path="/dashboard/:dashID" element={<Home APP={APP} />} />}
-        {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
-        {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}
-        {user?.uid && <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />}
-        {user?.uid && <Route path="/marketplace" element={<Marketplace APP={APP} />} />}
-        {user?.uid && <Route path="/marketplace/listing/:id" element={<ListingPage APP={APP} />} />}
-        {user?.uid && <Route path="/marketplace/seller-dashboard" element={<SellerDashboard APP={APP} />} />}
+      <AppContainer>
+        <Notification type='notification' message={notification} clearNotification={clearNotification} />
+        <Notification type='alert' message={alert} clearNotification={clearNotification} />
+        <Notification type='error' message={error} clearNotification={clearNotification} />
+        <Confirmation message={confirmation?.msg} onConfirm={confirmation?.action} onCancel={cancelConfirmation} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Footer>
-        <FooterContent>© 2023 NeptuneChain, All Rights Reserved.</FooterContent>
-        <FooterIconGroup>
-          {/* ICONS HERE */}
-        </FooterIconGroup>
-      </Footer>
+        {settingsMenuOpen && (
+          <SettingsMenu APP={APP} />
+        )}
+
+        {user && (
+          <>
+            <Navbar APP={APP} />
+            {/* <Sidebar APP={APP} /> */}
+            <NotificationBar APP={APP} />
+            <NutrientCalculator isOpen={calculatorOpen} onClose={toggleCalculator} />
+            {settingsMenuOpen && <SettingsMenu APP={APP} />}
+            {signer && <VerificationUI signer={signer} open={verificationUIOpen} APP={APP} />}
+          </>
+        )}
+
+
+        <FlexRow>
+          {user && <Sidebar APP={APP} />}
+          <Main isSidebarOpen={sidebarOpen}>
+            <Routes>
+              <Route path="/" element={<Welcome APP={APP} />} />
+              {user?.uid && <Route path="/dashboard/:dashID" element={<Home APP={APP} />} />}
+              {user?.uid && <Route path="/features/:serviceID" element={<Livepeer APP={APP} />} />}
+              {user?.uid && <Route path="/media/:playbackID" element={<Livepeer APP={APP} />} />}
+              {user?.uid && <Route path="/media/live/:liveID" element={<Livepeer APP={APP} />} />}
+              {user?.uid && <Route path="/marketplace" element={<Marketplace APP={APP} />} />}
+              {user?.uid && <Route path="/marketplace/listing/:id" element={<ListingPage APP={APP} />} />}
+              {user?.uid && <Route path="/marketplace/seller-dashboard" element={<SellerDashboard APP={APP} />} />}
+
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Main>
+        </FlexRow>
+
+        {/* <FloatingMenu handleCalculatorClick={toggleCalculator}/> */}
+        <FloatingButton onClick={() => console.log('Assistant Clicked')}>
+          <FontAwesomeIcon icon={faInfo} />
+        </FloatingButton>
+
+        <Footer>
+          <FooterContent>© 2023 NeptuneChain, All Rights Reserved.</FooterContent>
+          <FooterIconGroup>
+            {/* ICONS HERE */}
+          </FooterIconGroup>
+        </Footer>
+      </AppContainer>
     </Router>
   )
 }

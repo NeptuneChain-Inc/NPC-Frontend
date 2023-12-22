@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faBell, faBellSlash, faClose, faGear, faGears, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ProfileDropMenu from './elements/ProfileDropMenu';
+import { BUTTON } from '../../lib/styled';
 
 /**
  * MobileMenu Component
@@ -19,11 +20,23 @@ const MobileMenu = ({ APP }) => {
     handleLogOut,
   } = APP ? APP.ACTIONS : {};
 
-  // Close menu and execute action
   const handleAction = useCallback((action) => {
     setIsOpen(false);
-    action();
+    setTimeout(() => {
+      action();
+    }, 300); // Delay for smooth transition
   }, []);
+
+  // Framer Motion Variants
+  const sideMenuVariants = {
+    open: { x: 0, transition: { type: 'spring', stiffness: 300, damping: 30 } },
+    closed: { x: '100%', transition: { type: 'spring', stiffness: 300, damping: 30 } },
+  };
+
+  const linkVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0, transition: { delay: 0.3 } },
+  };
 
   const variants = {
     open: { x: 0 },
@@ -39,15 +52,13 @@ const MobileMenu = ({ APP }) => {
             initial="closed"
             animate="open"
             exit="closed"
-            variants={variants}
+            variants={sideMenuVariants}
           >
             <MenuSection>
-              <MenuHeader>Profile</MenuHeader>
               <ProfileDropMenu APP={APP} />
             </MenuSection>
 
             <MenuSection>
-              <MenuHeader>Utilities</MenuHeader>
               <MenuItem onClick={()=>handleAction(handleNotificationsBar)}>
                 <MenuItemIcon icon={notificationBarOpen ? faBellSlash : faBell} />
               </MenuItem>
@@ -57,10 +68,12 @@ const MobileMenu = ({ APP }) => {
             </MenuSection>
 
             <MenuSection>
-              <LogOutButton onClick={handleLogOut}>Logout</LogOutButton>
+              <BUTTON whileHover={{ scale: 1.05 }} onClick={() => handleAction(handleLogOut)}>
+                Logout
+              </BUTTON>
             </MenuSection>
 
-            <FooterLinks>
+            <FooterLinks variants={linkVariants}>
               <Link href="#home">Home</Link>
               <Link href="#features">Features</Link>
               <Link href="#contact">Contact</Link>
@@ -80,17 +93,13 @@ MobileMenu.propTypes = {
 };
 
 const MobileMenuContainer = styled.div`
-  position: absolute;
-  right: 0;
   display: none;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem;
-  box-sizing: border-box;
+  opacity: 0;
   transition: all 0.3s ease;
 
   @media (max-width: 767px) {
     display: flex;
+    opacity: 1;
   }
 `;
 
@@ -100,7 +109,6 @@ const MenuIcon = styled(FontAwesomeIcon)`
   cursor: pointer;
   transition: color 0.3s ease;
   ${({sidebarOpen}) => sidebarOpen && `
-  position: fixed;
   right: 10px;
   `}
   z-index: 9999;
@@ -126,7 +134,9 @@ const SideMenu = styled(motion.div)`
   box-sizing: border-box;
   overflow: visible;
   padding: 2rem;
+  padding-top: 3rem;
   font-family: 'Arial', sans-serif;
+  box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.4);
 `;
 
 const MenuSection = styled.div`

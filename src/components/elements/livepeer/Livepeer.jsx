@@ -10,7 +10,7 @@ import { Navbar, NotificationBar, Sidebar } from '../../';
 import { LIVEPEER_API_KEY } from '../../../apis/livepeer';
 import { Stream } from './Stream';
 import { VideoUpload } from './VideoUpload';
-import { MediaPlayer,BasicStreamPlayer } from './elements';
+import { MediaPlayer, BasicStreamPlayer } from './elements';
 
 const livepeerClient = createReactClient({
   provider: studioProvider({
@@ -21,7 +21,7 @@ const livepeerClient = createReactClient({
 function Livepeer({ APP }) {
   const { serviceID, playbackID, liveID } = useParams();
   const { user, sidebarOpen } = APP ? APP.STATES : {};
-  
+
   const renderService = (serviceID) => {
     switch (serviceID) {
       case 'stream':
@@ -45,20 +45,9 @@ function Livepeer({ APP }) {
 
   return (
     <LivepeerConfig client={livepeerClient}>
-      <Container>
-        {user && (
-          <App>
-            <Sidebar isOpen={sidebarOpen} user={user} />
-            <NotificationBar APP={APP} />
-            <Main isSidebarOpen={sidebarOpen}>
-              <Navbar APP={APP} />
-              {serviceID && renderService(serviceID)}
-              {playbackID && <MediaPlayer playbackID={playbackID} />}
-              {liveID && <BasicStreamPlayer playbackId={liveID} /> }
-            </Main>
-          </App>
-        )}
-      </Container>
+      {serviceID && renderService(serviceID)}
+      {playbackID && <MediaPlayer playbackID={playbackID} />}
+      {liveID && <BasicStreamPlayer playbackId={liveID} />}
     </LivepeerConfig>
   );
 }

@@ -65,7 +65,7 @@ const MarketBrowser = ({ marketEvents }) => {
     return (
         <NFTGrid>
                 {nfts.length > 0 ? (
-                    nfts.map(nft => <NFTCard key={nft.tokenID} nft={nft} navigate={navigate}/>)
+                    nfts.map((nft, index) => <NFTCard key={index} nft={nft} navigate={navigate}/>)
                 ) : <p>No Assets Available</p>}
             </NFTGrid>
     );
