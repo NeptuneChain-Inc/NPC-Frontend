@@ -429,7 +429,7 @@ function ExplorerPage() {
         ) : (
           <>
             <FixedTitle>
-              <Heading isSmallScreen={isSmallScreen}>Recent Removals</Heading>
+              <Heading isSmallScreen={isSmallScreen}>- Recent Removals -</Heading>
               <AccountSearchButton onClick={handleAccountSearchToggle}>
                 Account Search
               </AccountSearchButton>
