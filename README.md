@@ -7,13 +7,13 @@ The NPRC-Marketplace repository serves as the core platform for the NeptuneChain
 
 1. **Clone the Repository:**
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/NeptuneChain-Inc/NPRC-Marketplace.git
    ```
 
 2. **Install Dependencies:**
    After cloning, navigate to the project directory and install the necessary dependencies.
    ```bash
-   cd [project-name]
+   cd NPRC-Marketplace
    npm install
    ```
 
