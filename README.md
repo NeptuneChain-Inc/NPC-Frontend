@@ -1,9 +1,41 @@
 # Repository for NeptuneChain's Nutrient Pollution Recycling Certificate (NPRC) Marketplace
 
-## Repository Description
+## Repository Description:
 The NPRC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
 
-## Changelog Overview
+## Deployment Instructions for Collaborator Protocol:
+
+1. **Clone the Repository:**
+   ```bash
+   git clone [repository-url]
+   ```
+
+2. **Install Dependencies:**
+   After cloning, navigate to the project directory and install the necessary dependencies.
+   ```bash
+   cd [project-name]
+   npm install
+   ```
+
+3. **Log in to Firebase:**
+   The new contributor must be logged in to Firebase with an account that has permissions to access the Firebase project. If they haven’t logged in or need to switch accounts, they can use:
+   ```bash
+   firebase login
+   ```
+
+4. **Build the Project:**
+   Before deploying, build the project to create the production version.
+   ```bash
+   npm run build
+   ```
+
+5. **Deploy to Firebase:**
+   Use the Firebase CLI to deploy the project.
+   ```bash
+   firebase deploy
+   ```
+
+## Changelog Overview:
 
 ### Latest Update (November 16)
 **Transfer of Ownership and Formalized Organization**
