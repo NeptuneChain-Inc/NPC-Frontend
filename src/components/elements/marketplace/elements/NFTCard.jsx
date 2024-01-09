@@ -74,7 +74,7 @@ const NFTCard = ({ nft, navigate }) => (
         <NFTInfo>
             <Title>{nft.name} #{Number(nft.tokenId)}</Title>
             <Seller>Seller: {formatLongString(nft.seller)}</Seller>
-            <Price>{nft.price} Matic</Price>
+            <Price>${nft.price}</Price>
         </NFTInfo>
         <BuyButton onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</BuyButton>
     </Card>

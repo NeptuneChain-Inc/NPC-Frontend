@@ -20,6 +20,7 @@ import { faInfo } from '@fortawesome/free-solid-svg-icons'
 import { motion } from 'framer-motion'
 import { colors } from './styles/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Registry, RecentRemoval, CertificatePage, PurchaseScreen, Map} from "./components/routes"; //Registry Imports
 
 
 const AppContainer = styled.div`
@@ -388,6 +389,14 @@ function App() {
               {user?.uid && <Route path="/marketplace" element={<Marketplace APP={APP} />} />}
               {user?.uid && <Route path="/marketplace/listing/:id" element={<ListingPage APP={APP} />} />}
               {user?.uid && <Route path="/marketplace/seller-dashboard" element={<SellerDashboard APP={APP} />} />}
+
+              {/* Registy Project Routes */}
+              <Route path="/" element={<Registry />} />
+              <Route path="/recent-removals" element={<RecentRemoval />} />
+              <Route path="/certificate/:id" element={<CertificatePage />} />
+              <Route path="/registry" element={<Registry />} />
+              <Route path="/purchase" element={<PurchaseScreen />} />
+              <Route path="/map" element={<Map />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

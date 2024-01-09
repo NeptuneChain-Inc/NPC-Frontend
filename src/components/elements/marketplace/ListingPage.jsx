@@ -283,7 +283,7 @@ const toggleDrawer = () => {
           <SectionTitle>Listing #{id}</SectionTitle>
           <Item>
             <ItemLabel>Token ID: <ItemData>{listingDetails.tokenId}</ItemData></ItemLabel>
-            <ItemLabel>Price: <ItemData>{listingDetails.price} Matic</ItemData></ItemLabel>
+            <ItemLabel>Price: <ItemData>${listingDetails.price}</ItemData></ItemLabel>
           </Item>
           </div>
         </HeroSection>
