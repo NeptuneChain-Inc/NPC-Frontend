@@ -4,6 +4,39 @@
 The NPRC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
 
 <<<<<<< HEAD
+## Deploy Instructions for Contributors
+Clone the Repository to local machine.
+{ 
+    git clone [repository-url] 
+}
+
+Install Dependencies: After cloning, navigate to the project directory and install the necessary dependencies.
+{
+    cd [project-name]
+    npm install
+}
+
+Log in to Firebase: The new contributor must be logged in to Firebase with an account that has permissions to access the Firebase project. If they haven’t logged in or need to switch accounts, they can use:
+{
+firebase login
+}
+
+Build the Project: Before deploying, build the project to create the production version.
+{
+npm run build
+}
+
+Deploy to Firebase: Use the Firebase CLI to deploy the project.
+{
+firebase deploy
+}
+
+Considerations
+Permissions: The new contributor needs to have the appropriate permissions to access the Firebase project. This typically means being added as a member in the Firebase console by the project administrator.
+
+Environment Variables: If the project uses environment variables (e.g., API keys). The new contributor will need to set these up according to the project's development documentation.
+
+## Changelog Overview
 =======
 ## Deployment Instructions for Collaborator Protocol:
 
