@@ -1,41 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import appIcon from '../assets/icon.png';
-import AppLogo from '../assets/logo.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faEraser } from '@fortawesome/free-solid-svg-icons';
-import { DesktopMenu, MobileMenu } from './elements/navbar';
-import { OBJECTS } from '../functions/helpers';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { style_template } from './lib/style_templates';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import appIcon from "../assets/icon.png";
+import AppLogo from "../assets/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faTimes, faEraser } from "@fortawesome/free-solid-svg-icons";
+import { DesktopMenu, MobileMenu } from "./elements/navbar";
+import { OBJECTS } from "../functions/helpers";
+import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { style_template } from "./lib/style_templates";
 
 /**
  * Navbar Component
- * 
+ *
  * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
 const Navbar = ({ APP }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [hideSearch, setHideSearch] = useState(false);
   const [isMobile, setisMobile] = useState(false);
   const navigate = useNavigate();
-  const path = window.location.pathname.replace(/^\//, '');
+  const path = window.location.pathname.replace(/^\//, "");
   const { user, searchResults, sidebarOpen } = APP?.STATES || {};
   const { handleSidebar, setSearchResults } = APP?.ACTIONS || {};
 
-
-  const noSearchBarRoutes = [
-    'features/upload-video',
-    'features/stream'
-  ];
+  const noSearchBarRoutes = ["features/upload-video", "features/stream"];
 
   useEffect(() => {
     const maxWidth = 768;
-    setisMobile(window.innerWidth <= maxWidth)
-  }, [])
-
+    setisMobile(window.innerWidth <= maxWidth);
+  }, []);
 
   useEffect(() => {
     if (searchResults) {
@@ -51,21 +46,21 @@ const Navbar = ({ APP }) => {
 
   useEffect(() => {
     if (search) {
-      handleSearch()
+      handleSearch();
     }
-  }, [search])
+  }, [search]);
 
-  const handleToWelcome = () => navigate('/')
+  const handleToWelcome = () => navigate("/");
 
   const handleSearch = () => {
     const currentDash = OBJECTS.findValueByKey(user?.dashData, path);
     const results = OBJECTS.SEARCH.filterObjectByQuery(currentDash, search);
     setSearchResults(results);
-    console.log('Search Results', { results })
+    console.log("Search Results", { results });
   };
 
   const clearSearch = () => {
-    setSearch('');
+    setSearch("");
     setSearchResults(null);
   };
 
@@ -75,80 +70,120 @@ const Navbar = ({ APP }) => {
   // Style variations for the search bar animation
   const searchBarVariants = {
     expanded: { opacity: 1, transition: { duration: 0.5 } },
-    collapsed: { opacity: 0, transition: { duration: 0.5 } }
+    collapsed: { opacity: 0, transition: { duration: 0.5 } },
   };
 
   return (
-    <NavbarContainer sidebarOpen={sidebarOpen}>
+    <div style={{ display: "flex", justifyContent: "flex-start" }}>
+      {/* {sidebarOpen && (
+        <SidebarHeader>
+          <LogoFull
+            alt="NeptuneChain Full Logo"
+            src={AppLogo}
+            onClick={handleToWelcome}
+          />
+        </SidebarHeader>
+      )} */}
 
-      <NavActions>
-      {sidebarOpen ? (
-        <>
-            <SidebarHeader>
-              <FullLogo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome} />
-            </SidebarHeader>
-          <Icon icon={faTimes} onClick={handleSidebar} />
-        </>
-      ) : (
-        <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
-      )}
-
-      <SearchContainer>
-        <SearchIcon icon={faSearch} onClick={toggleSearch} />
-        <AnimatePresence>
-          {isSearchExpanded && (
-            <SearchIcons>
-              <SearchInput
-                initial="collapsed"
-                animate="expanded"
-                exit="collapsed"
-                variants={searchBarVariants}
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              {search && (
-                <motion.div
-                  initial="collapsed"
-                  animate="expanded"
-                  exit="collapsed"
-                  variants={searchBarVariants}
-                >
-                  <ClearIcon icon={faEraser} onClick={clearSearch} />
-                </motion.div>
-              )}
-            </SearchIcons>
+      <NavbarContainer sidebarOpen={sidebarOpen}>
+        <NavActions>
+          {sidebarOpen ? (
+            <>
+              <SidebarHeader>
+                <FullLogo
+                  alt="NeptuneChain Full Logo"
+                  src={AppLogo}
+                  onClick={handleToWelcome}
+                />
+              </SidebarHeader>
+              <Icon icon={faTimes} onClick={handleSidebar} />
+            </>
+          ) : (
+            <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
           )}
-        </AnimatePresence>
 
-      </SearchContainer>
-      </NavActions>
+          <SearchContainer>
+            <SearchIcon icon={faSearch} onClick={toggleSearch} />
+            <AnimatePresence>
+              {isSearchExpanded && (
+                <SearchIcons>
+                  <SearchInput
+                    initial="collapsed"
+                    animate="expanded"
+                    exit="collapsed"
+                    variants={searchBarVariants}
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  {search && (
+                    <motion.div
+                      initial="collapsed"
+                      animate="expanded"
+                      exit="collapsed"
+                      variants={searchBarVariants}
+                    >
+                      <ClearIcon icon={faEraser} onClick={clearSearch} />
+                    </motion.div>
+                  )}
+                </SearchIcons>
+              )}
+            </AnimatePresence>
+          </SearchContainer>
+        </NavActions>
 
-      <DesktopMenu APP={APP} />
+        <DesktopMenu APP={APP} />
 
-      <MobileMenu APP={APP} />
-    </NavbarContainer>
+        <MobileMenu APP={APP} />
+      </NavbarContainer>
+
+    </div>
   );
 };
 
+// const SidebarHeader = styled.div`
+//   width: 100%;
+//   height: 50px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 1.5rem;
+//   box-sizing: border-box;
+//   box-shadow: 0px 2px 0px 0px #d4d4d4;
+
+
+//   background-color: #ffffff;
+
+//   @media (max-width: 768px) {
+//     padding: 1rem;
+//   }
+// `;
+
+// const LogoFull = styled.img`
+//   width: 40%;
+//   height: auto;
+//   object-fit: cover;
+
+//   @media (max-width: 768px) {
+//     width: 0;
+//   }
+// `;
 
 const NavbarContainer = styled.header`
-  position: fixed;
-  top: 0;
-  right: 0;
-width: ${({ sidebarOpen }) => sidebarOpen ? '80' : '100'}%;
+  width: ${({ sidebarOpen }) => (sidebarOpen ? "80" : "100")}%;
   height: 50px;
-  ${style_template.flex_display.row_custom('space-between')}
+
+  ${style_template.flex_display.row_custom("space-between")}
   gap: 0.8rem;
+
   box-shadow: 0px 2px 0px 0px #d4d4d4;
-  max-height: 75px;
-  
+
   padding: 1rem;
   padding-left: 0;
   padding-right: 1.5rem;
   box-sizing: border-box;
-  
+
   background-color: #ffffff;
 
   z-index: 1000;
@@ -159,7 +194,9 @@ width: ${({ sidebarOpen }) => sidebarOpen ? '80' : '100'}%;
   }
 `;
 
-const NavActions = styled.div`${style_template.flex_display.row_custom()}gap: 10px;`;
+const NavActions = styled.div`
+  ${style_template.flex_display.row_custom()} gap: 10px;
+`;
 
 const SidebarHeader = styled.div`
   display: none;
@@ -174,9 +211,8 @@ const SidebarHeader = styled.div`
 
   @media (max-width: 768px) {
     width: 50%;
-    ${style_template.flex_display.row_custom('flex-start')}
+    ${style_template.flex_display.row_custom("flex-start")}
     padding: 1rem;
-    
   }
 `;
 
@@ -191,11 +227,10 @@ const FullLogo = styled.img`
 `;
 
 const SearchIcons = styled.div`
-display: flex;
-align-items: center;
-gap: 0.5rem;
-padding: 0rem 1rem;
-
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0rem 1rem;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -223,7 +258,6 @@ const SearchIcon = styled(FontAwesomeIcon)`
 `;
 
 const ClearIcon = styled(FontAwesomeIcon)`
-
   cursor: pointer;
 `;
 

@@ -7,6 +7,13 @@ The NPRC-Marketplace repository serves as the core platform for the NeptuneChain
 =======
 ## Deployment Instructions for Collaborator Protocol:
 
+0. **Requirements:**
+   ```bash
+   * node v20+
+   * git ('logged in to a collaborator account')
+   * firebase ['Part of dependencies'] ('logged in to a collaborator account')
+   ```
+
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/NeptuneChain-Inc/NPRC-Marketplace.git
@@ -39,7 +46,13 @@ The NPRC-Marketplace repository serves as the core platform for the NeptuneChain
 
 ## Changelog Overview:
 
-### Latest Update (November 16)
+### Latest Update
+**Merge of Registry and Dashboard/Marketplace to one codebase**
+- Integrated the Registry into the existing Dashboard/Marketplace codebase
+- UI/UX improvements: (App.jsx)
+- Debugging: Password reset
+- Code cleanup: (App.jsx)
+
 **Transfer of Ownership and Formalized Organization**
 - Repository transfered from A Mako
 

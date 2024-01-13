@@ -92,9 +92,7 @@ const Sidebar = ({ APP }) => {
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
 
-      <SidebarHeader>
-        <Logo alt='NeptuneChain Full Logo' src={AppLogo} onClick={handleToWelcome} />
-      </SidebarHeader>
+     
 
       <UserInfo onClick={() => navigate('/dashboard/main')}>
         <Heading>{user?.username.toUpperCase()}</Heading>
@@ -186,34 +184,6 @@ const StyledSidebar = styled.div`
     padding-top: 0;
     border-top: 1px solid black;
     border-right: 1px solid black;
-  }
-`;
-
-const SidebarHeader = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  box-sizing: border-box;
-  box-shadow: 0px 2px 0px 0px #d4d4d4;
-
-
-  background-color: #ffffff;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`;
-
-const Logo = styled.img`
-  width: 40%;
-  height: auto;
-  object-fit: cover;
-
-  @media (max-width: 768px) {
-    width: 0;
   }
 `;
 

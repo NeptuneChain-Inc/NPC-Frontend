@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../apis/firebase';
 import Lottie from 'react-lottie';
 import successAnimation from '../../../assets/animations/success-animation.json';
