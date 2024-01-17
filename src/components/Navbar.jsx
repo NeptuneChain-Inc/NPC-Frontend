@@ -74,105 +74,64 @@ const Navbar = ({ APP }) => {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "flex-start" }}>
-      {/* {sidebarOpen && (
-        <SidebarHeader>
-          <LogoFull
-            alt="NeptuneChain Full Logo"
-            src={AppLogo}
-            onClick={handleToWelcome}
-          />
-        </SidebarHeader>
-      )} */}
+    <NavbarContainer sidebarOpen={sidebarOpen}>
+      <NavActions>
+        {sidebarOpen ? (
+          <>
+            <SidebarHeader>
+              <FullLogo
+                alt="NeptuneChain Full Logo"
+                src={AppLogo}
+                onClick={handleToWelcome}
+              />
+            </SidebarHeader>
+            <Icon icon={faTimes} onClick={handleSidebar} />
+          </>
+        ) : (
+          <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
+        )}
 
-      <NavbarContainer sidebarOpen={sidebarOpen}>
-        <NavActions>
-          {sidebarOpen ? (
-            <>
-              <SidebarHeader>
-                <FullLogo
-                  alt="NeptuneChain Full Logo"
-                  src={AppLogo}
-                  onClick={handleToWelcome}
+        <SearchContainer>
+          <SearchIcon icon={faSearch} onClick={toggleSearch} />
+          <AnimatePresence>
+            {isSearchExpanded && (
+              <SearchIcons>
+                <SearchInput
+                  initial="collapsed"
+                  animate="expanded"
+                  exit="collapsed"
+                  variants={searchBarVariants}
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-              </SidebarHeader>
-              <Icon icon={faTimes} onClick={handleSidebar} />
-            </>
-          ) : (
-            <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
-          )}
-
-          <SearchContainer>
-            <SearchIcon icon={faSearch} onClick={toggleSearch} />
-            <AnimatePresence>
-              {isSearchExpanded && (
-                <SearchIcons>
-                  <SearchInput
+                {search && (
+                  <motion.div
                     initial="collapsed"
                     animate="expanded"
                     exit="collapsed"
                     variants={searchBarVariants}
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  {search && (
-                    <motion.div
-                      initial="collapsed"
-                      animate="expanded"
-                      exit="collapsed"
-                      variants={searchBarVariants}
-                    >
-                      <ClearIcon icon={faEraser} onClick={clearSearch} />
-                    </motion.div>
-                  )}
-                </SearchIcons>
-              )}
-            </AnimatePresence>
-          </SearchContainer>
-        </NavActions>
+                  >
+                    <ClearIcon icon={faEraser} onClick={clearSearch} />
+                  </motion.div>
+                )}
+              </SearchIcons>
+            )}
+          </AnimatePresence>
+        </SearchContainer>
+      </NavActions>
 
-        <DesktopMenu APP={APP} />
+      <DesktopMenu APP={APP} />
 
-        <MobileMenu APP={APP} />
-      </NavbarContainer>
-
-    </div>
+      <MobileMenu APP={APP} />
+    </NavbarContainer>
   );
 };
 
-// const SidebarHeader = styled.div`
-//   width: 100%;
-//   height: 50px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   padding: 1.5rem;
-//   box-sizing: border-box;
-//   box-shadow: 0px 2px 0px 0px #d4d4d4;
-
-
-//   background-color: #ffffff;
-
-//   @media (max-width: 768px) {
-//     padding: 1rem;
-//   }
-// `;
-
-// const LogoFull = styled.img`
-//   width: 40%;
-//   height: auto;
-//   object-fit: cover;
-
-//   @media (max-width: 768px) {
-//     width: 0;
-//   }
-// `;
-
 const NavbarContainer = styled.header`
-  width: ${({ sidebarOpen }) => (sidebarOpen ? "80" : "100")}%;
-  height: 50px;
+  width: 100%;
+  height: 7vh;
 
   ${style_template.flex_display.row_custom("space-between")}
   gap: 0.8rem;
@@ -199,20 +158,10 @@ const NavActions = styled.div`
 `;
 
 const SidebarHeader = styled.div`
-  display: none;
-  width: 100%;
-  height: 50px;
-
-  padding: 1.5rem;
-  box-sizing: border-box;
-
-  box-shadow: 0px 2px 0px 0px #d4d4d4;
-  //border:1px solid black;
+width: 20vw;
 
   @media (max-width: 768px) {
-    width: 50%;
-    ${style_template.flex_display.row_custom("flex-start")}
-    padding: 1rem;
+
   }
 `;
 

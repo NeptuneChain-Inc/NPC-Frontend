@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Sidebar_MenuItem } from './elements';
-import AppLogo from '../assets/logo.png';
 import { OBJECTS } from '../functions/helpers';
 import { renderDashIcon } from './lib/icons';
 import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
@@ -92,8 +91,6 @@ const Sidebar = ({ APP }) => {
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
 
-     
-
       <UserInfo onClick={() => navigate('/dashboard/main')}>
         <Heading>{user?.username.toUpperCase()}</Heading>
         <SubHeading>{user?.type.toUpperCase()} DASHBOARD</SubHeading>
@@ -162,13 +159,13 @@ const Sidebar = ({ APP }) => {
 
 const StyledSidebar = styled.div`
   width: ${({ isOpen }) => isOpen ? '20vw' : "0"};
-  height: 100vh;
+  height: 88vh;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
 
-  overflow: hidden;
+  overflow: auto;
   transition: 0.3s ease-in-out;
 
   z-index: 101;
@@ -197,6 +194,7 @@ const UserInfo = styled.span`
   background-color: #134b5f;
   padding: 1rem;
   margin: 2rem 0;
+  margin-bottom: 0rem;
   cursor: pointer;
   transition: 0.3s ease-in-out;
 

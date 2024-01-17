@@ -45,8 +45,8 @@ const Container = styled(motion.div)`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   animation: ${fadeIn} 0.5s ease-in-out;
   transition: 0.5s ease-in-out;
   overflow-y: auto;
@@ -71,7 +71,6 @@ const Content = styled(motion.div).attrs(() => ({
     width: 80%;
   }
 `;
-
 
 const Heading = styled.h1`
   font-size: ${(props) => (props.isSmallScreen ? "16px" : "24px")};
@@ -159,7 +158,7 @@ const LoadingSpinner = styled.div`
 
 const MessageContainer = styled.div`
   position: fixed;
-  top: 10px;
+  bottom: 30px;
   right: 10px;
   z-index: 999;
   display: flex;
@@ -204,7 +203,7 @@ const AccountSearchButton = styled.button`
 
 const FixedTitle = styled.div`
   position: fixed;
-  top: 0;
+  top: 7wh;
   left: 0;
   width: 100%;
   height: 60px;
@@ -226,6 +225,30 @@ const getEventTimestamp = async (blockNumber) => {
   return date.toLocaleString();
 };
 
+/******************** Caching **********************/
+// Helper function to check if cache is stale
+const isCacheStale = (key, expiryTime) => {
+  const cachedItem = localStorage.getItem(key);
+  if (!cachedItem) return true;
+
+  const { timestamp } = JSON.parse(cachedItem);
+  return Date.now() - timestamp > expiryTime;
+};
+
+const cacheExpiryTime = 600000; // Cache expiration time set to 10 minutes
+
+const toNumber = (value) => {
+  try {
+    return value.toNumber();
+  } catch (e) {
+    if (typeof value === "number") {
+    return value;
+  } else {
+    // Handle other potential types (like string)
+    return parseInt(value, 10);
+  }}
+};
+
 function ExplorerPage() {
   const isSmallScreen = useMediaQuery(768);
 
@@ -236,154 +259,8 @@ function ExplorerPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isAccountSearchOpen, setIsAccountSearchOpen] = useState(false);
-  const [updateUI, setUpdateUI] = useState(false);
-
-  useEffect(() => {
-    async function fetchData() {
-      if(contract){
-        try {
-          const totalSupply = await contract.getTotalSupply();
-          const totalSold = await contract.getTotalSold();
-          const totalBurnedSupply = await contract.getTotalDonatedSupply();
-          const totalCertificates = await contract.getTotalCertificates();
-          const _producers = await contract.getProducers();
-          const creditTypes = await contract.getCreditTypes();
-  
-          setData([
-            {
-              label: "Total Supply",
-              value:
-                totalSupply?.toString() +
-                " " +
-                `${totalSupply?.toNumber() > 0 ? "NPCs" : "NPC"}`,
-            },
-            {
-              label: "Total Sold",
-              value:
-                totalSold?.toString() +
-                " " +
-                `${totalSold?.toNumber() > 0 ? "NPCs" : "NPC"}`,
-            },
-            {
-              label: "Total Donated Credits",
-              value:
-                totalBurnedSupply?.toString() +
-                " " +
-                `${totalBurnedSupply?.toNumber() > 0 ? "NPCs" : "NPC"}`,
-            },
-            { label: "Credit Types", value: creditTypes?.join(", ") },
-            { label: "Total Certificates", value: totalCertificates?.toString() },
-            { label: "Total Farmers", value: _producers?.length },
-          ]);
-          setProducers(_producers);
-        } catch (error) {
-          console.error(error);
-          setErrorMessage("Failed to fetch data");
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    fetchData();
-  }, [updateUI]);
-
-  useEffect(() => {
-    const fetchProducerData = async () => {
-      try {
-        const creditTypes = await contract.getCreditTypes();
-        const _producersData = await Promise.all(
-          producers.map(async (producer) => {
-            const verifiers = await contract.getProducerVerifiers(producer);
-            const verifiersData = await Promise.all(
-              verifiers.map(async (verifier) => {
-                const Supplies = await Promise.all(
-                  creditTypes.map(async (creditType) => {
-                    const supply = await contract.getSupply(
-                      producer,
-                      verifier,
-                      creditType
-                    );
-                    return {
-                      creditType,
-                      issuedSupply: supply?.issued.toNumber(),
-                      availableSupply: supply?.available.toNumber(),
-                      donatedSupply: supply?.donated.toNumber(),
-                    };
-                  })
-                );
-
-                return {
-                  verifier,
-                  Supplies,
-                };
-              })
-            );
-
-            return {
-              producer,
-              verifiers: verifiersData,
-            };
-          })
-        );
-        setProducersData(_producersData);
-      } catch (error) {
-        console.error(error);
-        setErrorMessage("Failed to fetch producer data");
-      }
-    };
-
-    if (producers) {
-      fetchProducerData();
-    }
-  }, [producers]);
-
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const allTransactions = await Promise.all([
-          contract.queryFilter(contract.filters.CreditsIssued(), 0, "latest"),
-          contract.queryFilter(contract.filters.CreditsBought(), 0, "latest"),
-          contract.queryFilter(
-            contract.filters.CreditsTransferred(),
-            0,
-            "latest"
-          ),
-          contract.queryFilter(contract.filters.CreditsDonated(), 0, "latest"),
-          contract.queryFilter(
-            contract.filters.CertificateCreated(),
-            0,
-            "latest"
-          ),
-        ]);
-
-        // Flatten the transactions array
-        const flattenedTransactions = allTransactions.reduce(
-          (arr, events) => arr.concat(events),
-          []
-        );
-
-        const eventsData = await Promise.all(
-          flattenedTransactions.map(async (event) => {
-            const _timestamp = await getEventTimestamp(event.blockNumber);
-            return {
-              txHash: event.transactionHash,
-              event: event.event,
-              args: event.args,
-              timestamp: _timestamp,
-            };
-          })
-        );
-
-        setEvents(eventsData);
-      } catch (error) {
-        console.error(error);
-        setErrorMessage("Failed to fetch events");
-      }
-    }
-
-    fetchEvents();
-  }, [updateUI]);
+  const [updateCache, setUpdateCache] = useState(true);
+  const [liveCache, setLiveCache] = useState({});
 
   useEffect(() => {
     // Setup event listeners for relevant contract events
@@ -394,7 +271,7 @@ function ExplorerPage() {
     const certificateCreatedFilter = contract.filters.CertificateCreated();
 
     const handleEvent = (event) => {
-      setUpdateUI(!updateUI);
+      setUpdateCache(true);
     };
 
     contract.on(creditsIssuedFilter, handleEvent);
@@ -413,6 +290,250 @@ function ExplorerPage() {
     };
   }, []);
 
+  useEffect(() => {
+    async function fetchData() {
+      const cacheKey = "REGISTRY_OVERVIEW_DATA";
+
+      if (!isCacheStale(cacheKey, cacheExpiryTime) || !updateCache) {
+        const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+        if (cachedData) {
+          setData(cachedData.data);
+          return;
+        }
+      }
+
+      if (contract && (updateCache || !data)) {
+        try {
+          const totalSupply = await contract.getTotalSupply();
+          const totalSold = await contract.getTotalSold();
+          const totalBurnedSupply = await contract.getTotalDonatedSupply();
+          const totalCertificates = await contract.getTotalCertificates();
+          const _producers = await contract.getProducers();
+          const creditTypes = await contract.getCreditTypes();
+
+          console.log("DATA STATES*****************************", {
+            totalSupply: toNumber(totalSupply),
+            totalSold: toNumber(totalSold),
+            totalBurnedSupply: toNumber(totalBurnedSupply),
+            totalCertificates: toNumber(totalCertificates),
+            _producers,
+            creditTypes,
+          });
+
+          //Append credit types to live cache for internal use by app
+          setLiveCache({ ...liveCache, creditTypes });
+
+          const newData = [
+            {
+              label: "Total Supply",
+              value:
+                totalSupply?.toString() +
+                " " +
+                `${toNumber(totalSupply) > 0 ? "NPCs" : "NPC"}`,
+            },
+            {
+              label: "Total Sold",
+              value:
+                totalSold?.toString() +
+                " " +
+                `${toNumber(totalSold) > 0 ? "NPCs" : "NPC"}`,
+            },
+            {
+              label: "Total Donated Credits",
+              value:
+                totalBurnedSupply?.toString() +
+                " " +
+                `${toNumber(totalBurnedSupply) > 0 ? "NPCs" : "NPC"}`,
+            },
+            { label: "Credit Types", value: creditTypes?.join(", ") },
+            {
+              label: "Total Certificates",
+              value: totalCertificates?.toString(),
+            },
+            { label: "Total Farmers", value: _producers?.length },
+          ];
+
+          // Cache the fetched data
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({
+              data: newData,
+              timestamp: Date.now(),
+            })
+          );
+
+          //To reduce CUPS for Alchemy API 
+          setTimeout(() => {
+            //This will trigger the useEffect to fetch data of the set producers
+            setProducers(_producers);
+          }, 1000);
+
+          //cache has already been updated so keep it false
+          //This will rerun the useEffect and set data from cache due to the false condition
+          setUpdateCache(false);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage(`Failed to fetch data: ${error.message}`);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchData();
+  }, [updateCache]);
+
+  useEffect(() => {
+    const fetchProducerData = async () => {
+      const cacheKey = "REGISTRY_PRODUCER_DATA";
+
+      if (!isCacheStale(cacheKey, cacheExpiryTime) || !updateCache) {
+        const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+        console.log("cacheDataProducer", { cachedData }, Boolean(cachedData));
+        if (cachedData) {
+          setProducersData(cachedData.data);
+          return;
+        }
+      }
+
+      if (contract && (updateCache || !producersData)) {
+        try {
+          const { creditTypes } = liveCache;
+          //Re-request if not available
+          if (!creditTypes) {
+            creditTypes = await contract.getCreditTypes();
+            console.log("Re-request of creditTypes");
+          }
+          const _producersData = await Promise.all(
+            producers.map(async (producer) => {
+              const verifiers = await contract.getProducerVerifiers(producer);
+              const verifiersData = await Promise.all(
+                verifiers.map(async (verifier) => {
+                  const Supplies = await Promise.all(
+                    creditTypes.map(async (creditType) => {
+                      const supply = await contract.getSupply(
+                        producer,
+                        verifier,
+                        creditType
+                      );
+                      return {
+                        creditType,
+                        issuedSupply: toNumber(supply?.issued),
+                        availableSupply: toNumber(supply?.available),
+                        donatedSupply: toNumber(supply?.donated),
+                      };
+                    })
+                  );
+
+                  return {
+                    verifier,
+                    Supplies,
+                  };
+                })
+              );
+
+              return {
+                producer,
+                verifiers: verifiersData,
+              };
+            })
+          );
+
+          // Cache the fetched data
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({
+              data: _producersData,
+              timestamp: Date.now(),
+            })
+          );
+
+          setUpdateCache(false);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage("Failed to fetch producer data");
+        }
+      }
+    };
+
+    if (producers) {
+      fetchProducerData();
+    }
+  }, [producers, updateCache]);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      const cacheKey = "REGISTRY_EVENT_DATA";
+
+      if (!isCacheStale(cacheKey, cacheExpiryTime) || !updateCache) {
+        const cachedData = JSON.parse(localStorage.getItem(cacheKey));
+        if (cachedData) {
+          setEvents(cachedData.data);
+          return;
+        }
+      }
+
+      if (contract && (updateCache || !events)) {
+        try {
+          const allTransactions = await Promise.all([
+            contract.queryFilter(contract.filters.CreditsIssued(), 0, "latest"),
+            contract.queryFilter(contract.filters.CreditsBought(), 0, "latest"),
+            contract.queryFilter(
+              contract.filters.CreditsTransferred(),
+              0,
+              "latest"
+            ),
+            contract.queryFilter(
+              contract.filters.CreditsDonated(),
+              0,
+              "latest"
+            ),
+            contract.queryFilter(
+              contract.filters.CertificateCreated(),
+              0,
+              "latest"
+            ),
+          ]);
+
+          // Flatten the transactions array
+          const flattenedTransactions = allTransactions.reduce(
+            (arr, events) => arr.concat(events),
+            []
+          );
+
+          const eventsData = await Promise.all(
+            flattenedTransactions.map(async (event) => {
+              const _timestamp = await getEventTimestamp(event.blockNumber);
+              return {
+                txHash: event.transactionHash,
+                event: event.event,
+                args: event.args,
+                timestamp: _timestamp,
+              };
+            })
+          );
+          // Cache the fetched data
+          localStorage.setItem(
+            cacheKey,
+            JSON.stringify({
+              data: eventsData,
+              timestamp: Date.now(),
+            })
+          );
+
+          setUpdateCache(false);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage("Failed to fetch events");
+        }
+      }
+    }
+
+    if (producersData) {
+      fetchEvents();
+    }
+  }, [producersData, updateCache]);
+
   const clearErrorMessage = () => {
     setErrorMessage(null);
   };
@@ -429,7 +550,9 @@ function ExplorerPage() {
         ) : (
           <>
             <FixedTitle>
-              <Heading isSmallScreen={isSmallScreen}>- Recent Removals -</Heading>
+              <Heading isSmallScreen={isSmallScreen}>
+                - Recent Removals -
+              </Heading>
               <AccountSearchButton onClick={handleAccountSearchToggle}>
                 Account Search
               </AccountSearchButton>

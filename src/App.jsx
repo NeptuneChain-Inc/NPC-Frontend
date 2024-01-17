@@ -31,6 +31,7 @@ import {
   CertificatePage,
   PurchaseScreen,
   Map,
+  Presale,
 } from "./components/routes"; //Registry Imports
 
 const AppContainer = styled.div`
@@ -55,7 +56,7 @@ const Flex = styled.div`
 
 const Main = styled.div`
   width: ${({ isSidebarOpen }) => (isSidebarOpen ? "80vw" : "100vw")};
-  height: 90vh;
+  height: 95vh;
 
   ${style_template.flex_display.column_custom("flex-start", "flex-start")}
 
@@ -113,15 +114,16 @@ const Footer = styled.footer`
   bottom: 0;
 
   width: 100%;
-  height: 20px;
+  height: 3vh;
 
   ${style_template.flex_display.row_custom("space-between;", "center")}
 
-  padding: 1rem 0.5rem;
+  padding: 0.5rem;
   box-sizing: border-box;
 
-  background-color: #fff;
+  background-color: #ffffffa1;
   box-shadow: 0px -2px 2px 0px #d4d4d4;
+  backdrop-filter: blur(10px);
 
   z-index: 999;
 
@@ -463,6 +465,7 @@ function App() {
                 <Route path="/registry" element={<Registry />} />
                 <Route path="/purchase" element={<PurchaseScreen />} />
                 <Route path="/map" element={<Map />} />
+                <Route path="/presale" element={<Presale />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
