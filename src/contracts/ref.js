@@ -1,4 +1,4 @@
-export const hostDomain = 'https://neptunechain.io';
+export const hostDomain = 'http://192.168.0.179:5173/';
 export const mumbaiRPC =
   "https://polygon-mumbai.g.alchemy.com/v2/rnbawtAwPOfWhBVCLvTJXdTfF6NEYyeb";
 export const blockExplorerTxURL = 'https://mumbai.polygonscan.com/tx';

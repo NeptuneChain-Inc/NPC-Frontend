@@ -2,7 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import styled, { keyframes } from "styled-components";
 import { Loading, Error } from "../elements";
 import { contract } from "../../contracts/contractRef";
-import { formatCertificate } from "../../functions/helpers";
+import { NUMBERS, formatCertificate } from "../../functions/helpers";
 
 const fadeIn = keyframes`
   0% {
@@ -83,8 +83,8 @@ const RecentRemoval = () => {
         const certificatePromises = [];
 
         for (
-          let i = totalCertificates.toNumber();
-          i > Math.max(totalCertificates.toNumber() - 10, 0);
+          let i = NUMBERS.toNumber(totalCertificates);
+          i > Math.max(NUMBERS.toNumber(totalCertificates) - 10, 0);
           i--
         ) {
           const certificatePromise = await contract.getCertificateById(i);

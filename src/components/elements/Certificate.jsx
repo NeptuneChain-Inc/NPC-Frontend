@@ -103,13 +103,13 @@ const Certificate = ({ data }) => {
       <Heading1><span>{balance}</span> NPRCs</Heading1>
       {type === 'transfer' ? (
         <Heading6>
-          This certifies that the ownership of <span>{`${balance} ${creditType.toUpperCase()} `}</span>
-          Credits was transferred to <span>{buyer.toUpperCase()}</span> from <span>{producer.toUpperCase()}</span> on <span>{date}</span> at the price of <span>${price}</span>/Credit.
+          This certifies that the ownership of <span>{`${balance} ${creditType?.toUpperCase()} `}</span>
+          Credits was transferred to <span>{buyer?.toUpperCase()}</span> from <span>{producer?.toUpperCase()}</span> on <span>{date}</span> at the price of <span>${price}</span>/Credit.
         </Heading6>
       ) : (
         <Heading6>
-          This certifies that the buyer, <span>{buyer.toUpperCase()}</span>, paid the producer,{" "}
-          <span>{producer.toUpperCase()}</span>, for the ownership of <span>{`${balance} ${creditType.toUpperCase()} `}</span>
+          This certifies that the buyer, <span>{buyer?.toUpperCase()}</span>, paid the producer,{" "}
+          <span>{producer?.toUpperCase()}</span>, for the ownership of <span>{`${balance} ${creditType?.toUpperCase()} `}</span>
           Credits on <span>{date}</span> at the price of <span>${price}</span>/Credit.
         </Heading6>
       )}
@@ -118,13 +118,13 @@ const Certificate = ({ data }) => {
           <Heading4>Supplied by:</Heading4>
           <Signiture>{producer}</Signiture>
           <Line width={'80%'} />
-          <Heading2>{producer.toUpperCase()}</Heading2>
+          <Heading2>{producer?.toUpperCase()}</Heading2>
         </DivBlockInner>
         <DivBlockInner>
           <Heading4>Verified by:</Heading4>
           <Signiture>{verifier}</Signiture>
           <Line width={'80%'} />
-          <Heading2>{verifier.toUpperCase()}</Heading2>
+          <Heading2>{verifier?.toUpperCase()}</Heading2>
         </DivBlockInner>
         <DivBlockInner>
           <Heading4>Issued by:</Heading4>

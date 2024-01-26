@@ -10,6 +10,15 @@ const AppConfigs = {
         } else {
             return false;
         }
+    },
+    getAPI: async (providerID) => {
+        const dataRef = ref(db, `dashboard/apis/${providerID}`);
+        const snapshot = await get(dataRef);
+        if (snapshot.val()) {
+            return snapshot.val();
+        } else {
+            return false;
+        }
     }
 }
 

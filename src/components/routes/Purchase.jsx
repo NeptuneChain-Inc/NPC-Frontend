@@ -437,6 +437,7 @@ const Purchase = () => {
     event.preventDefault();
     setLoading(true);
     try {
+      //TO-DO: FOR DEV ___ TO BE REMOVED
       await onSuccess();
 
       await stripe.redirectToCheckout({

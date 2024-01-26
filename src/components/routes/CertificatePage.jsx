@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { Loading, Error, Certificate } from "../elements/index";
 import { contract } from "../../contracts/contractRef";
-import { formatCertificate } from "../../functions/helpers";
+import { NUMBERS, formatCertificate } from "../../functions/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebookF,
@@ -114,7 +114,7 @@ const CertificatePage = () => {
     async function fetchData() {
       try {
         const certificate = await contract.getCertificateById(id);
-        const certId = certificate.id.toNumber();
+        const certId = NUMBERS.toNumber(certificate.id);
         if (certId > 0) {
           const formattedCertificate = formatCertificate(certificate);
           setCertificate(formattedCertificate);

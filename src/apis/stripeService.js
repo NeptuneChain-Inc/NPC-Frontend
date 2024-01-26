@@ -1,17 +1,12 @@
 // src/stripeService.js
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
+import { AppConfigs } from "./database";
 
-const stripePromise = loadStripe(process.env.STRIPE_SECRET_KEY);
-
-const stripeService = {
-  createPaymentIntent: async (amount, currency) => {
+const stripeServices = (stripe) => ({
+  createPaymentIntent: async (amount, currency, cardElement) => {
     try {
-      const stripe = await stripePromise;
-      const elements = stripe.elements();
-      const cardElement = elements.create('card');
-      cardElement.mount('#card-element');
       const { error } = await stripe.createPaymentMethod({
-        type: 'card',
+        type: "card",
         card: cardElement,
       });
 
@@ -19,13 +14,14 @@ const stripeService = {
         return error;
       }
 
-      const { clientSecret } = await fetch('/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount, currency, paymentMethodId: error.paymentMethod.id }),
-      }).then((res) => res.json());
+      const clientSecret = (
+        await stripe.paymentIntents.create({
+          amount,
+          currency,
+          payment_method: error.paymentMethod.id,
+          confirm: true,
+        })
+      )?.client_secret;
 
       const paymentIntent = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -40,19 +36,21 @@ const stripeService = {
     }
   },
 
-  createCheckoutSession: async (lineItems) => {
+  createCheckoutSession: async (lineItems, lastCertId, clientName) => {
     try {
-      const stripe = await stripePromise;
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: lineItems,
-        mode: 'payment',
-        success_url: 'https://yourwebsite.com/success',
-        cancel_url: 'https://yourwebsite.com/cancel',
-      });
+      // const session = await stripe.checkout.sessions.create({
+      //   payment_method_types: ["card"],
+      // });
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
+      // const result = await stripe.redirectToCheckout({
+      //   sessionId: session?.id,
+      // });
+
+      const result =  await stripe.redirectToCheckout({
+        lineItems: lineItems,
+        mode: "payment",
+        successUrl: `http://app.neptunechain.io/certificate?id=${lastCertId + 1}`,
+        clientReferenceId: clientName ? clientName : "Anonymous" + Date.now.toString(), // generate order id
       });
 
       return result;
@@ -61,6 +59,6 @@ const stripeService = {
       return error;
     }
   },
-};
+});
 
-export default stripeService;
+export default stripeServices;

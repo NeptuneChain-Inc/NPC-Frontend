@@ -98,6 +98,20 @@ export const TIME = {
   }
 }
 
+export const NUMBERS = {
+  toNumber: (value) => {
+    try {
+      return value.toNumber();
+    } catch (e) {
+      if (typeof value === "number") {
+      return value;
+    } else {
+      // Handle other potential types (like string)
+      return parseInt(value, 10);
+    }}
+  }
+}
+
 export const formatCertificate = (object) => {
   const result = {};
 

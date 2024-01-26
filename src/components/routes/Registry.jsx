@@ -10,6 +10,7 @@ import {
   Line,
 } from "../elements/index";
 import { colors } from "../../data/styles";
+import { NUMBERS } from "../../functions/helpers";
 
 const fadeIn = {
   hidden: { opacity: 0 },
@@ -237,18 +238,6 @@ const isCacheStale = (key, expiryTime) => {
 
 const cacheExpiryTime = 600000; // Cache expiration time set to 10 minutes
 
-const toNumber = (value) => {
-  try {
-    return value.toNumber();
-  } catch (e) {
-    if (typeof value === "number") {
-    return value;
-  } else {
-    // Handle other potential types (like string)
-    return parseInt(value, 10);
-  }}
-};
-
 function ExplorerPage() {
   const isSmallScreen = useMediaQuery(768);
 
@@ -312,10 +301,10 @@ function ExplorerPage() {
           const creditTypes = await contract.getCreditTypes();
 
           console.log("DATA STATES*****************************", {
-            totalSupply: toNumber(totalSupply),
-            totalSold: toNumber(totalSold),
-            totalBurnedSupply: toNumber(totalBurnedSupply),
-            totalCertificates: toNumber(totalCertificates),
+            totalSupply: NUMBERS.toNumber(totalSupply),
+            totalSold: NUMBERS.toNumber(totalSold),
+            totalBurnedSupply: NUMBERS.toNumber(totalBurnedSupply),
+            totalCertificates: NUMBERS.toNumber(totalCertificates),
             _producers,
             creditTypes,
           });
@@ -329,21 +318,21 @@ function ExplorerPage() {
               value:
                 totalSupply?.toString() +
                 " " +
-                `${toNumber(totalSupply) > 0 ? "NPCs" : "NPC"}`,
+                `${NUMBERS.toNumber(totalSupply) > 0 ? "NPCs" : "NPC"}`,
             },
             {
               label: "Total Sold",
               value:
                 totalSold?.toString() +
                 " " +
-                `${toNumber(totalSold) > 0 ? "NPCs" : "NPC"}`,
+                `${NUMBERS.toNumber(totalSold) > 0 ? "NPCs" : "NPC"}`,
             },
             {
               label: "Total Donated Credits",
               value:
                 totalBurnedSupply?.toString() +
                 " " +
-                `${toNumber(totalBurnedSupply) > 0 ? "NPCs" : "NPC"}`,
+                `${NUMBERS.toNumber(totalBurnedSupply) > 0 ? "NPCs" : "NPC"}`,
             },
             { label: "Credit Types", value: creditTypes?.join(", ") },
             {
@@ -398,7 +387,8 @@ function ExplorerPage() {
 
       if (contract && (updateCache || !producersData)) {
         try {
-          const { creditTypes } = liveCache;
+          var { creditTypes } = liveCache;
+          console.log('creditTypes', creditTypes)
           //Re-request if not available
           if (!creditTypes) {
             creditTypes = await contract.getCreditTypes();
@@ -418,9 +408,9 @@ function ExplorerPage() {
                       );
                       return {
                         creditType,
-                        issuedSupply: toNumber(supply?.issued),
-                        availableSupply: toNumber(supply?.available),
-                        donatedSupply: toNumber(supply?.donated),
+                        issuedSupply: NUMBERS.toNumber(supply?.issued),
+                        availableSupply: NUMBERS.toNumber(supply?.available),
+                        donatedSupply: NUMBERS.toNumber(supply?.donated),
                       };
                     })
                   );

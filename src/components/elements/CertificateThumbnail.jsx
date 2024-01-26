@@ -87,7 +87,7 @@ const CertificateThumbnail = ({ certificate }) => {
         <Logo src={icon} alt="NeptuneChain Icon" loading="lazy" />
         <Title>NEPTUNECHAIN.IO</Title>
         <Description>Nutrient Pollution Removal Certificate</Description>
-        <p>{producer.toUpperCase()}</p>
+        <p>{producer?.toUpperCase()}</p>
         <Value>{balance} NPCs</Value>
         <h5>ID: {certID}</h5>
       </CardWrapper>
