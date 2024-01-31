@@ -159,6 +159,7 @@ function App() {
   const [networkProvider, setNetworkProvider] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
+  const [routePath, setRoutePath] = useState(''); //record all routes of accessed components
 
   const [marketInteractions] = useState(
     getMarketInteractions(
@@ -329,6 +330,7 @@ function App() {
       marketInteractions,
       signedMarketInteractions,
       searchResults,
+      routePath,
       sidebarOpen,
       notificationBarOpen,
       verificationUIOpen,
@@ -344,6 +346,7 @@ function App() {
       getUserSave,
       updateUser,
       setSearchResults,
+      setRoutePath,
       handleSidebar,
       handleNotificationsBar,
       handleVerificationUI,
@@ -360,6 +363,8 @@ function App() {
   useEffect(() => {
     console.log({ APP });
   }, [APP]);
+
+  const navlessRoutes = () => ['/presale','/purchase'].includes(routePath);
 
   return (
     <Router>
@@ -406,7 +411,7 @@ function App() {
         )}
 
         <Flex config="column">
-          {user && (
+          {user && !navlessRoutes (
             <>
               <Navbar APP={APP} />
             </>
@@ -463,20 +468,22 @@ function App() {
                 <Route path="/recent-removals" element={<RecentRemoval />} />
                 <Route path="/certificate/:id" element={<CertificatePage />} />
                 <Route path="/registry" element={<Registry />} />
-                <Route path="/purchase" element={<PurchaseScreen />} />
+                <Route path="/purchase" element={<PurchaseScreen APP={APP} />} />
                 <Route path="/map" element={<Map />} />
-                <Route path="/presale" element={<Presale />} />
+                <Route path="/presale" element={<Presale APP={APP} />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Main>
           </Flex>
-          <Footer>
+          {!navlessRoutes && (
+            <Footer>
             <FooterContent>
               © 2023 NeptuneChain, All Rights Reserved.
             </FooterContent>
             <FooterIconGroup>{/* ICONS HERE */}</FooterIconGroup>
           </Footer>
+          )}
         </Flex>
 
         <FloatingButton onClick={() => console.log("Assistant Clicked")}>

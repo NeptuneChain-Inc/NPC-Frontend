@@ -11,6 +11,8 @@ width: 100%;
   overflow: hidden;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  border: 2px solid black;
+  border-bottom: none;
 
   /* Hide the links at the bottom of the map */
   .gm-style > div:nth-child(1) > a {
@@ -35,7 +37,7 @@ function MapBox() {
 
     script.onload = () => {
       const map = new google.maps.Map(mapContainerRef.current, {
-        center: { lat: 38.197963, lng: -76.47764 },
+        center: { lat: 48.8036, lng: -95.0969 },
         zoom: 13,
         disableDefaultUI: true,
         gestureHandling: 'none',

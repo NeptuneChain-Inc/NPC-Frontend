@@ -325,7 +325,7 @@ const getCreditPrice = (creditType) => {
   }
 };
 
-const Purchase = () => {
+const Purchase = ({APP}) => {
   const [producers, setProducers] = useState([]);
   const [selectedProducer, setSelectedProducer] = useState(null);
   const [producerList, setProducerList] = useState([]);
@@ -339,8 +339,13 @@ const Purchase = () => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const { setRoutePath } = APP?.ACTIONS || {};
+
+
   // Query the contract to retrieve the list of producers
   useEffect(() => {
+    setRoutePath('purchase')
+
     const fetchProducers = async () => {
       try {
         const _lastCertId = await sContract.getTotalCertificates();
@@ -596,10 +601,10 @@ const Purchase = () => {
   );
 };
 
-const PurchaseScreen = () => {
+const PurchaseScreen = ({APP}) => {
   return (
     <Elements stripe={stripePromise}>
-      <Purchase />
+      <Purchase APP={APP}/>
     </Elements>
   );
 };

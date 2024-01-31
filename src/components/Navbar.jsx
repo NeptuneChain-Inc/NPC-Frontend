@@ -22,8 +22,8 @@ const Navbar = ({ APP }) => {
   const [isMobile, setisMobile] = useState(false);
   const navigate = useNavigate();
   const path = window.location.pathname.replace(/^\//, "");
-  const { user, searchResults, sidebarOpen } = APP?.STATES || {};
-  const { handleSidebar, setSearchResults } = APP?.ACTIONS || {};
+  const { user, searchResults, disableNav, sidebarOpen } = APP?.STATES || {};
+  const { handleSidebar, setDisableNav, setSearchResults } = APP?.ACTIONS || {};
 
   const noSearchBarRoutes = ["features/upload-video", "features/stream"];
 

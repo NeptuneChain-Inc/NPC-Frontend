@@ -53,6 +53,30 @@ const stripeServices = (stripe) => ({
         clientReferenceId: clientName ? clientName : "Anonymous" + Date.now.toString(), // generate order id
       });
 
+      // // Create a Checkout Session
+      // const session = await stripe.checkout.sessions.create({
+      //   // payment_method_types: ['card'],
+      //   lineItems: lineItems,
+      //   mode: "payment",
+      //   discounts: [
+      //     {
+      //       coupon: "uEmkqOr8",
+      //     },
+      //   ],
+      //   successUrl: `http://app.neptunechain.io/certificate?id=${
+      //     lastCertId + 1
+      //   }`,
+      //   clientReferenceId: clientName
+      //     ? clientName
+      //     : "Anonymous" + Date.now.toString(), // generate order id
+      // });
+      // var result = undefined;
+      // if (session) {
+      //   result = await stripe.redirectToCheckout({
+      //     sessionId: session.id,
+      //   });
+      // }
+
       return result;
     } catch (error) {
       console.error(error);
