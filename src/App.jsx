@@ -32,7 +32,329 @@ import {
   PurchaseScreen,
   Map,
   Presale,
-} from "./components/routes"; //Registry Imports
+} from "./components/routes";
+
+if (typeof global === "undefined") {
+  window.global = window;
+}
+
+const NAVLESS_ROUTES = ["presale", "purchase"];
+
+function App() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [user, setUser] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [networkProvider, setNetworkProvider] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState(null);
+  const [routePath, setRoutePath] = useState(""); //record all routes of accessed components
+  const [navlessRoutes, setNavlessRoutes] = useState(false);
+
+  const [marketInteractions] = useState(
+    getMarketInteractions(
+      new ethers.JsonRpcProvider(configs.networks.polygon.testnet)
+    )
+  );
+  const [signedMarketInteractions, setSignedMarketInteractions] =
+    useState(null);
+  const [signedUser, setSignedUser] = useState(null);
+
+  const [notificationBarOpen, setNotificationBarOpen] = useState(false);
+  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [verificationUIOpen, setVerificationUIOpen] = useState(false);
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
+
+  const [settingsTab, setSettingsTab] = useState("Profile Settings");
+  const [confirmation, setConfirmation] = useState(null);
+  const [notification, setNotification] = useState("");
+
+  /**
+   * Try get the user and signer for blockchain transactions
+   */
+  useEffect(() => {
+    getUserSave();
+    connectSigner();
+  }, []);
+
+  useEffect(() => {
+    const isMobileScreen = () => {
+      const maxWidth = 768;
+      return window.innerWidth <= maxWidth;
+    };
+
+    setIsMobile(isMobileScreen());
+  }, []);
+
+  /**
+   * Automatically close sidebar on mobile due to screen limitations
+   */
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [isMobile]);
+
+  /**
+   * Handle routes that should not include a navbar
+   */
+  useEffect(() => {
+    setNavlessRoutes(NAVLESS_ROUTES.includes(routePath));
+  }, [routePath]);
+
+  /**
+   * #NB: BACKEND
+   */
+  const connectSigner = async () => {
+    try {
+      const connection = await getSigner();
+      setNetworkProvider(connection.provider);
+      const _signer = connection.signer;
+      setSigner(_signer);
+
+      const signerAddress = await _signer.getAddress();
+      setSignedUser(signerAddress);
+      setSignedMarketInteractions(getMarketInteractions(_signer));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  //ACTIONS
+  const getUserSave = () => {
+    const loggedUser = sessionStorage.getItem("user");
+    if (loggedUser) {
+      setUser(JSON.parse(loggedUser));
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const updateUser = async (uid) => {
+    try {
+      const _userUpdate = await getUser(uid);
+      sessionStorage.setItem("user", JSON.stringify(_userUpdate));
+      setUser(_userUpdate);
+      return true;
+    } catch (error) {
+      logNotification("error", error.message);
+      return false;
+    }
+  };
+
+  const handleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleNotificationsBar = () => {
+    setNotificationBarOpen(!notificationBarOpen);
+  };
+
+  const handleVerificationUI = () => {
+    setVerificationUIOpen(!verificationUIOpen);
+  };
+
+  const handleSettingsMenu = () => {
+    setSettingsMenuOpen(!settingsMenuOpen);
+  };
+
+  const handleSettingsTab = (tab) => {
+    setSettingsTab(tab);
+    setSettingsMenuOpen(true);
+  };
+
+  const toggleCalculator = () => setCalculatorOpen(!calculatorOpen);
+
+  const logConfirmation = (message, action) => {
+    const confirmation_obj = {
+      msg: message,
+      action,
+    };
+    setConfirmation(confirmation_obj);
+  };
+
+  const cancelConfirmation = (accepted) => {
+    setConfirmation(null);
+    if (!accepted) {
+      logNotification("error", "Action Denied");
+    }
+  };
+
+  const logNotification = (type, message) => {
+    setNotification({ [type]: message });
+  };
+
+  const clearNotification = () => {
+    setNotification({});
+  };
+
+  const handleLogOut = () => {
+    const logOut = () => {
+      setUser(null);
+      sessionStorage.removeItem("user");
+      window.location.href = "/";
+    };
+    logConfirmation("Are you sure you want to log out?", logOut);
+  };
+
+  const APP = {
+    STATES: {
+      isMobile,
+      user,
+      networkProvider,
+      signer,
+      signedUser,
+      marketInteractions,
+      signedMarketInteractions,
+      searchResults,
+      routePath,
+      sidebarOpen,
+      notificationBarOpen,
+      verificationUIOpen,
+      settingsMenuOpen,
+      calculatorOpen,
+      settingsTab,
+      confirmation,
+      notification,
+    },
+    ACTIONS: {
+      getUserSave,
+      updateUser,
+      setSearchResults,
+      setRoutePath,
+      handleSidebar,
+      handleNotificationsBar,
+      handleVerificationUI,
+      handleSettingsMenu,
+      handleSettingsTab,
+      toggleCalculator,
+      logConfirmation,
+      cancelConfirmation,
+      logNotification,
+      handleLogOut,
+    },
+  };
+
+  useEffect(() => {
+    console.log({ APP });
+  }, [APP]);
+
+  return (
+    <Router>
+      <AppContainer>
+        <Notification
+          message={notification?.[Object.keys(notification)?.[0]]}
+          type={Object.keys(notification)?.[0]}
+          clearNotification={clearNotification}
+        />
+        <Confirmation
+          message={confirmation?.msg}
+          onConfirm={confirmation?.action}
+          onCancel={cancelConfirmation}
+        />
+
+        {settingsMenuOpen && <SettingsMenu APP={APP} />}
+
+        {user && (
+          <>
+            <NotificationBar APP={APP} />
+            <NutrientCalculator
+              isOpen={calculatorOpen}
+              onClose={toggleCalculator}
+            />
+            {settingsMenuOpen && <SettingsMenu APP={APP} />}
+            {signer && (
+              <VerificationUI
+                signer={signer}
+                open={verificationUIOpen}
+                APP={APP}
+              />
+            )}
+          </>
+        )}
+
+        <Flex config="column">
+          {user && !navlessRoutes && (
+            <>
+              <Navbar APP={APP} />
+            </>
+          )}
+          <Flex config="row">
+            {user && <Sidebar APP={APP} />}
+            <Main isSidebarOpen={sidebarOpen}>
+              <Routes>
+                <Route path="/" element={<Welcome APP={APP} />} />
+                {user?.uid && (
+                  <>
+                    <Route
+                      path="/dashboard/:dashID"
+                      element={<Home APP={APP} />}
+                    />
+
+                    <Route
+                      path="/features/:serviceID"
+                      element={<Livepeer APP={APP} />}
+                    />
+
+                    <Route
+                      path="/media/:playbackID"
+                      element={<Livepeer APP={APP} />}
+                    />
+
+                    <Route
+                      path="/media/live/:liveID"
+                      element={<Livepeer APP={APP} />}
+                    />
+
+                    <Route
+                      path="/marketplace"
+                      element={<Marketplace APP={APP} />}
+                    />
+
+                    <Route
+                      path="/marketplace/listing/:id"
+                      element={<ListingPage APP={APP} />}
+                    />
+
+                    <Route
+                      path="/marketplace/seller-dashboard"
+                      element={<SellerDashboard APP={APP} />}
+                    />
+                  </>
+                )}
+
+                {/* Registy Project Routes */}
+                <Route path="/recent-removals" element={<RecentRemoval />} />
+                <Route path="/certificate/:id" element={<CertificatePage />} />
+                <Route path="/registry" element={<Registry />} />
+                <Route
+                  path="/purchase"
+                  element={<PurchaseScreen APP={APP} />}
+                />
+                <Route path="/map" element={<Map />} />
+                <Route path="/presale" element={<Presale APP={APP} />} />
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Main>
+          </Flex>
+          {!navlessRoutes && (
+            <Footer>
+              <FooterContent>
+                © 2024 NeptuneChain, All Rights Reserved.
+              </FooterContent>
+              <FooterIconGroup>{/* ICONS HERE */}</FooterIconGroup>
+            </Footer>
+          )}
+        </Flex>
+
+        <FloatingButton onClick={() => console.log("Assistant Clicked")}>
+          <FontAwesomeIcon icon={faInfo} />
+        </FloatingButton>
+      </AppContainer>
+    </Router>
+  );
+}
 
 const AppContainer = styled.div`
   position: fixed;
@@ -147,352 +469,5 @@ const FooterIconGroup = styled.div`
 
   ${style_template.flex_display.row_custom("space-between;", "center")}
 `;
-
-if (typeof global === "undefined") {
-  window.global = window;
-}
-
-function App() {
-  const [isMobile] = useState(isMobileScreen());
-  const [user, setUser] = useState(null);
-  const [signer, setSigner] = useState(null);
-  const [networkProvider, setNetworkProvider] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState(null);
-  const [routePath, setRoutePath] = useState(''); //record all routes of accessed components
-
-  const [marketInteractions] = useState(
-    getMarketInteractions(
-      new ethers.JsonRpcProvider(configs.networks.polygon.testnet)
-    )
-  );
-  const [signedMarketInteractions, setSignedMarketInteractions] =
-    useState(null);
-  const [signedUser, setSignedUser] = useState(null);
-
-  const [notificationBarOpen, setNotificationBarOpen] = useState(false);
-  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
-  const [verificationUIOpen, setVerificationUIOpen] = useState(false);
-  const [calculatorOpen, setCalculatorOpen] = useState(false);
-
-  const [settingsTab, setSettingsTab] = useState("Profile Settings");
-  const [confirmation, setConfirmation] = useState(null);
-  const [notification, setNotification] = useState("");
-  const [alert, setAlert] = useState("");
-  const [error, setError] = useState("");
-
-  //Automatically close sidebar on mobile due to screen limitations
-  useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
-  }, [isMobile]);
-
-  useEffect(() => {
-    getUserSave();
-    connectSigner();
-  }, []);
-
-  // useEffect(() => {
-  //   console.log(user);
-  //   if (user?.uid) {
-
-  //   }
-  // }, [user])
-
-  function isMobileScreen() {
-    const maxWidth = 768;
-    return window.innerWidth <= maxWidth;
-  }
-
-  const connectSigner = async () => {
-    try {
-      const connection = await getSigner();
-      setNetworkProvider(connection.provider);
-      const _signer = connection.signer;
-      setSigner(_signer);
-
-      const signerAddress = await _signer.getAddress();
-      setSignedUser(signerAddress);
-      setSignedMarketInteractions(getMarketInteractions(_signer));
-    } catch (error) {
-      //Handle Error
-      console.error(error);
-      throw error;
-    }
-  };
-
-  //ACTIONS
-  const getUserSave = () => {
-    const loggedUser = localStorage.getItem("user");
-    if (loggedUser) {
-      setUser(JSON.parse(loggedUser));
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const updateUser = async (uid) => {
-    try {
-      const _userUpdate = await getUser(uid);
-      localStorage.setItem("user", JSON.stringify(_userUpdate));
-      setUser(_userUpdate);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  const handleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const handleNotificationsBar = () => {
-    setNotificationBarOpen(!notificationBarOpen);
-  };
-
-  const handleVerificationUI = () => {
-    setVerificationUIOpen(!verificationUIOpen);
-  };
-
-  const handleSettingsMenu = () => {
-    setSettingsMenuOpen(!settingsMenuOpen);
-  };
-
-  const handleSettingsTab = (tab) => {
-    setSettingsTab(tab);
-    setSettingsMenuOpen(true);
-  };
-
-  const toggleCalculator = () => setCalculatorOpen(!calculatorOpen);
-
-  const logConfirmation = (message, action) => {
-    const confirmation_obj = {
-      msg: message,
-      action,
-    };
-    setConfirmation(confirmation_obj);
-  };
-
-  const cancelConfirmation = (accepted) => {
-    setConfirmation(null);
-    if (!accepted) {
-      setError("Action Denied");
-    }
-  };
-
-  const logNotification = (type, message) => {
-    switch (type) {
-      case "alert":
-        setAlert(message);
-        break;
-      case "error":
-        setError(message);
-        break;
-      default:
-        setNotification(message);
-        break;
-    }
-  };
-
-  const clearNotification = (type) => {
-    switch (type) {
-      case "alert":
-        setAlert("");
-        break;
-      case "error":
-        setError("");
-        break;
-      default:
-        setNotification("");
-        break;
-    }
-  };
-
-  const handleLogOut = () => {
-    const logOut = () => {
-      setUser(null);
-      localStorage.removeItem("user");
-      window.location.href = "/";
-    };
-    logConfirmation("Are you sure you want to log out?", logOut);
-  };
-
-  const APP = {
-    STATES: {
-      isMobile,
-      user,
-      networkProvider,
-      signer,
-      signedUser,
-      marketInteractions,
-      signedMarketInteractions,
-      searchResults,
-      routePath,
-      sidebarOpen,
-      notificationBarOpen,
-      verificationUIOpen,
-      settingsMenuOpen,
-      calculatorOpen,
-      settingsTab,
-      confirmation,
-      notification,
-      alert,
-      error,
-    },
-    ACTIONS: {
-      getUserSave,
-      updateUser,
-      setSearchResults,
-      setRoutePath,
-      handleSidebar,
-      handleNotificationsBar,
-      handleVerificationUI,
-      handleSettingsMenu,
-      handleSettingsTab,
-      toggleCalculator,
-      logConfirmation,
-      cancelConfirmation,
-      logNotification,
-      handleLogOut,
-    },
-  };
-
-  useEffect(() => {
-    console.log({ APP });
-  }, [APP]);
-
-  const navlessRoutes = () => ['/presale','/purchase'].includes(routePath);
-
-  return (
-    <Router>
-      <AppContainer>
-        <Notification
-          type="notification"
-          message={notification}
-          clearNotification={clearNotification}
-        />
-        <Notification
-          type="alert"
-          message={alert}
-          clearNotification={clearNotification}
-        />
-        <Notification
-          type="error"
-          message={error}
-          clearNotification={clearNotification}
-        />
-        <Confirmation
-          message={confirmation?.msg}
-          onConfirm={confirmation?.action}
-          onCancel={cancelConfirmation}
-        />
-
-        {settingsMenuOpen && <SettingsMenu APP={APP} />}
-
-        {user && (
-          <>
-            <NotificationBar APP={APP} />
-            <NutrientCalculator
-              isOpen={calculatorOpen}
-              onClose={toggleCalculator}
-            />
-            {settingsMenuOpen && <SettingsMenu APP={APP} />}
-            {signer && (
-              <VerificationUI
-                signer={signer}
-                open={verificationUIOpen}
-                APP={APP}
-              />
-            )}
-          </>
-        )}
-
-        <Flex config="column">
-          {user && !navlessRoutes (
-            <>
-              <Navbar APP={APP} />
-            </>
-          )}
-          <Flex config="row">
-            {user && <Sidebar APP={APP} />}
-            <Main isSidebarOpen={sidebarOpen}>
-              <Routes>
-                <Route path="/" element={<Welcome APP={APP} />} />
-                {user?.uid && (
-                  <Route
-                    path="/dashboard/:dashID"
-                    element={<Home APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/features/:serviceID"
-                    element={<Livepeer APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/media/:playbackID"
-                    element={<Livepeer APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/media/live/:liveID"
-                    element={<Livepeer APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/marketplace"
-                    element={<Marketplace APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/marketplace/listing/:id"
-                    element={<ListingPage APP={APP} />}
-                  />
-                )}
-                {user?.uid && (
-                  <Route
-                    path="/marketplace/seller-dashboard"
-                    element={<SellerDashboard APP={APP} />}
-                  />
-                )}
-
-                {/* Registy Project Routes */}
-                <Route path="/recent-removals" element={<RecentRemoval />} />
-                <Route path="/certificate/:id" element={<CertificatePage />} />
-                <Route path="/registry" element={<Registry />} />
-                <Route path="/purchase" element={<PurchaseScreen APP={APP} />} />
-                <Route path="/map" element={<Map />} />
-                <Route path="/presale" element={<Presale APP={APP} />} />
-
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Main>
-          </Flex>
-          {!navlessRoutes && (
-            <Footer>
-            <FooterContent>
-              © 2023 NeptuneChain, All Rights Reserved.
-            </FooterContent>
-            <FooterIconGroup>{/* ICONS HERE */}</FooterIconGroup>
-          </Footer>
-          )}
-        </Flex>
-
-        <FloatingButton onClick={() => console.log("Assistant Clicked")}>
-          <FontAwesomeIcon icon={faInfo} />
-        </FloatingButton>
-
-      </AppContainer>
-    </Router>
-  );
-}
 
 export default App;

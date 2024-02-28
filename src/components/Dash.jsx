@@ -203,7 +203,6 @@ const DashSection = styled(motion.div)`
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   transition: 1s ease-in-out;
-  //
   //overflow-y: auto;
 
     @media (max-width: 768px) {

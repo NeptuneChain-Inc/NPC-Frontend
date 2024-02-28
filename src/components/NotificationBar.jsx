@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { pushLocalNotification } from '../functions/notifications';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { pushLocalNotification } from "../functions/notifications";
 
 /**
  * NotificationBar Component to render application notifications from storage
- * 
+ *
  * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
 const NotificationBar = ({ APP }) => {
@@ -15,55 +15,63 @@ const NotificationBar = ({ APP }) => {
   const { notificationBarOpen } = APP ? APP.STATES : {};
   const { handleNotificationsBar, logNotification } = APP ? APP.ACTIONS : {};
 
-
-
   useEffect(() => {
     // Fetch stored notifications
-    const _notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    const _notifications =
+      JSON.parse(localStorage.getItem("notifications")) || [];
     if (_notifications) {
       setNotifications(_notifications);
     }
-  }, [APP])
+  }, [APP]);
 
   const handleSmapleNotification = (type) => {
-    const _notification = pushLocalNotification(type, `This is a sample ${type} notification`);
+    const _notification = pushLocalNotification(
+      type,
+      `This is a sample ${type} notification`
+    );
     logNotification(_notification.type, _notification.message);
-  }
+  };
 
   // Framer Motion variants
   const notificationVariants = {
     open: { opacity: 1, x: 0 },
-    closed: { opacity: 0, x: '100%' },
+    closed: { opacity: 0, x: "100%" },
   };
 
   return (
     <>
       <AnimatePresence>
         {notificationBarOpen && (
-          <NotificationContainer
-            as={motion.div}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={notificationVariants}
-          >
+          <>
             <NotificationIcon icon={faTimes} onClick={handleNotificationsBar} />
+            <NotificationContainer
+              as={motion.div}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={notificationVariants}
+            >
+              {/* Create Sample notifications */}
+              <h5>**For Testing Only**</h5>
+              <button onClick={() => handleSmapleNotification("")}>
+                Send Sample Message Notification
+              </button>
+              <button onClick={() => handleSmapleNotification("alert")}>
+                Send Sample Alert Notification
+              </button>
+              <button onClick={() => handleSmapleNotification("error")}>
+                Send Sample Error Notification
+              </button>
+              <h5>********************</h5>
 
-            {/* Create Sample notifications */}
-            <h5>**For Testing Only**</h5>
-            <button onClick={() => handleSmapleNotification("")}>Send Sample Message Notification</button>
-            <button onClick={() => handleSmapleNotification("alert")}>Send Sample Alert Notification</button>
-            <button onClick={() => handleSmapleNotification("error")}>Send Sample Error Notification</button>
-            <h5>********************</h5>
-
-            {notifications?.map((notification, index) => (
-              <NotificationItem key={index} type={notification.type}>
-                <p>{notification.message}</p>
-                <small>{notification.time}</small>
-              </NotificationItem>
-            ))}
-
-          </NotificationContainer>
+              {notifications?.map((notification, index) => (
+                <NotificationItem key={index} type={notification.type}>
+                  <p>{notification.message}</p>
+                  <small>{notification.time}</small>
+                </NotificationItem>
+              ))}
+            </NotificationContainer>
+          </>
         )}
       </AnimatePresence>
     </>
@@ -75,6 +83,7 @@ const NotificationContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
+  padding-top: 20%;
   box-sizing: border-box;
   box-shadow: -5px 0px 15px rgba(0, 0, 0, 0.2);
   top: 0;
@@ -106,13 +115,21 @@ const NotificationItem = styled.div`
   margin: 10px 0;
   border-bottom: 1px solid #ccc;
   //background-color: #fff;
-  background-color: ${props => (props.type === 'error' ? '#ffebee' : props.type === 'alert' ? '#e8f5e9' : '#A5F8D3')};
+  background-color: ${(props) =>
+    props.type === "error"
+      ? "#ffebee"
+      : props.type === "alert"
+      ? "#e8f5e9"
+      : "#A5F8D3"};
 `;
 
 const NotificationIcon = styled(FontAwesomeIcon)`
+  position: fixed;
+  top: 10%;
+  left: 45%;
   font-size: 1.5rem;
   cursor: pointer;
+  z-index: 9999;
 `;
 
 export default NotificationBar;
-

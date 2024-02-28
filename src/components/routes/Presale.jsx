@@ -14,6 +14,11 @@ import MapBox from "../elements/MapBox";
 import { sContract } from "../../contracts/contractRef";
 import { NUMBERS } from "../../functions/helpers";
 
+import Payment from "../payment/Payment";
+
+//For animation
+import { useSpring, animated, useTransition } from "react-spring";
+
 // Dummy certificate types for demonstration
 const certificateTypes = [
   {
@@ -106,9 +111,9 @@ const CARD_SECTION_01 = styled.div`
   }
 `;
 
-const CARD_SECTION_02 = styled.div`
+const CARD_SECTION_02 = styled(animated.div)`
   width: 100%;
-  height: 100%;
+  //height: 100%;
 
   padding: 1rem;
   box-sizing: border-box;
@@ -117,7 +122,9 @@ const CARD_SECTION_02 = styled.div`
     rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
     rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
 
-    overflow: auto;
+  border-radius: 10px;
+
+  overflow: auto;
 
   //border: 2px solid blue;
 
@@ -130,8 +137,10 @@ const CARD_SECTION_02 = styled.div`
   }
 `;
 
+const AnimatedCardSection = animated(CARD_SECTION_02);
+
 const Flex = styled.div`
-width: ${({ width }) => (width ? width : "50%")};
+  width: ${({ width }) => (width ? width : "50%")};
   display: flex;
   flex-direction: ${({ direction }) => (direction ? direction : "row")};
   align-items: ${({ align }) => (align ? align : "flex-start")};
@@ -167,12 +176,11 @@ p {
 
 `;
 
-
 const CardContent = styled.p`
-width: 100%;
-display: flex;
-flex-direction: column;
-align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: 0;
   font-size: 0.8rem;
@@ -192,7 +200,7 @@ align-items: center;
 `;
 
 const Title = styled.h1`
-font-size: 1.7rem;
+  font-size: 1.7rem;
   color: #123456;
 `;
 
@@ -202,20 +210,21 @@ const Description = styled.p`
   font-size: 0.9rem;
 `;
 
-const PurchaseForm = styled.div`
+export const FormWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  width: 100%;
+
   text-align: left;
+
+  margin: 0;
   padding: 10px;
   box-sizing: border-box;
-
 `;
 
-const CheckoutInfo = styled(Description)`
+export const FormInfo = styled(Description)`
   text-align: justify;
   width: 80%;
   font-style: italic;
@@ -223,15 +232,14 @@ const CheckoutInfo = styled(Description)`
   margin: 0;
 `;
 
-const FormInputs = styled.div`
-width: 100%;
-padding: 0.5rem 1rem;
+export const FormInputs = styled.div`
+  width: 100%;
+  padding: 0.5rem 1rem;
 
-box-sizing: border-box;
-
+  box-sizing: border-box;
 `;
 
-const inputGlobalStyles = `
+export const inputGlobalStyles = `
 width: 95%;
 display: block;
 
@@ -253,15 +261,15 @@ padding: 0.75rem;
 box-sizing: border-box;
 `;
 
-const InputSelect = styled.select`
+// const InputSelect = styled.select`
+//   ${inputGlobalStyles}
+// `;
+
+export const InputBox = styled.input`
   ${inputGlobalStyles}
 `;
 
-const InputBox = styled.input`
-  ${inputGlobalStyles}
-`;
-
-const Button = styled.button`
+export const Button = styled.button`
   border: 0px solid;
   box-sizing: border-box;
   border-color: rgba(250, 251, 251, 1);
@@ -272,7 +280,7 @@ const Button = styled.button`
   cursor: pointer;
   padding: 0px;
   appearance: button;
-  width: 90%;
+  //width: 90%;
   border-radius: 0.25rem;
   background: ${colors.accent};
   text-align: center;
@@ -285,9 +293,14 @@ const Button = styled.button`
   padding-top: 0.625rem;
   padding-bottom: 0.625rem;
   margin-top: 20px;
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    scale: 1.1;
+  }
 `;
 
-const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div`
   color: red;
   margin: 10px 0;
 `;
@@ -301,44 +314,50 @@ const presaleProducer = {
   totalLandArea: 3600,
 };
 
-//const mitigationCredits_priceID = "price_1OefwvFnymUk0uH4x5faSkF9"; //Test
-const mitigationCredits_priceID = "price_1OaOZBFd0vZYtswya23NAAor";
+const mitigationCredits_priceID = "price_1OefwvFnymUk0uH4x5faSkF9"; //Test
+//const mitigationCredits_priceID = "price_1OaOZBFd0vZYtswya23NAAor";
 
-const PresaleScreen = ({APP}) => {
+const PresaleScreen = ({ APP }) => {
   const [amount, setAmount] = useState(1);
   const [selectedType, setSelectedType] = useState(certificateTypes[0]);
   const [name, setName] = useState("Presale");
   const [selectedProducer, setSelectedProducer] = useState(presaleProducer);
   // const [cardElement, setCardElement] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
   const [error, setError] = useState("");
   const [lastCertId, setlastCertId] = useState(null);
 
-  const stripe = useStripe();
-  console.log("stripe", stripe);
+  // const stripe = useStripe();
+  // console.log("stripe", stripe);
 
- // const { routePath } = APP?.STATES || {};
+  // const { routePath } = APP?.STATES || {};
   const { setRoutePath } = APP?.ACTIONS || {};
+
+  //#Animation
+  const transitions = useTransition(isPaying, {
+    from: { transform: "translateY(100%)" },
+    enter: { transform: "translateY(0)" },
+    leave: { display: "none" },
+    config: { duration: 500 },
+  });
 
   useEffect(() => {
     console.log("SelectedType", selectedType);
   }, [selectedType]);
 
   useEffect(() => {
-    setRoutePath('presale')
+    setRoutePath("presale");
     // //load stripe on mount
     // loadStripeElement()
 
     fetchChainData();
 
     const { producer, verifier, type } = selectedProducer;
-    fetchIssuedSupply(producer,verifier,type)
+    fetchIssuedSupply(producer, verifier, type);
   }, []);
 
-  useEffect(() => {
-    
-  }, [selectedProducer])
-  
+  useEffect(() => {}, [selectedProducer]);
 
   // useEffect(() => {
   //   if(stripe){
@@ -373,7 +392,9 @@ const PresaleScreen = ({APP}) => {
       setlastCertId(NUMBERS.toNumber(_lastCertId));
     } catch (error) {
       console.error("Error fetching producers:", error);
-      setError(`Error fetching data. Please try again later. - [${error.message}]`);
+      setError(
+        `Error fetching data. Please try again later. - [${error.message}]`
+      );
     }
   };
 
@@ -381,30 +402,33 @@ const PresaleScreen = ({APP}) => {
     try {
       const supply = await sContract.getSupply(producer, verifier, creditType);
       const _availableSupply = NUMBERS.toNumber(supply?.available);
-      setSelectedProducer({...selectedProducer, supply: _availableSupply})
+      setSelectedProducer({ ...selectedProducer, supply: _availableSupply });
     } catch (error) {
       console.error("Error fetching issued supply:", error);
-      setError(`Error fetching credit supply. Please try again later. - [${error.message}]`);
+      setError(
+        `Error fetching credit supply. Please try again later. - [${error.message}]`
+      );
     }
   };
 
   const onSuccess = async () => {
     try {
       const { producer, verifier, type } = selectedProducer;
-      await sContract.buyCredits(
-        name,
-        producer,
-        verifier,
-        type,
-        amount,
-        50,
-      );
+      await sContract.buyCredits(name, producer, verifier, type, amount, 50);
       return true;
     } catch (error) {
       setError(error.message);
       return false;
     }
   };
+
+  const getlineItems = [
+    {
+      priceID: mitigationCredits_priceID, // id of the price to purchase
+      quantity: NUMBERS.toNumber(amount),
+    },
+  ];
+
 
   const handlePayment = async () => {
     if (!isValidAmount(amount)) {
@@ -421,38 +445,37 @@ const PresaleScreen = ({APP}) => {
 
     try {
       // Call function to handle payment logic
-      const stripe_services = stripeServices(stripe);
 
-      const getlineItem = [
-        {
-          price: mitigationCredits_priceID, // id of the price to purchase
-          quantity: NUMBERS.toNumber(amount),
-        },
-      ];
+      //const stripe_services = stripeServices(stripe);
 
-      //TO-DO: FOR DEV ___ TO BE REMOVED
-     if(await onSuccess()){
-      console.log("Payment processed");
-     }
 
-      const checkout = await stripe_services.createCheckoutSession(getlineItem, lastCertId, name);
-      console.log(
-        "Processing payment for:",
-        selectedType.name,
-        "Amount:",
-        amount,
-        "Checkout:",
-        checkout
-      );
+      //   //TO-DO: FOR DEV ___ TO BE REMOVED
+      //  if(await onSuccess()){
+      //   console.log("Payment processed");
+      //  }
+
+      // const checkout = await stripe_services.createCheckoutSession(getlineItems, lastCertId, name);
+      // console.log(
+      //   "Processing payment for:",
+      //   selectedType.name,
+      //   "Amount:",
+      //   amount,
+      //   "Checkout:",
+      //   checkout
+      // );
 
       // const paymentIntent = await stripe_services.createPaymentIntent(amount, "usd", cardElement);
 
       //await createPaymentIntent(amount, selectedType.id);
       // console.log("Processing payment for:", selectedType.id, "Amount:", amount, "Intent:", paymentIntent);
 
+
+      setIsPaying(true);
     } catch (error) {
       console.error("Error:", error);
-      setError(`Failed to process payment. Please try again: [${error.message}]`);
+      setError(
+        `Failed to process payment. Please try again: [${error.message}]`
+      );
     } finally {
       setLoading(false);
     }
@@ -467,91 +490,111 @@ const PresaleScreen = ({APP}) => {
       <div id="checkout"></div>
 
       <CARD_WRAPPER>
-
         <CARD_SECTION_01>
           <MapBox />
 
           <InfoBox>
-          <CardContent>
-          <h3>A farmer near you is selling now</h3>
-          </CardContent>
-          <CardContent>
-            <Flex direction="row" justify="space-between">
-              <p>{selectedProducer?.location}</p>
-              <p>{selectedProducer?.totalLandArea} acres</p>
-            </Flex>
-          </CardContent>
-                  <CardContent>
-                    <p style={{fontSize: '0.7rem', marginTop: '0.5rem'}}>Supplier: {selectedProducer?.producer.toUpperCase()}</p>
-                  </CardContent>
-                  
-                  <CardContent>
-                    <span className="link">About this project</span>
-                  </CardContent>
-                </InfoBox>
-                
-                <span className="disclaimer">This purchase is a pre-order. Farmer details and initial supply information will be available upon the launch of our marketplace.</span>
+            <CardContent>
+              <h3>A farmer near you is selling now</h3>
+            </CardContent>
+            <CardContent>
+              <Flex direction="row" justify="space-between">
+                <p>{selectedProducer?.location}</p>
+                <p>{selectedProducer?.totalLandArea} acres</p>
+              </Flex>
+            </CardContent>
+            <CardContent>
+              <p style={{ fontSize: "0.7rem", marginTop: "0.5rem" }}>
+                Supplier: {selectedProducer?.producer.toUpperCase()}
+              </p>
+            </CardContent>
+
+            <CardContent>
+              <span className="link">About this project</span>
+            </CardContent>
+          </InfoBox>
+
+          <span className="disclaimer">
+            This purchase is a pre-order. Farmer details and initial supply
+            information will be available upon the launch of our marketplace.
+          </span>
         </CARD_SECTION_01>
 
-        <CARD_SECTION_02>
-          <Title>Nutrient Removal Certificates Presale</Title>
+        {transitions((style, isPaying) =>
+          !isPaying ? (
+              <CARD_SECTION_02 style={style}>
+                                <Title>Nutrient Removal Certificates Presale</Title>
 
-          <Description>
-            Remove pollution, support the environment, and create an impact you can count on. All NeptuneChain Nutrient Pollution Credits™, are third-party verified and quantified. 
-            <br/><br/>
-            Each purchase comes with a certificate that transparently confirms your contribution to pollution removal and tracks your environmental impact in real-time.
-          </Description>
+<Description>
+  Remove pollution, support the environment, and create an
+  impact you can count on. All NeptuneChain Nutrient Pollution
+  Credits™, are third-party verified and quantified.
+  <br />
+  <br />
+  Each purchase comes with a certificate that transparently
+  confirms your contribution to pollution removal and tracks
+  your environmental impact in real-time.
+</Description>
+<FormWrapper>
+  <FormInfo>
+    <h3>Regenerative Pollution offsets</h3>
+    Each NeptuneChain Nutrient Pollution Credit™ signifies the
+    removal of 1 pound (lbs) of nutrient pollution, with a
+    unique mix of Nitrogen, Phosphorus, and other pollutants,
+    fostering environmental regeneration.
+  </FormInfo>
 
-          <PurchaseForm >
-              <CheckoutInfo>
-                <h3>Regenerative Pollution offsets</h3>
-                Each NeptuneChain Nutrient Pollution Credit™ signifies the removal of 1 pound (lbs) of nutrient pollution, 
-                with a unique mix of Nitrogen, Phosphorus, and other pollutants, fostering environmental regeneration.
-              </CheckoutInfo>
+  <FormInputs>
+    {/* <InputSelect
+value={selectedType.id}
+onChange={(e) =>
+setSelectedType(
+certificateTypes.find(
+(type) => type.id === e.target.value
+)
+)
+}
+>
+{certificateTypes.map((type) => (
+<option key={type.id} value={type.id}>
+{type.name}
+</option>
+))}
+</InputSelect> */}
 
-              <FormInputs>
-                {/* <InputSelect
-                  value={selectedType.id}
-                  onChange={(e) =>
-                    setSelectedType(
-                      certificateTypes.find(
-                        (type) => type.id === e.target.value
-                      )
-                    )
-                  }
-                >
-                  {certificateTypes.map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.name}
-                    </option>
-                  ))}
-                </InputSelect> */}
+    {/* <InputBox
+type="text"
+id="name"
+value={name}
+placeholder="Name on certificate (optional)"
+onChange={(e) => setName(e.target.value)}
+/> */}
 
-                {/* <InputBox
-                      type="text"
-                      id="name"
-                      value={name}
-                      placeholder="Name on certificate (optional)"
-                      onChange={(e) => setName(e.target.value)}
-                    /> */}
+    <InputBox
+      type="number"
+      value={amount}
+      onChange={(e) => setAmount(e.target.value)}
+      placeholder="Enter your amount"
+    />
+  </FormInputs>
 
-                <InputBox
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Enter your amount"
-                />
-              </FormInputs>
-
-            <Button
-              id="remove-carbon-button"
-              className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
-              onClick={handlePayment}
-            >
-              {loading ? "Processing..." : "Buy Regenerative Pollution Offsets"}
-            </Button>
-          </PurchaseForm>
-        </CARD_SECTION_02>
+  <Button
+    id="remove-carbon-button"
+    className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
+    onClick={handlePayment}
+  >
+    {loading
+      ? "Processing..."
+      : "Buy Regenerative Pollution Offsets"}
+  </Button>
+</FormWrapper>
+              </CARD_SECTION_02>
+          ) : (
+              <CARD_SECTION_02 style={style}>
+                <Payment setIsPaying={setIsPaying} lineItems={getlineItems}/>
+              </CARD_SECTION_02>
+          )
+        )}
       </CARD_WRAPPER>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -559,35 +602,41 @@ const PresaleScreen = ({APP}) => {
   );
 };
 
+// const Presale = ({ APP }) => {
+//   const [stripePromise, setStripePromise] = useState(null);
+
+//   useEffect(() => {
+//     if (!stripePromise) {
+//       loadStripePromise();
+//     }
+//   }, []);
+
+//   const loadStripePromise = async () => {
+//     try {
+//       //Initiate Stripe
+//       const liveStripe = await AppConfigs.getAPI("stripe");
+//       //const testStripe = 'pk_test_51NTLlPFnymUk0uH4vxETrYPfIgizozEwByB2uPCcjZFJhBLR45bYS20M3a7KTI4PTwZKg6eMPDbeOPF1PBQr0OBa000EGQPaAB'
+//       setStripePromise(loadStripe(liveStripe));
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   if (!stripePromise) {
+//     return;
+//   }
+
+//   return (
+//     <Elements stripe={stripePromise}>
+//       <PresaleScreen APP={APP} />
+//     </Elements>
+//   );
+// };
+
 const Presale = ({APP}) => {
-  const [stripePromise, setStripePromise] = useState(null);
-
-  useEffect(() => {
-    if (!stripePromise) {
-      loadStripePromise();
-    }
-  }, []);
-
-  const loadStripePromise = async () => {
-    try {
-      //Initiate Stripe
-      const liveStripe = await AppConfigs.getAPI("stripe");
-      //const testStripe = 'pk_test_51NTLlPFnymUk0uH4vxETrYPfIgizozEwByB2uPCcjZFJhBLR45bYS20M3a7KTI4PTwZKg6eMPDbeOPF1PBQr0OBa000EGQPaAB'
-      setStripePromise(loadStripe(liveStripe));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  if (!stripePromise) {
-    return;
-  }
-
   return (
-    <Elements stripe={stripePromise}>
-      <PresaleScreen APP={APP} />
-    </Elements>
-  );
-};
+    <PresaleScreen APP={APP} />
+  )
+}
 
 export default Presale;

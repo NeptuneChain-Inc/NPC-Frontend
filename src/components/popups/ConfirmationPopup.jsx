@@ -80,18 +80,21 @@ const Overlay = styled(motion.div)`
 
 // Dialog Styles
 const Dialog = styled(motion.div)`
-  background-color: #fff;
+  background-color: #ffffffa1;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  text-align: center;
-  max-width: 80%;
-  width: auto; 
+
+    display: flex;
+    flex-direction: column;
+
+  border-radius: 10px;
+  box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.5);
+
+  max-width: 50%;
   box-sizing: border-box;
+    z-index: 1000;
 
   @media (max-width: 768px) {
-    max-width: 95%;
+    max-width: 90%;
     padding: 15px;
   }
 `;
@@ -104,7 +107,14 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   background-color: ${(props) => (props.primary ? "#4CAF50" : "#f44336")};
+  display: flex;
+  justify-content: center;
   color: white;
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    scale: 1.05;
+  }
 `;
 
 export default Confirmation;

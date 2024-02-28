@@ -168,17 +168,17 @@ const StyledSidebar = styled.div`
   overflow: auto;
   transition: 0.3s ease-in-out;
 
-  z-index: 101;
+  z-index: 999;
   backdrop-filter: blur(3px);
 
-  @media (max-width: 768px) {
+  @media (max-width: 980px) {
     position: fixed;
     left: 0;
     top: 0;
     width: ${({ isOpen }) => isOpen ? '100vw' : "0vw"};
     align-items: flex-start;
     padding: ${({ isOpen }) => isOpen ? '2rem' : "0"};
-    padding-top: 0;
+    padding-top: 20%;
     border-top: 1px solid black;
     border-right: 1px solid black;
   }

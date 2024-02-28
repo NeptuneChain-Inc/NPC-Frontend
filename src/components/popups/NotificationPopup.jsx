@@ -24,7 +24,7 @@ const Notification = ({ message, type, clearNotification }) => {
 
   // Close the notification
   const handleClose = () => {
-    clearNotification(type);
+    clearNotification();
   };
 
   return (

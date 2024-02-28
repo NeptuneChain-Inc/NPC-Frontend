@@ -1,0 +1,120 @@
+/* Payment.css */
+
+body, html {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .form-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Animation classes */
+  .slide-left {
+    animation: slideLeft 0.5s forwards;
+  }
+  
+  .slide-right {
+    animation: slideRight 0.5s forwards;
+  }
+  
+  @keyframes slideLeft {
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  @keyframes slideRight {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  /* Navigation buttons */
+  .navigation {
+    display: flex;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0px auto;
+  }
+  
+  button {
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button.prev {
+    background-color: #6c757d;
+  }
+  
+  button.next {
+    background-color: #000000;
+    padding: 10px;
+  }
+  
+  button svg {
+    margin: 0 5px;
+  }
+
+  /* Stylesheet for CustomerInfoForm */
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: calc(100% - 10px);
+  padding: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input.error {
+  border-color: #e74c3c;
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-container {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
