@@ -1,3 +1,21 @@
+/**
+ * Creates a stripe service object.
+ *
+ * @param {Object} stripe - The stripe object.
+ * @returns {Object} The stripe services object.
+ *
+ * @property {Function} createPaymentIntent - Creates a payment intent.
+ * @param {number} amount - The amount of the payment.
+ * @param {string} currency - The currency of the payment.
+ * @param {Object} cardElement - The card element.
+ * @returns {Promise<Object>} The payment intent object.
+ *
+ * @property {Function} createCheckoutSession - Creates a checkout session.
+ * @param {Array} lineItems - The line items for the checkout session.
+ * @param {number} lastCertId - The last certificate ID.
+ * @param {string} clientName - The client name.
+ * @returns {Promise<Object>} The checkout session result.
+ */
 const stripeServices = (stripe) => ({
   createPaymentIntent: async (amount, currency, cardElement) => {
     try {

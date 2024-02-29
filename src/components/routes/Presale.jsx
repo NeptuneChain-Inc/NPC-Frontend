@@ -63,6 +63,7 @@ const FULL_PAGE_CONTAINER = styled(motion.div)`
   box-sizing: border-box;
 
   overflow: auto;
+  overflow-x: hidden;
 
   transition: 0.5s ease-in-out;
 `;
@@ -86,7 +87,7 @@ const CARD_WRAPPER = styled.div`
   overflow: hidden;
 
   border-radius: 10px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; 
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -108,7 +109,7 @@ const CARD_SECTION = styled(animated.div)`
   box-sizing: border-box;
 
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  // box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
 
   @media (max-width: 767px){
     width: 100%;
@@ -207,7 +208,7 @@ export const FormWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   text-align: justify;
 
   overflow: auto;
