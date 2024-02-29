@@ -12,13 +12,13 @@ body, html {
   .form-container {
     position: relative;
     width: 100%;
+    min-height: 50vh;
+    max-height: 75vh;
     max-width: 600px;
-    margin: 0px auto;
     padding: 20px;
     box-sizing: border-box;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    overflow: hidden;
   }
   
   /* Animation classes */
@@ -32,22 +32,24 @@ body, html {
   
   @keyframes slideLeft {
     100% {
-      transform: translateX(-100%);
+      opacity: 0;
     }
   }
   
   @keyframes slideRight {
     100% {
-      transform: translateX(100%);
+      opacity: 1;
     }
   }
   
   /* Navigation buttons */
   .navigation {
+    width: 10%;
     display: flex;
     justify-content: space-between;
-    max-width: 600px;
-    margin: 0px auto;
+    margin: auto;
+    margin-top: 1rem;
+
   }
   
   button {

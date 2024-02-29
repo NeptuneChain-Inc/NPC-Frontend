@@ -15,48 +15,25 @@
 }
 
 :root {
-  font-family: 'Work Sans', sans-serif;
+  font-family: "Albert Sans", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  font-family: "Albert Sans", sans-serif;
+ 
   font-weight: 400;
-  background: #ffffff;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
   text-decoration: none;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  width: 100vw;
-  min-height: 100vh;
-  background-color: #C5D9E250;
-  
-  margin: 0;
   padding: 0;
-  display: flex;
-  place-items: center;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  overflow-x: hidden;
 }
-
 
 h1 {
   font-size: 3.2em;

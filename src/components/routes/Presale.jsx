@@ -68,76 +68,53 @@ const FULL_PAGE_CONTAINER = styled(motion.div)`
 `;
 
 const CARD_WRAPPER = styled.div`
-  width: 100%;
-  max-width: 1080px;
+  width: 100vw;
   height: 100vh;
+  max-width: 1080px;
 
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: flex-start;
+  gap: 20px;
 
-  padding: 0.5rem;
+  padding: 1rem;
   box-sizing: border-box;
 
   ${({ popup }) => popup && "filter: blur(20px);"}
 
   overflow: hidden;
 
-  //border: 2px solid green;
+  border-radius: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
   @media (max-width: 768px) {
     flex-direction: column;
     justify-content: flex-start;
+    align-items: center;
     overflow: auto;
   }
 `;
 
-const CARD_SECTION_01 = styled.div`
-  width: 50%;
-
-  margin-bottom: 1rem;
-  margin-right: 1rem;
+const CARD_SECTION = styled(animated.div)`
+  flex: 1;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  //border: 2px solid blue;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    height: auto;
-  }
-`;
-
-const CARD_SECTION_02 = styled(animated.div)`
-  width: 100%;
-  //height: 100%;
-
   padding: 1rem;
   box-sizing: border-box;
 
-  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
-    rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
-    rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
-
   border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
 
-  overflow: auto;
-
-  //border: 2px solid blue;
-
-  @media (min-width: 769px) {
-    width: 50%;
-  }
-  @media (max-width: 769px) {
-    height: auto;
-    overflow: visible;
+  @media (max-width: 767px){
+    width: 100%;
+    padding: 0.5rem;
   }
 `;
-
-const AnimatedCardSection = animated(CARD_SECTION_02);
 
 const Flex = styled.div`
   width: ${({ width }) => (width ? width : "50%")};
@@ -148,18 +125,20 @@ const Flex = styled.div`
 `;
 
 const InfoBox = styled.div`
-width: 100%;
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   border-radius: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+
   padding: 0.5rem 0;
-  //box-sizing: border-box;
+
   margin-bottom: 30px;
-  background-color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   border: 2px solid black;
   border-top: none;
@@ -169,33 +148,44 @@ width: 100%;
     font-size: 16px;
     font-weight: bold;
     color: ${colors.accent};
-}
+  }
 
-p {
+  p {
     margin: 0;
-
+  }
 `;
 
-const CardContent = styled.p`
-  width: 100%;
+const CardContent = styled.div`
+  width: 80%;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0;
   font-size: 0.8rem;
+
+  padding: 0.1rem;
+
+  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+
+  h3 {
+    margin: 0;
+  }
+
+  .subtext {
+    margin: 0;
+  }
 
   .link {
     color: ${colors.accent};
     font-weight: 500;
-    text-decoration: underline;
+    margin: 0;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
     cursor: pointer;
   }
 
   .link:hover {
-    font-size: 0.95rem;
+    text-decoration: underline;
   }
 `;
 
@@ -205,23 +195,27 @@ const Title = styled.h1`
 `;
 
 const Description = styled.p`
-  margin-bottom: 1rem;
+  margin: 0;
   text-align: justify;
   font-size: 0.9rem;
 `;
 
 export const FormWrapper = styled.div`
   width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
+  text-align: justify;
 
-  text-align: left;
+  overflow: auto;
 
   margin: 0;
   padding: 10px;
   box-sizing: border-box;
+
 `;
 
 export const FormInfo = styled(Description)`
@@ -230,6 +224,7 @@ export const FormInfo = styled(Description)`
   font-style: italic;
   font-size: 0.8rem;
   margin: 0;
+
 `;
 
 export const FormInputs = styled.div`
@@ -260,10 +255,6 @@ margin: 0.2rem 0;
 padding: 0.75rem;
 box-sizing: border-box;
 `;
-
-// const InputSelect = styled.select`
-//   ${inputGlobalStyles}
-// `;
 
 export const InputBox = styled.input`
   ${inputGlobalStyles}
@@ -336,8 +327,8 @@ const PresaleScreen = ({ APP }) => {
 
   //#Animation
   const transitions = useTransition(isPaying, {
-    from: { transform: "translateY(100%)" },
-    enter: { transform: "translateY(0)" },
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
     leave: { display: "none" },
     config: { duration: 500 },
   });
@@ -429,7 +420,6 @@ const PresaleScreen = ({ APP }) => {
     },
   ];
 
-
   const handlePayment = async () => {
     if (!isValidAmount(amount)) {
       setError("Please enter a valid amount.");
@@ -447,7 +437,6 @@ const PresaleScreen = ({ APP }) => {
       // Call function to handle payment logic
 
       //const stripe_services = stripeServices(stripe);
-
 
       //   //TO-DO: FOR DEV ___ TO BE REMOVED
       //  if(await onSuccess()){
@@ -469,7 +458,6 @@ const PresaleScreen = ({ APP }) => {
       //await createPaymentIntent(amount, selectedType.id);
       // console.log("Processing payment for:", selectedType.id, "Amount:", amount, "Intent:", paymentIntent);
 
-
       setIsPaying(true);
     } catch (error) {
       console.error("Error:", error);
@@ -490,7 +478,7 @@ const PresaleScreen = ({ APP }) => {
       <div id="checkout"></div>
 
       <CARD_WRAPPER>
-        <CARD_SECTION_01>
+        <CARD_SECTION>
           <MapBox />
 
           <InfoBox>
@@ -504,7 +492,7 @@ const PresaleScreen = ({ APP }) => {
               </Flex>
             </CardContent>
             <CardContent>
-              <p style={{ fontSize: "0.7rem", marginTop: "0.5rem" }}>
+              <p className="subtext">
                 Supplier: {selectedProducer?.producer.toUpperCase()}
               </p>
             </CardContent>
@@ -518,81 +506,57 @@ const PresaleScreen = ({ APP }) => {
             This purchase is a pre-order. Farmer details and initial supply
             information will be available upon the launch of our marketplace.
           </span>
-        </CARD_SECTION_01>
+        </CARD_SECTION>
 
         {transitions((style, isPaying) =>
           !isPaying ? (
-              <CARD_SECTION_02 style={style}>
-                                <Title>Nutrient Removal Certificates Presale</Title>
+            <CARD_SECTION style={style}>
+              <Title>Nutrient Removal Certificates Presale</Title>
 
-<Description>
-  Remove pollution, support the environment, and create an
-  impact you can count on. All NeptuneChain Nutrient Pollution
-  Credits™, are third-party verified and quantified.
-  <br />
-  <br />
-  Each purchase comes with a certificate that transparently
-  confirms your contribution to pollution removal and tracks
-  your environmental impact in real-time.
-</Description>
-<FormWrapper>
-  <FormInfo>
-    <h3>Regenerative Pollution offsets</h3>
-    Each NeptuneChain Nutrient Pollution Credit™ signifies the
-    removal of 1 pound (lbs) of nutrient pollution, with a
-    unique mix of Nitrogen, Phosphorus, and other pollutants,
-    fostering environmental regeneration.
-  </FormInfo>
+              <Description>
+                Remove pollution, support the environment, and create an impact
+                you can count on. All NeptuneChain Nutrient Pollution Credits™,
+                are third-party verified and quantified.
+                <br />
+                <br />
+                Each purchase comes with a certificate that transparently
+                confirms your contribution to pollution removal and tracks your
+                environmental impact in real-time.
+              </Description>
+              <FormWrapper>
+                <FormInfo>
+                  <h3>Regenerative Pollution offsets</h3>
+                  Each NeptuneChain Nutrient Pollution Credit™ signifies the
+                  removal of 1 pound (lbs) of nutrient pollution, with a unique
+                  mix of Nitrogen, Phosphorus, and other pollutants, fostering
+                  environmental regeneration.
+                </FormInfo>
 
-  <FormInputs>
-    {/* <InputSelect
-value={selectedType.id}
-onChange={(e) =>
-setSelectedType(
-certificateTypes.find(
-(type) => type.id === e.target.value
-)
-)
-}
->
-{certificateTypes.map((type) => (
-<option key={type.id} value={type.id}>
-{type.name}
-</option>
-))}
-</InputSelect> */}
+                <FormInputs>
 
-    {/* <InputBox
-type="text"
-id="name"
-value={name}
-placeholder="Name on certificate (optional)"
-onChange={(e) => setName(e.target.value)}
-/> */}
+                  <InputBox
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Enter your amount"
+                  />
+                </FormInputs>
 
-    <InputBox
-      type="number"
-      value={amount}
-      onChange={(e) => setAmount(e.target.value)}
-      placeholder="Enter your amount"
-    />
-  </FormInputs>
-
-  <Button
-    id="remove-carbon-button"
-    className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
-    onClick={handlePayment}
-  >
-    {loading
-      ? "Processing..."
-      : "Buy Regenerative Pollution Offsets"}
-  </Button>
-</FormWrapper>
-              </CARD_SECTION_02>
+                <Button
+                  id="remove-carbon-button"
+                  className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
+                  onClick={handlePayment}
+                >
+                  {loading
+                    ? "Processing..."
+                    : "Buy Regenerative Pollution Offsets"}
+                </Button>
+              </FormWrapper>
+            </CARD_SECTION>
           ) : (
-              <CARD_SECTION_02 style={style}>
-                <Payment setIsPaying={setIsPaying} lineItems={getlineItems}/>
-              </CARD_SECTION_02>
+            <CARD_SECTION style={style}>
+              <Payment setIsPaying={setIsPaying} lineItems={getlineItems} />
+            </CARD_SECTION>
           )
         )}
       </CARD_WRAPPER>
@@ -633,10 +597,8 @@ onChange={(e) => setName(e.target.value)}
 //   );
 // };
 
-const Presale = ({APP}) => {
-  return (
-    <PresaleScreen APP={APP} />
-  )
-}
+const Presale = ({ APP }) => {
+  return <PresaleScreen APP={APP} />;
+};
 
 export default Presale;

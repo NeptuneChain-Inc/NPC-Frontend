@@ -56,19 +56,9 @@ function Payment({setIsPaying, lineItems}) {
       </div>
       <div className='navigation'>
         {currentStep > 1 && (
-          <Button className='prev' onClick={goToPreviousStep}>
-            <FaArrowLeft /> Prev
-          </Button>
+          <FaArrowLeft onClick={goToPreviousStep} /> 
         )}
-
-{currentStep < 2 && (
-          <Button className='prev' onClick={goToNextStep}>
-            <FaArrowLeft /> Next
-          </Button>
-        )}
-        <Button className='next' onClick={exitSteps}>
-        <FaTimes />
-          </Button>
+        <FaTimes onClick={exitSteps} />
       </div>
     </FormWrapper>
   );
