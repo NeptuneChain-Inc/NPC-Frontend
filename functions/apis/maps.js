@@ -1,12 +1,21 @@
-const axios = require('axios');
-const app = express();
+const axios = require("axios");
 
+/**
+ * Retrieves the Maps API data from the Google Maps API.
+ * 
+ * @returns {Promise} A promise that resolves with the Maps API data.
+ * @throws {Error} If there is an error retrieving the data.
+ */
 const getMapsAPI = async () => {
-    try {
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/js?key=${process.env.GoogleMaps_API_KEY}`);
-      res.send(response.data);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error fetching data from Google Maps API');
-    }
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/js?key=${process.env.GoogleMaps_API_KEY}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
+};
+
+export { getMapsAPI };
