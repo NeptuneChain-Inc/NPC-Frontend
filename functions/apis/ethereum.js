@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+const { ethers } = require("ethers");
 
 /**
  * Retrieves the signer object for the current application wallet.
@@ -18,4 +18,4 @@ const getSigner = async () => {
   }
 };
 
-export { getSigner }
+module.exports = { getSigner }

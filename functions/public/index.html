@@ -1,29 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Neptunechain Server Homepage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeptuneChain API</title>
     <style>
-        body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f5;
         }
-        .header {
-            text-align: center;
+        .container {
+            max-width: 1200px;
+            margin: auto;
             padding: 20px;
-            background-color: #007BFF;
-            color: white;
         }
-        .content {
-            margin: 20px;
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .intro {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-item {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .feature-item h3 {
+            margin-top: 0;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Welcome to Neptunechain Server Homepage</h1>
+    <header>
+        <div class="container">
+            <h1>NeptuneChain</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <h2>NeptuneChain Server</h2>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <h3>Database Services</h3>
+                <p>Robust and secure data handling </p>
+            </div>
+            <div class="feature-item">
+                <h3>Ethereum Integration</h3>
+                <p>Seamlessly connect to EVM blockchain sfor managing digital assets.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Live Streaming</h3>
+                <p>Deliver live streaming experiences with Livepeer support.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Map Services</h3>
+                <p>Integrate Google maps</p>
+            </div>
+            <div class="feature-item">
+                <h3>NFT & Metadata</h3>
+                <p>Explore, manage, and transact NFTs with rich metadata support.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Payment Solutions</h3>
+                <p>Integrate stripe for secure and reliable payment processing.</p>
+            </div>
+        </div>
     </div>
-    <div class="content">
-        <p>This is the homepage of the Neptunechain server.</p>
-    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>NeptuneChain © 2024. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

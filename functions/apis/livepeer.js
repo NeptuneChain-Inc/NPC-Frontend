@@ -1,3 +1,16 @@
+const {
+  LivepeerConfig,
+  createReactClient,
+  studioProvider,
+} = require("@livepeer/react");
+
+const getLivepeerClient = () =>
+  createReactClient({
+    provider: studioProvider({
+      apiKey: process.env.LIVEPEER_API_KEY,
+    }),
+  });
+
 /**
  * Retrieves viewership data for a given playback ID from the Livepeer Studio API.
  * @param {string} playbackId - The ID of the playback for which viewership data is requested.
@@ -5,7 +18,7 @@
  * The object has two properties: `viewers` (number) representing the number of viewers and `duration` (number)
  * representing the duration of the playback in seconds. Returns `null` if the response is empty.
  */
-export const getViewership = async (playbackId) => {
+const getViewership = async (playbackId) => {
   try {
     const response = await fetch(
       `https://livepeer.studio/api/data/views/query/total/${playbackId}`,
@@ -29,7 +42,7 @@ export const getViewership = async (playbackId) => {
  * @param {string} assetId - The ID of the asset for which to retrieve metrics.
  * @returns {Promise<Object|null>} - The JSON response from the Livepeer API or null if there is no response.
  */
-export const getAssetMetrics = async (assetId) => {
+const getAssetMetrics = async (assetId) => {
   try {
     const response = await fetch(
       `https://livepeer.studio/api/data/views/query/creator?assetId=${assetId}&timeStep=day&breakdownBy[]=timezone`,
@@ -46,3 +59,5 @@ export const getAssetMetrics = async (assetId) => {
     return null;
   }
 };
+
+module.exports = { getViewership, getViewership, getAssetMetrics };

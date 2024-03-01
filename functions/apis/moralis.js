@@ -1,19 +1,18 @@
-
-import Moralis from 'moralis';
+const Moralis = require("moralis").default;
 
 /**
  * Initializes the Moralis SDK.
- * 
+ *
  * This function initializes the Moralis SDK by starting the Moralis server with the provided API key.
- * 
+ *
  * @returns {Promise<void>} A promise that resolves when the Moralis SDK is successfully initialized.
- * 
+ *
  * @throws {Error} If the Moralis SDK fails to start.
  */
 async function initializeMoralis() {
-    await Moralis.start({
-        apiKey: process.env.MORALIS_KEY,
-    });
+  await Moralis.start({
+    apiKey: process.env.MORALIS_KEY,
+  });
 }
 initializeMoralis().catch(console.error);
 
@@ -25,13 +24,13 @@ const chain = process.env.TESTNET_ID;
  * @param {string} address - The wallet address to retrieve NFTs for.
  * @returns {Promise<Object>} - A promise that resolves to an object representing the NFTs owned by the wallet address.
  */
-export const getWalletNFTs = async (address) => {
-    const response = await Moralis.EvmApi.nft.getWalletNFTs({
-        address,
-        chain,
-    });
+const getWalletNFTs = async (address) => {
+  const response = await Moralis.EvmApi.nft.getWalletNFTs({
+    address,
+    chain,
+  });
 
-    return response.toJSON();
+  return response.toJSON();
 };
 
 /**
@@ -41,12 +40,14 @@ export const getWalletNFTs = async (address) => {
  * @param {string} tokenId - The ID of the NFT.
  * @returns {Promise<Object>} - A promise that resolves to the metadata of the NFT.
  */
-export const getNFTMetadata = async (address, tokenId) => {
-    const response = await Moralis.EvmApi.nft.getNFTMetadata({
-        address,
-        chain,
-        tokenId,
-    });
+const getNFTMetadata = async (address, tokenId) => {
+  const response = await Moralis.EvmApi.nft.getNFTMetadata({
+    address,
+    chain,
+    tokenId,
+  });
 
-    return response.toJSON();
+  return response.toJSON();
 };
+
+module.exports = { getWalletNFTs, getNFTMetadata };

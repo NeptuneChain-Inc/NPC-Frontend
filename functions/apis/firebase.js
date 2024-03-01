@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+const { initializeApp } = require("firebase/app");
+const { getAuth } = require("firebase/auth");
+const { getDatabase } = require("firebase/database");
 
   const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -20,4 +20,4 @@ const db = getDatabase(app);
 // Initialize Firebase Auth
 const auth = getAuth();
 
-export { auth, db };
+module.exports = { auth, db };

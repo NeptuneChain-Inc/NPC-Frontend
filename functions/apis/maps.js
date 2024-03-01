@@ -18,4 +18,4 @@ const getMapsAPI = async () => {
   }
 };
 
-export { getMapsAPI };
+module.exports = { getMapsAPI };

@@ -1,5 +1,10 @@
-import { ref, get, set, push } from "firebase/database";
-import { db } from "../apis/firebase";
+/**
+ * NOTES:
+ * #TODO: Create getVideos && getStreams query functions
+ */
+
+const { ref, get, set, push } = require("firebase/database");
+const { db } = require("../apis/firebase");
 
 /*************************************************************************************** */
 /**
@@ -15,7 +20,7 @@ const sanitizeUserInput = (input) => String(input).replace(/[^a-z0-9]/gi, "");
  * @param {database path to retrieve data} path
  * @returns value at path or null if failed
  */
-const _getData = async (path) => (await get(ref(db, path)))?.val() || null;
+const _getData = async (path) => (await get(ref(db, path)))?.val();
 
 /**
  *
@@ -23,12 +28,15 @@ const _getData = async (path) => (await get(ref(db, path)))?.val() || null;
  * @param {* data to write in database} data
  * @returns true if successful or null if failed
  */
-const _saveData = async (path, data) =>
-  (await set(ref(db, path), data)) ? true : null;
+const _saveData = async (path, data) => {
+  await set(ref(db, path), data);
+  return Promise.resolve(true);
+};
 
-const _pushData = async (path, data) =>
-  (await push(ref(db, path), data)) ? true : null;
-
+const _pushData = async (path, data) => {
+  await push(ref(db, path), data);
+  return Promise.resolve(true);
+};
 /**
  * Loads the default template for a user's dashboard data.
  *
@@ -44,12 +52,10 @@ const _loadDefaultTemplate = async (uid, accountType) => {
       accountType
     ).toLowerCase()}`
   );
-  return defaultUserDashes
-    ? await _saveData(
-        `neptunechain/users/data/${uid}/dashboard/`,
-        defaultUserDashes
-      )
-    : null;
+  return await _saveData(
+    `neptunechain/users/data/${uid}/dashboard/`,
+    defaultUserDashes
+  );
 };
 /*************************************************************************************** */
 
@@ -57,25 +63,24 @@ const _loadDefaultTemplate = async (uid, accountType) => {
 
 /** #GET_PUBLIC_DATA */
 const getUsername = async (username) =>
-  (await getUser(
+  await getUser(
     await _getData(
       `neptunechain/users/usernames/${sanitizeUserInput(username)}`
     )
-  )) || null;
+  );
 
 const getVideo = async (playbackId) =>
-  (await _getData(`neptunechain/livepeer/videos/${playbackId}`)) || null;
+  await _getData(`neptunechain/livepeer/videos/${playbackId}`);
 
 const getStream = async (playbackId) =>
-  (await _getData(`neptunechain/livepeer/streams/${playbackId}`)) || null;
+  await _getData(`neptunechain/livepeer/streams/${playbackId}`);
 
 /** #GET_USER_DATA */
 
-const getUser = async (uid) =>
-  (await _getData(`neptunechain/users/data/${uid}`)) || null;
+const getUser = async (uid) => await _getData(`neptunechain/users/data/${uid}`);
 
 const getUserDashboard = async (uid) =>
-  (await _getData(`neptunechain/users/data/${uid}/dashboard/`)) || null;
+  await _getData(`neptunechain/users/data/${uid}/dashboard/`);
 
 /**
  * Retrieves a list of videos associated with a user.
@@ -118,7 +123,6 @@ const getUserStreams = async (uid) => {
  * @param {string} userData.uid - The unique identifier for the user.
  * @param {string} userData.username - The username for the user.
  * @param {string} userData.type - The type of the user.
- * @returns {boolean} - Returns true if the user is created successfully.
  * @throws {Error} - Throws an error if any required fields are missing or if the user already exists.
  */
 const createUser = async (userData) => {
@@ -167,11 +171,9 @@ const saveStream = async (streamData, creatorUID) => {
           streamData
         )
       ) {
-        return (
-          (await _pushData(
-            `neptunechain/users/data/${creatorUID}/streams`,
-            playbackId
-          )) || null
+        return await _pushData(
+          `neptunechain/users/data/${creatorUID}/streams`,
+          playbackId
         );
       }
     }
@@ -198,11 +200,9 @@ const saveVideo = async (videoAsset, creatorUID) => {
           videoAsset
         )
       ) {
-        return (
-          (await _pushData(
-            `neptunechain/users/data/${creatorUID}/videos`,
-            playbackId
-          )) || null
+        return await _pushData(
+          `neptunechain/users/data/${creatorUID}/videos`,
+          playbackId
         );
       }
     }
@@ -228,8 +228,10 @@ const UserDB = {
 
 const MediaDB = {
   get: {
-    videos: getVideo,
-    streams: getStream,
+    video: getVideo,
+    stream: getStream,
+    // videos: getVideos,
+    // streams: getStreams,
   },
   set: {
     video: saveVideo,
@@ -237,4 +239,4 @@ const MediaDB = {
   },
 };
 
-export { UserDB, MediaDB };
+module.exports = { UserDB, MediaDB };

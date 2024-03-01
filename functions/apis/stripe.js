@@ -30,7 +30,7 @@ const createPaymentIntent = async (request_body) => {
 
 const getPrice = async (params) => await stripe.prices.retrieve(params.priceID) || null;
 
-export {
+module.exports = {
     createPaymentIntent,
     getPrice
 }

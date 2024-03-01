@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeptuneChainAPI Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            line-height: 1.6;
+            background: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+        }
+        h1,h2,h3 {
+            color: #333;
+        }
+        code {
+            background: #eee;
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NeptuneChainAPI Documentation</h1>
+        <p>Welcome to the NeptuneChainAPI documentation. This page provides information on server routes and functionalities.</p>
+        
+        <h2>Server Modules</h2>
+        <p>NeptuneChainAPI utilizes various server modules including Express, dotenv for environment configuration, and additional API integrations such as database, Ethereum, Moralis, Livepeer, maps, and Stripe.</p>
+
+        <h2>Status Codes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status Code</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>500</td>
+                    <td>Indicating that the request was accepted, but that an error on the server prevented the fulfillment of the request.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>API Routes</h2>
+        
+        <h3>Database Routes</h3>
+        <code>POST /db/user/get/user</code>
+        <code>POST /db/user/get/username</code>
+        <code>POST /db/user/get/dashboard</code>
+        <code>POST /db/user/get/media/videos</code>
+        <code>POST /db/user/get/media/streams</code>
+        <code>POST /db/user/set/user</code>
+        <code>POST /db/media/get/video</code>
+        <code>POST /db/media/get/stream</code>
+        <code>POST /db/media/set/video</code>
+        <code>POST /db/media/set/stream</code>
+        
+        <h3>Ethereum Routes</h3>
+        <code>POST /ethereum/get/signer</code>
+        
+        <h3>Livepeer Routes</h3>
+        <code>POST /livepeer/get/client</code>
+        <code>POST /livepeer/get/viewership</code>
+        <code>POST /livepeer/get/asset_metrics</code>
+
+        <h3>Maps Routes</h3>
+        <code>POST /maps/get/api</code>
+        
+        <h3>Moralis Routes</h3>
+        <code>POST /moralis/get/wallet_nfts</code>
+        <code>POST /moralis/get/nft_metadata</code>
+        
+        <h3>Stripe Routes</h3>
+        <code>POST /stripe/config</code>
+        <code>POST /stripe/create/payment_intent</code>
+        <code>POST /stripe/get/price</code>
+    </div>
+</body>
+</html>
