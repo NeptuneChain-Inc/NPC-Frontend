@@ -243,16 +243,19 @@ app.post("/stripe/get/price", async (req, res) => {
 });
 /****************************************************************************************** */
 
-const isFirebaseEnv =
-  process.env.FUNCTIONS_EMULATOR === "true" ||
-  process.env.NODE_ENV === "production";
+// const isFirebaseEnv =
+//   process.env.FUNCTIONS_EMULATOR === "true" ||
+//   process.env.NODE_ENV === "production";
 
-if (isFirebaseEnv) {
-  exports.app = require("firebase-functions").https.onRequest(app);
+// if (isFirebaseEnv) {
+//   exports.app = require("firebase-functions").https.onRequest(app);
+//   console.log(`SERVER IS LIVE!!`);
+// } else {
+//   const PORT = process.env.TEST_PORT;
+//   app.listen(PORT || 3000, () =>
+//     console.log(`Node server listening at http://localhost:${PORT}`)
+//   );
+// }
+
+exports.app = require("firebase-functions").https.onRequest(app);
   console.log(`SERVER IS LIVE!!`);
-} else {
-  const PORT = process.env.TEST_PORT;
-  app.listen(PORT || 3000, () =>
-    console.log(`Node server listening at http://localhost:${PORT}`)
-  );
-}

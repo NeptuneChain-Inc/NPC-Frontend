@@ -9,7 +9,7 @@ const axios = require("axios");
 const getMapsAPI = async () => {
   try {
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/js?key=${process.env.GoogleMaps_API_KEY}`
+      `https://maps.googleapis.com/maps/api/js?key=${process.env.MAPS_API_KEY}`
     );
     return response.data;
   } catch (error) {
