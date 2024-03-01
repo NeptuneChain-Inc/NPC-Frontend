@@ -22,7 +22,7 @@ const createPaymentIntent = async (request_body) => {
 
     return {
       clientSecret: paymentIntent.client_secret,
-    };
+    } || null;
   } catch (e) {
     throw e;
   }
