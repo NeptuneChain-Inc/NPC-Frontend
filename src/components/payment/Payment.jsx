@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import CheckoutForm from './CheckoutForm';
 import CustomerInfoForm from './CustomerInfoForm';
 import { FaArrowLeft, FaTimes } from 'react-icons/fa'; 
-import { FormWrapper, Button } from '../routes/Presale';
+import { FormWrapper } from '../routes/Presale';
 import OrderConfirmation from './OrderConfirmation';
 import './Payment.css';
 

@@ -1,15 +1,13 @@
-
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
 import { useState, useEffect } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import Spinner from "./Spinner"; // Assume you have a Spinner component for loading states
 import { configs } from "./configs";
-import { stripe_unitToString } from './OrderConfirmation';
-import { sContract } from '../../contracts/contractRef';
-
+import { stripe_unitToString } from "./OrderConfirmation";
+import { sContract } from "../../contracts/contractRef";
 
 const presaleProducer = {
   producer: "to be announced",
@@ -20,8 +18,7 @@ const presaleProducer = {
   totalLandArea: 3600,
 };
 
-
- const Form = ({item}) => {
+const Form = ({ item }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -42,7 +39,7 @@ const presaleProducer = {
     try {
       const _lastCertId = await sContract.getTotalCertificates();
       const { producer, verifier, type } = presaleProducer;
-      await sContract.buyCredits('Test', producer, verifier, type, amount, 50);
+      await sContract.buyCredits("Test", producer, verifier, type, amount, 50);
       return _lastCertId;
     } catch (error) {
       setError(error.message);
@@ -60,13 +57,13 @@ const presaleProducer = {
     const newCert = await onSuccess();
 
     //##TO-DO onSuccess should be run in order completion
-    if(newCert){
+    if (newCert) {
       const { error } = await stripe.confirmPayment({
         elements,
         //confirmParams: { return_url: `http://app.neptunechain.io/certificate/${newCert + 1}` },
         confirmParams: { return_url: `${window.location.origin}/completion` },
       });
-  
+
       if (error) {
         const message =
           error.type === "card_error" || error.type === "validation_error"
@@ -78,8 +75,6 @@ const presaleProducer = {
       }
     }
 
-    
-
     setIsProcessing(false);
   };
 
@@ -90,7 +85,6 @@ const presaleProducer = {
   };
 
   return (
-    
     <form
       id="payment-form"
       onSubmit={handleSubmit}
@@ -116,7 +110,13 @@ const presaleProducer = {
         id="submit"
         style={{ marginTop: "20px", width: "100%" }}
       >
-        {isProcessing ? <Spinner /> : `Pay ${item?.data?.currency?.toUpperCase?.()} ${stripe_unitToString(payAmount)}`}
+        {isProcessing ? (
+          <Spinner />
+        ) : (
+          `Pay ${item?.data?.currency?.toUpperCase?.()} ${stripe_unitToString(
+            payAmount
+          )}`
+        )}
       </motion.button>
 
       {message && (
@@ -132,62 +132,69 @@ const presaleProducer = {
       )}
     </form>
   );
-}
+};
 
+const CheckoutForm = ({ item }) => {
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret, setClientSecret] = useState("");
 
-  const CheckoutForm = ({item}) => {
-    const [stripePromise, setStripePromise] = useState(null);
-    const [clientSecret, setClientSecret] = useState('');
-  
   const { serverUrl } = configs || {};
   const stripe_config = { stripePromise, clientSecret };
-  
-  const { payAmount } = item || {};
-  
-  useEffect(() => {
-      console.log('stripe_config', stripe_config);
-    }, [stripe_config]);
-  
-    // Load Stripe
-    useEffect(() => {
-      fetch(`${serverUrl}/config`).then(async (r) => {
-        const { publishableKey } = await r.json();
-        console.log('publishableKey',publishableKey)
-        setStripePromise(loadStripe(publishableKey));
-      });
-    }, [serverUrl]);
-  
-   // Create Payment Intent
-    useEffect(() => {
-      //#REQ# SERVER, STRIPE, AND PAY AMOUNT (ABOVE $0.50 [50 CENTS]) SHOULD BE DEFINED.
-      console.log('isIntentful', serverUrl && stripePromise && payAmount >= 50, serverUrl, stripePromise, payAmount)
-      if(serverUrl && stripePromise && payAmount >= 50){
-        fetch(`${serverUrl}/create-payment-intent`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            currency: 'USD',
-            amount: payAmount,
-          }),
-        }).then(async (result) => {
-          var { clientSecret } = await result.json();
-          setClientSecret(clientSecret);
-        });
-      }
-    }, [stripePromise, item]);
 
-    //#REQ# STRIPE, CLIENT SECRET AND ITEM SHOULD BE DEFINED.
-    if(!stripePromise || !clientSecret || !item){
-      return;
+  const { payAmount } = item || {};
+
+  useEffect(() => {
+    console.log("stripe_config", stripe_config);
+  }, [stripe_config]);
+
+  // Load Stripe
+  useEffect(() => {
+    fetch(`${serverUrl}/stripe/config`, {
+      method: "POST",
+    }).then(async (r) => {
+      const { publishableKey } = await r.json();
+      console.log("publishableKey", publishableKey);
+      setStripePromise(loadStripe(publishableKey));
+    });
+  }, [serverUrl]);
+
+  // Create Payment Intent
+  useEffect(() => {
+    //#REQ# SERVER, STRIPE, AND PAY AMOUNT (ABOVE $0.50 [50 CENTS]) SHOULD BE DEFINED.
+    console.log(
+      "isIntentful",
+      serverUrl && stripePromise && payAmount >= 50,
+      serverUrl,
+      stripePromise,
+      payAmount
+    );
+    if (serverUrl && stripePromise && payAmount >= 50) {
+      fetch(`${serverUrl}/stripe/create/payment_intent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currency: "USD",
+          amount: payAmount,
+        }),
+      }).then(async (result) => {
+        const { payment_intent } = await result.json();
+        setClientSecret(payment_intent?.clientSecret);
+      });
     }
+  }, [stripePromise, item]);
+
+  //#REQ# STRIPE, CLIENT SECRET AND ITEM SHOULD BE DEFINED.
+  if (!stripePromise || !clientSecret || !item) {
+    return;
+  }
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       <Form item={item} />
     </Elements>
-  )
-}
+  );
+};
 
 export default CheckoutForm;

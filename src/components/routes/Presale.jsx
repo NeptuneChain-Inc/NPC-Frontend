@@ -166,8 +166,6 @@ const CardContent = styled.div`
 
   padding: 0.1rem;
 
-  box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
-
   h3 {
     margin: 0;
   }
@@ -512,7 +510,7 @@ const PresaleScreen = ({ APP }) => {
         {transitions((style, isPaying) =>
           !isPaying ? (
             <CARD_SECTION style={style}>
-              <Title>Nutrient Removal Certificates Presale</Title>
+              <Title>Water Quality Credit Presale</Title>
 
               <Description>
                 Remove pollution, support the environment, and create an impact
@@ -550,7 +548,7 @@ const PresaleScreen = ({ APP }) => {
                 >
                   {loading
                     ? "Processing..."
-                    : "Buy Regenerative Pollution Offsets"}
+                    : "Buy Offsets"}
                 </Button>
               </FormWrapper>
             </CARD_SECTION>

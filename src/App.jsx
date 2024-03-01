@@ -348,9 +348,9 @@ function App() {
           )}
         </Flex>
 
-        <FloatingButton onClick={() => console.log("Assistant Clicked")}>
+        {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
           <FontAwesomeIcon icon={faInfo} />
-        </FloatingButton>
+        </FloatingButton> */}
       </AppContainer>
     </Router>
   );
