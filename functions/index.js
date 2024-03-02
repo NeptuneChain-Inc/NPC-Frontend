@@ -21,7 +21,7 @@ app.use(express.static(process.env.STATIC_DIR || "public"));
 
 // ##NB Set which addresses have access to server.
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://app.neptunechain.io");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
