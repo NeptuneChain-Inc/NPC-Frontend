@@ -1,4 +1,4 @@
-# Repository for NeptuneChain's Nutrient Pollution Recycling Certificate (NPRC) Marketplace
+# Repository for NeptuneChain's Nutrient Pollution Certificate (NPC) Marketplace
 
 ## Repository Description:
 The NPRC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
