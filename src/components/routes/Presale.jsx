@@ -515,19 +515,19 @@ const PresaleScreen = ({ APP }) => {
               <Description>
                 Remove pollution, support the environment, and create an impact
                 you can count on. All NeptuneChain Nutrient Pollution Credits™,
-                are third-party verified and quantified.
+                are verified by third-parties.
                 <br />
                 <br />
-                Each purchase comes with a certificate that transparently
-                confirms your contribution to pollution removal and tracks your
+                Each purchase comes with a digital certificate that transparently
+                confirms your contribution to the watershed and tracks your
                 environmental impact in real-time.
               </Description>
               <FormWrapper>
                 <FormInfo>
-                  <h3>Regenerative Pollution offsets</h3>
+                  <h3>Regenerative Pollution Offsets</h3>
                   Each NeptuneChain Nutrient Pollution Credit™ signifies the
-                  removal of 1 pound (lbs) of nutrient pollution, with a unique
-                  mix of Nitrogen, Phosphorus, and other pollutants, fostering
+                  mitigation of 1 pound (lbs) of nutrient pollution entering the watershed,
+                  with a unique mix of Nitrogen, Phosphorus, and other pollutants, fostering
                   environmental regeneration.
                 </FormInfo>
 
