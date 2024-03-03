@@ -519,7 +519,7 @@ const PresaleScreen = ({ APP }) => {
                 <br />
                 <br />
                 Each purchase comes with a digital certificate that transparently
-                confirms your contribution to the watershed and tracks your
+                confirms your impact on the watershed and tracks your
                 environmental impact in real-time.
               </Description>
               <FormWrapper>
