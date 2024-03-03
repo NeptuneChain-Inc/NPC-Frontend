@@ -510,7 +510,7 @@ const PresaleScreen = ({ APP }) => {
         {transitions((style, isPaying) =>
           !isPaying ? (
             <CARD_SECTION style={style}>
-              <Title>Water Quality Credit Presale</Title>
+              <Title>Water Quality Presale</Title>
 
               <Description>
                 Remove pollution, support the environment, and create an impact
@@ -524,7 +524,7 @@ const PresaleScreen = ({ APP }) => {
               </Description>
               <FormWrapper>
                 <FormInfo>
-                  <h3>Regenerative Pollution Offsets</h3>
+                  <h3>Nutrient Pollution Offsets</h3>
                   Each NeptuneChain Nutrient Pollution Credit™ signifies the
                   mitigation of 1 pound (lbs) of nutrient pollution entering the watershed,
                   with a unique mix of Nitrogen, Phosphorus, and other pollutants, fostering
