@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-//import { BigNumber } from "ethers";
 import styled, { keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { colors } from "../../data/styles";
 import { motion } from 'framer-motion';
-import { formatCertificateID } from "../../functions/helpers";
-import { hostDomain } from "../../contracts/ref";
+import { formatCertificateID } from "../../scripts/helpers";
 
 const fadeIn = keyframes`
   from {
@@ -144,7 +142,7 @@ function EventData({ event }) {
   const formattedArgs = formatArgs(args);
 
   const handleViewCertificate = () => {
-    const txURL = `${hostDomain}/certificate?id=${formattedArgs[0].value}`;
+    const txURL = `/certificate?id=${formattedArgs[0].value}`;
     window.open(txURL, "_blank");
   };
 

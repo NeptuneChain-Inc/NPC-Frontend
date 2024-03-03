@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faBell, faBellSlash, faClose, faGear, faGears, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faBell, faBellSlash, faClose, faGear, faGears } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import ProfileDropMenu from './elements/ProfileDropMenu';
 import { BUTTON } from '../../lib/styled';

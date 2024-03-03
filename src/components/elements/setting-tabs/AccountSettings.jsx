@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { getAdditionalUserInfo, signInWithEmailAndPassword, updatePassword } from 'firebase/auth';
+import { getAdditionalUserInfo, signInWithEmailAndPassword, updatePassword } from 'firebase/auth'; //#BACK_END
 import { auth } from '../../../apis/firebase';
 
 const AccountContainer = styled.div`

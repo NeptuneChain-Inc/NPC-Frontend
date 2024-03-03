@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { getInteractions } from '../../../apis/contracts/verification';
+import { getInteractions } from '../../../apis/contracts/verification'; //#BACK_END
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransactionReceipt } from './elements';
-import { STRING } from '../../../functions/helpers';
+import { STRING } from '../../../scripts/helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 

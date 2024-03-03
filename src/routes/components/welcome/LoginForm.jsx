@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../../../apis/firebase";
-import Lottie from "react-lottie";
+import { Player } from "@lottiefiles/react-lottie-player";
 import successAnimation from "../../../assets/animations/success-animation.json";
 import environmentalRotation from "../../../assets/animations/environmental-friendly-animation.json";
 import Notification from "../../../components/popups/NotificationPopup";
@@ -41,7 +41,6 @@ const Icon = styled(FontAwesomeIcon)`
   min-width: 30px;
   color: #fff;
 `;
-
 
 function isValidEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -93,18 +92,6 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
     }
   };
 
-  const lottieOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: environmentalRotation,
-  };
-
-  const lottieSuccessOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: successAnimation,
-  };
-
   return (
     <AnimatePresence>
       <Notification type="error" message={error} />
@@ -117,7 +104,12 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             exit="exit"
             variants={loadingVariant}
           >
-            <Lottie options={lottieOptions} height={100} width={100} />
+            <Player
+              autoplay
+              loop
+              src={environmentalRotation}
+              style={{ height: 100, width: 100 }}
+            />
           </LOADING_ANIMATION>
         ) : !isSuccess ? (
           <PROMPT_FORM
@@ -128,12 +120,12 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             onSubmit={handleSubmit}
           >
             <CardLogo
-          src={logoImage}
-          alt="NeptuneChain Logo"
-          variants={logoVariants}
-          initial="hidden"
-          animate="visible"
-        />
+              src={logoImage}
+              alt="NeptuneChain Logo"
+              variants={logoVariants}
+              initial="hidden"
+              animate="visible"
+            />
             <InputGroup>
               <Icon icon={faEnvelope} />
               <INPUT
@@ -171,7 +163,12 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             exit="exit"
             variants={loadingVariant}
           >
-            <Lottie options={lottieSuccessOptions} height={100} width={100} />
+            <Player
+              autoplay
+              loop
+              src={successAnimation}
+              style={{ height: 100, width: 100 }}
+            />
           </LOADING_ANIMATION>
         )}
       </PROMPT_CARD>
