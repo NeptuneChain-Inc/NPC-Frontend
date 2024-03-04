@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../apis/firebase";
-import { createUser } from "../../../apis/database";
 import Notification from "../../../components/popups/NotificationPopup";
 import Lottie from "react-lottie";
 import environmentalRotation from "../../../assets/animations/environmental-friendly-animation.json";
@@ -21,6 +18,11 @@ import { faEnvelope, faUser } from "@fortawesome/free-regular-svg-icons";
 import { faLock, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+
+/** #BACKEND */
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { initAuth } from "../../../apis/contracts/firebase";
+import { createUser } from "../../../apis/database";
 
 const InputGroup = styled.div`
   display: flex;
