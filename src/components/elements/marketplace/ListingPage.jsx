@@ -9,7 +9,7 @@ import PoSPopup from './elements/PoSPopup';
 import { formatLongString } from '../../../functions/utils';
 import { colors } from '../../../styles/colors';
 import { MARKETPLACE_HEADER } from './elements/styled';
-import { ACTION_BUTTON } from '../../global_styled';
+import { ACTION_BUTTON } from '../../styled';
 import placeholder from '../../../assets/icon.png';
 
 const logoColors = {

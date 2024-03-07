@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
-import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../../../apis/firebase";
 import { Player } from "@lottiefiles/react-lottie-player";
-import successAnimation from "../../../assets/animations/success-animation.json";
-import environmentalRotation from "../../../assets/animations/environmental-friendly-animation.json";
-import Notification from "../../../components/popups/NotificationPopup";
+
+/** ICONS */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
+
+import Notification from "../../../components/popups/NotificationPopup";
 import {
   BUTTON,
   INPUT,
@@ -21,8 +17,18 @@ import {
   PROMPT_FORM,
   TEXT_LINK,
 } from "../../../components/lib/styled";
+
 import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+
+import { environmentalRotation, successAnimation } from "../../../assets/animations";
+
+/** #BACKEND */
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../../../apis/firebase";
 
 const InputGroup = styled.div`
   position: relative;
