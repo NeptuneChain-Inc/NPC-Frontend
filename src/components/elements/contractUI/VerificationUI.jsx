@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { getInteractions } from '../../../apis/contracts/verification'; //#BACK_END
+import { getInteractions } from '../../../apis/smart_contracts/interactions/verification'; //#BACK_END
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransactionReceipt } from './elements';

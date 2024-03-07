@@ -12,11 +12,9 @@ import {
   SettingsMenu,
   Sidebar,
 } from "./components";
-import { getUser } from "./apis/database";
 import { VerificationUI } from "./components/elements/contractUI";
-import { getSigner } from "./apis/ethers";
 import { getMarketInteractions } from "./apis/contracts/marketplaceInteractions";
-import configs from "./configs";
+import configs from "../configs";
 import { ethers } from "ethers";
 import SellerDashboard from "./components/elements/marketplace/SellerDashboard";
 import ListingPage from "./components/elements/marketplace/ListingPage";
@@ -33,6 +31,7 @@ import {
   Map,
   Presale,
 } from "./components/routes";
+import { EthereumAPI, UserAPI } from "./scripts/back_door";
 
 if (typeof global === "undefined") {
   window.global = window;
@@ -106,7 +105,7 @@ function App() {
    */
   const connectSigner = async () => {
     try {
-      const connection = await getSigner();
+      const connection = await EthereumAPI.get.signer();
       setNetworkProvider(connection.provider);
       const _signer = connection.signer;
       setSigner(_signer);
@@ -132,7 +131,7 @@ function App() {
 
   const updateUser = async (uid) => {
     try {
-      const _userUpdate = await getUser(uid);
+      const _userUpdate = await UserAPI.get.user(uid);
       sessionStorage.setItem("user", JSON.stringify(_userUpdate));
       setUser(_userUpdate);
       return true;

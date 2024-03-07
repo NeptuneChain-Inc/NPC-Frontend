@@ -28,6 +28,10 @@ import { initAuth } from "../../../apis/contracts/firebase";
 /** MOVE TO BACKEND */
 import { createUser } from "../../../apis/database";
 
+/** FIREBASE AUTH */
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { firebaseAPI } from "../../../scripts/back_door";
+
 const InputGroup = styled.div`
   display: flex;
   align-items: center;
@@ -109,10 +113,6 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
           setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
         }
       }
-
-      
-
-      
     } catch (error) {
       setError(error.message);
     } finally {
