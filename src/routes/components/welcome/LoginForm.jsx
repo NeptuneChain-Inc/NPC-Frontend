@@ -5,21 +5,24 @@ import { Player } from "@lottiefiles/react-lottie-player";
 
 /** ICONS */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
+// import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+// import { faLock } from "@fortawesome/free-solid-svg-icons";
 
 import Notification from "../../../components/popups/NotificationPopup";
 import {
-  BUTTON,
-  INPUT,
+  // BUTTON,
+  // INPUT,
   LOADING_ANIMATION,
   PROMPT_CARD,
-  PROMPT_FORM,
-  TEXT_LINK,
+  // PROMPT_FORM,
+  // TEXT_LINK,
 } from "../../../components/lib/styled";
 
-import { formVariant, loadingVariant } from "./motion_variants";
-import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+import { 
+  // formVariant, 
+  loadingVariant 
+} from "./motion_variants";
+// import { CardLogo, logoImage, logoVariants } from "../../Welcome";
 
 import {
   environmentalRotation,
@@ -27,14 +30,15 @@ import {
 } from "../../../assets/animations";
 
 /** #BACKEND */
-import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../../../apis/firebase";
+// import {
+//   sendPasswordResetEmail,
+//   signInWithEmailAndPassword,
+// } from "firebase/auth";
 
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { firebaseAPI } from "../../../scripts/back_door";
+
+// import { FORM_DATA } from "../../../scripts/helpers";
 
 const InputGroup = styled.div`
   position: relative;
@@ -54,10 +58,7 @@ const Icon = styled(FontAwesomeIcon)`
   color: #fff;
 `;
 
-function isValidEmail(email) {
-  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  return regex.test(email);
-}
+
 
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [email, setEmail] = useState("");
@@ -134,7 +135,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   // };
 
   // const handleResetPassword = async () => {
-  //   if (isValidEmail(email)) {
+  //   if (FORM_DATA.isValidEmail(email)) {
   //     try {
   //       await sendPasswordResetEmail(auth, email);
   //       logNotification("alert", `Password reset email sent to ${email}!`);

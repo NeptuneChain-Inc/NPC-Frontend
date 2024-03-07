@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { pushLocalNotification } from "../functions/notifications";
+import { pushLocalNotification } from "../scripts/notifications";
 
 /**
  * NotificationBar Component to render application notifications from storage

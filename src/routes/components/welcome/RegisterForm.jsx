@@ -23,14 +23,10 @@ import { environmentalRotation, successAnimation } from "../../../assets/animati
 
 /** #BACKEND */
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { initAuth } from "../../../apis/contracts/firebase";
-
-/** MOVE TO BACKEND */
-import { createUser } from "../../../apis/database";
 
 /** FIREBASE AUTH */
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { firebaseAPI } from "../../../scripts/back_door";
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { UserAPI, firebaseAPI } from "../../../scripts/back_door";
 
 const InputGroup = styled.div`
   display: flex;
@@ -91,7 +87,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const auth = await initAuth();
+      const auth = await firebaseAPI.get.auth();
 
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -109,10 +105,19 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
           type: accountType,
         };
 
-        if (await createUser(newUser)) {
+        const { result, error } = await UserAPI.create.dbUser(newUser);
+
+        if(error){
+          setError("Failed to register user in our database");
+        }
+
+        if (result) {
           setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
+          return true;
         }
       }
+
+      return null;
     } catch (error) {
       setError(error.message);
     } finally {

@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { getNFTMetadata } from "../moralis";
 import { MarketplaceContract } from "../abis";
 
 const getMarketInteractions = (signer) => {
@@ -108,17 +107,12 @@ const getMarketInteractions = (signer) => {
             (nft) => !unavailableListingIds.has(nft.listingId)
           );
           return Promise.all(
-            availableNFTs.map(async (nft) => {
-              const metadata = await getNFTMetadata(
-                nft.tokenAddress,
-                nft.tokenId.toString()
-              );
+            availableNFTs.map( (nft) => {
               return {
                 ...nft,
-                name: metadata?.name,
-                symbol: metadata?.symbol,
-                uri: metadata?.token_uri, // Replace 'tokenUri' with the correct property from the Moralis response
-                metadata: metadata?.metadata,
+                name: "#outdated",
+                symbol: "NPC",
+                uri: "neptunechain.io",
               };
             })
           );
@@ -159,7 +153,6 @@ const getMarketInteractions = (signer) => {
             fromBlock || genBlock,
             toBlock
           );
-          console.log({ listedEvents });
           // Combine all events into a single array
           const allEvents = [
             ...listedEvents.map((event) => ({
@@ -300,7 +293,7 @@ const getMarketInteractions = (signer) => {
         contract.on(
           "Listed",
           (listingId, seller, tokenAddress, tokenId, price, event) => {
-            // When an NFT is listed, this fires up. It's like a party popper but for code!
+            // When an NFT is listed, this fires up. 
             callback({
               listingId,
               seller,

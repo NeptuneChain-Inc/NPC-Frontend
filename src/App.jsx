@@ -1,28 +1,11 @@
-import React, { useState, useEffect } from "react";
 import "./App.css";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Welcome, Home, Marketplace, NotFound } from "./routes";
-import { Notification, Confirmation } from "./components/popups";
-import { Livepeer } from "./components/elements/livepeer";
-import styled from "styled-components";
-import {
-  Navbar,
-  NotificationBar,
-  NutrientCalculator,
-  SettingsMenu,
-  Sidebar,
-} from "./components";
-import { VerificationUI } from "./components/elements/contractUI";
-import { getMarketInteractions } from "./apis/contracts/marketplaceInteractions";
-import configs from "../configs";
 import { ethers } from "ethers";
-import SellerDashboard from "./components/elements/marketplace/SellerDashboard";
-import ListingPage from "./components/elements/marketplace/ListingPage";
-import { style_template } from "./components/lib/style_templates";
-import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
-import { colors } from "./styles/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styled from "styled-components";
+
+import { Welcome, Home, Marketplace, NotFound } from "./routes";
 import {
   Registry,
   RecentRemoval,
@@ -31,13 +14,37 @@ import {
   Map,
   Presale,
 } from "./components/routes";
+
+import {
+  Navbar,
+  NotificationBar,
+  NutrientCalculator,
+  SettingsMenu,
+  Sidebar,
+} from "./components";
+
+import SellerDashboard from "./components/elements/marketplace/SellerDashboard";
+import ListingPage from "./components/elements/marketplace/ListingPage";
+
+import { Livepeer } from "./components/elements/livepeer";
+import { VerificationUI } from "./components/elements/contractUI";
+import { Notification, Confirmation } from "./components/popups";
+
+import { style_template } from "./components/lib/style_templates";
+import { colors } from "./styles/colors";
+
+import configs from "../configs";
+
 import { EthereumAPI, UserAPI } from "./scripts/back_door";
+import { getMarketInteractions } from "./smart_contracts/interactions";
+
+const NAVLESS_ROUTES = ["presale", "purchase"];
+
+const { MODE, NETWORKS } = configs.blockchain;
 
 if (typeof global === "undefined") {
   window.global = window;
 }
-
-const NAVLESS_ROUTES = ["presale", "purchase"];
 
 function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -51,7 +58,7 @@ function App() {
 
   const [marketInteractions] = useState(
     getMarketInteractions(
-      new ethers.JsonRpcProvider(configs.networks.polygon.testnet)
+      new ethers.JsonRpcProvider(NETWORKS?.[`${MODE?.toLowerCase()}net`]?.rpc)
     )
   );
   const [signedMarketInteractions, setSignedMarketInteractions] =
@@ -124,9 +131,8 @@ function App() {
     if (loggedUser) {
       setUser(JSON.parse(loggedUser));
       return true;
-    } else {
-      return false;
     }
+    return null;
   };
 
   const updateUser = async (uid) => {

@@ -1,26 +1,33 @@
-import {
-  LivepeerConfig,
-  createReactClient,
-  studioProvider,
-} from '@livepeer/react';
 import * as React from 'react';
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components';
-import { Navbar, NotificationBar, Sidebar } from '../../';
-import { LIVEPEER_API_KEY } from '../../../apis/livepeer';
+import {
+  LivepeerConfig,
+} from '@livepeer/react';
 import { Stream } from './Stream';
 import { VideoUpload } from './VideoUpload';
 import { MediaPlayer, BasicStreamPlayer } from './elements';
-
-const livepeerClient = createReactClient({
-  provider: studioProvider({
-    apiKey: LIVEPEER_API_KEY,
-  }),
-});
+import { LivepeerAPI } from '../../../scripts/back_door';
 
 function Livepeer({ APP }) {
   const { serviceID, playbackID, liveID } = useParams();
-  const { user, sidebarOpen } = APP ? APP.STATES : {};
+  const [livepeerClient, setLivepeerClient] = useState(null);
+  
+  useEffect(() => {
+    fetchLivepeerClient()
+  }, [])
+
+  const fetchLivepeerClient = async () => {
+    const _client = await LivepeerAPI.get.livepeerClient();
+    const { livepeerClient, error} = _client || {};
+
+    if(error){
+      console.error(error)
+      return;
+    }
+
+    setLivepeerClient(livepeerClient);
+  }
 
   const renderService = (serviceID) => {
     switch (serviceID) {
@@ -39,7 +46,9 @@ function Livepeer({ APP }) {
     }
   }
 
-  console.log({ serviceID, playbackID, liveID });
+  if(!livepeerClient){
+    return <p>Client Unavailable</p>;
+  }
 
 
 

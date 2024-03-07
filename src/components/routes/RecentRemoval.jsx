@@ -2,7 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import styled, { keyframes } from "styled-components";
 import { Loading, Error } from "../elements";
 import { contract } from "../../contracts/contractRef";
-import { NUMBERS, formatCertificate } from "../../functions/helpers";
+import { NUMBERS, formatCertificate } from "../../scripts/helpers";
 
 const fadeIn = keyframes`
   0% {

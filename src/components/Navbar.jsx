@@ -1,42 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import appIcon from "../assets/icon.png";
-import AppLogo from "../assets/logo.png";
+import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes, faEraser } from "@fortawesome/free-solid-svg-icons";
 import { DesktopMenu, MobileMenu } from "./elements/navbar";
-import { OBJECTS } from "../functions/helpers";
-import { AnimatePresence, motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { style_template } from "./lib/style_templates";
+import { OBJECTS } from "../scripts/helpers";
+import { AppIcon, AppLogo } from "../assets";
 
-/**
- * Navbar Component
- *
- * @param {Object} APP - Contains STATES and ACTIONS for the application
- */
 const Navbar = ({ APP }) => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [hideSearch, setHideSearch] = useState(false);
-  const [isMobile, setisMobile] = useState(false);
-  const navigate = useNavigate();
+
   const path = window.location.pathname.replace(/^\//, "");
-  const { user, searchResults, disableNav, sidebarOpen } = APP?.STATES || {};
-  const { handleSidebar, setDisableNav, setSearchResults } = APP?.ACTIONS || {};
+
+  const { user, searchResults, sidebarOpen } = APP?.STATES || {};
+  const { handleSidebar, setSearchResults } = APP?.ACTIONS || {};
 
   const noSearchBarRoutes = ["features/upload-video", "features/stream"];
-
-  useEffect(() => {
-    const maxWidth = 768;
-    setisMobile(window.innerWidth <= maxWidth);
-  }, []);
 
   useEffect(() => {
     if (searchResults) {
       handleSearch();
     }
-    console.log({ path });
+
     if (noSearchBarRoutes.includes(path)) {
       setHideSearch(true);
     } else if (hideSearch) {
@@ -56,7 +46,6 @@ const Navbar = ({ APP }) => {
     const currentDash = OBJECTS.findValueByKey(user?.dashData, path);
     const results = OBJECTS.SEARCH.filterObjectByQuery(currentDash, search);
     setSearchResults(results);
-    console.log("Search Results", { results });
   };
 
   const clearSearch = () => {
@@ -64,10 +53,8 @@ const Navbar = ({ APP }) => {
     setSearchResults(null);
   };
 
-  // Toggle the expandable search bar
   const toggleSearch = () => setIsSearchExpanded(!isSearchExpanded);
 
-  // Style variations for the search bar animation
   const searchBarVariants = {
     expanded: { opacity: 1, transition: { duration: 0.5 } },
     collapsed: { opacity: 0, transition: { duration: 0.5 } },
@@ -88,7 +75,7 @@ const Navbar = ({ APP }) => {
             <Icon icon={faTimes} onClick={handleSidebar} />
           </>
         ) : (
-          <Logo alt="logo" src={appIcon} onClick={handleSidebar} />
+          <Logo alt="logo" src={AppIcon} onClick={handleSidebar} />
         )}
 
         <SearchContainer>
@@ -158,10 +145,9 @@ const NavActions = styled.div`
 `;
 
 const SidebarHeader = styled.div`
-width: 20vw;
+  width: 20vw;
 
   @media (max-width: 768px) {
-
   }
 `;
 
