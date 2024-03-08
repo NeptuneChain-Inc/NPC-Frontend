@@ -10,7 +10,7 @@ import {
   Line,
 } from "../elements/index";
 import { colors } from "../../data/styles";
-import { NUMBERS } from "../../functions/helpers";
+import { NUMBERS } from "../../scripts/helpers";
 
 const fadeIn = {
   hidden: { opacity: 0 },
