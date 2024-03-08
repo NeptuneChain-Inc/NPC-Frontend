@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import configs from "../../../configs";
+import configs from "../../configs"
 
 /** * @returns firebase config object */
 const getFirebaseConfig = async () =>

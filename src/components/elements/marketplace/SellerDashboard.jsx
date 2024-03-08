@@ -1,16 +1,17 @@
+//#TO-DO Client Error Reporting
+
 import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { useNavigate } from "react-router-dom";
+import { ethers } from "ethers";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { getWalletNFTs } from "../../../apis/moralis";
-import { ethers } from "ethers";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faHome } from "@fortawesome/free-solid-svg-icons";
-import { isNotZeroAddress } from "../../../functions/utils";
-import { MARKETPLACE_HEADER } from "./elements/styled";
-import { logoColors } from "../../../styles/colors";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
 import { NFT_API } from "../../../scripts/back_door";
+import { isNotZeroAddress } from "../../../scripts/utils";
 
 // Neptune Color Palette
 const colors = {
@@ -333,6 +334,7 @@ const SellerDashboard = ({ APP }) => {
 
   return (
     <DashboardWrapper>
+
       <StyledTabList>
         <StyledTab>Owned</StyledTab>
         <StyledTab>Listed</StyledTab>

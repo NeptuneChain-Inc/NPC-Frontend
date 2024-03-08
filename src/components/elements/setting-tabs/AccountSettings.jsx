@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { getAdditionalUserInfo, signInWithEmailAndPassword, updatePassword } from 'firebase/auth'; //#BACK_END
-import { auth } from '../../../apis/firebase';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+
+//#BACK_END
+import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
+import { firebaseAPI } from "../../../scripts/back_door";
 
 const AccountContainer = styled.div`
   display: flex;
@@ -45,7 +47,9 @@ const ActionButton = styled(motion.button)`
   cursor: pointer;
   background-color: ${({ danger }) => (danger ? "#e74c3c" : "#63c3d1")};
 
-  ${({ active }) => active && `
+  ${({ active }) =>
+    active &&
+    `
        padding: 10px;
        border-radius: 0;
     background: #333;
@@ -81,9 +85,9 @@ const Input = styled.input`
 const AccountSettingsTab = ({ APP }) => {
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const { user } = APP?.STATES || {};
   const { logNotification } = APP?.ACTIONS || {};
@@ -93,10 +97,10 @@ const AccountSettingsTab = ({ APP }) => {
   };
 
   const resetPasswordInputs = () => {
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmNewPassword('');
-  }
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -106,22 +110,29 @@ const AccountSettingsTab = ({ APP }) => {
   const handlePasswordChange = async () => {
     if (newPassword === confirmNewPassword) {
       try {
-        const fbUser = await signInWithEmailAndPassword(auth, user?.email, currentPassword);
+        const auth = await firebaseAPI.get.auth();
+        const fbUser = await signInWithEmailAndPassword(
+          auth,
+          user?.email,
+          currentPassword
+        );
         if (fbUser?.user) {
-          console.log(fbUser)
           await updatePassword(fbUser.user, newPassword);
-          logNotification('alert', 'Password Changed!');
-          resetPasswordInputs()
+          logNotification("alert", "Password Changed!");
+          resetPasswordInputs();
         } else {
-          logNotification('error', `SignIn Error: Check Password for ${user?.email}`);
+          logNotification(
+            "error",
+            `SignIn Error: Check Password for ${user?.email}`
+          );
         }
       } catch (error) {
-        logNotification('error', error.message);
+        logNotification("error", error.message);
       }
     } else {
-      logNotification('error', 'Passwords do not match');
+      logNotification("error", "Passwords do not match");
     }
-  }
+  };
 
   const handle2FAToggle = () => {
     // Logic to enable/disable 2FA would be added here
@@ -134,7 +145,11 @@ const AccountSettingsTab = ({ APP }) => {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete your account? This action is irreversible.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action is irreversible."
+      )
+    ) {
       // Logic to delete user account
       console.log("Deleting account...");
     }
@@ -142,18 +157,48 @@ const AccountSettingsTab = ({ APP }) => {
 
   return (
     <AccountContainer>
-      <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} active={showPasswordFields} onClick={togglePasswordFields}>Change Password <FontAwesomeIcon icon={showPasswordFields ? faCaretUp : faCaretDown} /></ActionButton>
+      <ActionButton
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        active={showPasswordFields}
+        onClick={togglePasswordFields}
+      >
+        Change Password{" "}
+        <FontAwesomeIcon icon={showPasswordFields ? faCaretUp : faCaretDown} />
+      </ActionButton>
       {showPasswordFields && (
         <ProfileForm onSubmit={handleFormSubmit}>
           <Label htmlFor="currentPassword">Current Password:</Label>
-          <Input type="password" id="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+          <Input
+            type="password"
+            id="currentPassword"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            required
+          />
 
           <Label htmlFor="newPassword">New Password:</Label>
-          <Input type="password" id="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+          <Input
+            type="password"
+            id="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
 
           <Label htmlFor="confirmNewPassword">Confirm New Password:</Label>
-          <Input type="password" id="confirmNewPassword" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} required />
-          <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type='submit'>
+          <Input
+            type="password"
+            id="confirmNewPassword"
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+            required
+          />
+          <ActionButton
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+          >
             Save Password Changes
           </ActionButton>
         </ProfileForm>
@@ -170,11 +215,21 @@ const AccountSettingsTab = ({ APP }) => {
         </ToggleButton>
       </OptionGroup>
 
-      <ActionButton danger whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDeactivate}>
+      <ActionButton
+        danger
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleDeactivate}
+      >
         Deactivate Account
       </ActionButton>
 
-      <ActionButton danger whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDelete}>
+      <ActionButton
+        danger
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleDelete}
+      >
         Delete Account
       </ActionButton>
     </AccountContainer>

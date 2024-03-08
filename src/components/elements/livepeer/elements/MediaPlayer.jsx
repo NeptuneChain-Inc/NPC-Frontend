@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Player } from '@livepeer/react';
-import ObjectViewer from '../../display/DisplayObject';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { getViewership } from '../../../../apis/livepeer_calls';
-import { getVideo } from '../../../../apis/database';
+import React, { useState, useEffect } from "react";
+import { Player } from "@livepeer/react";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
+
+import ObjectViewer from "../../display/DisplayObject";
+
+// #BACKEND
+import { LivepeerAPI, MediaAPI } from "../../../../scripts/back_door";
 
 const Container = styled(motion.div)`
   width: 100%;
@@ -53,23 +55,39 @@ const MediaPlayer = ({ playbackID }) => {
   const [video, setVideo] = useState(null);
 
   useEffect(() => {
-    const getMetrics = async () => {
-      const _metrics = await getViewership(playbackID);
-      setMetrics(_metrics);
-    };
-    const getVideoAsset = async () => {
-      const _video = await getVideo(playbackID);
-      setVideo(_video);
-    };
-
-    getMetrics();
-    getVideoAsset();
+    if (playbackID) {
+      getMetrics();
+      getVideoAsset();
+    }
   }, [playbackID]);
+
+  const getMetrics = async () => {
+    const { viewership, error } = await LivepeerAPI.get.viewership(playbackID);
+
+    if (error) {
+      console.log(error);
+    }
+
+    if (viewership) {
+      setMetrics(viewership);
+    }
+  };
+  const getVideoAsset = async () => {
+    const { video, error } = await MediaAPI.get.video(playbackID);
+
+    if (error) {
+      console.error(error);
+    }
+
+    if (video) {
+      setVideo(video);
+    }
+  };
 
   return (
     <Container>
       <Player
-        style={{ width: '100%', height: 'auto' }}
+        style={{ width: "100%", height: "auto" }}
         title="Title"
         playbackId={playbackID}
       />
@@ -82,11 +100,15 @@ const MediaPlayer = ({ playbackID }) => {
         )}
       </MetricsContainer>
       <Button onClick={() => setIsExtendedData(!isExtendedData)}>
-        {`${!isExtendedData ? 'View' : 'Hide'} Extended Data`}
+        {`${!isExtendedData ? "View" : "Hide"} Extended Data`}
       </Button>
       <AnimatePresence>
         {isExtendedData && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             {video && <ObjectViewer data={video} />}
           </motion.div>
         )}

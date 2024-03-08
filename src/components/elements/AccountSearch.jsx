@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import styled, { keyframes } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { ethers } from "ethers";
+
 import { contractAddress, mumbaiRPC } from "../../contracts/ref";
 import {
   formatCertificateID,
   handleViewCertificate,
-} from "../../functions/helpers";
+} from "../../scripts/helpers";
 
 const contractABI = [
   "function getAccountTotalBalance(string accountID) view returns (int256 _accountTotalBalance)",
@@ -123,7 +124,7 @@ const Backdrop = styled(motion.div)`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,7 +139,7 @@ const PopupContainer = styled(Container)`
   max-width: 80%;
   max-height: 90%;
   overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 `;
 
 const Form = styled(motion.form)`
@@ -194,9 +195,11 @@ const AccountSearch = ({ isOpen, setIsOpen }) => {
     }
   };
   return (
-    <AnimatePresence mode='wait'>
+    <AnimatePresence mode="wait">
       {isOpen && (
-        <Backdrop id="backdrop" onClick={closePopup}
+        <Backdrop
+          id="backdrop"
+          onClick={closePopup}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
