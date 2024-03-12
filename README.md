@@ -1,7 +1,7 @@
 # Repository for NeptuneChain's Nutrient Pollution Certificate (NPC) Marketplace
 
 ## Repository Description:
-The NPRC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
+The NPC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
 
 Considerations
 Permissions: The new contributor needs to have the appropriate permissions to access the Firebase project. This typically means being added as a member in the Firebase console by the project administrator.
