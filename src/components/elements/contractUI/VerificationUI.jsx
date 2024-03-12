@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { getInteractions } from '../../../apis/contracts/verification';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TransactionReceipt } from './elements';
-import { STRING } from '../../../functions/helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+import { TransactionReceipt } from './elements';
+import { STRING } from '../../../scripts/helpers';
+import { getVerificationInteractions } from '../../../smart_contracts/interactions';
+
 
 const neptuneColorPalette = {
     lightBlue: '#8abbd0',
@@ -188,7 +190,7 @@ function VerificationUI({ signer, open, APP }) {
     const [error, setError] = useState('');
     const { user } = APP?.STATES || {};
 
-    const Interactions = getInteractions(signer);
+    const Interactions = getVerificationInteractions(signer);
 
     useEffect(() => {
         if (user?.type) {

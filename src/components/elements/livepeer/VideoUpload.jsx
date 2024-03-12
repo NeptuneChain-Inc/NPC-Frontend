@@ -1,13 +1,18 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Player, useAssetMetrics, useCreateAsset } from '@livepeer/react';
 import { useDropzone } from 'react-dropzone';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import ObjectViewer from '../display/DisplayObject';
-import { saveVideo } from '../../../apis/database';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx/xlsx.mjs';
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import ObjectViewer from '../display/DisplayObject';
+
+// #BACKEND
+import { MediaAPI } from '../../../scripts/back_door';
+
+
 
 const DropZoneContainer = styled(motion.div)`
   width: 80%;
@@ -370,14 +375,19 @@ export const VideoUpload = ({ APP }) => {
     if (!user?.uid) {
       return false;
     }
-    const isSaved = await saveVideo(asset?.[0], user?.uid);
-    if (isSaved) {
-      APP?.ACTIONS?.logNotification('', "Video Now Live");
-    } else if (isSaved?.error) {
-      APP?.ACTIONS?.logNotification('error', isSaved.error.message);
-    } else {
-      APP?.ACTIONS?.logNotification('alert', "Could Not Process Video");
+    const {result, error} = await MediaAPI.create.video(asset?.[0], user?.uid);
+
+    if(error){
+      console.error(error)
+      APP?.ACTIONS?.logNotification('error', error.message);
     }
+
+    if (result) {
+      APP?.ACTIONS?.logNotification('', "Video Now Live");
+      return result;
+    }
+
+    APP?.ACTIONS?.logNotification('alert', "Could Not Process Video");
   }
 
   const { data: metrics } = useAssetMetrics({

@@ -2,12 +2,11 @@ import { useMemo, useState, useEffect } from 'react';
 import { useCreateStream } from '@livepeer/react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { saveStream } from '../../../apis/database';
+
 import { StreamPlayer } from './elements';
 
-
-
- 
+// #BACKEND
+import { MediaAPI } from '../../../scripts/back_door';
 
 const StreamContainer = styled(motion.div)`
 width: 100%;
@@ -62,19 +61,23 @@ export const Stream = ({APP}) => {
     }
   }, [stream]);
 
-
-  const _saveStream = async()=>{
-    if(!user?.uid){
+  const _saveStream = async () => {
+    if (!user?.uid) {
       return false;
     }
-    const isSaved = await saveStream(stream, user?.uid);
-    if(isSaved){
-      APP?.ACTIONS?.logNotification('', "Stream Created");
-    } else if (isSaved?.error) {
-      APP?.ACTIONS?.logNotification('error', isSaved.error.message);
-    } else {
-      APP?.ACTIONS?.logNotification('alert', "Could Not Save Stream");
+    const {result, error} = await MediaAPI.create.stream(stream, user?.uid);
+
+    if(error){
+      console.error(error)
+      APP?.ACTIONS?.logNotification('error', error.message);
     }
+
+    if (result) {
+      APP?.ACTIONS?.logNotification('', "Stream Created");
+      return result;
+    }
+
+    APP?.ACTIONS?.logNotification('alert', "Could Not Save Stream");
   }
 
   return (

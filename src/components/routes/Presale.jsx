@@ -2,52 +2,155 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { AppConfigs } from "../../apis/database";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { useStripe } from "@stripe/react-stripe-js";
-import { colors } from "../../data/styles";
+import { animated, useTransition } from "react-spring";
 
-import stripeServices from "../../apis/stripeService";
 import MapBox from "../elements/MapBox";
-
-import { sContract } from "../../contracts/contractRef";
-import { NUMBERS } from "../../functions/helpers";
-
 import Payment from "../payment/Payment";
 
-//For animation
-import { useSpring, animated, useTransition } from "react-spring";
+import { NUMBERS } from "../../scripts/helpers";
 
-// Dummy certificate types for demonstration
-const certificateTypes = [
-  {
-    id: "nitrogen",
-    name: "Nitrogen Removal Certificate",
-    description: "Nitrogen Removal Certificate",
-    priceId: "price_1OaOZBFd0vZYtswya23NAAor",
-  },
-  {
-    id: "phosphorus",
-    name: "Phosphorus Removal Certificate",
-    description: "Phosphorus Removal Certificate",
-    priceId: "price_1OaOZ6Fd0vZYtswyZ04AwbNi",
-  },
-];
+import { colors } from "../../data/styles";
 
-const createLineItems = (certificateType, currency, quantity, price) => [
-  {
-    price_data: {
-      currency,
-      product_data: {
-        name: certificateType.name,
-        description: certificateType.description,
-      },
-      unit_amount: price * 100, // cents,
+const presaleProducer = {
+  producer: "TBD/TBA",
+  verifier: "npc network",
+  type: "mitigation",
+  location: "MN, USA",
+  supply: 0,
+  totalLandArea: 3600,
+  priceId: "price_1OefwvFnymUk0uH4x5faSkF9"
+};
+
+const Presale = ({ APP }) => {
+  const [amount, setAmount] = useState(1);
+
+  const [loading, setLoading] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
+  const [error, setError] = useState("");
+
+  const { setRoutePath } = APP?.ACTIONS || {};
+
+  useEffect(() => {
+    setRoutePath("presale");
+  }, []);
+
+  //#Animation
+  const transitions = useTransition(isPaying, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { display: "none" },
+    config: { duration: 500 },
+  });
+
+  const lineItems = [
+    {
+      priceID: presaleProducer.priceId, 
+      quantity: NUMBERS.toNumber(amount),
     },
-    quantity,
-  },
-];
+  ];
+
+  const handlePayment = async () => {
+    if (!isValidAmount(amount)) {
+      setError("Please enter a valid amount.");
+      return;
+    }
+    setError("");
+    setIsPaying(true);
+  };
+
+  return (
+    <FULL_PAGE_CONTAINER
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div id="checkout"></div>
+
+      <CARD_WRAPPER>
+        <CARD_SECTION>
+          <MapBox />
+
+          <InfoBox>
+            <CardContent>
+              <h3>A farmer near you is selling now</h3>
+            </CardContent>
+            <CardContent>
+              <Flex direction="row" justify="space-between">
+                <p>{presaleProducer?.location}</p>
+                <p>{presaleProducer?.totalLandArea} acres</p>
+              </Flex>
+            </CardContent>
+            <CardContent>
+              <p className="subtext">
+                Supplier: {presaleProducer?.producer.toUpperCase()}
+              </p>
+            </CardContent>
+
+            <CardContent>
+              <span className="link">About this project</span>
+            </CardContent>
+          </InfoBox>
+
+          <span className="disclaimer">
+            This purchase is a pre-order. Farmer details and initial supply
+            information will be available upon the launch of our marketplace.
+          </span>
+        </CARD_SECTION>
+
+        {transitions((style, isPaying) =>
+          !isPaying ? (
+            <CARD_SECTION style={style}>
+              <Title>Water Quality Credit Presale</Title>
+
+              <Description>
+                Remove pollution, support the environment, and create an impact
+                you can count on. All NeptuneChain Nutrient Pollution Credits™,
+                are verified by third-parties.
+                <br />
+                <br />
+                Each purchase comes with a digital certificate that
+                transparently confirms your contribution to the watershed and
+                tracks your environmental impact in real-time.
+              </Description>
+              <FormWrapper>
+                <FormInfo>
+                  <h3>Regenerative Pollution Offsets</h3>
+                  Each NeptuneChain Nutrient Pollution Credit™ signifies the
+                  mitigation of 1 pound (lbs) of nutrient pollution entering the
+                  watershed, with a unique mix of Nitrogen, Phosphorus, and
+                  other pollutants, fostering environmental regeneration.
+                </FormInfo>
+
+                <FormInputs>
+                  <InputBox
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Enter your amount"
+                  />
+                </FormInputs>
+
+                <Button
+                  id="remove-carbon-button"
+                  className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
+                  onClick={handlePayment}
+                >
+                  {loading ? "Processing..." : "Buy Offsets"}
+                </Button>
+              </FormWrapper>
+            </CARD_SECTION>
+          ) : (
+            <CARD_SECTION style={style}>
+              <Payment setIsPaying={setIsPaying} lineItems={lineItems} />
+            </CARD_SECTION>
+          )
+        )}
+      </CARD_WRAPPER>
+
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </FULL_PAGE_CONTAINER>
+  );
+};
 
 const FULL_PAGE_CONTAINER = styled(motion.div)`
   position: fixed;
@@ -87,7 +190,7 @@ const CARD_WRAPPER = styled.div`
   overflow: hidden;
 
   border-radius: 10px;
-  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; 
+  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -111,7 +214,7 @@ const CARD_SECTION = styled(animated.div)`
   border-radius: 10px;
   // box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
 
-  @media (max-width: 767px){
+  @media (max-width: 767px) {
     width: 100%;
     padding: 0.5rem;
   }
@@ -214,7 +317,6 @@ export const FormWrapper = styled.div`
   margin: 0;
   padding: 10px;
   box-sizing: border-box;
-
 `;
 
 export const FormInfo = styled(Description)`
@@ -223,7 +325,6 @@ export const FormInfo = styled(Description)`
   font-style: italic;
   font-size: 0.8rem;
   margin: 0;
-
 `;
 
 export const FormInputs = styled.div`
@@ -307,19 +408,16 @@ const presaleProducer = {
 const mitigationCredits_priceID = "price_1OefwvFnymUk0uH4x5faSkF9"; //Test
 //const mitigationCredits_priceID = "price_1OaOZBFd0vZYtswya23NAAor";
 
-const PresaleScreen = ({ APP }) => {
+const Presale = ({ APP }) => {
   const [amount, setAmount] = useState(1);
   const [selectedType, setSelectedType] = useState(certificateTypes[0]);
   const [name, setName] = useState("Presale");
   const [selectedProducer, setSelectedProducer] = useState(presaleProducer);
-  // const [cardElement, setCardElement] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [error, setError] = useState("");
   const [lastCertId, setlastCertId] = useState(null);
 
-  // const stripe = useStripe();
-  // console.log("stripe", stripe);
 
   // const { routePath } = APP?.STATES || {};
   const { setRoutePath } = APP?.ACTIONS || {};
@@ -338,8 +436,6 @@ const PresaleScreen = ({ APP }) => {
 
   useEffect(() => {
     setRoutePath("presale");
-    // //load stripe on mount
-    // loadStripeElement()
 
     fetchChainData();
 
@@ -349,27 +445,6 @@ const PresaleScreen = ({ APP }) => {
 
   useEffect(() => {}, [selectedProducer]);
 
-  // useEffect(() => {
-  //   if(stripe){
-  //     //Initiate Card Element
-  //     setCardElement(stripe.elements().create("card"));
-  //   }
-  // }, [stripe])
-
-  // useEffect(() => {
-  //   if (cardElement) {
-  //     cardElement.mount("#card-element");
-  //   }
-  // }, [cardElement]);
-
-  // const loadStripeElement = async () => {
-  //   try {
-  //     //Initiate Stripe
-  //     setStripe(await loadStripe(await AppConfigs.getAPI("stripe_test")));
-  //   } catch (error) {
-  //     setError(`Could not load stripe: ${error.message}`);
-  //   }
-  // };
 
   const isValidAmount = (amount) => {
     return !isNaN(amount) && amount > 0;
@@ -424,10 +499,6 @@ const PresaleScreen = ({ APP }) => {
       setError("Please enter a valid amount.");
       return;
     }
-
-    // if(!cardElement){
-    //   setError("Payment element not available");
-    // }
 
     setLoading(true);
     setError("");
@@ -563,41 +634,6 @@ const PresaleScreen = ({ APP }) => {
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </FULL_PAGE_CONTAINER>
   );
-};
-
-// const Presale = ({ APP }) => {
-//   const [stripePromise, setStripePromise] = useState(null);
-
-//   useEffect(() => {
-//     if (!stripePromise) {
-//       loadStripePromise();
-//     }
-//   }, []);
-
-//   const loadStripePromise = async () => {
-//     try {
-//       //Initiate Stripe
-//       const liveStripe = await AppConfigs.getAPI("stripe");
-//       //const testStripe = 'pk_test_51NTLlPFnymUk0uH4vxETrYPfIgizozEwByB2uPCcjZFJhBLR45bYS20M3a7KTI4PTwZKg6eMPDbeOPF1PBQr0OBa000EGQPaAB'
-//       setStripePromise(loadStripe(liveStripe));
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   if (!stripePromise) {
-//     return;
-//   }
-
-//   return (
-//     <Elements stripe={stripePromise}>
-//       <PresaleScreen APP={APP} />
-//     </Elements>
-//   );
-// };
-
-const Presale = ({ APP }) => {
-  return <PresaleScreen APP={APP} />;
 };
 
 export default Presale;

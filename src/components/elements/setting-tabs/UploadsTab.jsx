@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { getUserVideos } from '../../../apis/database';
+import React, { useState, useEffect } from "react";
+
+//#BACK_END
+import { UserAPI } from "../../../scripts/back_door";
 
 const UploadsTab = ({ userId }) => {
   const [uploads, setUploads] = useState([]);
@@ -8,7 +10,17 @@ const UploadsTab = ({ userId }) => {
     fetchVideos();
   }, [userId]);
 
-  const fetchVideos = async () => setUploads(getUserVideos(userId))
+  const fetchVideos = async () => {
+    const { videos, error } = await UserAPI.get.videos(userId);
+
+    if (error) {
+      console.error(videos);
+    }
+
+    if (videos) {
+      setUploads(videos);
+    }
+  };
 
   return (
     <div>

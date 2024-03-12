@@ -1,10 +1,13 @@
-import { Player } from '@livepeer/react';
-import { motion } from 'framer-motion';
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import StreamInformation from './StreamInformation';
-import { StreamBroadcast } from '../StreamBroadcast';
-import { getStream } from '../../../../apis/database';
+import React, { useState, useEffect } from "react";
+import { Player } from "@livepeer/react";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+
+import StreamInformation from "./StreamInformation";
+import { StreamBroadcast } from "../StreamBroadcast";
+
+// #BACK-END
+import { MediaAPI } from "../../../../scripts/back_door";
 
 // Main container for the stream player
 const Container = styled(motion.div)`
@@ -29,13 +32,13 @@ const BroadcastButton = styled(motion.button)`
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  background-color: #E74C3C;
+  background-color: #e74c3c;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #C0392B;
+    background-color: #c0392b;
   }
 
   &:disabled {
@@ -60,7 +63,12 @@ const StreamPlayer = ({ stream }) => {
     <Container>
       <PlayerContainer>
         {stream?.playbackId && (
-          <Player title={stream?.name} playbackId={stream?.playbackId} autoPlay muted />
+          <Player
+            title={stream?.name}
+            playbackId={stream?.playbackId}
+            autoPlay
+            muted
+          />
         )}
       </PlayerContainer>
 
@@ -70,8 +78,11 @@ const StreamPlayer = ({ stream }) => {
           Broadcast Stream
         </BroadcastButton>
       )}
-      {(isWebBroadcast && stream?.streamKey) && (
-        <StreamBroadcast streamKey={stream.streamKey} webBroadcast={webBroadcast} />
+      {isWebBroadcast && stream?.streamKey && (
+        <StreamBroadcast
+          streamKey={stream.streamKey}
+          webBroadcast={webBroadcast}
+        />
       )}
     </Container>
   );
@@ -83,11 +94,18 @@ const BasicStreamPlayer = ({ playbackId }) => {
 
   useEffect(() => {
     const retrieveStream = async () => {
-      const _stream = await getStream(playbackId);
-      setStream(_stream);
-    }
+      const { stream, error } = await MediaAPI.get.stream(playbackId);
+
+      if (error) {
+        console.error(error);
+      }
+
+      if (stream) {
+        setStream(stream);
+      }
+    };
     retrieveStream();
-  }, [playbackId])
+  }, [playbackId]);
 
   return (
     <>

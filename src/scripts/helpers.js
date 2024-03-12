@@ -109,6 +109,16 @@ export const NUMBERS = {
       // Handle other potential types (like string)
       return parseInt(value, 10);
     }}
+  },
+  isValidAmount: (amount) => {
+    return !isNaN(amount) && amount > 0;
+  }
+}
+
+export const FORM_DATA = {
+  isValidEmail: (email) => {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
   }
 }
 

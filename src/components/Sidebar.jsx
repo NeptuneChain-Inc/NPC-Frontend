@@ -1,42 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { Sidebar_MenuItem } from './elements';
-import { OBJECTS } from '../functions/helpers';
-import { renderDashIcon } from './lib/icons';
 import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
-import { logoColors } from '../styles/colors';
 
 const Sidebar = ({ APP }) => {
+  const navigate = useNavigate();
+  
   const { isMobile, sidebarOpen, user } = APP ? APP.STATES : {};
   const { handleSidebar, toggleCalculator, handleVerificationUI } = APP ? APP.ACTIONS : {};
 
   const path = window.location.pathname.replace(/^\//, '');
   const isMarketplace = path.startsWith('marketplace');
-  console.log('isMarketplace', isMarketplace, path)
-
-  const navigate = useNavigate();
-
-  const handleToWelcome = () => {
-    Cookies.remove('skipWelcome');
-    navigate('/');
-  };
-
-  const appRoutes = {
-    upload: {
-      route: '/features/upload-video',
-      cta: 'Upload Media'
-    },
-    stream: {
-      route: '/features/stream',
-      cta: 'Broadcast Live'
-    }
-  }
-
- 
-
-
 
   const sidebarItems = [
     {
@@ -96,19 +71,6 @@ const Sidebar = ({ APP }) => {
         <SubHeading>{user?.type.toUpperCase()} DASHBOARD</SubHeading>
       </UserInfo>
 
-      {/* 
-
-      
-      <Menu isMarketplace={isMarketplace}>
-        {Object.entries(OBJECTS.ensureKeyFirst({ ...user?.dashData, ...appRoutes }, 'main') || {})?.map(([dash, data], index) => {
-          console.log({ dash, data })
-          const icon = renderDashIcon(dash);
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={data?.name || data?.cta} route={data?.route || dash} handleSidebar={isMobile ? handleSidebar : null} />
-          );
-        })}
-      </Menu> */}
-
       <Menu>
         {sidebarItems?.map((data, index) => {
           const { route, cta, icon } = data || {};
@@ -117,17 +79,6 @@ const Sidebar = ({ APP }) => {
           );
         })}
       </Menu>
-
-      {/* {isMarketplace && (
-      <Menu>
-        {marketplaceRoutes?.map((data, index) => {
-          const { route, cta, icon } = data || {};
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={route} handleSidebar={isMobile ? handleSidebar : null} />
-          );
-        })}
-      </Menu>
-      )} */}
 
     {path.includes('dashboard/environmental') || path.includes('features') ? (
       <Menu>
@@ -151,8 +102,7 @@ const Sidebar = ({ APP }) => {
         })}
       </Menu>
       )}
-
-
+      
     </StyledSidebar>
   );
 };

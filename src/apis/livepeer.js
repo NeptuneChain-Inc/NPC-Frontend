@@ -1,1 +1,0 @@
-export const LIVEPEER_API_KEY = "ed2bb260-6dc2-431e-a10b-edabd81a14c5" //Full CORS Access

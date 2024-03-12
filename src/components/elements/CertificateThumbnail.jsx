@@ -1,9 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import icon from '../../assets/icon.png';
-import Line from './Line';
-import { hostDomain } from '../../contracts/ref';
 
 const CardWrapper = styled.div`
   display: flex;
@@ -82,7 +79,7 @@ const CertificateThumbnail = ({ certificate }) => {
   const { id, producer, balance } = certificate ? certificate : {};
   const certID = formatCertificateID(id);
   return (
-    <Card href={`${hostDomain}/certificate?id=${id}`} target='blank' >
+    <Card href={`/certificate?id=${id}`} target='blank' >
       <CardWrapper>
         <Logo src={icon} alt="NeptuneChain Icon" loading="lazy" />
         <Title>NEPTUNECHAIN.IO</Title>

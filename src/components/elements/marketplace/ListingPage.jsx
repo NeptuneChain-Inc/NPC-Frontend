@@ -3,13 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { ethers } from 'ethers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import PoSPopup from './elements/PoSPopup';
-import { formatLongString } from '../../../functions/utils';
+import { formatLongString } from '../../../scripts/utils';
 import { colors } from '../../../styles/colors';
-import { MARKETPLACE_HEADER } from './elements/styled';
-import { ACTION_BUTTON } from '../../global_styled';
+import { ACTION_BUTTON } from '../../styled';
 import placeholder from '../../../assets/icon.png';
 
 const logoColors = {
