@@ -18,7 +18,7 @@ const presaleProducer = {
   location: "MN, USA",
   supply: 0,
   totalLandArea: 3600,
-  priceId: "price_1OefwvFnymUk0uH4x5faSkF9"
+  priceId: "price_1OefwvFnymUk0uH4x5faSkF9",
 };
 
 const Presale = ({ APP }) => {
@@ -44,7 +44,7 @@ const Presale = ({ APP }) => {
 
   const lineItems = [
     {
-      priceID: presaleProducer.priceId, 
+      priceID: presaleProducer.priceId,
       quantity: NUMBERS.toNumber(amount),
     },
   ];
@@ -100,7 +100,7 @@ const Presale = ({ APP }) => {
         {transitions((style, isPaying) =>
           !isPaying ? (
             <CARD_SECTION style={style}>
-              <Title>Water Quality Credit Presale</Title>
+              <Title>Water Quality Presale</Title>
 
               <Description>
                 Remove pollution, support the environment, and create an impact
@@ -109,12 +109,12 @@ const Presale = ({ APP }) => {
                 <br />
                 <br />
                 Each purchase comes with a digital certificate that
-                transparently confirms your contribution to the watershed and
-                tracks your environmental impact in real-time.
+                transparently confirms your impact on the watershed and tracks
+                your environmental impact in real-time.
               </Description>
               <FormWrapper>
                 <FormInfo>
-                  <h3>Regenerative Pollution Offsets</h3>
+                  <h3>Nutrient Pollution Offsets</h3>
                   Each NeptuneChain Nutrient Pollution Credit™ signifies the
                   mitigation of 1 pound (lbs) of nutrient pollution entering the
                   watershed, with a unique mix of Nitrogen, Phosphorus, and
@@ -395,245 +395,5 @@ export const ErrorMessage = styled.div`
   color: red;
   margin: 10px 0;
 `;
-
-const presaleProducer = {
-  producer: "TBD/TBA",
-  verifier: "npc network",
-  type: "mitigation",
-  location: "MN, USA",
-  supply: 0,
-  totalLandArea: 3600,
-};
-
-const mitigationCredits_priceID = "price_1OefwvFnymUk0uH4x5faSkF9"; //Test
-//const mitigationCredits_priceID = "price_1OaOZBFd0vZYtswya23NAAor";
-
-const Presale = ({ APP }) => {
-  const [amount, setAmount] = useState(1);
-  const [selectedType, setSelectedType] = useState(certificateTypes[0]);
-  const [name, setName] = useState("Presale");
-  const [selectedProducer, setSelectedProducer] = useState(presaleProducer);
-  const [loading, setLoading] = useState(false);
-  const [isPaying, setIsPaying] = useState(false);
-  const [error, setError] = useState("");
-  const [lastCertId, setlastCertId] = useState(null);
-
-
-  // const { routePath } = APP?.STATES || {};
-  const { setRoutePath } = APP?.ACTIONS || {};
-
-  //#Animation
-  const transitions = useTransition(isPaying, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { display: "none" },
-    config: { duration: 500 },
-  });
-
-  useEffect(() => {
-    console.log("SelectedType", selectedType);
-  }, [selectedType]);
-
-  useEffect(() => {
-    setRoutePath("presale");
-
-    fetchChainData();
-
-    const { producer, verifier, type } = selectedProducer;
-    fetchIssuedSupply(producer, verifier, type);
-  }, []);
-
-  useEffect(() => {}, [selectedProducer]);
-
-
-  const isValidAmount = (amount) => {
-    return !isNaN(amount) && amount > 0;
-  };
-
-  const fetchChainData = async () => {
-    try {
-      const _lastCertId = await sContract.getTotalCertificates();
-
-      setlastCertId(NUMBERS.toNumber(_lastCertId));
-    } catch (error) {
-      console.error("Error fetching producers:", error);
-      setError(
-        `Error fetching data. Please try again later. - [${error.message}]`
-      );
-    }
-  };
-
-  const fetchIssuedSupply = async (producer, verifier, creditType) => {
-    try {
-      const supply = await sContract.getSupply(producer, verifier, creditType);
-      const _availableSupply = NUMBERS.toNumber(supply?.available);
-      setSelectedProducer({ ...selectedProducer, supply: _availableSupply });
-    } catch (error) {
-      console.error("Error fetching issued supply:", error);
-      setError(
-        `Error fetching credit supply. Please try again later. - [${error.message}]`
-      );
-    }
-  };
-
-  const onSuccess = async () => {
-    try {
-      const { producer, verifier, type } = selectedProducer;
-      await sContract.buyCredits(name, producer, verifier, type, amount, 50);
-      return true;
-    } catch (error) {
-      setError(error.message);
-      return false;
-    }
-  };
-
-  const getlineItems = [
-    {
-      priceID: mitigationCredits_priceID, // id of the price to purchase
-      quantity: NUMBERS.toNumber(amount),
-    },
-  ];
-
-  const handlePayment = async () => {
-    if (!isValidAmount(amount)) {
-      setError("Please enter a valid amount.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      // Call function to handle payment logic
-
-      //const stripe_services = stripeServices(stripe);
-
-      //   //TO-DO: FOR DEV ___ TO BE REMOVED
-      //  if(await onSuccess()){
-      //   console.log("Payment processed");
-      //  }
-
-      // const checkout = await stripe_services.createCheckoutSession(getlineItems, lastCertId, name);
-      // console.log(
-      //   "Processing payment for:",
-      //   selectedType.name,
-      //   "Amount:",
-      //   amount,
-      //   "Checkout:",
-      //   checkout
-      // );
-
-      // const paymentIntent = await stripe_services.createPaymentIntent(amount, "usd", cardElement);
-
-      //await createPaymentIntent(amount, selectedType.id);
-      // console.log("Processing payment for:", selectedType.id, "Amount:", amount, "Intent:", paymentIntent);
-
-      setIsPaying(true);
-    } catch (error) {
-      console.error("Error:", error);
-      setError(
-        `Failed to process payment. Please try again: [${error.message}]`
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <FULL_PAGE_CONTAINER
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div id="checkout"></div>
-
-      <CARD_WRAPPER>
-        <CARD_SECTION>
-          <MapBox />
-
-          <InfoBox>
-            <CardContent>
-              <h3>A farmer near you is selling now</h3>
-            </CardContent>
-            <CardContent>
-              <Flex direction="row" justify="space-between">
-                <p>{selectedProducer?.location}</p>
-                <p>{selectedProducer?.totalLandArea} acres</p>
-              </Flex>
-            </CardContent>
-            <CardContent>
-              <p className="subtext">
-                Supplier: {selectedProducer?.producer.toUpperCase()}
-              </p>
-            </CardContent>
-
-            <CardContent>
-              <span className="link">About this project</span>
-            </CardContent>
-          </InfoBox>
-
-          <span className="disclaimer">
-            This purchase is a pre-order. Farmer details and initial supply
-            information will be available upon the launch of our marketplace.
-          </span>
-        </CARD_SECTION>
-
-        {transitions((style, isPaying) =>
-          !isPaying ? (
-            <CARD_SECTION style={style}>
-              <Title>Water Quality Presale</Title>
-
-              <Description>
-                Remove pollution, support the environment, and create an impact
-                you can count on. All NeptuneChain Nutrient Pollution Credits™,
-                are verified by third-parties.
-                <br />
-                <br />
-                Each purchase comes with a digital certificate that transparently
-                confirms your impact on the watershed and tracks your
-                environmental impact in real-time.
-              </Description>
-              <FormWrapper>
-                <FormInfo>
-                  <h3>Nutrient Pollution Offsets</h3>
-                  Each NeptuneChain Nutrient Pollution Credit™ signifies the
-                  mitigation of 1 pound (lbs) of nutrient pollution entering the watershed,
-                  with a unique mix of Nitrogen, Phosphorus, and other pollutants, fostering
-                  environmental regeneration.
-                </FormInfo>
-
-                <FormInputs>
-
-                  <InputBox
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter your amount"
-                  />
-                </FormInputs>
-
-                <Button
-                  id="remove-carbon-button"
-                  className="py-1.5 px-6 text-sm md:py-2.5 md:px-7 font-bold rounded focus:ring-4 focus:ring-teal-700 focus:ring-opacity-50 text-center text-gray-900 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 w-full"
-                  onClick={handlePayment}
-                >
-                  {loading
-                    ? "Processing..."
-                    : "Buy Offsets"}
-                </Button>
-              </FormWrapper>
-            </CARD_SECTION>
-          ) : (
-            <CARD_SECTION style={style}>
-              <Payment setIsPaying={setIsPaying} lineItems={getlineItems} />
-            </CARD_SECTION>
-          )
-        )}
-      </CARD_WRAPPER>
-
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-    </FULL_PAGE_CONTAINER>
-  );
-};
 
 export default Presale;
