@@ -19,7 +19,7 @@ Environment Variables: If the project uses environment variables (e.g., API keys
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/NeptuneChain-Inc/NPRC-Marketplace.git
+   git clone https://github.com/NeptuneChain-Inc/NPC-Marketplace.git
    ```
 
 2. **Install Dependencies:**
