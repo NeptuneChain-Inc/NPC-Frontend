@@ -25,7 +25,7 @@ Environment Variables: If the project uses environment variables (e.g., API keys
 2. **Install Dependencies:**
    After cloning, navigate to the project directory and install the necessary dependencies.
    ```bash
-   cd NPRC-Marketplace
+   cd NPC-Marketplace
    npm install
    ```
 
