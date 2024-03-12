@@ -5,24 +5,24 @@ import { Player } from "@lottiefiles/react-lottie-player";
 
 /** ICONS */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-// import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
 
 import Notification from "../../../components/popups/NotificationPopup";
 import {
-  // BUTTON,
-  // INPUT,
+  BUTTON,
+  INPUT,
   LOADING_ANIMATION,
   PROMPT_CARD,
-  // PROMPT_FORM,
-  // TEXT_LINK,
+  PROMPT_FORM,
+  TEXT_LINK,
 } from "../../../components/lib/styled";
 
-import { 
-  // formVariant, 
-  loadingVariant 
+import {
+  formVariant,
+  loadingVariant,
 } from "./motion_variants";
-// import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+import { CardLogo, logoImage, logoVariants } from "../../Welcome";
 
 import {
   environmentalRotation,
@@ -30,13 +30,17 @@ import {
 } from "../../../assets/animations";
 
 /** #BACKEND */
-// import {
-//   sendPasswordResetEmail,
-//   signInWithEmailAndPassword,
-// } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+
+import "firebase/app"; 
+import "firebase/auth" //
 
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { firebaseAPI } from "../../../scripts/back_door";
+import { GoogleSignIn } from "../../../scripts";
 
 // import { FORM_DATA } from "../../../scripts/helpers";
 
@@ -58,8 +62,6 @@ const Icon = styled(FontAwesomeIcon)`
   color: #fff;
 `;
 
-
-
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,18 +77,23 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
     getAuth();
   }, []);
 
+console.log(auth)
+  
+
   useEffect(() => {
     if (auth) {
       // Listen to the Firebase Auth state and set the local state.
-      const unregisterAuthObserver = firebase
-        .auth()
-        .onAuthStateChanged((user) => {
-          console.log("user", user);
-        });
-      configAuthUI();
+      const unregisterAuthObserver = auth.onAuthStateChanged(async (user) => {
+        console.log("user", user);
+        setIsSuccess(Boolean(await updateUser?.(user?.uid)));
+      });
+
+      // configAuthUI();
 
       return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
     }
+
+    console.log('Auth', auth)
   }, [auth]);
 
   useEffect(() => {
@@ -97,56 +104,58 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
     }
   }, [isSuccess]);
 
-  // Configure FirebaseUI.
-  const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: "popup",
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [
-      auth?.EmailAuthProvider?.PROVIDER_ID,
-      auth?.GoogleAuthProvider?.PROVIDER_ID,
-    ],
-    callbacks: {
-      // Avoid redirects after sign-in.
-      signInSuccessWithAuthResult: () => false,
-    },
-  };
+  // // Configure FirebaseUI.
+  // const uiConfig = {
+  //   // Popup signin flow rather than redirect flow.
+  //   signInFlow: "popup",
+  //   // We will display Google and Facebook as auth providers.
+  //   signInOptions: [
+  //     auth?.EmailAuthProvider?.PROVIDER_ID,
+  //     auth?.GoogleAuthProvider?.PROVIDER_ID,
+  //   ],
+  //   callbacks: {
+  //     // Avoid redirects after sign-in.
+  //     signInSuccessWithAuthResult: () => false,
+  //   },
+  // };
 
   const getAuth = async () => {
     try {
-      setAuth(await firebaseAPI.get.auth());
+      const auth = await firebaseAPI.get.auth();
+      setAuth(auth);
     } catch (e) {
+      console.error('Failed Auth!!', e);
       setError("Failed to configure authentication");
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  //   try {
-  //     const userData = await signInWithEmailAndPassword(auth, email, password);
-  //     setIsSuccess(Boolean(await updateUser?.(userData?.user?.uid)));
-  //   } catch (error) {
-  //     setError(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    try {
+      const userData = await signInWithEmailAndPassword(auth, email, password);
+      setIsSuccess(Boolean(await updateUser?.(userData?.user?.uid)));
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // const handleResetPassword = async () => {
-  //   if (FORM_DATA.isValidEmail(email)) {
-  //     try {
-  //       await sendPasswordResetEmail(auth, email);
-  //       logNotification("alert", `Password reset email sent to ${email}!`);
-  //     } catch (error) {
-  //       setError(`Error sending password reset email: ${error.message}`);
-  //       logNotification("error", "Error sending password reset email");
-  //     }
-  //   } else {
-  //     logNotification("error", "Please Enter a Valid Email");
-  //   }
-  // };
+  const handleResetPassword = async () => {
+    if (FORM_DATA.isValidEmail(email)) {
+      try {
+        await sendPasswordResetEmail(auth, email);
+        logNotification("alert", `Password reset email sent to ${email}!`);
+      } catch (error) {
+        setError(`Error sending password reset email: ${error.message}`);
+        logNotification("error", "Error sending password reset email");
+      }
+    } else {
+      logNotification("error", "Please Enter a Valid Email");
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -168,52 +177,56 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             />
           </LOADING_ANIMATION>
         ) : !isLoading && auth ? (
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-                    // <PROMPT_FORM
-          //   variants={formVariant}
-          //   initial="hidden"
-          //   animate="visible"
-          //   exit="exit"
-          //   onSubmit={handleSubmit}
-          // >
-          //   <CardLogo
-          //     src={logoImage}
-          //     alt="NeptuneChain Logo"
-          //     variants={logoVariants}
-          //     initial="hidden"
-          //     animate="visible"
-          //   />
-          //   <InputGroup>
-          //     <Icon icon={faEnvelope} />
-          //     <INPUT
-          //       type="email"
-          //       placeholder="Email"
-          //       value={email}
-          //       onChange={(e) => setEmail(e.target.value)}
-          //       required
-          //     />
-          //   </InputGroup>
+          // <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+          <>
+                    <PROMPT_FORM
+            variants={formVariant}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            onSubmit={handleSubmit}
+          >
+            <CardLogo
+              src={logoImage}
+              alt="NeptuneChain Logo"
+              variants={logoVariants}
+              initial="hidden"
+              animate="visible"
+            />
+            <InputGroup>
+              <Icon icon={faEnvelope} />
+              <INPUT
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </InputGroup>
 
-          //   <InputGroup>
-          //     <Icon icon={faLock} />
-          //     <INPUT
-          //       type="password"
-          //       placeholder="Password"
-          //       value={password}
-          //       onChange={(e) => setPassword(e.target.value)}
-          //       required
-          //     />
-          //   </InputGroup>
+            <InputGroup>
+              <Icon icon={faLock} />
+              <INPUT
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </InputGroup>
 
-          //   <BUTTON type="submit">Log In</BUTTON>
-          //   <TEXT_LINK type="button" onClick={handleResetPassword}>
-          //     Forgot Password?
-          //   </TEXT_LINK>
-          //   <TEXT_LINK type="button" onClick={onSwitchToRegister}>
-          //     Need an account? Register
-          //   </TEXT_LINK>
-          // </PROMPT_FORM>
+            <BUTTON type="submit">Log In</BUTTON>
+            <TEXT_LINK type="button" onClick={handleResetPassword}>
+              Forgot Password?
+            </TEXT_LINK>
+            <TEXT_LINK type="button" onClick={onSwitchToRegister}>
+              Need an account? Register
+            </TEXT_LINK>
+          </PROMPT_FORM>
+          <BUTTON onClick={GoogleSignIn}>Log in with Google</BUTTON>
+          </>
         ) : (
+
           <LOADING_ANIMATION
             initial="hidden"
             animate="visible"

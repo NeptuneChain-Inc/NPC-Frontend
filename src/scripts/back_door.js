@@ -1,15 +1,18 @@
+import axios from "axios";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import configs from "../../configs"
+import configs from "../../configs";
+import { ethers } from "ethers";
 
 /** * @returns firebase config object */
 const getFirebaseConfig = async () =>
   (await axios.post(`${configs.server_url}/firebase/config`, {}))?.data;
 
 const initAuth = async () =>
-  await getFirebaseConfig().then((firebaseConfig) =>
-    getAuth(initializeApp(firebaseConfig))
-  );
+  await getFirebaseConfig().then((result) => {
+    const { firebaseConfig } = result || {};
+    return getAuth(initializeApp(firebaseConfig))
+  });
 
 const firebaseAPI = {
   get: {
@@ -110,8 +113,19 @@ const MediaAPI = {
 };
 
 /** * @returns signer or error object */
-const getSigner = async () =>
-  (await axios.post(`${configs.server_url}/ethereum/get/signer`, {}))?.data;
+const getSigner = async () => {
+  const { signer, error } = (
+    await axios.post(`${configs.server_url}/ethereum/get/signer`, {})
+  )?.data;
+  if (signer) {
+    const { provider, wallet } = signer;
+    const _provider = new ethers.providers.JsonRpcProvider(
+      process.env[`${network.toUpperCase()}_RPC`]
+    );
+    const _wallet = new ethers.Wallet(process.env.APP_WALLET_KEY, provider);
+    return wallet.connect(provider);
+  }
+};
 
 const EthereumAPI = {
   get: {

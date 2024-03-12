@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { formatLongString } from '../../../../functions/utils';
+
+import { formatLongString } from '../../../../scripts/utils';
+
 import { colors } from '../../../../styles/colors';
 import placeholderIMG from '../../../../assets/icon.png';
 

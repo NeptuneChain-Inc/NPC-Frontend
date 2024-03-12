@@ -79,7 +79,7 @@ function App() {
    */
   useEffect(() => {
     getUserSave();
-    connectSigner();
+    // connectSigner();
   }, []);
 
   useEffect(() => {
@@ -110,20 +110,20 @@ function App() {
   /**
    * #NB: BACKEND
    */
-  const connectSigner = async () => {
-    try {
-      const connection = await EthereumAPI.get.signer();
-      setNetworkProvider(connection.provider);
-      const _signer = connection.signer;
-      setSigner(_signer);
-
-      const signerAddress = await _signer.getAddress();
-      setSignedUser(signerAddress);
-      setSignedMarketInteractions(getMarketInteractions(_signer));
-    } catch (error) {
-      throw error;
-    }
-  };
+  // const connectSigner = async () => {
+  //   try {
+  //     const connection = await EthereumAPI.get.signer();
+  //     setNetworkProvider(connection.provider);
+  //     const _signer = connection.signer;
+  //     setSigner(_signer);
+  //     console.log('Eth connection', connection)
+  //     const signerAddress = await _signer.address;
+  //     setSignedUser(signerAddress);
+  //     setSignedMarketInteractions(getMarketInteractions(_signer));
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
   //ACTIONS
   const getUserSave = () => {
@@ -137,13 +137,19 @@ function App() {
 
   const updateUser = async (uid) => {
     try {
-      const _userUpdate = await UserAPI.get.user(uid);
-      sessionStorage.setItem("user", JSON.stringify(_userUpdate));
-      setUser(_userUpdate);
-      return true;
+      const { user, error} = await UserAPI.get.user(uid);
+      if(user){
+        sessionStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+        return true;
+      }
+
+      logNotification("error", "Email not registered");
+      
+      return null;
     } catch (error) {
       logNotification("error", error.message);
-      return false;
+      return null;
     }
   };
 
