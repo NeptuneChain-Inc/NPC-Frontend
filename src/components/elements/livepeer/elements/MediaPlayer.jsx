@@ -117,4 +117,4 @@ const MediaPlayer = ({ playbackID }) => {
   );
 };
 
-export { MediaPlayer };
+export default MediaPlayer;
