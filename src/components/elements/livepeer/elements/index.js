@@ -1,4 +1,4 @@
-import { MediaPlayer } from "./MediaPLayer";
+import MediaPlayer from "./MediaPLayer";
 import { StreamPlayer, BasicStreamPlayer } from "./StreamPlayer";
 
 export {
