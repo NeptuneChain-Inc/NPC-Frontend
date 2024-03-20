@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci --legacy-peer-deps
-      - run: npm install firebase-tools --legacy-peer-deps
+      - run: npm ci --force
+      - run: npm install firebase --force
+      - run: npm install firebase-tools --force
       - run: npm run build
       - run: alias firebase="`npm config get prefix`/bin/firebase"
       - run: firebase deploy -- --only hosting
