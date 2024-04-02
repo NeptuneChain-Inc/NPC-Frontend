@@ -37,6 +37,7 @@ import configs from "../configs";
 
 import { EthereumAPI, UserAPI } from "./scripts/back_door";
 import { getMarketInteractions } from "./smart_contracts/interactions";
+import { getUser } from "./apis/database";
 
 const NAVLESS_ROUTES = ["presale", "purchase"];
 
@@ -137,7 +138,8 @@ function App() {
 
   const updateUser = async (uid) => {
     try {
-      const { user, error} = await UserAPI.get.user(uid);
+      //const { user, error} = await UserAPI.get.user(uid);
+      const user = await getUser(uid);
       if(user){
         sessionStorage.setItem("user", JSON.stringify(user));
         setUser(user);

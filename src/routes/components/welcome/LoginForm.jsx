@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../../../apis/firebase";
+
 import { Player } from "@lottiefiles/react-lottie-player";
 
-/** ICONS */
+import successAnimation from "../../../assets/animations/success-animation.json";
+import environmentalRotation from "../../../assets/animations/environmental-friendly-animation.json";
+import Notification from "../../../components/popups/NotificationPopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
-
-import Notification from "../../../components/popups/NotificationPopup";
 import {
   BUTTON,
   INPUT,
@@ -17,32 +23,8 @@ import {
   PROMPT_FORM,
   TEXT_LINK,
 } from "../../../components/lib/styled";
-
-import {
-  formVariant,
-  loadingVariant,
-} from "./motion_variants";
+import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
-
-import {
-  environmentalRotation,
-  successAnimation,
-} from "../../../assets/animations";
-
-/** #BACKEND */
-import {
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-
-import "firebase/app"; 
-import "firebase/auth" //
-
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import { firebaseAPI } from "../../../scripts/back_door";
-import { GoogleSignIn } from "../../../scripts";
-
-// import { FORM_DATA } from "../../../scripts/helpers";
 
 const InputGroup = styled.div`
   position: relative;
@@ -62,6 +44,11 @@ const Icon = styled(FontAwesomeIcon)`
   color: #fff;
 `;
 
+function isValidEmail(email) {
+  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  return regex.test(email);
+}
+
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,31 +58,6 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
 
   const { logNotification } = APP?.ACTIONS || {};
 
-  const [auth, setAuth] = useState(null);
-
-  useEffect(() => {
-    getAuth();
-  }, []);
-
-console.log(auth)
-  
-
-  useEffect(() => {
-    if (auth) {
-      // Listen to the Firebase Auth state and set the local state.
-      const unregisterAuthObserver = auth.onAuthStateChanged(async (user) => {
-        console.log("user", user);
-        setIsSuccess(Boolean(await updateUser?.(user?.uid)));
-      });
-
-      // configAuthUI();
-
-      return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-    }
-
-    console.log('Auth', auth)
-  }, [auth]);
-
   useEffect(() => {
     if (isSuccess) {
       setTimeout(() => {
@@ -103,31 +65,6 @@ console.log(auth)
       }, 2000);
     }
   }, [isSuccess]);
-
-  // // Configure FirebaseUI.
-  // const uiConfig = {
-  //   // Popup signin flow rather than redirect flow.
-  //   signInFlow: "popup",
-  //   // We will display Google and Facebook as auth providers.
-  //   signInOptions: [
-  //     auth?.EmailAuthProvider?.PROVIDER_ID,
-  //     auth?.GoogleAuthProvider?.PROVIDER_ID,
-  //   ],
-  //   callbacks: {
-  //     // Avoid redirects after sign-in.
-  //     signInSuccessWithAuthResult: () => false,
-  //   },
-  // };
-
-  const getAuth = async () => {
-    try {
-      const auth = await firebaseAPI.get.auth();
-      setAuth(auth);
-    } catch (e) {
-      console.error('Failed Auth!!', e);
-      setError("Failed to configure authentication");
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -144,7 +81,7 @@ console.log(auth)
   };
 
   const handleResetPassword = async () => {
-    if (FORM_DATA.isValidEmail(email)) {
+    if (isValidEmail(email)) {
       try {
         await sendPasswordResetEmail(auth, email);
         logNotification("alert", `Password reset email sent to ${email}!`);
@@ -162,7 +99,7 @@ console.log(auth)
       <Notification type="error" message={error} />
 
       <PROMPT_CARD>
-        {isSuccess ? (
+        {isLoading ? (
           <LOADING_ANIMATION
             initial="hidden"
             animate="visible"
@@ -172,14 +109,12 @@ console.log(auth)
             <Player
               autoplay
               loop
-              src={successAnimation}
+              src={environmentalRotation}
               style={{ height: 100, width: 100 }}
             />
           </LOADING_ANIMATION>
-        ) : !isLoading && auth ? (
-          // <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-          <>
-                    <PROMPT_FORM
+        ) : !isSuccess ? (
+          <PROMPT_FORM
             variants={formVariant}
             initial="hidden"
             animate="visible"
@@ -223,10 +158,7 @@ console.log(auth)
               Need an account? Register
             </TEXT_LINK>
           </PROMPT_FORM>
-          <BUTTON onClick={GoogleSignIn}>Log in with Google</BUTTON>
-          </>
         ) : (
-
           <LOADING_ANIMATION
             initial="hidden"
             animate="visible"
@@ -236,7 +168,7 @@ console.log(auth)
             <Player
               autoplay
               loop
-              src={environmentalRotation}
+              src={successAnimation}
               style={{ height: 100, width: 100 }}
             />
           </LOADING_ANIMATION>

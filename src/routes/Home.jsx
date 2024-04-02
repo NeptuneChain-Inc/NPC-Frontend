@@ -6,6 +6,7 @@ const Home = ({ APP }) => {
   const navigate = useNavigate();
   const { dashID } = useParams();
   const { user, searchResults } = APP ? APP.STATES : {};
+  console.log('USER',user);
 
   if (user === null) {
     navigate('/')

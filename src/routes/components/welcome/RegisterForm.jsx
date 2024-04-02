@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
-import { Player } from "@lottiefiles/react-lottie-player";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faUser } from "@fortawesome/free-regular-svg-icons";
-import { faLock, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
-
+import Notification from "../../../components/popups/NotificationPopup";
+import { environmentalRotation, successAnimation } from "../../../assets/animations";
 import {
   BUTTON,
   INPUT,
@@ -14,19 +11,19 @@ import {
   PROMPT_FORM,
   TEXT_LINK,
 } from "../../../components/lib/styled";
-import Notification from "../../../components/popups/NotificationPopup";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faUser } from "@fortawesome/free-regular-svg-icons";
+import { faLock, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
-
-import { environmentalRotation, successAnimation } from "../../../assets/animations";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 /** #BACKEND */
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 /** FIREBASE AUTH */
-// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { UserAPI, firebaseAPI } from "../../../scripts/back_door";
+import { auth } from "../../../apis/firebase";
+import { createUser } from "../../../apis/database";
 
 const InputGroup = styled.div`
   display: flex;
@@ -66,6 +63,7 @@ const Dropdown = styled.select`
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
   }
 `;
+
 const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -86,38 +84,25 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      const auth = await firebaseAPI.get.auth();
 
+    try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+      const userData = userCredential.user;
 
-      const userData = userCredential?.user;
+      const newUser = {
+        uid: userData.uid,
+        username: username.toLowerCase(),
+        email: userData.email.toLowerCase(),
+        type: accountType,
+      };
 
-      if(userData) {
-        const newUser = {
-          uid: userData.uid,
-          username: username.toLowerCase(),
-          email: userData.email.toLowerCase(),
-          type: accountType,
-        };
-
-        const { result, error } = await UserAPI.create.dbUser(newUser);
-
-        if(error){
-          setError("Failed to register user in our database");
-        }
-
-        if (result) {
-          setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
-          return true;
-        }
+      if (await createUser(newUser)) {
+        setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
       }
-
-      return null;
     } catch (error) {
       setError(error.message);
     } finally {
