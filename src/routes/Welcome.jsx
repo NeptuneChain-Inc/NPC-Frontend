@@ -79,8 +79,7 @@ export const logoVariants = {
 const Welcome = ({ APP }) => {
   const navigate = useNavigate();
   const [cardState, setCardState] = useState("");
-  const [googleEmail, setGoogleEmail] = useState("");
-  const [googleName, setGoogleName] = useState("");
+  const [googleData, setGoogleData] = useState({});
   const { user } = APP?.STATES || {};
   const { updateUser } = APP?.ACTIONS || {};
 
@@ -113,8 +112,7 @@ const Welcome = ({ APP }) => {
             onSuccess={enterDash}
             updateUser={updateUser}
             onSwitchToLogin={() => setCardState("login")}
-            googleName={googleName}
-           googleEmail={googleEmail}
+            googleData={googleData}
           />
         </AnimatePresence>
       ) : (
@@ -128,7 +126,7 @@ const Welcome = ({ APP }) => {
         </AnimatePresence>
       )}
 
-      <GoogleSignIn APP={APP} setGoogleName={setGoogleName} setGoogleEmail={setGoogleEmail} setCardState={setCardState} enterDash={enterDash} />
+      {!user && <GoogleSignIn APP={APP} setGoogleData={setGoogleData} setCardState={setCardState} enterDash={enterDash} />}
 
       {cardState !== "" && (
         <HomeIcon icon={faHome} onClick={() => setCardState("")} />

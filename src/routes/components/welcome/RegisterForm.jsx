@@ -64,9 +64,9 @@ const Dropdown = styled.select`
   }
 `;
 
-const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleName, googleEmail }) => {
-  const [username, setUsername] = useState(googleName);
-  const [email, setEmail] = useState(googleEmail);
+const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) => {
+  const [username, setUsername] = useState(googleData?.name || "");
+  const [email, setEmail] = useState(googleData?.gmail || "");
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("farmer");
   const [error, setError] = useState("");
@@ -81,34 +81,34 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleName, goog
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    setEmail(googleEmail)
-  }, [googleEmail])
-
-  useEffect(() => {
-    setUsername(googleName)
-  }, [googleName])
-  
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const userData = userCredential.user;
+      let newUser = null;
+      if (googleData?.gmail) {
+        newUser = {
+          uid: googleData.uid,
+          username: username.toLowerCase(),
+          email: googleData.gmail,
+          type: accountType,
+        };
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const userData = userCredential.user;
 
-      const newUser = {
-        uid: userData.uid,
-        username: username.toLowerCase(),
-        email: userData.email.toLowerCase(),
-        type: accountType,
-      };
+        newUser = {
+          uid: userData.uid,
+          username: username.toLowerCase(),
+          email: userData.email.toLowerCase(),
+          type: accountType,
+        };
+      }
 
       if (await createUser(newUser)) {
         setIsSuccess(Boolean(await updateUser?.(newUser.uid)));

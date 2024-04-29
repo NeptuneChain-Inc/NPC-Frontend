@@ -47,7 +47,7 @@ margin-top: 10px;
 const provider = new GoogleAuthProvider();
 
 // Configure FirebaseUI sign-in options
-function GoogleSignIn({APP, setCardState, setGoogleName, setGoogleEmail, enterDash}) {
+function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
   const [error, setError] = useState(null);
   const { updateUser, handleLogout} = APP.ACTIONS || {};
 
@@ -66,8 +66,11 @@ function GoogleSignIn({APP, setCardState, setGoogleName, setGoogleEmail, enterDa
           //Logged In
         } else {
           //Redirect to register with user email
-          setGoogleName(user?.displayName);
-          setGoogleEmail(user?.email);
+          setGoogleData({
+            uid: user?.uid,
+            name: user?.displayName,
+            gmail: user?.email,
+          })
           setCardState("register");
         }
 

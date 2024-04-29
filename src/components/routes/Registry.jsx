@@ -252,31 +252,15 @@ function ExplorerPage() {
   const [liveCache, setLiveCache] = useState({});
 
   useEffect(() => {
-    // Setup event listeners for relevant contract events
-    const creditsIssuedFilter = contract.filters.CreditsIssued();
-    const creditsBoughtFilter = contract.filters.CreditsBought();
-    const creditsTransferredFilter = contract.filters.CreditsTransferred();
-    const creditsDonatedFilter = contract.filters.CreditsDonated();
-    const certificateCreatedFilter = contract.filters.CertificateCreated();
-
     const handleEvent = (event) => {
-      setUpdateCache(true);
+      setUpdateCache(event);
+      console.log(event.log)
     };
 
-    contract.on(creditsIssuedFilter, handleEvent);
-    contract.on(creditsBoughtFilter, handleEvent);
-    contract.on(creditsTransferredFilter, handleEvent);
-    contract.on(creditsDonatedFilter, handleEvent);
-    contract.on(certificateCreatedFilter, handleEvent);
-
-    // Cleanup function to remove the event listeners when the component unmounts
-    return () => {
-      contract.off(creditsIssuedFilter, handleEvent);
-      contract.off(creditsBoughtFilter, handleEvent);
-      contract.off(creditsTransferredFilter, handleEvent);
-      contract.off(creditsDonatedFilter, handleEvent);
-      contract.off(certificateCreatedFilter, handleEvent);
-    };
+    contract.on("*", (e) => { 
+      handleEvent(e)
+      e.removeListener();
+  });
   }, []);
 
   useEffect(() => {
@@ -359,10 +343,10 @@ function ExplorerPage() {
 
           //cache has already been updated so keep it false
           //This will rerun the useEffect and set data from cache due to the false condition
-          setUpdateCache(false);
+          setUpdateCache(null);
         } catch (error) {
           console.error(error);
-          setErrorMessage(`Failed to fetch data: ${error.message}`);
+          setErrorMessage(`${error.message}`);
         } finally {
           setIsLoading(false);
         }
