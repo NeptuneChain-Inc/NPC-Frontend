@@ -145,6 +145,7 @@ function App() {
         setUser(user);
         return true;
       }
+      return null;
 
       logNotification("error", "Email not registered");
       

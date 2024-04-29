@@ -7,6 +7,7 @@ import { WelcomeHome } from "./components/welcome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import GoogleSignIn from "./components/welcome/GoogleSignIn";
 
 const backgroundImage = new URL(
   "../assets/wallpapers/neptune_ocean.png",
@@ -56,11 +57,11 @@ export const CardLogo = styled(StyledLogo)`
 
 const HomeIcon = styled(FontAwesomeIcon)`
   background: rgba(255, 255, 255, 0.8);
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 50%;
   box-sizing: border-box;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  margin-top: 1rem;
+  margin-top: 0.8rem;
   cursor: pointer;
   transition: 0.3s ease-in-out;
 
@@ -78,6 +79,8 @@ export const logoVariants = {
 const Welcome = ({ APP }) => {
   const navigate = useNavigate();
   const [cardState, setCardState] = useState("");
+  const [googleEmail, setGoogleEmail] = useState("");
+  const [googleName, setGoogleName] = useState("");
   const { user } = APP?.STATES || {};
   const { updateUser } = APP?.ACTIONS || {};
 
@@ -110,6 +113,8 @@ const Welcome = ({ APP }) => {
             onSuccess={enterDash}
             updateUser={updateUser}
             onSwitchToLogin={() => setCardState("login")}
+            googleName={googleName}
+           googleEmail={googleEmail}
           />
         </AnimatePresence>
       ) : (
@@ -122,6 +127,8 @@ const Welcome = ({ APP }) => {
           />
         </AnimatePresence>
       )}
+
+      <GoogleSignIn APP={APP} setGoogleName={setGoogleName} setGoogleEmail={setGoogleEmail} setCardState={setCardState} enterDash={enterDash} />
 
       {cardState !== "" && (
         <HomeIcon icon={faHome} onClick={() => setCardState("")} />

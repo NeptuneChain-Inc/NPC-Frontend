@@ -64,9 +64,9 @@ const Dropdown = styled.select`
   }
 `;
 
-const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleName, googleEmail }) => {
+  const [username, setUsername] = useState(googleName);
+  const [email, setEmail] = useState(googleEmail);
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("farmer");
   const [error, setError] = useState("");
@@ -80,6 +80,16 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser }) => {
       }, 2000);
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    setEmail(googleEmail)
+  }, [googleEmail])
+
+  useEffect(() => {
+    setUsername(googleName)
+  }, [googleName])
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

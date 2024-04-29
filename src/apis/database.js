@@ -72,16 +72,16 @@ const createUser = async (userData) => {
 }
 
 const getUser = async (uid) => {
-    return await getData(`dashboard/users/data/${uid}`);
+    return await getData(`dashboard/users/data/${uid}`) || null;
 }
 
 const getUsername = async (username) => {
     const uid = await getData(`dashboard/users/usernames/${username}`);
-    return await getUser(uid);
+    return await getUser(uid) || null;
 }
 
 const getUserDashes = async (uid) => {
-    return await getData(`dashboard/users/data/${uid}/dashData/`);
+    return await getData(`dashboard/users/data/${uid}/dashData/`) || null;
 }
 
 const loadDefaultUserDashes = async (uid, accountType) => {

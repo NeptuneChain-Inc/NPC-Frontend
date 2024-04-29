@@ -1,84 +1,95 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import firebase from "firebase/app";
-import "firebase/auth";
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import configs from "../../../../configs";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../../../apis/firebase";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { getUser } from "../../../apis/database";
+
+const Icon = styled(FontAwesomeIcon)`
+      display: inline-block;
+      vertical-align: middle;
+      width: 30px;
+      height: 30px;
+      color: white;
+`;
+
+const GoogleButton = styled.div`
+margin-top: 10px;
+      background: #DB4437e6;
+      backdrop-filter: blur(10px);
+      color: #444;
+      width: 190px;
+      border-radius: 5px;
+      border: thin solid #888;
+      box-shadow: 1px 1px 1px grey;
+      white-space: nowrap;
+      padding: 10px;
+      transition: 0.3s ease-in-out;
+
+      &:hover {
+        cursor: pointer;
+        background: #DB4437;
+        scale: 1.05;
+      }
+
+      span.buttonText {
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: 10px;
+        font-size: 14px;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        color: white
+      }
+`;
+
+const provider = new GoogleAuthProvider();
 
 // Configure FirebaseUI sign-in options
+function GoogleSignIn({APP, setCardState, setGoogleName, setGoogleEmail, enterDash}) {
+  const [error, setError] = useState(null);
+  const { updateUser, handleLogout} = APP.ACTIONS || {};
 
-function GoogleSignIn() {
-  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
-  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
-
-  useEffect(() => {
-    const fetchFirebaseConfig = async () => {
-      try {
-        const response = await axios.get(`${configs.server_url}/firebase/config`);
-        const firebaseConfig = response.data;
-
-        if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
+  const handleSubmit = async () => {
+    signInWithPopup(auth, provider)
+      .then(async (result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        // The signed-in user info.
+        const user = result?.user;
+        console.log("User", user)
+        
+        //Check if user is in database then login or register
+        if(await updateUser?.(user?.uid)){
+          //Logged In
+        } else {
+          //Redirect to register with user email
+          setGoogleName(user?.displayName);
+          setGoogleEmail(user?.email);
+          setCardState("register");
         }
 
-        // Now that Firebase is initialized, we can set up the observer and UI config
-        setFirebaseInitialized(true);
-
-        const unregisterAuthObserver = firebase
-          .auth()
-          .onAuthStateChanged((user) => {
-            setIsSignedIn(!!user);
-          });
-
-        return () => unregisterAuthObserver();
-      } catch (error) {
-        console.error("Error fetching Firebase config:", error);
-        // Handle error, maybe show user-friendly message or retry logic
-      }
-    };
-
-    fetchFirebaseConfig();
-  }, []);
-
-  if (!firebaseInitialized) {
-    return <div>Loading...</div>; // or any loading animation/component
+        setError(null)
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        setError("Could Not Continue :/")
+      });
   }
 
-  if (!isSignedIn) {
-    const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-          // User successfully signed in.
-          // Return type determines whether we continue the redirect automatically
-          // or whether we leave that to developer to handle.
-          return true;
-        },
-        uiShown: function () {
-          // The widget is rendered.
-        },
-      },
-      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-      signInFlow: "popup",
-      signInSuccessUrl: "<url-to-redirect-to-on-success>",
-      signInOptions: [
-        // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      ],
-      // Terms of service url.
-      tosUrl: "<your-tos-url>",
-      // Privacy policy url.
-      privacyPolicyUrl: "<your-privacy-policy-url>",
-    };
     return (
-      <div>
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebase.auth()}
-        />
-      </div>
+      <GoogleButton onClick={handleSubmit}>
+        <Icon icon={faGoogle} />
+        <span className="buttonText">Continue With Google</span>
+      </GoogleButton>
     );
-  }
 }
 
 export default GoogleSignIn;
