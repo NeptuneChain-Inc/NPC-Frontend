@@ -103,21 +103,17 @@ const Presale = ({ APP }) => {
               <Title>Eliminate Pollution</Title>
 
               <Description>
-                Fund water quality and remove pollution
-                with a digital impact you can count on. All
-                work is verified by third-parties.
+                Enhance water quality and reduce pollution through 
+                verified digital impacts, with each purchase 
+                providing a real-time tracking certificate.
                 <br />
-                <br />
-                Each purchase comes with a certificate that details
-                your impact and tracks the effect in real-time.
               </Description>
               <FormWrapper>
                 <FormInfo>
                   <h3>Nutrient Pollution Offsets</h3>
-                  Each credit signifies the mitigation of 1 pound (lbs) of 
-                  nutrient pollution entering the watershed, with a unique 
-                  mix of Nitrogen, Phosphorus, and other pollutants, 
-                  fostering environmental regeneration.
+                  Each credit represents the offset of 1 pound (lbs)
+                  of mixed nutrient pollutants from the watershed, 
+                  promoting environmental conservation and restoration.
                 </FormInfo>
 
                 <FormInputs>
