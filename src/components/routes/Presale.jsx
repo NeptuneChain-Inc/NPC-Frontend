@@ -100,25 +100,24 @@ const Presale = ({ APP }) => {
         {transitions((style, isPaying) =>
           !isPaying ? (
             <CARD_SECTION style={style}>
-              <Title>Water Quality Presale</Title>
+              <Title>Eliminate Pollution</Title>
 
               <Description>
-                Remove pollution, support the environment, and create an impact
-                you can count on. All NeptuneChain Nutrient Pollution Credits™,
-                are verified by third-parties.
+                Fund water quality and remove pollution
+                with a digital impact you can count on. All
+                work is verified by third-parties.
                 <br />
                 <br />
-                Each purchase comes with a digital certificate that
-                transparently confirms your impact on the watershed and tracks
-                your environmental impact in real-time.
+                Each purchase comes with a certificate that details
+                your impact and tracks the effect in real-time.
               </Description>
               <FormWrapper>
                 <FormInfo>
                   <h3>Nutrient Pollution Offsets</h3>
-                  Each NeptuneChain Nutrient Pollution Credit™ signifies the
-                  mitigation of 1 pound (lbs) of nutrient pollution entering the
-                  watershed, with a unique mix of Nitrogen, Phosphorus, and
-                  other pollutants, fostering environmental regeneration.
+                  Each credit signifies the mitigation of 1 pound (lbs) of 
+                  nutrient pollution entering the watershed, with a unique 
+                  mix of Nitrogen, Phosphorus, and other pollutants, 
+                  fostering environmental regeneration.
                 </FormInfo>
 
                 <FormInputs>
