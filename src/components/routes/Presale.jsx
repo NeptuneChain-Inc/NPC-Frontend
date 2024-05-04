@@ -87,7 +87,7 @@ const Presale = ({ APP }) => {
             </CardContent>
 
             <CardContent>
-              <span className="link">About this project</span>
+              <span className="link">Change farmers...</span>
             </CardContent>
           </InfoBox>
 
