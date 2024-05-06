@@ -15,9 +15,9 @@ const presaleProducer = {
   producer: "TBD/TBA",
   verifier: "npc network",
   type: "mitigation",
-  location: "MN, USA",
+  location: "Minnesota, USA",
   supply: 0,
-  totalLandArea: 3600,
+  totalLandArea: "3,300",
   priceId: "price_1OefwvFnymUk0uH4x5faSkF9",
 };
 
@@ -87,13 +87,13 @@ const Presale = ({ APP }) => {
             </CardContent>
 
             <CardContent>
-              <span className="link">About this project</span>
+              <span className="link">Change farmers...</span>
             </CardContent>
           </InfoBox>
 
           <span className="disclaimer">
-            This purchase is a pre-order. Farmer details and initial supply
-            information will be available upon the launch of our marketplace.
+            This is a pre-order for verified impact certificates. Detailed information
+            about the farmer and supply will be provided with the launch of our marketplace.
           </span>
         </CARD_SECTION>
 
@@ -103,17 +103,15 @@ const Presale = ({ APP }) => {
               <Title>Eliminate Pollution</Title>
 
               <Description>
-                Enhance water quality and reduce pollution through 
-                verified digital impacts, with each purchase 
-                providing a real-time tracking certificate.
+                Enhance water quality and reduce pollution. 
+                Each purchase includes a real-time tracking certificate, ensuring verified digital impacts.
                 <br />
               </Description>
               <FormWrapper>
                 <FormInfo>
-                  <h3>Nutrient Pollution Offsets</h3>
-                  Each credit represents the offset of 1 pound (lbs)
-                  of mixed nutrient pollutants from the watershed, 
-                  promoting environmental conservation and restoration.
+                  <h3>Nutrient Pollution Certificates</h3>
+                  Each credit offsets 1 pound of mixed nutrient pollutants in the watershed,
+                  supporting vital environmental conservation and restoration efforts. 
                 </FormInfo>
 
                 <FormInputs>
