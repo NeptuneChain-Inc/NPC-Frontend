@@ -1,6 +1,6 @@
 const MarketplaceContract = {
-    Address: '0xe5Afb79A81f4f6BeA3Ed45FfB3C7a722448bc86d',
-    GenesisBlock: '42664715',
+    Address: '0x46126A3Ff66eE9Cf7FF92E4b0709861c03568D4d',
+    GenesisBlock: '6717408',
     ABI: [
         // Events
         "event Listed(uint256 indexed listingId, address indexed seller, address indexed tokenAddress, uint256 tokenId, uint256 price)",

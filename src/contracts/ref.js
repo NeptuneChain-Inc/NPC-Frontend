@@ -1,10 +1,8 @@
 export const hostDomain = 'http://192.168.0.179:5173/';
 export const mumbaiRPC =
-  "https://polygon-mumbai.g.alchemy.com/v2/rnbawtAwPOfWhBVCLvTJXdTfF6NEYyeb";
-export const blockExplorerTxURL = 'https://mumbai.polygonscan.com/tx';
-export const contractAddressOld = "0x1D9c11DF1489b38E61d98B5A6290BFEfBB10eA48"; //Old Contract
-export const contractAddressOld2 = '0x713b7B4e9E804F28d9CA6F21Bc5dEe8BAeaB0f93'; //Old Contract 2
-export const contractAddress = '0xD962Adf497b2268336BDF017c609FD9C6327E164';
+  "https://polygon-amoy.g.alchemy.com/v2/xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75";
+export const blockExplorerTxURL = 'https://amoy.polygonscan.com/tx';
+export const contractAddress = '0x11948a80ec36919e7999D54d7f6D7df971814809';
 export const contractABI = [
   "function getOwner() view returns (address _owner)",
   "function getCreditTypes() view returns(string[] _creditTypes)",
@@ -36,7 +34,7 @@ export const contractABI = [
 ];
 
 /** Keys => Not to be used in production - Only for testing purposes **/
-export const privateKey = "aedf3e8b6a0192360b32005cf082c10ff2a8a4d972024322033066ef25ab4e9f"; // Test Net Only
+export const privateKey = "188a696dfbd26bbad9d3602ac3f10787c1ba9036c36544275c0781defe45c165"; // Test Net Only
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51NTLlPFnymUk0uH4vxETrYPfIgizozEwByB2uPCcjZFJhBLR45bYS20M3a7KTI4PTwZKg6eMPDbeOPF1PBQr0OBa000EGQPaAB'; //Test Key
 export const MapBoxKey = 'pk.eyJ1IjoiZm9yYW1ha28iLCJhIjoiY2xrMWg0amQzMDIwejNmb3kxdzI3NHA0NyJ9.SGbam3R3secsVpD2G5Kgrg'; //Test Key
 export const GoogleMaps_API_KEY = 'AIzaSyAcDSUHQJukOfVZjDGxsbDDlx4sTzB78sg'; //Test Key

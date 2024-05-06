@@ -1,5 +1,5 @@
 const VerificationContract = {
-    Address: '0x4b27981b62098EAF794742C1228A625AC519fA16',
+    Address: '0xc08b42d768ef517cdc0ee126582b728488a5fc92',
     ABI: [
         // ERC721 Standard Functions
         "function balanceOf(address owner) view returns (uint256)",
