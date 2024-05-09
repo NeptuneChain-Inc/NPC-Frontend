@@ -457,7 +457,8 @@ const Purchase = ({APP}) => {
             },
           ],
           mode: "payment",
-          successUrl: `http://neptunechain.io/certificate?id=${lastCertId + 1}`,
+          //successUrl: `http://neptunechain.io/certificate?id=${lastCertId + 1}`,
+          successUrl: `http://app.neptunechain.io/certificate/${lastCertId + 1}`,
           clientReferenceId: name + Date.now.toString(), // generate order id
         });
       }
