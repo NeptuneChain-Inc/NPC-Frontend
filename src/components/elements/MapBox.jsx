@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GoogleMaps_API_KEY } from '../../contracts/ref';
 
@@ -27,6 +27,7 @@ width: 100%;
 
 function MapBox() {
   const mapContainerRef = useRef(null);
+  const [map, setMap] = useState(null);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -36,17 +37,17 @@ function MapBox() {
     document.head.appendChild(script);
 
     script.onload = () => {
-      const map = new google.maps.Map(mapContainerRef.current, {
+      setMap(new google.maps.Map(mapContainerRef.current, {
         center: { lat: 48.8036, lng: -95.0969 },
         zoom: 13,
         disableDefaultUI: true,
         gestureHandling: 'none',
         mapTypeId: 'satellite',
-      });
+      }))
     };
 
     return () => {
-      if (window.google && window.google.maps) {
+      if (window.google && window.google.maps && map) {
         window.google.maps.event.clearInstanceListeners(map);
       }
     };

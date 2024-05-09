@@ -114,10 +114,11 @@ const CertificatePage = () => {
     async function fetchData() {
       try {
         const certificate = await contract.getCertificateById(id);
-        const certId = NUMBERS.toNumber(certificate.id);
+        const certId = Number(certificate?.id);
         if (certId > 0) {
           const formattedCertificate = formatCertificate(certificate);
-          setCertificate(formattedCertificate);
+          console.log(formattedCertificate, certificate, certificate?.buyer)
+          setCertificate(certificate);
         } else {
           setError("Certificate Not Found");
         }

@@ -99,7 +99,7 @@ const Certificate = ({ data }) => {
     creditType,
     price,
   } = data ? data : {};
-  const date = timestampToLocale(timestamp);
+  const date = timestampToLocale(Number(timestamp));
   return (
     <CertificateOutline id="thin-scroll">
       <Logo
@@ -111,23 +111,23 @@ const Certificate = ({ data }) => {
       <Heading1>NEPTUNECHAIN.IO</Heading1>
       <Heading4>Nutrient Pollution Removal Certificate</Heading4>
       <Heading1>
-        <span>{balance}</span> NPRCs
+        <span>{Number(balance)}</span> NPRCs
       </Heading1>
       {type === "transfer" ? (
         <Heading6>
           This certifies that the ownership of{" "}
-          <span>{`${balance} ${creditType?.toUpperCase()} `}</span>
+          <span>{`${Number(balance)} ${creditType?.toUpperCase()} `}</span>
           Credits was transferred to <span>
             {buyer?.toUpperCase()}
           </span> from <span>{producer?.toUpperCase()}</span> on{" "}
-          <span>{date}</span> at the price of <span>${price}</span>/Credit.
+          <span>{date}</span> at the price of <span>${Number(price)}</span>/Credit.
         </Heading6>
       ) : (
         <Heading6>
           This certifies that the buyer, <span>{buyer?.toUpperCase()}</span>,
           paid the producer, <span>{producer?.toUpperCase()}</span>, for the
-          ownership of <span>{`${balance} ${creditType?.toUpperCase()} `}</span>
-          Credits on <span>{date}</span> at the price of <span>${price}</span>
+          ownership of <span>{`${Number(balance)} ${creditType?.toUpperCase()} `}</span>
+          Credits on <span>{date}</span> at the price of <span>${Number(price)}</span>
           /Credit.
         </Heading6>
       )}

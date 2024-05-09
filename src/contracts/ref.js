@@ -5,12 +5,12 @@ export const blockExplorerTxURL = 'https://amoy.polygonscan.com/tx';
 export const contractAddress = '0x11948a80ec36919e7999D54d7f6D7df971814809';
 export const contractABI = [
   "function getOwner() view returns (address _owner)",
-  "function getCreditTypes() view returns(string[] _creditTypes)",
   "function getTotalSupply() view returns (int256 _totalSupply)",
   "function getTotalDonatedSupply() view returns (int256 _totalDonatedSupply)",
   "function getTotalSold() view returns(int256 _totalSold)",
   "function getTotalCertificates() view returns (int256 _totalCertificates)",
   "function getCertificateById(int256 certificateId) view returns (tuple(int256 id, string buyer, string producer, string verifier, string creditType, int256 balance, int256 price, uint256 timestamp))",
+  "function getCreditTypes() view returns(string[] _creditTypes)",
   "function getProducers() view returns (string[] _producers)",
   "function getProducerVerifiers(string producer) view returns (string[] _producerVerifiers)",
   "function getSupply(string producer, string verifier, string creditType) view returns (tuple(int256 issued, int256 available, int256 donated))",

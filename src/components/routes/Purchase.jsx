@@ -321,7 +321,7 @@ const getCreditPrice = (creditType) => {
     case "phosphorus":
       return 60;
     default:
-      return null;
+      return 10;
   }
 };
 
@@ -349,7 +349,7 @@ const Purchase = ({APP}) => {
     const fetchProducers = async () => {
       try {
         const _lastCertId = await sContract.getTotalCertificates();
-        setlastCertId(_lastCertId.toNumber());
+        setlastCertId(Number(_lastCertId));
         const producers = await sContract.getProducers();
         setProducers(producers);
       } catch (error) {
@@ -418,7 +418,7 @@ const Purchase = ({APP}) => {
   const fetchIssuedSupply = async (producer, verifier, creditType) => {
     try {
       const supply = await sContract.getSupply(producer, verifier, creditType);
-      const _availableSupply = supply.available.toNumber();
+      const _availableSupply = Number(supply?.available);
       return _availableSupply;
     } catch (error) {
       console.error("Error fetching issued supply:", error);
@@ -427,35 +427,41 @@ const Purchase = ({APP}) => {
     }
   };
 
+  //TO-DO: FOR DEV ___ TO BE REMOVED
   const onSuccess = async () => {
-    await sContract.buyCredits(
-      name,
-      selectedProducer?.producer,
-      selectedProducer?.verifier,
-      selectedProducer?.type,
-      quantity,
-      getCreditPrice(selectedProducer?.type)
-    );
+    try {
+      await sContract.buyCredits(
+        name,
+        selectedProducer?.producer,
+        selectedProducer?.verifier,
+        selectedProducer?.type,
+        quantity,
+        getCreditPrice(selectedProducer?.type)
+      );
+      return true
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      //TO-DO: FOR DEV ___ TO BE REMOVED
-      await onSuccess();
+      if(await onSuccess()){
+        await stripe.redirectToCheckout({
+          lineItems: [
+            {
+              price: "price_1NTM9DFnymUk0uH4xsatNVpd", // id of the price to purchase
+              quantity: quantity,
+            },
+          ],
+          mode: "payment",
+          successUrl: `http://neptunechain.io/certificate?id=${lastCertId + 1}`,
+          clientReferenceId: name + Date.now.toString(), // generate order id
+        });
+      }
 
-      await stripe.redirectToCheckout({
-        lineItems: [
-          {
-            price: "price_1NTM9DFnymUk0uH4xsatNVpd", // id of the price to purchase
-            quantity: quantity,
-          },
-        ],
-        mode: "payment",
-        successUrl: `http://neptunechain.io/certificate?id=${lastCertId + 1}`,
-        clientReferenceId: name + Date.now.toString(), // generate order id
-      });
     } catch (e) {
       console.error(e);
       setError(e.message);
