@@ -28,6 +28,27 @@ const FullScreenWrapper = styled.div`
   justify-content: center;
   width: 100vw;
   height: 100vh;
+  // ${({ isOnboarding }) => isOnboarding ? "filter: blur(5px);" : ''}
+  // background-image: url(${backgroundImage});
+  // background-size: cover;
+  // background-position: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid black;
+`;
+
+const Wallpaper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  ${({ isOnboarding }) => isOnboarding ? "filter: blur(5px);" : ''}
   background-image: url(${backgroundImage});
   background-size: cover;
   background-position: center;
@@ -35,12 +56,9 @@ const FullScreenWrapper = styled.div`
   padding: 20px;
   box-sizing: border-box;
   border: 1px solid black;
-  z-index: 900;
 `;
 
 const StyledLogo = styled(motion.img)`
-position: fixed;
-top: 10px;
 z-index: 1000;
   width: 15vw;
   //max-width: 250px;
@@ -54,7 +72,10 @@ border-radius: 5px;
   box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
 
   @media (max-width: 980px) {
-    // display: none;
+    width: 30vw;
+  }
+  @media (max-width: 767px) {
+    width: 50vw;
   }
 `;
 
@@ -68,10 +89,16 @@ export const CardLogo = styled(StyledLogo)`
 
 const GoogleSignInWrapper = styled(motion.div)`
 margin-top: 0.5rem;
-background: rgba(230, 236, 213, 1);
+background: rgba(230, 236, 213, 0.8);
 backdrop-filter: blur(5px);
-  padding: 0.2rem;
+  padding: 0.3rem;
   border-radius: 5px;
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    scale: 1.05;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const HomeIcon = styled(FontAwesomeIcon)`
@@ -83,6 +110,7 @@ const HomeIcon = styled(FontAwesomeIcon)`
   margin-top: 0.8rem;
   cursor: pointer;
   transition: 0.3s ease-in-out;
+  z-index: 10;
 
   &:hover {
     scale: 1.1;
@@ -104,8 +132,11 @@ const Welcome = ({ APP }) => {
 
   const enterDash = () => navigate("/dashboard/main");
 
+  console.log("onboarding", Boolean(cardState !== ""))
+
   return (
     <FullScreenWrapper>
+      <Wallpaper isOnboarding={Boolean(cardState !== "")} />
       <StyledLogo
         src={logoImage}
         alt="NeptuneChain Logo"

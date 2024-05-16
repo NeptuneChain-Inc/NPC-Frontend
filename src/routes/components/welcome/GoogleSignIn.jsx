@@ -63,6 +63,7 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
         //Check if user is in database then login or register
         if(await updateUser?.(user?.uid)){
           //Logged In
+          setCardState("");
         } else {
           //Redirect to register with user email
           setGoogleData({

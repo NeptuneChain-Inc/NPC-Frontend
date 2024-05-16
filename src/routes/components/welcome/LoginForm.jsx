@@ -121,13 +121,13 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             exit="exit"
             onSubmit={handleSubmit}
           >
-            <CardLogo
+            {/* <CardLogo
               src={logoImage}
               alt="NeptuneChain Logo"
               variants={logoVariants}
               initial="hidden"
               animate="visible"
-            />
+            /> */}
             <InputGroup>
               <Icon icon={faEnvelope} />
               <INPUT

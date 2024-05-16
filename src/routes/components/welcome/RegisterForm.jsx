@@ -147,13 +147,13 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) =>
             exit="exit"
             onSubmit={handleSubmit}
           >
-            <CardLogo
+            {/* <CardLogo
               src={logoImage}
               alt="NeptuneChain Logo"
               variants={logoVariants}
               initial="hidden"
               animate="visible"
-            />
+            /> */}
             <InputGroup>
               <Icon icon={faUser} />
               <INPUT

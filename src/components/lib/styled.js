@@ -82,7 +82,7 @@ export const LOADING_ANIMATION = styled(motion.div)`
 
 export const PROMPT_CARD = styled(motion.div)`
 ${style_template.flex_display.column_custom('flex-end', 'center')}
-width: 40%;
+min-width: 40%;
  max-width: 1080px;
 max-height: 70vh;
 
