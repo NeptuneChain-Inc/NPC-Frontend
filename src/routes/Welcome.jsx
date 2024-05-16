@@ -8,9 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import GoogleSignIn from "./components/welcome/GoogleSignIn";
+import { contentVariants } from "./components/welcome/WelcomeHome";
 
 const backgroundImage = new URL(
-  "../assets/wallpapers/neptune_ocean.png",
+  "../assets/wallpapers/welcome_wallpaper.jpg",
   import.meta.url
 ).href;
 export const logoImage = new URL("../assets/logo.png", import.meta.url).href;
@@ -38,12 +39,22 @@ const FullScreenWrapper = styled.div`
 `;
 
 const StyledLogo = styled(motion.img)`
+position: fixed;
+top: 10px;
+z-index: 1000;
   width: 15vw;
-  max-width: 250px;
+  //max-width: 250px;
   margin-bottom: 1rem;
 
+  background: rgba(230, 236, 213, 1);
+backdrop-filter: blur(5px);
+padding: 1rem;
+border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
+
   @media (max-width: 980px) {
-    display: none;
+    // display: none;
   }
 `;
 
@@ -53,6 +64,14 @@ export const CardLogo = styled(StyledLogo)`
   @media (max-width: 980px) {
     display: flex;
   }
+`;
+
+const GoogleSignInWrapper = styled(motion.div)`
+margin-top: 0.5rem;
+background: rgba(230, 236, 213, 1);
+backdrop-filter: blur(5px);
+  padding: 0.2rem;
+  border-radius: 5px;
 `;
 
 const HomeIcon = styled(FontAwesomeIcon)`
@@ -126,10 +145,18 @@ const Welcome = ({ APP }) => {
         </AnimatePresence>
       )}
 
-      {!user && <GoogleSignIn APP={APP} setGoogleData={setGoogleData} setCardState={setCardState} enterDash={enterDash} />}
+      {!user && (
+        <AnimatePresence mode="wait">
+          <GoogleSignInWrapper variants={contentVariants} initial="hidden" animate="visible">
+            <GoogleSignIn APP={APP} setGoogleData={setGoogleData} setCardState={setCardState} enterDash={enterDash} />
+          </GoogleSignInWrapper>
+        </AnimatePresence>
+      )}
 
       {cardState !== "" && (
-        <HomeIcon icon={faHome} onClick={() => setCardState("")} />
+        <AnimatePresence mode="wait">
+          <HomeIcon icon={faHome} onClick={() => setCardState("")} />
+        </AnimatePresence>
       )}
     </FullScreenWrapper>
   );

@@ -14,7 +14,8 @@ const Paragraph = styled.p`
   line-height: 1.4;
   color: #333;
   text-align: center;
-  margin-bottom: 2rem;
+  padding: 0rem 1rem;
+  margin-bottom: 1rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -23,7 +24,7 @@ flex-direction: row;
 gap: 10px;
 `;
 
-const contentVariants = {
+export const contentVariants = {
   hidden: { y: 30, opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { duration: 1, delay: 0.2 } },
 };

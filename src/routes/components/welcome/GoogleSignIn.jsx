@@ -9,22 +9,21 @@ import { getUser } from "../../../apis/database";
 const Icon = styled(FontAwesomeIcon)`
       display: inline-block;
       vertical-align: middle;
-      width: 30px;
-      height: 30px;
+      width: 1rem;
       color: white;
 `;
 
 const GoogleButton = styled.div`
-margin-top: 10px;
       background: #DB4437e6;
       backdrop-filter: blur(10px);
       color: #444;
-      width: 190px;
+      //width: 190px;
       border-radius: 5px;
-      border: thin solid #888;
-      box-shadow: 1px 1px 1px grey;
+      border: 0.1rem solid rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
       white-space: nowrap;
-      padding: 10px;
+      padding: 0.4rem 1rem;
+      box-sizing: border-box;
       transition: 0.3s ease-in-out;
 
       &:hover {
@@ -37,7 +36,7 @@ margin-top: 10px;
         display: inline-block;
         vertical-align: middle;
         padding-left: 10px;
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: bold;
         font-family: 'Roboto', sans-serif;
         color: white

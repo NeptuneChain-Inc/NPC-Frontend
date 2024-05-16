@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { style_template } from "./style_templates";
 
 export const WELCOME_LOGO = styled.img`
-width: ${({width}) => width ? width : '200px'};
+width: ${({ width }) => width ? width : '200px'};
   height: auto;
   cursor: pointer;
   margin: 20px 0;
@@ -81,14 +81,14 @@ export const LOADING_ANIMATION = styled(motion.div)`
 `;
 
 export const PROMPT_CARD = styled(motion.div)`
-width: 80%;
+${style_template.flex_display.column_custom('flex-end', 'center')}
+width: 40%;
  max-width: 1080px;
-height: 70vh;
-${style_template.flex_display.column_custom('center','center')}
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 2rem;
-  border-radius: 10px;
+max-height: 70vh;
+
+  background: rgba(230, 236, 213, 0.7);
+  backdrop-filter: blur(5px);
+  border-radius: 5px;
   box-sizing: border-box;
   box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
   overflow: auto;
@@ -96,9 +96,8 @@ ${style_template.flex_display.column_custom('center','center')}
   backface-visibility: hidden;
   transform-style: preserve-3d;
 
-  @media (max-width: 980px) {
+  @media (max-width: 767px) {
     width: 100%;
-    padding: 1rem;
   }
 
   }
@@ -106,10 +105,10 @@ ${style_template.flex_display.column_custom('center','center')}
 
 export const PROMPT_FORM = styled(motion.form)`
 width: 100%;
-height: 100%;
-  ${style_template.flex_display.column_custom('center')}
+// height: 100%;
+  // ${style_template.flex_display.column_custom('center')}
   background: rgba(255, 255, 255, 0.5);
-  padding: 2rem;
+  padding: 5rem;
   border-radius: 10px;
   box-sizing: border-box;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -117,32 +116,33 @@ height: 100%;
   transform-style: preserve-3d;
 
   @media (max-width: 767px) {
-    padding: 1rem;
+    padding: 2rem;
   }
 
   }
 `;
 
 export const BUTTON = styled(motion.button)`
+min-width: 10rem;
 color: #FFF;
 background-color: #0077b699;
 padding: 15px 30px;
 display: flex;
 justify-content: center;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 transition: all 0.3s ease;
 cursor: pointer;
 
+margin-bottom: 1rem;
+border-radius: 5px;
+      border: 0.1rem solid rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
+
 &:hover {
   background-color: #0077b6;
-  color: white;
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
+  border: 0.1rem solid rgba(255, 255, 255, 1);
 }
 
-border: none;
-border-radius: 4px;
-margin-bottom: 1rem;
 `;
 
 export const TEXT_LINK = styled.span`
