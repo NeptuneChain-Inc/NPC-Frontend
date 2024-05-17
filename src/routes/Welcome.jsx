@@ -89,9 +89,9 @@ export const CardLogo = styled(StyledLogo)`
 
 const GoogleSignInWrapper = styled(motion.div)`
 margin-top: 0.5rem;
-background: rgba(230, 236, 213, 0.8);
+background: rgba(230, 236, 213, 0.4);
 backdrop-filter: blur(5px);
-  padding: 0.3rem;
+  padding: 0.1rem;
   border-radius: 5px;
   transition: 0.3s ease-in-out;
 

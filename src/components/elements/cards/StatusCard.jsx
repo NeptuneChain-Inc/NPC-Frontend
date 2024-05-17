@@ -45,7 +45,7 @@ const MotionStatusCard = styled(motion.div)`
   padding: 1rem;
   border-radius: 8px;
   background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   transition: all 0.3s;
   &:hover {
     transform: translateY(-5px);

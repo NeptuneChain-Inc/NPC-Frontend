@@ -7,7 +7,7 @@ import 'font-awesome/css/font-awesome.min.css'; // Import the font-awesome CSS
 
 // Enhanced Card Header
 const CardHeader = styled.div`
-  background: linear-gradient(45deg, #007bff, #0056b3);
+  background: #134B5F;
   width: 100%;
   padding: 15px;
   box-sizing: border-box;
@@ -105,7 +105,7 @@ const TransactionHistoryCard = memo(({ title, transactions, styles }) => {
             <Row key={tx.id}>
               <Cell>{tx.id}</Cell>
               <Cell>
-                <Icon className={`fa ${tx.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down'}`} />
+                {/* <Icon className={`fa ${tx.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down'}`} /> */}
                 {tx.type}
               </Cell>
               <Cell className={tx.type}>{tx.amount}</Cell>

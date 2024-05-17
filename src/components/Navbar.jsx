@@ -63,7 +63,7 @@ const Navbar = ({ APP }) => {
   return (
     <NavbarContainer sidebarOpen={sidebarOpen}>
       <NavActions>
-        {sidebarOpen ? (
+        {/* {sidebarOpen ? (
           <>
             <SidebarHeader>
               <FullLogo
@@ -76,7 +76,9 @@ const Navbar = ({ APP }) => {
           </>
         ) : (
           <Logo alt="logo" src={AppIcon} onClick={handleSidebar} />
-        )}
+        )} */}
+
+        <Logo alt="logo" src={AppIcon} onClick={handleSidebar} />
 
         <SearchContainer>
           <SearchIcon icon={faSearch} onClick={toggleSearch} />

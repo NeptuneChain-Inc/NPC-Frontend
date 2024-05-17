@@ -375,6 +375,8 @@ const AppContainer = styled.div`
   top: 0;
   left: 0;
 
+  font-family: "Albert Sans", "Albert Sans Placeholder", sans-serif;
+
   width: 100vw;
   height: 100vh;
 

@@ -58,7 +58,7 @@ const MotionOverviewCard = styled(motion.div)`
   display: flex;
   min-width: 300px;
   position: relative;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   box-sizing: border-box;
   flex-direction: column;

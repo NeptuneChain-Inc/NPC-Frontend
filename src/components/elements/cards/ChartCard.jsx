@@ -235,8 +235,11 @@ align-items: center;
 min-height: 400px;
 height: auto;
 padding: 5px;
-width: 60vw;
-box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+min-width: 30vw;
+max-width: 60vw;
+padding: 2rem;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+box-sizing: border-box;
 `;
 
 const Header = styled.div`

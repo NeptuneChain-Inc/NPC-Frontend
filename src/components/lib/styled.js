@@ -50,7 +50,6 @@ display: flex;
 padding: 0.5rem;
 min-width: 300px;
 position: relative;
-box-shadow: 0px 0px 10px 0px #d4d4d4;
 box-sizing: border-box;
 align-items: flex-start;
 border-radius: 4px;
@@ -58,10 +57,11 @@ flex-direction: column;
 background-color: #ffffff;
 overflow-y: auto;
 overflow-x: hidden;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 
 &:hover {
   transform: scale(1.05);
-  box-shadow: 0px 0px 20px 0px #0077b6;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {

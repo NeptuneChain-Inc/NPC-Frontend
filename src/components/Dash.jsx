@@ -18,7 +18,7 @@ const Dash = ({ dashData, APP }) => {
 
   const renderedSections = useMemo(() => {
     return dashData?.sections?.map((section, index) => (
-      <DashSection key={index} alignment={section?.alignment} >
+      <DashSection key={index} alignment={"center"} >
         {section?.cards?.map(renderCard)}
       </DashSection>
     ))
@@ -26,7 +26,7 @@ const Dash = ({ dashData, APP }) => {
 
   return (
     <DashContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <SectionHeading>{dashData?.name}</SectionHeading>
+      {/* <SectionHeading>{dashData?.name}</SectionHeading> */}
 
       {/* Render Dynamic Sections */}
       {renderedSections}

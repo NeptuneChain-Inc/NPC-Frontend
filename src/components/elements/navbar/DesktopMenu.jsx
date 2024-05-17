@@ -38,12 +38,12 @@ const DesktopMenu = ({ APP }) => {
     <DesktopMenuContainer>
 
       {/* Notification Icon */}
-      <IconContainer whileHover='hover' whileTap="tap">
+      {/* <IconContainer whileHover='hover' whileTap="tap">
         <FontAwesomeIcon
           icon={notificationBarOpen ? faBellSlash : faBell}
           onClick={handleNotificationsBar}
         />
-      </IconContainer>
+      </IconContainer> */}
 
       {/* Settings Icon */}
       <IconContainer whileHover='hover' whileTap="tap">
@@ -53,14 +53,15 @@ const DesktopMenu = ({ APP }) => {
         />
       </IconContainer>
 
-      {/* Profile DropMenu */}
-      <ProfileDropMenu APP={APP} />
-
       {/* Logout Button */}
       <LogOutButton whileHover='hover' whileTap="tap" onClick={handleLogOut}>
         <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '8px' }} />
         Logout
       </LogOutButton>
+
+      {/* Profile DropMenu */}
+      <ProfileDropMenu APP={APP} />
+
 
     </DesktopMenuContainer>
   );
