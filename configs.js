@@ -5,9 +5,9 @@ export default {
     NETWORKS: {
       testnet: {
         token: "MATIC",
-        chainId: "80001",
-        explorer: "https://mumbai.polygonscan.com",
-        rpc: "https://polygon-mumbai.g.alchemy.com/v2/demo",
+        chainId: "80002",
+        explorer: "https://amoy.polygonscan.com",
+        rpc: "https://polygon-amoy.g.alchemy.com/v2/xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75",
       },
       mainnet: {
         token: "MATIC",

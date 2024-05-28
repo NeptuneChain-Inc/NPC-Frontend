@@ -219,12 +219,11 @@ const SellerDashboard = ({ APP }) => {
   const fetchUserNFTs = async () => {
     setIsLoading(true);
     try {
-      const { wallet_nfts, error } = await NFT_API.get.wallet_nfts(signedUser);
-      if (error) {
-        setIsError("Unable to fetch assets");
-      }
-      if (wallet_nfts?.result) {
-        setUserNFTs(wallet_nfts.result);
+      const wallet_nfts = await NFT_API.get.wallet_nfts(signedUser);
+
+      if (wallet_nfts) {
+        console.log("DEV: wallet_nfts", wallet_nfts)
+        setUserNFTs(wallet_nfts);
         return true;
       }
       return null;
@@ -355,7 +354,7 @@ const SellerDashboard = ({ APP }) => {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <p>
-                    Name: {nft.name} #{nft.token_id}
+                    Name: {nft?.contract?.name} #{nft?.tokenId}
                   </p>
                   <Input
                     type="text"
@@ -366,7 +365,7 @@ const SellerDashboard = ({ APP }) => {
                   />
                   <Button
                     onClick={() =>
-                      handleListNFT(nft.token_address, nft.token_id)
+                      handleListNFT(nft?.contract?.address, nft?.tokenId)
                     }
                   >
                     List NFT

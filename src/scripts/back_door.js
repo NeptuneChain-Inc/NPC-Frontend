@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import configs from "../../configs";
 import { ethers } from "ethers";
+import { Network, Alchemy } from "alchemy-sdk";
+import { alchemyAPI, mumbaiRPC, privateKey } from "../contracts/ref";
 
 /** * @returns firebase config object */
 const getFirebaseConfig = async () =>
@@ -112,20 +114,31 @@ const MediaAPI = {
   },
 };
 
-/** * @returns signer or error object */
-const getSigner = async () => {
-  const { signer, error } = (
-    await axios.post(`${configs.server_url}/ethereum/get/signer`, {})
-  )?.data;
-  if (signer) {
-    const { provider, wallet } = signer;
-    const _provider = new ethers.providers.JsonRpcProvider(
-      process.env[`${network.toUpperCase()}_RPC`]
-    );
-    const _wallet = new ethers.Wallet(process.env.APP_WALLET_KEY, provider);
-    return wallet.connect(provider);
+const getSigner = () => {
+  try {
+    const provider = new ethers.JsonRpcProvider(mumbaiRPC);
+    const wallet = new ethers.Wallet(privateKey, provider);
+    const signer = wallet.connect(provider);
+    return { provider, signer };
+  } catch (error) {
+    throw error;
   }
 };
+
+/** * @returns signer or error object */
+// const getSigner = async () => {
+//   const { signer, error } = (
+//     await axios.post(`${configs.server_url}/ethereum/get/signer`, {})
+//   )?.data;
+//   if (signer) {
+//     const { provider, wallet } = signer;
+//     const _provider = new ethers.providers.JsonRpcProvider(
+//       process.env[`${network.toUpperCase()}_RPC`]
+//     );
+//     const _wallet = new ethers.Wallet(process.env.APP_WALLET_KEY, provider);
+//     return wallet.connect(provider);
+//   }
+// };
 
 const EthereumAPI = {
   get: {
@@ -169,21 +182,70 @@ const MapsAPI = {
   },
 };
 
+// Alchemy Config object
+const settings = {
+  apiKey: alchemyAPI, 
+  network: Network.MATIC_AMOY, 
+};
+
+const alchemy = new Alchemy(settings);
+
 /** * @returns wallet_nfts or error object */
-const getWalletNFTs = async (address) =>
-  (
-    await axios.post(`${configs.server_url}/moralis/get/wallet_nfts`, {
-      address,
-    })
-  )?.data;
+const getWalletNFTs = async (address) => {
+
+  console.log("fetching NFTs for address:", address);
+console.log("...");
+  // Print total NFT count returned in the response:
+const nftsForOwner = await alchemy.nft.getNftsForOwner(address);
+console.log("number of NFTs found:", nftsForOwner.totalCount);
+console.log("...");
+
+const wallet_nfts = [];
+
+// Print contract address and tokenId for each NFT:
+for (const nft of nftsForOwner.ownedNfts) {
+  console.log("===");
+  console.log("contract address:", nft.contract.address);
+  console.log("token ID:", nft.tokenId);
+  wallet_nfts.push(nft);
+}
+console.log("===");
+console.log(wallet_nfts)
+return wallet_nfts;
+}
+  // (
+  //   await axios.post(`${configs.server_url}/moralis/get/wallet_nfts`, {
+  //     address,
+  //   })
+  // )?.data;
 /** * @returns nft_metadata or error object */
-const getNFT_metadata = async (address, tokenId) =>
-  (
-    await axios.post(`${configs.server_url}/moralis/get/nft_metadata`, {
-      address,
-      tokenId,
-    })
-  )?.data;
+const getNFT_metadata = async (address, tokenId) => {
+  // Fetch metadata for a particular NFT:
+console.log("fetching metadata for NFT...");
+const response = await alchemy.nft.getNftMetadata(
+  address,
+  tokenId
+);
+
+// Uncomment this line to see the full api response:
+console.log(response);
+
+// Print some commonly used fields:
+console.log("NFT name: ", response.title);
+console.log("token type: ", response.tokenType);
+console.log("tokenUri: ", response.tokenUri.gateway);
+console.log("image url: ", response.rawMetadata.image);
+console.log("time last updated: ", response.timeLastUpdated);
+console.log("===");
+
+return response;
+}
+  // (
+  //   await axios.post(`${configs.server_url}/moralis/get/nft_metadata`, {
+  //     address,
+  //     tokenId,
+  //   })
+  // )?.data;
 
 const NFT_API = {
   get: {

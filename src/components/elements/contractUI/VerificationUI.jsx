@@ -253,6 +253,7 @@ function VerificationUI({ signer, open, APP }) {
             setIsLoading(false)
         }
     }
+    
     const tabs = ['submitData', 'approveData', 'dispute', 'resolveDispute', 'verifier', 'contractControl'];
 
     const tabAccess = {

@@ -1,6 +1,7 @@
 export const hostDomain = 'http://192.168.0.179:5173/';
 export const mumbaiRPC =
   "https://polygon-amoy.g.alchemy.com/v2/xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75";
+export const alchemyAPI = "xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75";
 export const blockExplorerTxURL = 'https://amoy.polygonscan.com/tx';
 export const contractAddress = '0x11948a80ec36919e7999D54d7f6D7df971814809';
 export const contractABI = [

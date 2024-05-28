@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { MarketplaceContract } from "../abis";
+import { ERC721 } from "../abis/standards";
 
 const getMarketInteractions = (signer) => {
   const contract = new ethers.Contract(

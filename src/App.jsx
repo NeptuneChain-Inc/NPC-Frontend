@@ -80,7 +80,7 @@ function App() {
    */
   useEffect(() => {
     getUserSave();
-    // connectSigner();
+    connectSigner();
   }, []);
 
   useEffect(() => {
@@ -111,20 +111,20 @@ function App() {
   /**
    * #NB: BACKEND
    */
-  // const connectSigner = async () => {
-  //   try {
-  //     const connection = await EthereumAPI.get.signer();
-  //     setNetworkProvider(connection.provider);
-  //     const _signer = connection.signer;
-  //     setSigner(_signer);
-  //     console.log('Eth connection', connection)
-  //     const signerAddress = await _signer.address;
-  //     setSignedUser(signerAddress);
-  //     setSignedMarketInteractions(getMarketInteractions(_signer));
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // };
+  const connectSigner = async () => {
+    try {
+      const connection =  EthereumAPI.get.signer();
+      setNetworkProvider(connection.provider);
+      const _signer = connection.signer;
+      setSigner(_signer);
+      console.log('Eth connection', connection)
+      const signerAddress = _signer.address;
+      setSignedUser(signerAddress);
+      setSignedMarketInteractions(getMarketInteractions(_signer));
+    } catch (error) {
+      throw error;
+    }
+  };
 
   //ACTIONS
   const getUserSave = () => {
