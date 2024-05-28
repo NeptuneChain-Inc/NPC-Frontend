@@ -13,9 +13,14 @@ const Card = styled.div`
     border-radius: 15px;
     transition: transform 0.3s, box-shadow 0.3s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000050;
     cursor: pointer;
     max-height: 400px;
     overflow: auto;
+
+    @media (max-width: 768px) {
+        width: 100%
+    }
 
     &:hover {
         transform: translateY(-5px);

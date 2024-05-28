@@ -28,7 +28,7 @@ import ListingPage from "./components/elements/marketplace/ListingPage";
 
 import { Livepeer } from "./components/elements/livepeer";
 import { VerificationUI } from "./components/elements/contractUI";
-import { Notification, Confirmation } from "./components/popups";
+import { Notification, Confirmation, ResultPopup } from "./components/popups";
 
 import { style_template } from "./components/lib/style_templates";
 import { colors } from "./styles/colors";
@@ -73,7 +73,14 @@ function App() {
 
   const [settingsTab, setSettingsTab] = useState("Profile Settings");
   const [confirmation, setConfirmation] = useState(null);
+  const [result, setResult] = useState(null);
   const [notification, setNotification] = useState("");
+
+  const [txPopupVisible, setTxPopupVisible] = useState(false);
+
+  const handleTxPopupClose = () => {
+    setTxPopupVisible(false);
+  };
 
   /**
    * Try get the user and signer for blockchain transactions
@@ -113,7 +120,7 @@ function App() {
    */
   const connectSigner = async () => {
     try {
-      const connection =  EthereumAPI.get.signer();
+      const connection = EthereumAPI.get.signer();
       setNetworkProvider(connection.provider);
       const _signer = connection.signer;
       setSigner(_signer);
@@ -140,7 +147,7 @@ function App() {
     try {
       //const { user, error} = await UserAPI.get.user(uid);
       const user = await getUser(uid);
-      if(user){
+      if (user) {
         sessionStorage.setItem("user", JSON.stringify(user));
         setUser(user);
         return true;
@@ -148,7 +155,7 @@ function App() {
       return null;
 
       logNotification("error", "Email not registered");
-      
+
       return null;
     } catch (error) {
       logNotification("error", error.message);
@@ -230,6 +237,8 @@ function App() {
       settingsTab,
       confirmation,
       notification,
+      txPopupVisible,
+      result
     },
     ACTIONS: {
       getUserSave,
@@ -243,6 +252,8 @@ function App() {
       handleSettingsTab,
       toggleCalculator,
       logConfirmation,
+      setResult,
+      setTxPopupVisible,
       cancelConfirmation,
       logNotification,
       handleLogOut,
@@ -265,6 +276,14 @@ function App() {
           message={confirmation?.msg}
           onConfirm={confirmation?.action}
           onCancel={cancelConfirmation}
+        />
+
+        <ResultPopup
+          isVisible={txPopupVisible}
+          title={result?.title}
+          message={result?.message}
+          onRetry={result?.handleRetry}
+          onClose={handleTxPopupClose}
         />
 
         {settingsMenuOpen && <SettingsMenu APP={APP} />}
@@ -388,8 +407,8 @@ const Flex = styled.div`
     config === "row"
       ? style_template.flex_display.row_custom("flex-start", "flex-start")
       : config === "column"
-      ? style_template.flex_display.column_custom("flex-start", "center")
-      : style_template.flex_display.row_centered}
+        ? style_template.flex_display.column_custom("flex-start", "center")
+        : style_template.flex_display.row_centered}
 `;
 
 const Main = styled.div`

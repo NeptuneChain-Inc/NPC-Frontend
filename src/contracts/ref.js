@@ -39,5 +39,6 @@ export const privateKey = "188a696dfbd26bbad9d3602ac3f10787c1ba9036c36544275c078
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51NTLlPFnymUk0uH4vxETrYPfIgizozEwByB2uPCcjZFJhBLR45bYS20M3a7KTI4PTwZKg6eMPDbeOPF1PBQr0OBa000EGQPaAB'; //Test Key
 export const MapBoxKey = 'pk.eyJ1IjoiZm9yYW1ha28iLCJhIjoiY2xrMWg0amQzMDIwejNmb3kxdzI3NHA0NyJ9.SGbam3R3secsVpD2G5Kgrg'; //Test Key
 export const GoogleMaps_API_KEY = 'AIzaSyAcDSUHQJukOfVZjDGxsbDDlx4sTzB78sg'; //Test Key
+export const livepeer_API_KEY = 'ed2bb260-6dc2-431e-a10b-edabd81a14c5';
 
 
