@@ -279,11 +279,12 @@ function App() {
         />
 
         <ResultPopup
-          isVisible={txPopupVisible}
+          isVisible={Boolean(result?.title)}
           title={result?.title}
           message={result?.message}
+          txHash={result?.txHash}
           onRetry={result?.handleRetry}
-          onClose={handleTxPopupClose}
+          onClose={() => setResult(null)}
         />
 
         {settingsMenuOpen && <SettingsMenu APP={APP} />}

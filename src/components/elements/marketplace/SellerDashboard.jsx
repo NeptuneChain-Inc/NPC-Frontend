@@ -203,6 +203,9 @@ const SellerDashboard = ({ APP }) => {
   const { signedUser, marketInteractions, signedMarketInteractions } =
     APP?.STATES || {};
 
+    const { setResult } =
+    APP?.ACTIONS || {};
+
   useEffect(() => {
     if (signedUser) {
       fetchUserNFTs();
@@ -292,7 +295,23 @@ const SellerDashboard = ({ APP }) => {
           listingFee
         );
         console.log('@DEV Handle Result',result);
+        if(result?.hash) {
+          setResult({
+          title: "Confirm",
+          message: "Transaction Successful",
+          txHash: result?.hash
+        })
+        } else {
+          setResult({
+            title: "Failed",
+            message: "Cound not transact",
+          })
+        }
     } catch (error) {
+      setResult({
+        title: "Error",
+        message: error?.message,
+      })
       console.error("Error listing NFT:", error);
       setIsError("Error listing NFT");
     } finally {
@@ -308,7 +327,23 @@ const SellerDashboard = ({ APP }) => {
           listingId
         );
         console.log('@DEV Handle Result',result);
+        if(result?.hash) {
+          setResult({
+          title: "Confirm",
+          message: "Transaction Successful",
+          txHash: result?.hash
+        })
+        } else {
+          setResult({
+            title: "Failed",
+            message: "Cound not transact",
+          })
+        }
     } catch (error) {
+      setResult({
+        title: "Error",
+        message: error?.message,
+      })
       console.error("Error delisting NFT:", error);
       setIsError("Error delisting NFT");
     } finally {
@@ -323,7 +358,23 @@ const SellerDashboard = ({ APP }) => {
         listingId
       );
       console.log('@DEV Handle Result',result);
-    } catch (error) {
+      if(result?.hash) {
+        setResult({
+        title: "Confirm",
+        message: "Transaction Successful",
+        txHash: result?.hash
+      })
+      } else {
+        setResult({
+          title: "Failed",
+          message: "Cound not transact",
+        })
+      }
+  } catch (error) {
+    setResult({
+      title: "Error",
+      message: error?.message,
+    })
       console.error("Error accepting bid:", error);
       setIsError("Error accepting bid");
     } finally {

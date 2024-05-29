@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { MarketplaceContract } from "../abis";
 import { ERC721 } from "../abis/standards";
+import { NFT_API } from "../../scripts/back_door";
 
 const getMarketInteractions = (signer) => {
   const contract = new ethers.Contract(
@@ -108,12 +109,15 @@ const getMarketInteractions = (signer) => {
             (nft) => !unavailableListingIds.has(nft.listingId)
           );
           return Promise.all(
-            availableNFTs.map( (nft) => {
+            availableNFTs.map( async (nft) => {
+              const metadata = await NFT_API.get.nft_metadata(nft.tokenAddress, nft.tokenId)
+              console.log("metadata", metadata)
+              const { name, symbol, tokenUri } = metadata || {};
               return {
                 ...nft,
-                name: "#outdated",
-                symbol: "NPC",
-                uri: "neptunechain.io",
+                name,
+                symbol,
+                uri: tokenUri || "neptunechain.io",
               };
             })
           );

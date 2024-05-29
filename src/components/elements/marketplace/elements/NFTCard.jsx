@@ -17,6 +17,7 @@ const Card = styled.div`
     cursor: pointer;
     max-height: 400px;
     overflow: auto;
+    box-sizing: border-box;
 
     @media (max-width: 768px) {
         width: 100%

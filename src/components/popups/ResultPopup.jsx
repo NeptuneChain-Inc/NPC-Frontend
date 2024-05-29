@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import configs from '../../../configs';
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -16,6 +17,7 @@ const Overlay = styled(motion.div)`
   visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
   opacity: ${props => (props.isVisible ? '1' : '0')};
   transition: visibility 0.3s, opacity 0.3s;
+  z-index: 10000;
 `;
 
 const PopupContainer = styled(motion.div)`
@@ -49,9 +51,7 @@ const CTAButton = styled.a`
 `;
 
 const CloseButton = styled.a`
-  position: absolute;
-  top: 10px;
-  right: 10px;
+margin: 0;
   color: #aaa;
   font-size: 24px;
   cursor: pointer;
@@ -60,7 +60,7 @@ const CloseButton = styled.a`
   }
 `;
 
-const ResultPopup = ({ isVisible, title, message, txLink, onRetry, onClose }) => {
+const ResultPopup = ({ isVisible, title, message, txHash, onRetry, onClose }) => {
   return (
     <Overlay
       isVisible={isVisible}
@@ -74,12 +74,14 @@ const ResultPopup = ({ isVisible, title, message, txLink, onRetry, onClose }) =>
         <CloseButton onClick={onClose}>&times;</CloseButton>
         <Title>{title}</Title>
         <Message>{message}</Message>
-        {txLink ? (
-          <CTAButton href={txLink} target="_blank" rel="noopener noreferrer">
+        {txHash ? (
+          <CTAButton href={`${configs.blockchain.NETWORKS[configs.blockchain.MODE+"net"].explorer}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
             Verify
           </CTAButton>
-        ) : (
+        ) : onRetry ? (
           <CTAButton onClick={onRetry}>Retry</CTAButton>
+        ) : (
+            <CTAButton onClick={onClose}>Close</CTAButton>
         )}
       </PopupContainer>
     </Overlay>
@@ -90,7 +92,7 @@ ResultPopup.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
-  txLink: PropTypes.string,
+  txHash: PropTypes.string,
   onRetry: PropTypes.func,
   onClose: PropTypes.func.isRequired,
 };

@@ -12,7 +12,8 @@ const NFTGrid = styled.div`
   max-width: 1200px;
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    display:flex;
+    flex-direction: column;
   }
 `;
 
@@ -50,6 +51,7 @@ const MarketBrowser = ({ marketEvents }) => {
         setLoading(true);
         try {
             const fetchedNfts = await marketEvents?.listAvailableNFTs() || [];
+            console.log(fetchedNfts)
             setNfts(fetchedNfts);
         } catch (err) {
             console.error(err)

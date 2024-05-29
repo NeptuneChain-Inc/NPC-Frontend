@@ -29,6 +29,7 @@ const getVerificationInteractions = (signer) => {
         try {
           const tx = await contract.approveData(dataId);
           const receipt = await tx.wait();
+          console.log("approveData txSuccessfull", receipt);
           return receipt;
         } catch (error) {
           console.error("Error approving data:", error);

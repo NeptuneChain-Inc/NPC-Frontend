@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-
-import { TransactionReceipt } from './elements';
 import { STRING } from '../../../scripts/helpers';
 import { getVerificationInteractions } from '../../../smart_contracts/interactions';
 
@@ -53,6 +51,7 @@ const CloseButton = styled(motion.button)`
     position: absolute;
     top: 10px;
     right: 10px;
+    color: #222;
     background: none;
     border: none;
     font-size: 24px;
@@ -185,10 +184,10 @@ function VerificationUI({ signer, open, APP }) {
     const [dataId, setDataId] = useState('');
     const [reason, setReason] = useState('');
     const [verifierAddress, setVerifierAddress] = useState('');
-    const [receipt, setReceipt] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
+
     const { user } = APP?.STATES || {};
+    const { setTxPopupVisible, setResult } = APP?.ACTIONS || {};
 
     const Interactions = getVerificationInteractions(signer);
 
@@ -226,29 +225,33 @@ function VerificationUI({ signer, open, APP }) {
         }
     }, [Interactions]);
 
-    const resolveReceipt = async () => {
-        //Save txHash with general transaction data to user transactions db
-        //...
-
-        setReceipt(null);
-    }
-
     const handleMutation = async (mutation, params = null) => {
         setIsLoading(true);
         try {
             if (params) await mutation.mutateAsync(params)
             else await mutation.mutateAsync()
             const _receipt = mutation.data;
-            if (_receipt) setReceipt(_receipt)
-            console.log({ _receipt })
+            console.log(mutation)
+            setTxPopupVisible(true);
+            if (_receipt?.hash) { 
+            setResult?.({
+                title: "Confirmed",
+                message: "",
+                txHash: _receipt.hash
+            })
+            } else {
+                setResult?.({
+                    title: "Failed",
+                    message: mutation?.error?.reason || "Could not transact.",
+                })
+            }
+            
         } catch (error) {
             //handle error
-            if (error.code === 'CALL_EXCEPTION' && error.reason) {
-                setError(error.reason)
-            } else {
-                setError('Transaction Error');
-                throw error; // or handle it according to your needs
-            }
+            setResult?.({
+                title: "Error",
+                message: error?.reason || error?.message,
+            })
         } finally {
             setIsLoading(false)
         }
@@ -356,8 +359,6 @@ function VerificationUI({ signer, open, APP }) {
                                 )}
                             </TabContent>
                         )}
-                        {error.length > 0 && <ErrorMsg>Error: {error}</ErrorMsg>}
-                        {receipt && <TransactionReceipt receipt={receipt} onClose={resolveReceipt} />}
                     </ModalContainer>
                 </ModalOverlay>
             )}
