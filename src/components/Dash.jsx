@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react'
-import styled from 'styled-components'
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { OverviewCard, DataCard, RecordsCard } from './elements';
 import { getIcon } from './lib/icons';
 import { motion } from 'framer-motion';
@@ -7,31 +7,116 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faStream, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { EnvironmentalMetricsCard, OperationalMetricsCard } from './elements/cards/cards';
 import { ChartCard, StatusCard, TransactionHistoryCard } from './elements/cards';
+import { DeviceAPI } from '../scripts/back_door';
 
 /**
  * Dash Component
  * This is the main dashboard component that renders various cards within sections based on the data provided.
  * @param {Object} dashData - Contains sections and cards data for the dashboard.
+ * @param {Object} APP - Contains global states and actions.
  */
 const Dash = ({ dashData, APP }) => {
+  const { user } = APP?.STATES || {};
   const { handleVerificationUI } = APP?.ACTIONS || {};
+
+  console.log("dashData", dashData);
+
+  const [statusCardData, setStatusCardData] = useState({});
+
+  useEffect(() => {
+    const fetchStatusCardData = async (card) => {
+      if (card.type === 'status') {
+        const { id } = card.data || {};
+        const deviceDetails = await DeviceAPI.details(id);
+        setStatusCardData((prev) => ({
+          ...prev,
+          [id]: deviceDetails,
+        }));
+      }
+    };
+
+    if (dashData?.sections) {
+      dashData.sections.forEach((section) => {
+        section.cards.forEach(fetchStatusCardData);
+      });
+    }
+  }, [dashData]);
+
+  const renderCard = useCallback((card, index) => {
+    console.log("Rendering Card...", card);
+    const Card = () => {
+      switch (card?.type) {
+        case 'overview': {
+          const { cardTitle, metricValue, metricUnit, icon } = card.data || {};
+          const iconObj = getIcon(icon);
+          return <OverviewCard key={index} {...{ cardTitle, metricValue, metricUnit, icon: iconObj }} width={card?.width} />;
+        }
+        case 'status': {
+          const { id } = card.data || {};
+          const deviceDetails = statusCardData[id] || {};
+          const { name, status, icon } = deviceDetails || {};
+          const iconObj = getIcon(icon);
+          return name && status ? (
+            <StatusCard key={index} {...{ title: name, status, icon: iconObj }} width={card?.width} />
+          ) : (
+            <p key={index}>Loading...</p>
+          );
+        }
+        case 'data': {
+          const { cardTitle, icon, contents } = card.data || {};
+          const iconObj = getIcon(icon);
+          return <DataCard key={index} {...{ cardTitle, contents, icon: iconObj }} width={card?.width} />;
+        }
+        case 'data-table': {
+          const { cardTitle, icon, contents } = card.data || {};
+          const iconObj = getIcon(icon);
+          return <DataCard key={index} {...{ cardTitle, contents, icon: iconObj }} isTable={true} width={card?.width} />;
+        }
+        case 'chart-card': {
+          const { cardTitle, icon, chartType, data } = card.data || {};
+          const iconObj = getIcon(icon);
+          return <ChartCard key={index} {...{ label: cardTitle, type: chartType, data, icon: iconObj }} />;
+        }
+        case 'environmental-metrics': {
+          return <EnvironmentalMetricsCard key={index} />;
+        }
+        case 'operational-metrics': {
+          return <OperationalMetricsCard key={index} />;
+        }
+        case 'tx-history': {
+          const { title, transactions } = card.data || {};
+          return <TransactionHistoryCard key={index} {...{ title, transactions }} styles={card?.styles} />;
+        }
+        case 'records': {
+          const { title, records } = card.data || {};
+          return <RecordsCard key={index} {...{ title, records }} width={card?.width} />;
+        }
+        default:
+          return <p key={index}>No Component</p>;
+      }
+    };
+    return (
+      <motion.div key={index}>
+        {Card()}
+      </motion.div>
+    );
+  }, [statusCardData]);
+
+  const renderSection = useCallback((section) => {
+    return section?.cards?.map(renderCard);
+  }, [renderCard]);
 
   const renderedSections = useMemo(() => {
     return dashData?.sections?.map((section, index) => (
-      <DashSection key={index} alignment={"center"} >
-        {section?.cards?.map(renderCard)}
+      <DashSection key={index} alignment="center">
+        {renderSection(section)}
       </DashSection>
-    ))
-  }, [dashData]);
+    ));
+  }, [dashData, renderSection]);
 
   return (
     <DashContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      {/* <SectionHeading>{dashData?.name}</SectionHeading> */}
-
-      {/* Render Dynamic Sections */}
       {renderedSections}
-
-      {/**Media Creation Floating Buttons */}
       {dashData?.name === 'Your Media' && (
         <FloatingLinks>
           <Link href={'/features/upload-video'} target='_blank'>
@@ -42,111 +127,22 @@ const Dash = ({ dashData, APP }) => {
           </Link>
         </FloatingLinks>
       )}
-
       {dashData?.name === 'Verification' && handleVerificationUI && (
         <FloatingLinks>
-          <FloatButton onClick={()=>handleVerificationUI()}>
+          <FloatButton onClick={() => handleVerificationUI()}>
             <FontAwesomeIcon icon={faCheckCircle} /> Open Verification
           </FloatButton>
         </FloatingLinks>
       )}
-
     </DashContainer>
-  )
-}
-
-/**
- * RenderCard Function
- * Takes a card object and its index, and returns the appropriate JSX for the type of the card.
- * @param {Object} card - The card data.
- * @param {Number} index - The index of the card in the array.
- * @returns {JSX.Element} - The JSX for the appropriate card type.
- */
-const renderCard = (card, index) => {
-  const Card = () => {
-    switch (card?.type) {
-      case 'overview':
-        {
-          const { cardTitle, metricValue, metricUnit, icon } = card.data || {};
-          const iconObj = getIcon(icon);
-          return <OverviewCard key={index} {...{ cardTitle, metricValue, metricUnit, icon: iconObj }} width={card?.width} />;
-        }
-      case 'status':
-        {
-          const { cardTitle, status, icon } = card.data || {};
-          const iconObj = getIcon(icon);
-          return <StatusCard key={index} {...{ title: cardTitle, status, icon: iconObj }} width={card?.width} />;
-        }
-      case 'data':
-        {
-          const { cardTitle, icon, contents } = card.data ? card.data : {};
-          const iconObj = getIcon(icon);
-          return <DataCard key={index} {...{ cardTitle, contents, icon: iconObj }} width={card?.width} />
-        }
-      case 'data-table':
-        {
-          const { cardTitle, icon, contents } = card.data ? card.data : {};
-          const iconObj = getIcon(icon);
-          return (
-            <DataCard key={index} {...{ cardTitle, contents, icon: iconObj }} isTable={true} width={card?.width} />
-          )
-        }
-      case 'chart-card':
-        {
-          const { cardTitle, icon, chartType, data } = card.data ? card.data : {};
-          const iconObj = getIcon(icon);
-          return (
-            <ChartCard key={index} {...{ label: cardTitle, type: chartType, data, icon: iconObj }} />
-          )
-
-        }
-      case 'environmental-metrics':
-        {
-          // const { title, records } = card.data ? card.data : {};
-          return (
-            <EnvironmentalMetricsCard key={index} />
-          )
-        }
-      case 'operational-metrics':
-        {
-          // const { title, records } = card.data ? card.data : {};
-          return (
-            <OperationalMetricsCard key={index} />
-          )
-        }
-      case 'tx-history':
-        {
-          const { title, transactions } = card.data ? card.data : {};
-          return (
-            <TransactionHistoryCard key={index} {...{ title, transactions }} styles={card?.styles} />
-          )
-        }
-      case 'records':
-        {
-          const { title, records } = card.data ? card.data : {};
-          return (
-            <RecordsCard key={index} {...{ title, records }} width={card?.width} />
-          )
-        }
-      default:
-        return (
-          <p key={index}>No Component</p>
-        )
-    }
-  }
-  return (
-    <motion.div key={index}>
-      <Card />
-    </motion.div>
-  )
-}
+  );
+};
 
 const DashContainer = styled(motion.div)`
   width: 100%;
   height: 100%;
   margin: auto;
   padding: 1rem; 
-     
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -154,41 +150,6 @@ const DashContainer = styled(motion.div)`
   gap: 50px;
   padding-top: 10rem;
   overflow-y: auto;
-  
-//     @media (min-width: 1201px) {
-//       padding: 2rem 2.5rem;
-//     }
-
-//     @media (min-width: 769px) and (max-width: 1200px) {
-//       padding: 2rem 1.5rem;
-//     }
-    
-//     @media (max-width: 768px) {
-//       padding: 2rem 0.5rem;
-//     }
-// `;
-
-const SectionHeading = styled(motion.span)`
-position: fixed;
-top: 5rem;
-    right: 8rem;
-  font-size: 1.5rem;
-  width: 40%;
-  height: 4rem;
-  font-weight: 700;
-  color: #fff;
-  padding: 1rem;
-  box-sizing: border-box;
-  border-radius: 10px;
-  box-shadow: 1px 2px 2px 0px #000;
-  background-color: #134b5f;
-  z-index: 10;
-
-    @media (max-width: 768px) {
-      font-size: 1rem;
-      right: 1rem;
-      height: auto;
-    }
 `;
 
 const DashSection = styled(motion.div)`
@@ -198,23 +159,22 @@ const DashSection = styled(motion.div)`
   gap: 30px;
   align-items: center;
   padding: 2.5rem;
-  justify-content: ${({ alignment }) => alignment ? alignment : 'flex-start'};
+  justify-content: ${({ alignment }) => alignment || 'flex-start'};
   border-radius: 10px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   transition: 1s ease-in-out;
-  //overflow-y: auto;
 
-    @media (max-width: 768px) {
-      flex-direction: column;
-      justify-content: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  @media (min-width: 768px) {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
     }
-    
-    @media (min-width: 768px) {
-      &:hover {
-        background-color: rgba(0,0,0,0.1);
-      }
-    }
+  }
 `;
 
 const FloatingLinks = styled.div`
@@ -260,9 +220,6 @@ const FloatButton = styled.div`
   cursor: pointer;
 
   user-select: none;
-    -webkit-user-select: none;  // For Safari
-    -moz-user-select: none;     // For Firefox
-    -ms-user-select: none;      // For IE/Edge
 
   &:hover {
     background: #555;
@@ -271,4 +228,4 @@ const FloatButton = styled.div`
   }
 `;
 
-export default Dash
+export default Dash;

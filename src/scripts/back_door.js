@@ -272,6 +272,40 @@ const StripeAPI = {
   },
 };
 
+/**
+ * 
+ * @param {*} data object with device data including id { id, name, status, icon }
+ * @returns run result
+ */
+ const addDevice = async (data) =>
+  (await axios.post(`${configs.server_url}/device`, data))?.data;
+
+ const editDevice = async (deviceId, update) =>
+  (await axios.post(`${configs.server_url}/device/edit`, {deviceId, update}))?.data;
+
+ const removeDevice = async (deviceId) =>
+  (await axios.post(`${configs.server_url}/device/remove`, {deviceId}))?.data;
+
+ //Get all devices
+
+ const getDeviceDetails = async (deviceId) =>
+  (await axios.post(`${configs.server_url}/device/details`, {deviceId}))?.data;
+
+ const emulateDevice = async (deviceId, interval) =>
+  (await axios.post(`${configs.server_url}/device/emulate`, {deviceId, interval}))?.data;
+
+ const getDeviceData = async (deviceId) =>
+  (await axios.post(`${configs.server_url}/device/data`, {deviceId}))?.data;
+
+ const DeviceAPI = {
+  add: addDevice,
+  edit: editDevice,
+  remove: removeDevice,
+  details: getDeviceDetails,
+  emulate: emulateDevice,
+  data: getDeviceData
+ }
+
 export {
   firebaseAPI,
   UserAPI,
@@ -281,4 +315,5 @@ export {
   MapsAPI,
   NFT_API,
   StripeAPI,
+  DeviceAPI
 };

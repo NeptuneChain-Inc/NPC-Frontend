@@ -19,23 +19,27 @@ const cardVariants = {
   },
 };
 
-const StatusCard = ({ title, status, icon = faQuestion, width }) => (
-  <MotionStatusCard
-    variants={cardVariants}
-    initial="hidden"
-    animate="visible"
-    width={width}
-  >
-    <CardTitle>{title}</CardTitle>
-    <CardContentContainer>
-      <Icon icon={icon} />
-      <StatusContainer>
-        <StatusIcon icon={faCircle} color={status === 'Online' ? 'green' : 'red'} />
-        <StatusText>{status}</StatusText>
-      </StatusContainer>
-    </CardContentContainer>
-  </MotionStatusCard>
-);
+const StatusCard = ({ title, status, icon = faQuestion, width }) => {
+    console.warn("StatusCard Props", { title, status, icon, width })
+
+  return (
+    <MotionStatusCard
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      width={width}
+    >
+      <CardTitle>{title}</CardTitle>
+      <CardContentContainer>
+        <Icon icon={icon} />
+        <StatusContainer>
+          <StatusIcon icon={faCircle} color={status === 'Online' ? 'green' : 'red'} />
+          <StatusText>{status}</StatusText>
+        </StatusContainer>
+      </CardContentContainer>
+    </MotionStatusCard>
+  )
+};
 
 const MotionStatusCard = styled(motion.div)`
   flex: 0 0 auto;
