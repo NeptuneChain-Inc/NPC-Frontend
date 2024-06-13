@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faUser, faVideo, faCog, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faUser, faVideo, faCog, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,12 +13,15 @@ const ProfileDropMenu = ({ APP }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = APP ? APP.STATES : {};
-  const { handleSettingsTab } = APP ? APP.ACTIONS : {};
+  const { handleSettingsTab, handleLogOut } = APP ? APP.ACTIONS : {};
 
   const handleSettings = (action) => {
+    console.log(typeof action)
     setIsOpen(false);
-    if (action.startsWith('/')) {
+    if (typeof action === 'string' && action.startsWith('/')) {
       navigate(action);
+    } else if(typeof action === 'function') {
+      action();
     } else {
       handleSettingsTab(action);
     }
@@ -32,13 +35,10 @@ const ProfileDropMenu = ({ APP }) => {
   };
 
   const menuItems = [
-    { label: 'View Profile', icon: faUser, action: 'Profile Settings' },
-    { label: 'Upload Video', icon: faVideo, action: '/features/upload-video' },
+    { label: 'Upload Media', icon: faVideo, action: '/features/upload-media' },
     { label: 'Start Stream', icon: faVideo, action: '/features/stream' },
-    { label: 'Alert Settings', icon: faBell, action: 'Personalization' },
-    { label: 'Change Password', icon: faCog, action: 'Account Settings' },
-    { label: 'Data Sharing', icon: faCog, action: 'Data Settings' },
-    { label: 'Privacy Settings', icon: faCog, action: 'Privacy Settings' }
+    { label: 'Settings', icon: faCog, action: 'Profile Settings' },
+    { label: 'Logout', icon: faSignOutAlt, action: () => handleLogOut()}
   ];
 
   return (
@@ -70,7 +70,6 @@ const UserProfile = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border-radius: 8px;
   color: white;
   position: relative;
   height: 100%;
@@ -84,13 +83,18 @@ const ProfileDropMenuContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  padding: 8px 12px;
-  gap: 10px;
-  font-size: 0.8rem;
+  padding: 2px 8px;
+  gap: 2px;
+  font-size: 0.9rem;
   color: black;
   cursor: pointer;
   border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: 0.3s ease-in-out;
+
+  &:hover {
+    scale: 1.05;
+  }
 `;
 
 const ProfileDropMenuItems = styled(motion.div)`

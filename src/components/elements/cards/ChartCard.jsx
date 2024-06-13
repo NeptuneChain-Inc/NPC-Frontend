@@ -130,8 +130,8 @@ const ChartCardComponent = ({
   const [labels, setLabels] = useState([]);
 
   useEffect(() => {
-    console.log({ data, datasets, labels })
-  }, [datasets, labels])
+    console.log("Chart Component Data", { data, datasets, labels })
+  }, [data, datasets, labels])
 
 
   useEffect(() => {
@@ -232,12 +232,12 @@ const ChartCardComponent = ({
 const SCardContainer = styled(CardContainer)`
 justify-content: flex-start;
 align-items: center;
-min-height: 400px;
-height: auto;
+// min-height: 400px;
+// height: auto;
 padding: 5px;
-min-width: 30vw;
-max-width: 60vw;
-padding: 2rem;
+// min-width: 20vw;
+// max-width: 60vw;
+padding: 1rem 2rem;
 box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 box-sizing: border-box;
 `;

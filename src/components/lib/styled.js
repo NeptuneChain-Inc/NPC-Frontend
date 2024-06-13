@@ -42,13 +42,14 @@ margin: 0;
 
 export const CardContainer = styled(motion.div)`
 flex: 0 0 auto;
-width: ${({ width }) => width ? width : '10%'};
-width: 80%;
-height: 400px;
+// width: ${({ width }) => width ? width : '10%'};
+width: 100%;
+height: 100%;
+min-height: 400px;
 margin: auto;
 display: flex;
 padding: 0.5rem;
-min-width: 300px;
+
 position: relative;
 box-sizing: border-box;
 align-items: flex-start;
@@ -91,6 +92,7 @@ max-height: 70vh;
   border-radius: 5px;
   box-sizing: border-box;
   box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
+  padding: 1rem;
   overflow: auto;
 
   backface-visibility: hidden;

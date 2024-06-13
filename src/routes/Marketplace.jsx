@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCalendar, faSearch} from "@fortawesome/free-solid-svg-icons";
 
-import { MarketBrowser } from "../components/elements/marketplace";
+import {MarketBrowser} from "../components/elements/marketplace";
 import EventsPopup from "../components/elements/marketplace/EventsPopup";
-import { colors } from "../styles/colors";
+import {colors} from "../styles/colors";
 
 const MarketplaceContainer = styled.div`
   width: 100%;
@@ -58,6 +58,8 @@ const SearchIcon = styled(FontAwesomeIcon)`
 `;
 
 const EventsButton = styled.button`
+position: absolute;
+right: 2rem;
   background-color: ${colors.deepBlue};
   color: white;
   border: none;
@@ -74,16 +76,17 @@ const EventsButton = styled.button`
 
   @media (max-width: 768px) {
     font-size: 0.9em;
+    top: 10%;
     padding: 8px 15px;
   }
 `;
 
-const Marketplace = ({ APP }) => {
+const Marketplace = ({APP}) => {
   const [marketEvents, setMarketEvents] = useState(null);
   const [showEventsPopup, setShowEventsPopup] = useState(false);
   const [events, setEvents] = useState([]);
 
-  const { marketInteractions } = APP?.STATES || {};
+  const {marketInteractions} = APP?.STATES || {};
 
   useEffect(() => {
     setMarketEvents(marketInteractions?.Events);
@@ -99,11 +102,11 @@ const Marketplace = ({ APP }) => {
     let _events;
     if (filterType in marketEvents.filtered) {
       _events = await marketEvents.filtered[filterType](rangeFilter, toBlock);
-      console.log("filtered", { filterType, _events });
+      console.log("filtered", {filterType, _events});
     } else {
       _events = await marketEvents.getAllEvents(rangeFilter, toBlock);
       const fListed = await marketEvents.filtered.listed(rangeFilter, toBlock);
-      console.log("filtered Listings", { _events, fListed });
+      console.log("filtered Listings", {_events, fListed});
     }
 
     if (_events) {
@@ -119,7 +122,7 @@ const Marketplace = ({ APP }) => {
         <SearchIcon icon={faSearch} />
       </SearchBarContainer>
 
-      <EventsButton onClick={toggleEventsPopup}>Market Events</EventsButton>
+      <EventsButton onClick={toggleEventsPopup}><FontAwesomeIcon icon={faCalendar} /></EventsButton>
 
       <MarketBrowser marketEvents={marketEvents} />
 

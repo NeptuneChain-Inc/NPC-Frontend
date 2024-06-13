@@ -7,7 +7,7 @@ import {
   studioProvider,
 } from '@livepeer/react';
 import { Stream } from './Stream';
-import { VideoUpload } from './VideoUpload';
+import VideoUpload from './VideoUpload';
 import { MediaPlayer, BasicStreamPlayer } from './elements';
 import { LivepeerAPI } from '../../../scripts/back_door';
 import { livepeer_API_KEY } from '../../../contracts/ref';
@@ -43,7 +43,7 @@ function Livepeer({ APP }) {
         return (
           <Stream APP={APP} />
         )
-      case 'upload-video':
+      case 'upload-media':
         return (
           <VideoUpload APP={APP} />
         )

@@ -49,7 +49,7 @@ const WelcomeHome = ({ user, setCardState, enterDash }) => {
     <PROMPT_CARD variants={contentVariants} initial="hidden" animate="visible">
       <Title>{username ? getDynamicWelcomeMessage(username) : 'Welcome to NeptuneChain'}</Title>
       <Paragraph>
-        {username ? 'You are part of' : 'Join'} our mission to clean the planet's waters. Connect and trade in the market of the seas.
+        Collaborate with fellow farmers to champion regenerative practices and protect our waterways. Together, we can create a cleaner, healthier planet.
       </Paragraph>
       <ButtonContainer>
         {username ? (

@@ -29,7 +29,7 @@ const Card = styled.div`
     }
 `;
 
-const NFTImage = styled.img`
+export const NFTImage = styled.img`
     height: 100px;
     border-radius: 10px;
     object-fit: cover;
@@ -69,6 +69,8 @@ const BuyButton = styled.button`
     transition: background-color 0.3s, transform 0.2s;
     width: 100%;
     font-weight: 500;
+    display: flex;
+    justify-content: center;
 
     &:hover {
         background-color: #0056b3;
@@ -81,8 +83,10 @@ const NFTCard = ({ nft, navigate }) => (
         <NFTImage src={nft.image || placeholderIMG} alt={nft.name} />
         <NFTInfo>
             <Title>{nft.name} #{Number(nft.tokenId)}</Title>
-            <Seller>Seller: {formatLongString(nft.seller)}</Seller>
-            <Price>${nft.price}</Price>
+            {/* <Seller>Seller: {formatLongString(nft.seller)}</Seller> */}
+            <Seller>Seller: NeptuneChain*</Seller>
+            <Seller>Available: {Math.round(Math.random()*100)}</Seller>
+            <Price>${Math.round(nft.price*Math.random()*100)}</Price>
         </NFTInfo>
         <BuyButton onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</BuyButton>
     </Card>

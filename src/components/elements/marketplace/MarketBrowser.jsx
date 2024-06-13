@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { NFTCard } from './elements';
 import { useNavigate } from 'react-router-dom';
 
-const NFTGrid = styled.div`
+export const NFTGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-gap: 20px;

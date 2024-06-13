@@ -60,13 +60,13 @@ const Wallpaper = styled.div`
 
 const StyledLogo = styled(motion.img)`
 z-index: 1000;
-  width: 15vw;
+  width: 25vw;
   //max-width: 250px;
   margin-bottom: 1rem;
 
-  background: rgba(230, 236, 213, 1);
+  background: rgba(230, 236, 213, 0.7);
 backdrop-filter: blur(5px);
-padding: 1rem;
+padding: 0.2rem 1rem;
 border-radius: 5px;
   box-sizing: border-box;
   box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);

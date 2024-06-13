@@ -12,6 +12,9 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { NFT_API } from "../../../scripts/back_door";
 import { isNotZeroAddress } from "../../../scripts/utils";
+import {NFTGrid} from "./MarketBrowser";
+import {NFTImage} from "./elements/NFTCard";
+import placeholderIMG from '../../../assets/icon.png';
 
 // Neptune Color Palette
 const colors = {
@@ -43,7 +46,7 @@ const TabContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   margin-top: 20px;
   width: 80%;
-  height: 50vh;
+  height: 60vh;
   overflow: auto;
   transition: all 0.3s ease;
 
@@ -109,8 +112,8 @@ const Input = styled.input`
 
 const Button = styled.button`
   padding: 10px 15px;
-  background-color: ${colors.lightBlue};
-  color: ${colors.deepBlue};
+  background-color: ${colors.deepBlue};
+  color: ${colors.white};
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -126,16 +129,42 @@ const Button = styled.button`
 `;
 
 const NFT = styled(motion.div)`
-  max-width: 400px;
-  border: 1px solid var(--rawUmber);
-  border-radius: 10px;
-  padding: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 10px;
   margin: 10px;
-  text-align: center;
-  background-color: ${colors.deepBlue};
-  color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  background-color: ${colors.white};
+    border: none;
+    padding: 20px 30px;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000050;
+    cursor: pointer;
+    overflow: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        width: 100%
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+}
+
+p {
+          margin: 2px;
+
+          span {
+          color: ${colors.deepBlue};
+          font-weight: bold;
+          }
+        }
+        
+    
 `;
 
 const ButtonContainer = styled.div`
@@ -397,7 +426,7 @@ const SellerDashboard = ({ APP }) => {
           {isLoading ? (
             <Spinner />
           ) : userNFTs.length > 0 ? (
-            <>
+            <NFTGrid>
               {userNFTs.map((nft) => (
                 <NFT
                   initial={{ scale: 1 }}
@@ -405,8 +434,9 @@ const SellerDashboard = ({ APP }) => {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <p>
-                    Name: {nft?.contract?.name} #{nft?.tokenId}
+                    {nft?.contract?.name} #{nft?.tokenId}
                   </p>
+                  <NFTImage src={nft?.image?.pngUrl || placeholderIMG} alt={nft?.contract?.name} />
                   <Input
                     type="text"
                     value={price}
@@ -423,7 +453,7 @@ const SellerDashboard = ({ APP }) => {
                   </Button>
                 </NFT>
               ))}
-            </>
+            </NFTGrid>
           ) : (
             <p>No Owned Assets</p>
           )}
@@ -434,14 +464,18 @@ const SellerDashboard = ({ APP }) => {
           {isLoading ? (
             <Spinner />
           ) : userListedNFTs.length > 0 ? (
-            <>
+            <NFTGrid>
               {userListedNFTs.map((nft) => (
                 <NFT
                   initial={{ scale: 1 }}
                   whileHover={hoverAnimation}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <p>Listing #{nft.listingId}</p>
+                  <p>
+                    {nft?.name} #{nft?.tokenId}
+                  </p>
+                  <p><span>Listing #{nft.listingId}</span></p>
+                  <p>${nft.price}</p>
                   <ButtonContainer>
                     <Button
                       onClick={() =>
@@ -456,7 +490,7 @@ const SellerDashboard = ({ APP }) => {
                   </ButtonContainer>
                 </NFT>
               ))}
-            </>
+            </NFTGrid>
           ) : (
             <p>No Listed Assets</p>
           )}
@@ -467,7 +501,7 @@ const SellerDashboard = ({ APP }) => {
           {isLoading ? (
             <Spinner />
           ) : highestBids.length > 0 ? (
-            <>
+            <NFTGrid>
               {highestBids.map((nft) => (
                 <NFT
                   initial={{ scale: 1 }}
@@ -491,7 +525,7 @@ const SellerDashboard = ({ APP }) => {
                   </ButtonContainer>
                 </NFT>
               ))}
-            </>
+            </NFTGrid>
           ) : (
             <p>No Bids</p>
           )}

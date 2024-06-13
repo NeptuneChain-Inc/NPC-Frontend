@@ -32,7 +32,7 @@ const Sidebar = ({ APP }) => {
 
   const environmentRoutes = [
     {
-      route: '/features/upload-video',
+      route: '/features/upload-media',
       cta: 'Upload Media',
       icon: faLeaf
     },

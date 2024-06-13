@@ -44,20 +44,7 @@ const DesktopMenu = ({ APP }) => {
           onClick={handleNotificationsBar}
         />
       </IconContainer> */}
-
-      {/* Settings Icon */}
-      <IconContainer whileHover='hover' whileTap="tap">
-        <FontAwesomeIcon
-          icon={settingsMenuOpen ? faGear : faGears}
-          onClick={handleSettingsMenu}
-        />
-      </IconContainer>
-
-      {/* Logout Button */}
-      <LogOutButton whileHover='hover' whileTap="tap" onClick={handleLogOut}>
-        <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '8px' }} />
-        Logout
-      </LogOutButton>
+      
 
       {/* Profile DropMenu */}
       <ProfileDropMenu APP={APP} />
