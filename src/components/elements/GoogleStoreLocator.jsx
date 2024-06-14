@@ -161,7 +161,9 @@ function GoogleStoreLocator({ storesData }) {
     zipCode: store["Zip Code"],
   }));
 
-  const center = { lat: 37.926868, lng: -78.024902 };
+  //const center = { lat: 37.926868, lng: -78.024902 };
+
+  const center  = { lat: 27.83782401026334, lng: -81.62930826197768 };
 
   useEffect(() => {
     if (searchTerm.trim() === "") {

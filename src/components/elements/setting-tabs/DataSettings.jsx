@@ -19,6 +19,8 @@ const Button = styled(motion.div)`
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
   &:hover {
     background-color: #508a99;
   }

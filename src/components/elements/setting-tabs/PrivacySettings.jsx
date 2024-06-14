@@ -27,6 +27,7 @@ const Dropdown = styled.select`
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 `;
 
 const ToggleButton = styled(motion.div)`
@@ -35,6 +36,8 @@ const ToggleButton = styled(motion.div)`
   border-radius: 5px;
   background-color: ${({ isActive }) => (isActive ? "#63c3d1" : "#aaa")};
   color: #fff;
+  
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
   &:hover {
     opacity: 0.9;

@@ -17,11 +17,7 @@ const SettingsMenu = ({ APP }) => {
 
   const tabData = [
     { name: 'Profile Settings', icon: faUser, component: <ProfileSettingsTab APP={APP} /> },
-    { name: 'Uploads', icon: faUpload, component: <UploadsTab userId={user?.uid} /> },
-    { name: 'Personalization', icon: faPalette, component: <PersonalizationTab APP={APP} /> },
-    { name: 'Data Settings', icon: faDatabase, component: <DataSettingsTab APP={APP} /> },
-    { name: 'Privacy Settings', icon: faUserLock, component: <PrivacySettingsTab APP={APP} /> },
-    { name: 'Account Settings', icon: faUserGear, component: <AccountSettingsTab APP={APP} /> },
+    { name: 'Account Settings', icon: faUserGear, component: <><PrivacySettingsTab APP={APP} /><DataSettingsTab APP={APP} /><AccountSettingsTab APP={APP} /></> },
   ];
 
   const activeComponent = tabData.find((tab) => tab.name === settingsTab)?.component;
@@ -137,7 +133,8 @@ justify-content: center;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   height: 90%;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
   border-radius: 10px;
   overflow: hidden;
 
@@ -152,7 +149,8 @@ const TabList = styled.div`
   flex-direction: column;
   overflow-y: auto;
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  background-color: #134b5f;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     display: none;
@@ -161,7 +159,7 @@ const TabList = styled.div`
 
 
 const Tab = styled(motion.div)`
-  flex-grow: 1;
+  // flex-grow: 1;
   text-align: center;
   cursor: pointer;
   padding: 15px;
@@ -180,7 +178,7 @@ const Tab = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    flex: 1 0 auto;
+    // flex: 1 0 auto;
   }
 `;
 
@@ -207,14 +205,16 @@ const ExitIcon = styled(FontAwesomeIcon)`
   right: 15px;
   padding: 8px;
   font-size: 24px;
-  color: #fff;
-  background-color: #222;
+  color: #222;
+  // background-color: #222;
   border-radius: 50%;
   border: none;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
 
   &:hover {
-    background-color: #f00;
+  scale: 1.1;
+    color: #f00;
   }
 `;
 

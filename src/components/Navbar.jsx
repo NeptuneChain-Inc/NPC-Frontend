@@ -113,7 +113,7 @@ const Navbar = ({ APP }) => {
 
       <DesktopMenu APP={APP} />
 
-      <MobileMenu APP={APP} />
+      {/* <MobileMenu APP={APP} /> */}
     </NavbarContainer>
   );
 };

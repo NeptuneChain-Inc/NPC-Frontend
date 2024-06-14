@@ -47,6 +47,8 @@ const ActionButton = styled(motion.button)`
   cursor: pointer;
   background-color: ${({ danger }) => (danger ? "#e74c3c" : "#63c3d1")};
 
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
   ${({ active }) =>
     active &&
     `

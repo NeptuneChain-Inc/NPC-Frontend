@@ -73,9 +73,9 @@ const DesktopMenuContainer = styled.div`
   gap: 15px;
   padding-right: 20px;
 
-  @media (max-width: 767px) {
-    display: none;
-  }
+  // @media (max-width: 767px) {
+  //   display: none;
+  // }
 `;
 
 const IconContainer = styled(motion.div)`
