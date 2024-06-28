@@ -24,6 +24,11 @@ const Dash = ({ dashData, APP }) => {
   const [chartCardData, setChartCardData] = useState({});
 
   useEffect(() => {
+    console.log("chartCardData", chartCardData)
+  }, [chartCardData])
+  
+
+  useEffect(() => {
     const fetchData = async (card) => {
       switch (card.type) {
         case 'status': {
@@ -100,6 +105,7 @@ const Dash = ({ dashData, APP }) => {
           const { id, cardTitle, icon } = card.data || {};
           const dataDetails = dataCardData[id] || {};
           const iconObj = getIcon(icon);
+          console.log("Data & Table Data", card.data, {dataDetails, iconObj})
           return dataDetails.contents ? (
             <DataCard key={index} {...{ cardTitle, contents: dataDetails.contents, icon: iconObj }} isTable={card.type === 'data-table'} width={card?.width} />
           ) : (
@@ -110,8 +116,10 @@ const Dash = ({ dashData, APP }) => {
           const { id, cardTitle, icon, chartType } = card.data || {};
           const chartDetails = chartCardData[id] || {};
           const iconObj = getIcon(icon);
-          return chartDetails.data ? (
-            <ChartCard key={index} {...{ label: cardTitle, type: chartType, data: chartDetails.data, icon: iconObj }} />
+          console.log("Chart Data", card.data)
+          console.log("Chart Data {}", {chartDetails, iconObj})
+          return chartDetails ? (
+            <ChartCard key={index} {...{ label: cardTitle, type: chartType, data: chartDetails, icon: iconObj }} />
           ) : (
             <p key={index}>Loading...</p>
           );
@@ -158,8 +166,8 @@ const Dash = ({ dashData, APP }) => {
       {renderedSections}
       {dashData?.name === 'Your Media' && (
         <FloatingLinks>
-          <Link href={'/features/upload-video'} target='_blank'>
-            <FontAwesomeIcon icon={faVideo} /> Upload Video
+          <Link href={'/features/upload-media'} target='_blank'>
+            <FontAwesomeIcon icon={faVideo} /> Upload Media
           </Link>
           <Link href={'/features/stream'} target='_blank'>
             <FontAwesomeIcon icon={faStream} /> Start Stream
@@ -195,7 +203,7 @@ const DashSection = styled(motion.div)`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 2rem;
   align-items: center;
   padding: 2.5rem;
   justify-content: ${({ alignment }) => alignment || 'flex-start'};

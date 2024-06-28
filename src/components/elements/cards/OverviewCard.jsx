@@ -1,11 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestion } from '@fortawesome/free-solid-svg-icons';
-import { motion } from 'framer-motion';
+import React, { useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
+import { getIcon } from "../../lib/icons";
+import { logDev } from "../../../scripts/helpers";
 
-// Framer Motion Variants for Animation
 const cardVariants = {
   hidden: {
     opacity: 0,
@@ -20,21 +19,33 @@ const cardVariants = {
   },
 };
 
-const OverviewCard = ({ cardTitle, metricValue, metricUnit, icon, width }) => {
+const OverviewCard = ({ data }) => {
+  if (!data) {
+    return;
+  }
+
+  const { title, value, unit, icon } = data || {};
+  const iconDef = getIcon(icon);
+
+  useEffect(() => {
+    if (data) {
+      logDev("OverviewCard Data", { data });
+    }
+  }, [data]);
+
   return (
     <MotionOverviewCard
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      width={width}
     >
-      <CardTitle>{cardTitle}</CardTitle>
+      <Title>{title}</Title>
       <CardContentContainer>
         <MetricContainer>
-          <MetricValue>{metricValue}</MetricValue>
-          <MetricUnit>{metricUnit}</MetricUnit>
+          <Value>{value}</Value>
+          <Unit>{unit}</Unit>
         </MetricContainer>
-        <Icon icon={icon}/>
+        <Icon icon={iconDef} />
       </CardContentContainer>
     </MotionOverviewCard>
   );
@@ -51,7 +62,6 @@ const fadeIn = keyframes`
 
 const MotionOverviewCard = styled(motion.div)`
   flex: 0 0 auto;
-  width: ${({width}) => width ? width : '30%'};
   height: auto;
   padding: 1.5rem;
   margin: auto;
@@ -67,7 +77,6 @@ const MotionOverviewCard = styled(motion.div)`
   transition: all 0.3s ease;
   cursor: pointer;
 
-
   &:hover {
     box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.1);
     animation: ${fadeIn} 0.3s ease forwards;
@@ -79,18 +88,15 @@ const MotionOverviewCard = styled(motion.div)`
   }
 `;
 
-const CardTitle = styled.span`
+const Title = styled.span`
   margin: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
   text-align: left;
-
 `;
 
 const CardContentContainer = styled.div`
   display: flex;
-//   padding: 0.5rem;
-//   margin-bottom: 1rem;
   align-items: center;
   justify-content: space-between;
 `;
@@ -102,14 +108,14 @@ const MetricContainer = styled.div`
   align-items: flex-start;
 `;
 
-const MetricValue = styled.span`
+const Value = styled.span`
   font-size: 3rem;
   font-weight: 700;
   line-height: 1;
   transition: all 0.3s ease;
 `;
 
-const MetricUnit = styled.span`
+const Unit = styled.span`
   font-size: 1.2rem;
   font-weight: 500;
   line-height: 1;
@@ -120,19 +126,5 @@ const Icon = styled(FontAwesomeIcon)`
   color: #134b5f;
   font-size: 3rem;
 `;
-
-OverviewCard.defaultProps = {
-  metricUnit: 'Units',
-  cardTitle: 'Card Title',
-  metricValue: '0',
-  icon: faQuestion,
-};
-
-OverviewCard.propTypes = {
-  metricUnit: PropTypes.string,
-  cardTitle: PropTypes.string,
-  metricValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  icon: PropTypes.object,
-};
 
 export default OverviewCard;

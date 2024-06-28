@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import { motion } from "framer-motion";
 import {
   Chart,
   BarController,
@@ -15,41 +15,57 @@ import {
   PointElement,
   DoughnutController,
   ArcElement,
-  Filler
-} from 'chart.js';
-import { CardContainer } from '../../lib/styled';
-import 'font-awesome/css/font-awesome.min.css';
+  Filler,
+} from "chart.js";
+import { CardContainer } from "../../lib/styled";
+import "font-awesome/css/font-awesome.min.css";
+import { fetchDeviceData, getRandomColor } from "../../dash.utils";
+import { logDev } from "../../../scripts/helpers";
 
-const defaultModules = { BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }; //Bar
+const defaultModules = {
+  BarController,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+}; //Bar
 const lineModules = { LineController, LineElement, PointElement };
 const doughnutModules = { DoughnutController, ArcElement };
 const interactionModules = { Filler };
 
 const registerChartModules = (...moduleSets) => {
-  const allModules = Object.values(moduleSets).flat().reduce((acc, moduleSet) => [...acc, ...Object.values(moduleSet)], []);
+  const allModules = Object.values(moduleSets)
+    .flat()
+    .reduce((acc, moduleSet) => [...acc, ...Object.values(moduleSet)], []);
   Chart.register(...allModules);
 };
 
-registerChartModules(defaultModules, lineModules, doughnutModules, interactionModules);
+registerChartModules(
+  defaultModules,
+  lineModules,
+  doughnutModules,
+  interactionModules
+);
 
-const transformDataToDatasets = (dataArray, backgroundColor) => {
-  return dataArray.map(dataset => {
-    const label = dataset?.Timestamp || ''
+const transformDataToDatasets = (dataArray) => {
+  return dataArray.map((dataset) => {
+    const label = dataset?.Timestamp || "*";
     const sanitizedData = { ...dataset };
-    delete sanitizedData?.Timestamp
-    console.log(sanitizedData);
+    delete sanitizedData?.Timestamp;
     return {
       label,
       data: Object.values(sanitizedData),
-      backgroundColor,
+      backgroundColor: getRandomColor(),
     };
   });
 };
 
 const transformDataToLabels = (dataArray) => {
   const labels = [];
-  Object.keys(dataArray || [])?.forEach(label => {
-    if (label !== 'Timestamp') {
+  Object.keys(dataArray || [])?.forEach((label) => {
+    if (label !== "Timestamp") {
       labels.push(label);
     }
   });
@@ -57,12 +73,12 @@ const transformDataToLabels = (dataArray) => {
 };
 
 const renderTooltip = (tooltipModel) => {
-  let tooltipEl = document.getElementById('chartjs-tooltip');
+  let tooltipEl = document.getElementById("chartjs-tooltip");
 
   if (!tooltipEl) {
-    tooltipEl = document.createElement('div');
-    tooltipEl.id = 'chartjs-tooltip';
-    tooltipEl.innerHTML = '<table></table>';
+    tooltipEl = document.createElement("div");
+    tooltipEl.id = "chartjs-tooltip";
+    tooltipEl.innerHTML = "<table></table>";
     document.body.appendChild(tooltipEl);
   }
 
@@ -71,68 +87,73 @@ const renderTooltip = (tooltipModel) => {
     return;
   }
 
-  tooltipEl.classList.remove('above', 'below', 'no-transform');
+  tooltipEl.classList.remove("above", "below", "no-transform");
   if (tooltipModel.yAlign) {
     tooltipEl.classList.add(tooltipModel.yAlign);
   } else {
-    tooltipEl.classList.add('no-transform');
+    tooltipEl.classList.add("no-transform");
   }
 
   if (tooltipModel.body) {
     const titleLines = tooltipModel.title || [];
-    const bodyLines = tooltipModel.body.map(item => item.lines);
+    const bodyLines = tooltipModel.body.map((item) => item.lines);
 
-    let innerHtml = '<thead>';
+    let innerHtml = "<thead>";
 
     titleLines.forEach((title) => {
-      innerHtml += '<tr><th>' + title + '</th></tr>';
+      innerHtml += "<tr><th>" + title + "</th></tr>";
     });
-    innerHtml += '</thead><tbody>';
+    innerHtml += "</thead><tbody>";
 
     bodyLines.forEach((body, i) => {
       const colors = tooltipModel.labelColors[i];
-      let style = 'background:' + colors.backgroundColor;
-      style += '; border-color:' + colors.borderColor;
-      style += '; border-width: 2px';
+      let style = "background:" + colors.backgroundColor;
+      style += "; border-color:" + colors.borderColor;
+      style += "; border-width: 2px";
       const span = '<span style="' + style + '"></span>';
-      innerHtml += '<tr><td>' + span + body + '</td></tr>';
+      innerHtml += "<tr><td>" + span + body + "</td></tr>";
     });
-    innerHtml += '</tbody>';
+    innerHtml += "</tbody>";
 
-    const tableRoot = tooltipEl.querySelector('table');
+    const tableRoot = tooltipEl.querySelector("table");
     tableRoot.innerHTML = innerHtml;
   }
 
   const position = this._chart.canvas.getBoundingClientRect();
 
   tooltipEl.style.opacity = 1;
-  tooltipEl.style.position = 'absolute';
-  tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-  tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+  tooltipEl.style.position = "absolute";
+  tooltipEl.style.left =
+    position.left + window.pageXOffset + tooltipModel.caretX + "px";
+  tooltipEl.style.top =
+    position.top + window.pageYOffset + tooltipModel.caretY + "px";
   tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-  tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+  tooltipEl.style.fontSize = tooltipModel.bodyFontSize + "px";
   tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-  tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+  tooltipEl.style.padding =
+    tooltipModel.padding + "px " + tooltipModel.padding + "px";
 };
 
 const ChartCardComponent = ({
-  label = 'Chart Card',
-  type = 'doughnut',
-  data,
+  deviceID,
+  type = "doughnut",
   options = {},
-  backgroundColor = ['#2E8BC0', '#B1D4E0', '#496F5E', '#1F2E2E', '#16262E']
+  backgroundColor = ["#2E8BC0", "#B1D4E0", "#496F5E", "#1F2E2E", "#16262E"],
 }) => {
+  if (!(deviceID > 0)) {
+    return;
+  }
+
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const chartRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 300, height: 0 });
+  const [data, setData] = useState(null);
+  const [label, setLabel] = useState(null);
   const [datasets, setDatasets] = useState([]);
   const [labels, setLabels] = useState([]);
 
-  useEffect(() => {
-    console.log("Chart Component Data", { data, datasets, labels })
-  }, [data, datasets, labels])
-
+  const [deviceData, setDeviceData] = useState(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -142,28 +163,45 @@ const ChartCardComponent = ({
   }, [containerRef]);
 
   useEffect(() => {
-    if (Array.isArray(data)) {
-      setDatasets(transformDataToDatasets(data, backgroundColor))
-      const labels = transformDataToLabels(data[0]);
-      console.log(labels);
-      setLabels(labels);
-
-
-    } else if (typeof data === 'object' && !Array.isArray(data)) {
-      setDatasets([
-        {
-          label,
-          data: Object.values(data),
-          backgroundColor,
-        },
-      ])
-      setLabels(Object.keys(data));
+    if (deviceID) {
+      logDev("ChartCard: deviceID", deviceID);
+      fetchDeviceData(deviceID, setDeviceData);
     }
-  }, [data])
+  }, [deviceID]);
+
+  useEffect(() => {
+    const { label, records } = deviceData || {};
+    if (records) {
+      logDev(`ChartCard #${deviceID} device data`, { deviceData });
+
+      setLabel(label);
+      setData(Object.values(records));
+    }
+  }, [deviceData]);
+
+  useEffect(() => {
+    if (data) {
+      logDev(`Chart #${deviceID} Data`, { data });
+
+      setDatasets(transformDataToDatasets(data));
+      setLabels(transformDataToLabels(data));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (labels.length > 0) {
+      logDev(`Chart #${deviceID} Labels`, { labels });
+    }
+  }, [labels]);
+
+  useEffect(() => {
+    if (datasets.length > 0) {
+      logDev(`Chart #${deviceID} Datasets`, { datasets });
+    }
+  }, [datasets]);
 
   useEffect(() => {
     if (!data) {
-      console.error('Data is missing or invalid.');
       return;
     }
 
@@ -171,7 +209,7 @@ const ChartCardComponent = ({
       chartRef.current.destroy();
     }
 
-    const ctx = canvasRef.current.getContext('2d');
+    const ctx = canvasRef.current.getContext("2d");
     const devicePixelRatio = window.devicePixelRatio;
 
     canvasRef.current.width = dimensions.width * devicePixelRatio;
@@ -194,21 +232,25 @@ const ChartCardComponent = ({
         plugins: {
           tooltip: {
             enabled: true,
-            custom: renderTooltip
+            custom: renderTooltip,
           },
           legend: {
             display: true,
-            position: 'top',
+            position: "top",
           },
         },
         ...options,
-      }
+      },
     });
 
     return () => {
       chartRef.current?.destroy();
     };
   }, [data, label, type, options, backgroundColor, dimensions]);
+
+  if (!data) {
+    return;
+  }
 
   return (
     <SCardContainer
@@ -230,16 +272,16 @@ const ChartCardComponent = ({
 };
 
 const SCardContainer = styled(CardContainer)`
-justify-content: flex-start;
-align-items: center;
-// min-height: 400px;
-// height: auto;
-padding: 5px;
-// min-width: 20vw;
-// max-width: 60vw;
-padding: 1rem 2rem;
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-box-sizing: border-box;
+  justify-content: flex-start;
+  align-items: center;
+  // min-height: 400px;
+  // height: auto;
+  padding: 5px;
+  // min-width: 20vw;
+  // max-width: 60vw;
+  padding: 1rem 2rem;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`
@@ -256,7 +298,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   i {
     margin-right: 10px;
     color: #007bff;

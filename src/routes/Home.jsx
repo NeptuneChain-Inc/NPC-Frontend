@@ -5,14 +5,15 @@ import RenderDash from '../dashboards/RenderDash'
 const Home = ({ APP }) => {
   const navigate = useNavigate();
   const { dashID } = useParams();
-  const { user, searchResults } = APP ? APP.STATES : {};
-  console.log('USER',user);
+
+  const { user } = APP?.STATES || {};
 
   if (user === null) {
-    navigate('/')
+    navigate('/');
+    return;
   }
 
-  return <RenderDash route={dashID} uid={user?.uid} userDashes={user?.dashData} searchResults={searchResults} APP={APP}/>
+  return <RenderDash APP={APP} route={dashID} />
 }
 
 export default Home;

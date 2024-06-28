@@ -1,9 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faQuestion } from '@fortawesome/free-solid-svg-icons';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
+import { fetchDeviceData } from "../../dash.utils";
+import { logDev } from "../../../scripts/helpers";
 
 const cardVariants = {
   hidden: {
@@ -19,31 +20,51 @@ const cardVariants = {
   },
 };
 
-const StatusCard = ({ title, status, icon = faQuestion, width }) => {
-    console.warn("StatusCard Props", { title, status, icon, width })
+const StatusCard = ({ deviceID }) => {
+  if (!(deviceID > 0)) {
+    return;
+  }
+
+  const [deviceData, setDeviceData] = useState(null);
+
+  useEffect(() => {
+    fetchDeviceData(deviceID, setDeviceData);
+  }, [deviceID]);
+
+  useEffect(() => {
+    if (deviceData) {
+      logDev(`StatusCard #${deviceID} Data`, { deviceData });
+    }
+  }, [deviceData]);
+
+  if (!deviceData) {
+    return <p>Data #{deviceID} Unavailable...</p>;
+  }
+
+  const { name, status } = deviceData || {};
 
   return (
     <MotionStatusCard
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      width={width}
     >
-      <CardTitle>{title}</CardTitle>
+      <CardTitle>{name}</CardTitle>
       <CardContentContainer>
-        <Icon icon={icon} />
         <StatusContainer>
-          <StatusIcon icon={faCircle} color={status === 'Online' ? 'green' : 'red'} />
+          <StatusIcon
+            icon={faCircle}
+            color={status === "active" ? "green" : "red"}
+          />
           <StatusText>{status}</StatusText>
         </StatusContainer>
       </CardContentContainer>
     </MotionStatusCard>
-  )
+  );
 };
 
 const MotionStatusCard = styled(motion.div)`
   flex: 0 0 auto;
-  width: ${({ width }) => (width ? width : 'auto')};
   min-width: 250px;
   height: auto;
   padding: 1rem;
@@ -86,13 +107,5 @@ const StatusText = styled.span`
   font-size: 1rem;
   font-weight: 500;
 `;
-
-
-StatusCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  icon: PropTypes.object,
-  width: PropTypes.string,
-};
 
 export default StatusCard;

@@ -1,60 +1,39 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Dash } from '../components';
-//import farmerDashData from './default/farmerDashData.json';
-// import { mediaDash } from './dashData';
+import React, { useEffect, useState } from "react";
+import { Dash } from "../components";
+import { dashDataInit } from "../components/dash.data";
 
-/**
- * Renders the appropriate dashboard based on various props.
- * 
- * @param {Object} props - The props for the component.
- * @param {string} props.route - The route to determine which data to display.
- * @param {string} props.uid - The User ID to fetch media data.
- * @param {Object} props.userDashes - The user-specific dashboards.
- * @param {Object} props.searchResults - The data to display if in search mode.
- *
- * @returns {JSX.Element} - Rendered dashboard.
- */
-const RenderDash = ({ route, uid, userDashes, searchResults, APP }) => {
-  // State to hold the data to be displayed on the dashboard
-  const [dashData, setDashData] = useState({});
+const RenderDash = ({ APP, route }) => {
+  const [userDashes, setUserDashes] = useState(null);
+  const [dashData, setDashData] = useState(null);
+  const { user, searchResults } = APP ? APP.STATES : {};
+  const { uid } = user || {};
 
-  //userDashes = farmerDashData;
+  useEffect(() => {
+    if (uid) {
+      init()
+    }
+  }, [uid]);
 
-  // || FOR DEBUGGING ||
-  // console.log({ route, uid, userDashes, dashData, searchResults });
-
-  // Function to load default data
-  const loadDefaultData = useCallback(() => setDashData(userDashes?.main), [userDashes]);
-
-  // Function to load media data
-  // const getMediaData = useCallback(async () => {
-  //   if (uid) {
-  //     const mediaData = await mediaDash(uid);
-  //     setDashData(mediaData);
-  //   } else {
-  //     loadDefaultData();
-  //   }
-  // }, [uid, loadDefaultData]);
-
-  // Effect to handle dashboard data loading
   useEffect(() => {
     if (route && !searchResults) {
       const userDash = userDashes?.[route];
-      if(userDash){
+      if (userDash) {
         setDashData(userDash);
-      } else {
-        loadDefaultData();
       }
     } else if (searchResults) {
       setDashData(searchResults);
-    } else {
-      loadDefaultData();
     }
-  }, [route, userDashes, searchResults, loadDefaultData]);
+  }, [route, userDashes, searchResults]);
 
-  return (
-    <Dash dashData={dashData} APP={APP} />
-  );
+  const init = async () => {
+    setUserDashes(await dashDataInit(uid));
+  }
+
+  if (!dashData) {
+    return <p>Dashboard Not Available</p>
+  }
+
+  return <Dash dashData={dashData} APP={APP} />;
 };
 
 export default RenderDash;

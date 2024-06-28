@@ -42,7 +42,6 @@ margin: 0;
 
 export const CardContainer = styled(motion.div)`
 flex: 0 0 auto;
-// width: ${({ width }) => width ? width : '10%'};
 width: 100%;
 height: 100%;
 min-height: 400px;

@@ -13,7 +13,7 @@ const getFirebaseConfig = async () =>
 const initAuth = async () =>
   await getFirebaseConfig().then((result) => {
     const { firebaseConfig } = result || {};
-    return getAuth(initializeApp(firebaseConfig))
+    return getAuth(initializeApp(firebaseConfig));
   });
 
 const firebaseAPI = {
@@ -192,7 +192,6 @@ const alchemy = new Alchemy(settings);
 
 /** * @returns wallet_nfts or error object */
 const getWalletNFTs = async (address) => {
-
   console.log("fetching NFTs for address:", address);
   console.log("...");
   // Print total NFT count returned in the response:
@@ -210,9 +209,9 @@ const getWalletNFTs = async (address) => {
     wallet_nfts.push(nft);
   }
   console.log("===");
-  console.log(wallet_nfts)
+  console.log(wallet_nfts);
   return wallet_nfts;
-}
+};
 // (
 //   await axios.post(`${configs.server_url}/moralis/get/wallet_nfts`, {
 //     address,
@@ -221,21 +220,18 @@ const getWalletNFTs = async (address) => {
 /** * @returns nft_metadata or error object */
 const getNFT_metadata = async (address, tokenId) => {
   // Fetch metadata for a particular NFT:
-  const response = await alchemy.nft.getNftMetadata(
-    address,
-    tokenId
-  );
+  const response = await alchemy.nft.getNftMetadata(address, tokenId);
 
   // Print some commonly used fields:
   const metadata = {
     name: response.contract.name,
     symbol: response.contract.symbol,
     type: response.tokenType,
-    tokenUri: response.tokenUri
-  }
+    tokenUri: response.tokenUri,
+  };
 
   return metadata;
-}
+};
 // (
 //   await axios.post(`${configs.server_url}/moralis/get/nft_metadata`, {
 //     address,
@@ -273,38 +269,68 @@ const StripeAPI = {
 };
 
 /**
- * 
+ *
  * @param {*} data object with device data including id { id, name, status, icon }
  * @returns run result
  */
- const addDevice = async (data) =>
+const addDevice = async (data) =>
   (await axios.post(`${configs.server_url}/device`, data))?.data;
 
- const editDevice = async (deviceId, update) =>
-  (await axios.post(`${configs.server_url}/device/edit`, {deviceId, update}))?.data;
+const editDevice = async (deviceId, update) =>
+  deviceId > 0
+    ? (
+        await axios.post(`${configs.server_url}/device/edit`, {
+          deviceId,
+          update,
+        })
+      )?.data
+    : null;
 
- const removeDevice = async (deviceId) =>
-  (await axios.post(`${configs.server_url}/device/remove`, {deviceId}))?.data;
+const removeDevice = async (deviceId) =>
+  deviceId > 0
+    ? (await axios.post(`${configs.server_url}/device/remove`, { deviceId }))
+        ?.data
+    : null;
 
- //Get all devices
+//Get all devices
+const getDevices = async () => (await axios.post(`${configs.server_url}/devices`,  {}))?.data?.devices;
 
- const getDeviceDetails = async (deviceId) =>
-  (await axios.post(`${configs.server_url}/device/details`, {deviceId}))?.data;
+// *NB: update endpont
+const getDeviceData = async (deviceId) =>
+  deviceId > 0
+    ? (await axios.post(`${configs.server_url}/device/details`, { deviceId }))
+        ?.data
+    : null;
 
- const emulateDevice = async (deviceId, interval) =>
-  (await axios.post(`${configs.server_url}/device/emulate`, {deviceId, interval}))?.data;
+const emulateDevice = async (deviceId, interval) =>
+  deviceId > 0
+    ? (
+        await axios.post(`${configs.server_url}/device/emulate`, {
+          deviceId,
+          interval,
+        })
+      )?.data
+    : null;
 
- const getDeviceData = async (deviceId) =>
-  (await axios.post(`${configs.server_url}/device/data`, {deviceId}))?.data;
-
- const DeviceAPI = {
+const DeviceAPI = {
+  devices: getDevices,
   add: addDevice,
   edit: editDevice,
   remove: removeDevice,
-  details: getDeviceDetails,
   emulate: emulateDevice,
-  data: getDeviceData
- }
+  data: getDeviceData,
+};
+
+//MetricAPI
+const getMetric = async (metric, uid) => "10";
+// String(
+//   (await axios.post(`${configs.server_url}/metrics`, { metric, uid }))
+//     ?.data || 10
+// );
+
+const MetricAPI = {
+  getMetric,
+};
 
 export {
   firebaseAPI,
@@ -315,5 +341,6 @@ export {
   MapsAPI,
   NFT_API,
   StripeAPI,
-  DeviceAPI
+  DeviceAPI,
+  MetricAPI,
 };

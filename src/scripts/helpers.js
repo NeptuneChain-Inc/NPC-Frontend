@@ -163,3 +163,5 @@ export const handleViewCertificate = (id) => {
     const URL = `${hostDomain}/certificate?id=${id.toNumber()}`;
     window.open(URL, "_blank");
   };
+
+  export const logDev = (title, vars = {}) => console.warn("@DEV: ",title,vars);

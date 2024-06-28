@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { CardContainer } from '../../lib/styled';
-import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import 'font-awesome/css/font-awesome.min.css'; // Import the font-awesome CSS
+import {logDev} from '../../../scripts/helpers';
 
 // Enhanced Card Header
 const CardHeader = styled.div`
@@ -69,7 +69,10 @@ const Icon = styled.i`
   margin-right: 8px;
 `;
 
-const TransactionHistoryCard = memo(({ title, transactions, styles }) => {
+const TransactionHistoryCard = memo(({data}) => {
+  const { title, transactions } = data || {};
+
+  logDev("TransactionHistoryCard Data:", data)
   // Calculate records for summary
       // const income = transactions
       //   .filter(tx => tx.type === 'Minted')
@@ -80,7 +83,7 @@ const TransactionHistoryCard = memo(({ title, transactions, styles }) => {
       // const balance = income - expenses;
 
   return (
-    <CardContainer style={{padding: 0, ...styles}}>
+    <CardContainer style={{width: '90vw'}}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {/* <Summary>
@@ -101,7 +104,7 @@ const TransactionHistoryCard = memo(({ title, transactions, styles }) => {
           </Row>
         </thead>
         <tbody>
-          {transactions.map((tx) => (
+          {transactions?.map((tx) => (
             <Row key={tx.id}>
               <Cell>{tx.id}</Cell>
               <Cell>
@@ -117,18 +120,5 @@ const TransactionHistoryCard = memo(({ title, transactions, styles }) => {
     </CardContainer>
   );
 });
-
-TransactionHistoryCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  transactions: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      type: PropTypes.string,
-      amount: PropTypes.string,
-      date: PropTypes.string,
-    })
-  ).isRequired,
-  styles: PropTypes.object,
-};
 
 export default TransactionHistoryCard;

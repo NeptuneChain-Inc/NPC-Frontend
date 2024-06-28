@@ -1,13 +1,16 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Player, useCreateAsset } from '@livepeer/react';
-import { useDropzone } from 'react-dropzone';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useCallback, useEffect } from "react";
+import { Player, useCreateAsset } from "@livepeer/react";
+import { useDropzone } from "react-dropzone";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
+import { colors, logoColors } from "../../../styles/colors";
+import { MediaAPI } from "../../../scripts/back_door";
+import { extractAndCleanUrls } from "../../../scripts/utils";
 
 const DropZoneContainer = styled(motion.div)`
   width: 80%;
   max-width: 500px;
-  height: ${({ isPreview }) => (isPreview ? '25px' : '200px')};
+  height: ${({ isPreview }) => (isPreview ? "25px" : "200px")};
   margin-bottom: 10px;
   border: 3px dashed #ccc;
   display: flex;
@@ -15,10 +18,14 @@ const DropZoneContainer = styled(motion.div)`
   align-items: center;
   cursor: pointer;
   border-radius: 8px;
-  font-size: ${({ isPreview }) => (isPreview ? '0.8' : '1')}rem;
+  font-size: ${({ isPreview }) => (isPreview ? "0.8" : "1")}rem;
   transition: all 0.5s ease-in-out;
+  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
   &:hover {
     border-color: #007bff;
+    background: linear-gradient(135deg, #e0e0e0, #cfcfcf);
   }
 
   @media (max-width: 768px) {
@@ -34,8 +41,9 @@ const UploadButton = styled(motion.button)`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
   font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   :disabled {
     background-color: grey;
@@ -44,25 +52,27 @@ const UploadButton = styled(motion.button)`
 
   &:hover:enabled {
     background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  &:active:enabled {
+    transform: scale(0.95);
   }
 `;
 
 const AssetContainer = styled.div`
+top:  10%;
   width: 100%;
-  height: 100%;
+  height: 100px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex=start;
+  justify-content: flex=start;
   text-align: center;
   font-size: 18px;
   padding: 2em;
   box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
+  border: 2px solid green;
 
   .video-link {
     margin: 10px;
@@ -71,11 +81,11 @@ const AssetContainer = styled.div`
     border-radius: 5px;
     text-decoration: none;
     color: white;
-    background: #134b5f;
-    transition: 0.3s ease-in-out;
+    background: ${colors.accentBlue};
+    transition: transform 0.3s ease-in-out;
 
     &:hover {
-      scale: 1.1;
+      transform: scale(1.1);
     }
   }
 
@@ -86,10 +96,10 @@ const AssetContainer = styled.div`
     border-radius: 5px;
     color: white;
     background: #134b5f;
-    transition: 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 
     &:hover {
-      scale: 1.1;
+      transform: scale(1.1);
     }
   }
 `;
@@ -111,6 +121,8 @@ const VideoInputField = styled.input`
 
   &:focus {
     border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
   }
 `;
 
@@ -124,7 +136,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(10px);
-  background: #0000001a;
+  background: rgba(0, 0, 0, 0.1);
   z-index: 999;
 `;
 
@@ -135,6 +147,7 @@ const Spinner = styled(motion.div)`
   border-radius: 50%;
   border-top: 4px solid #007bff;
   animation: spin 1s linear infinite;
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -177,28 +190,31 @@ const TabContainer = styled.div`
   box-sizing: border-box;
   margin-bottom: 20px;
   overflow-x: auto;
-
-  @media (max-width: 767px) {
-    justify-content: flex-start;
-  }
 `;
 
 const TabButton = styled.button`
   margin-right: 10px;
-  background-color: ${props => props.active ? '#2A93D5' : '#e1e1e1'};
+  background-color: ${(props) =>
+    props.active ? logoColors.accent : logoColors.secondary};
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+
   &:hover {
-    background-color: #007bff;
+    background-color: ${logoColors.primary};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;
 
 const ImagePreview = styled.div`
-  width: 100px;
-  height: 100px;
-  background-image: url(${props => props.src});
+  width: 100%;
+  height: 200px;
+  background-image: url(${(props) => props.src});
   background-size: cover;
   background-position: center;
   margin: 10px;
@@ -211,24 +227,47 @@ const TextInput = styled(VideoInputField)`
   margin-top: 20px;
 `;
 
+const renderPreview = (previewURL, fileType) => {
+  if (!previewURL) return null;
+
+  if (fileType === "video/mp4") {
+    return (
+      <div>
+        <h3>Video Preview:</h3>
+        <video controls width="600">
+          <source src={previewURL} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    );
+  } else if (fileType === "application/pdf") {
+    return (
+      <div>
+        <h3>PDF Preview:</h3>
+        <iframe
+          src={previewURL}
+          width="600"
+          height="800"
+          title="PDF Preview"
+        >
+          This browser does not support PDFs. Please download the PDF to view it.
+        </iframe>
+      </div>
+    );
+  } else {
+    return null;
+  }
+};
+
 const VideoUpload = ({ APP }) => {
-  const [activeTab, setActiveTab] = useState('video');
-  const [videos, setVideos] = useState(null);
-  const [landImages, setLandImages] = useState([]);
-  const [waterImages, setWaterImages] = useState([]);
-  const [activeFile, setActiveFile] = useState(null);
-  const [uploadName, setUploadName] = useState('untitled');
-  const [uploadDescription, setUploadDescription] = useState('');
-  const [previewURL, setPreviewURL] = useState(null);
+  const [activeTab, setActiveTab] = useState("video");
+  const [file, setFile] = useState(null);
+  const [uploadName, setUploadName] = useState("untitled");
+  const [uploadDescription, setUploadDescription] = useState("");
   const [isAppLoading, setIsAppLoading] = useState(false);
-  const [viewAssetData, setViewAssetData] = useState(false);
 
-  // Using refs to keep track of the previous state values
-  const prevVideos = useRef(videos);
-  const prevLandImages = useRef(landImages);
-  const prevWaterImages = useRef(waterImages);
-
-  const tabs = ['video', 'land', 'water'];
+  const tabs = ["video", "document"];
+  const { activeFile, previewURL } = file || {};
 
   useEffect(() => {
     return () => {
@@ -237,22 +276,6 @@ const VideoUpload = ({ APP }) => {
       }
     };
   }, [previewURL]);
-
-  useEffect(() => {
-    let _activeFile;
-
-    // Compare the previous and current values to determine the most recently changed state
-    if (prevVideos.current !== videos) _activeFile = videos?.[0];
-    else if (prevLandImages.current !== landImages) _activeFile = landImages?.[0];
-    else if (prevWaterImages.current !== waterImages) _activeFile = waterImages?.[0];
-
-    setActiveFile(_activeFile);
-
-    // Update the refs with the current state values for the next render cycle
-    prevVideos.current = videos;
-    prevLandImages.current = landImages;
-    prevWaterImages.current = waterImages;
-  }, [videos, landImages, waterImages]);
 
   const {
     mutate: createAsset,
@@ -263,72 +286,67 @@ const VideoUpload = ({ APP }) => {
   } = useCreateAsset(
     activeFile
       ? {
-        sources: [
-          {
-            name: activeFile.name,
-            file: activeFile,
-            storage: {
-              ipfs: true,
-              metadata: {
-                name: uploadName,
-                description: uploadDescription,
+          sources: [
+            {
+              name: activeFile.name,
+              file: activeFile,
+              storage: {
+                ipfs: true,
+                metadata: {
+                  name: uploadName,
+                  description: uploadDescription,
+                },
               },
             },
-          },
-        ],
-      }
-      : null,
+          ],
+        }
+      : null
   );
 
-  const onDrop = useCallback((acceptedFiles) => {
-    // Validate file types
-    const validFiles = acceptedFiles.filter(file => file.type === 'video/mp4' || file.type === 'application/pdf');
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const validFiles = acceptedFiles.filter(
+        (file) => file.type === "video/mp4" || file.type === "application/pdf"
+      );
 
-    if (validFiles.length === 0) {
-      alert('Invalid file type. Only MP4 videos and PDF files are allowed.');
-      return;
-    }
+      if (validFiles.length === 0) {
+        alert("No valid files. Only MP4 videos and PDF files are allowed.");
+        return;
+      }
 
-    setPreviewURL(URL.createObjectURL(validFiles[0]));
-
-    switch (activeTab) {
-      case 'video':
-        setVideos(validFiles);
-        break;
-      case 'land':
-        setLandImages(validFiles);
-        break;
-      case 'water':
-        setWaterImages(validFiles);
-        break;
-      default:
-        break;
-    }
-  }, [activeTab]);
+      setFile({
+        activeFile: validFiles[0],
+        previewURL: URL.createObjectURL(validFiles[0])
+      });
+    },
+    [activeTab]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
-    accept: {
-      'video/mp4': ['.mp4'],
-      'application/pdf': ['.pdf'],
-    },
+    accept:
+      activeTab === "video"
+        ? {
+            "video/mp4": [".mp4"],
+          }
+        : {
+            "application/pdf": [".pdf"],
+          },
   });
 
   const handleUpload = async () => {
     setIsAppLoading(true);
 
     if (!activeFile) {
-      alert('No file selected for upload.');
-      setIsAppLoading(false);
-      return;
-    }
-
-    try {
-      await createAsset?.();
-    } catch (error) {
-      console.error('Error uploading the asset:', error);
-      alert('Error uploading the asset. Please try again.');
+      alert("No file selected for upload.");
+    } else {
+      try {
+        createAsset?.();
+      } catch (error) {
+        console.error("Error uploading the asset:", error);
+        alert("Error uploading the asset. Please try again.");
+      }
     }
 
     setIsAppLoading(false);
@@ -336,13 +354,9 @@ const VideoUpload = ({ APP }) => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    setActiveFile(null);
-    setPreviewURL(null);
-  };
-
-  const handleViewAssetData = async () => {
-    const res = await MediaAPI.get_all_media();
-    setViewAssetData(res.data);
+    if (file) {
+      setFile(null);
+    }
   };
 
   return (
@@ -370,31 +384,33 @@ const VideoUpload = ({ APP }) => {
         ))}
       </TabContainer>
 
-      <DropZoneContainer {...getRootProps()} isPreview={previewURL}>
-        <input {...getInputProps()} />
-        {previewURL ? (
-          activeTab === 'video' ? (
-            <PreviewPlayer
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Player title={uploadName} playbackId={asset?.[0]?.playbackId} />
-            </PreviewPlayer>
-          ) : (
-            <ImagePreview src={previewURL} />
-          )
+      {previewURL?.length > 0 ? (
+        activeTab === "video" && asset?.[0]?.playbackId ? (
+          <PreviewPlayer
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Player title={uploadName} playbackId={asset[0].playbackId} />
+          </PreviewPlayer>
         ) : (
+          <>
+          {renderPreview(previewURL, activeFile.type)}
+          </>
+        )
+      ) : (
+        <DropZoneContainer {...getRootProps()} isPreview={previewURL}>
+          <input {...getInputProps()} />
           <p>Drag & drop a {activeTab} file here, or click to select one</p>
-        )}
-      </DropZoneContainer>
+        </DropZoneContainer>
+      )}
 
       <AnimatePresence>
         {activeFile && (
           <VideoInputContainer
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.5 }}
           >
@@ -426,7 +442,7 @@ const VideoUpload = ({ APP }) => {
         <AnimatePresence>
           <AssetDataContainer
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.5 }}
           >
@@ -449,8 +465,6 @@ const VideoUpload = ({ APP }) => {
           </AssetDataContainer>
         </AnimatePresence>
       )}
-
-      <Tooltip id="tooltip" />
     </AssetContainer>
   );
 };
