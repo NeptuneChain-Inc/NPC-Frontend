@@ -164,4 +164,14 @@ export const handleViewCertificate = (id) => {
     window.open(URL, "_blank");
   };
 
+  /**
+ * Capitalizes the first letter of a string.
+ * @param {string} str - The input string.
+ * @returns {string} The string with the first letter capitalized.
+ */
+export function capitalizeFirstLetter(str) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
   export const logDev = (title, vars = {}) => console.warn("@DEV: ",title,vars);

@@ -6,7 +6,7 @@ import { getMetric } from "./dash.utils";
 
 const devices = await DeviceAPI.devices();
 
-const metrics = ["credit_balance", "credit_price", "earnings", "tx_pending"];
+const metrics = ["credit_balance", "credit_price", "equity", "tx_pending"];
 
 
 
@@ -26,10 +26,9 @@ const dashDataInit = async (uid) => {
         })),
       },
       {
-        cards: devices.map((id) => ({
+        cards: [{
           type: "device_data",
-          data: {id},
-        })),
+        }],
       },
     ],
   },

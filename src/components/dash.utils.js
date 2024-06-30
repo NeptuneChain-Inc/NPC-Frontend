@@ -20,9 +20,9 @@ export const getMetric = async (metric, uid) => {
           icon: "money-bill-1",
         };
 
-      case "earnings":
+      case "equity":
         return {
-          title: "Total Earnings",
+          title: "Total Equity",
           value: `$${await MetricAPI.getMetric(metric, uid)}`,
           unit: "USD",
           icon: "sack-dollar",
@@ -54,6 +54,8 @@ export const fetchDeviceData = async (id, setDeviceData) => {
     const deviceData = await DeviceAPI.data(id);
     if (deviceData) {
       setDeviceData(deviceData);
+    } else {
+      alert(`Device #${id} Data Unavailable`)
     }
   } catch (error) {
     handleError(error.message, error);

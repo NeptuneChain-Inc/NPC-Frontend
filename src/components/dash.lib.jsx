@@ -7,10 +7,14 @@ import {
 } from "./elements/cards";
 import { motion } from "framer-motion";
 
-const Card = ({ card }) => {
+export const renderCard = (card, refStates = {}) => {
   logDev("Rendering Card", { card });
   const { type, data } = card || {};
   const { id } = data || {};
+
+  const { refFocus, setRefFocus } = refStates || {};
+
+  const { deviceID } = refFocus || {};
 
   switch (type) {
     case "overview": {
@@ -20,17 +24,19 @@ const Card = ({ card }) => {
     }
     case "device_details": {
       if (id) {
-        return <StatusCard deviceID={id} />;
+        return <StatusCard {...{ deviceID: id, setRefFocus}}/>;
       }
     }
     case "device_data": {
-      if (id) {
-        return <ChartCard deviceID={id} />;
+      if (deviceID) {
+        return <ChartCard {...{ deviceID }} />;
+      } else {
+        return <p>No Device Selected</p>
       }
     }
     case "tx-history": {
       if (data) {
-        return <TransactionHistoryCard {...{data}} />;
+        return <TransactionHistoryCard {...{ data }} />;
       }
     }
     default:
@@ -39,9 +45,3 @@ const Card = ({ card }) => {
 
   return <p>Data Not Available</p>;
 };
-
-export const renderCard = (card, index) => (
-  <motion.div key={index}>
-    <Card {...{ card }} />
-  </motion.div>
-);

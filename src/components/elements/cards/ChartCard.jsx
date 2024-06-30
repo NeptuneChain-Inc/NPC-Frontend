@@ -20,7 +20,8 @@ import {
 import { CardContainer } from "../../lib/styled";
 import "font-awesome/css/font-awesome.min.css";
 import { fetchDeviceData, getRandomColor } from "../../dash.utils";
-import { logDev } from "../../../scripts/helpers";
+import { capitalizeFirstLetter, logDev } from "../../../scripts/helpers";
+import {logoColors} from "../../../styles/colors";
 
 const defaultModules = {
   BarController,
@@ -49,7 +50,15 @@ registerChartModules(
   interactionModules
 );
 
-const transformDataToDatasets = (dataArray) => {
+const transformDataToDatasets = (dataArray = []) => {
+  const labels = [];
+  dataArray.forEach((data) => {
+    Object.keys(data)?.forEach((label) => {
+      if (label !== "Timestamp") {
+        labels.push(label);
+      }
+    });
+  }) 
   return dataArray.map((dataset) => {
     const label = dataset?.Timestamp || "*";
     const sanitizedData = { ...dataset };
@@ -64,11 +73,13 @@ const transformDataToDatasets = (dataArray) => {
 
 const transformDataToLabels = (dataArray) => {
   const labels = [];
-  Object.keys(dataArray || [])?.forEach((label) => {
-    if (label !== "Timestamp") {
-      labels.push(label);
-    }
-  });
+  dataArray.forEach((data) => {
+    Object.keys(data)?.forEach((label) => {
+      if (label !== "Timestamp") {
+        labels.push(label);
+      }
+    });
+  }) 
   return labels;
 };
 
@@ -136,7 +147,6 @@ const renderTooltip = (tooltipModel) => {
 
 const ChartCardComponent = ({
   deviceID,
-  type = "doughnut",
   options = {},
   backgroundColor = ["#2E8BC0", "#B1D4E0", "#496F5E", "#1F2E2E", "#16262E"],
 }) => {
@@ -148,12 +158,15 @@ const ChartCardComponent = ({
   const containerRef = useRef(null);
   const chartRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 300, height: 0 });
+  const [type, setType] = useState("bar");
   const [data, setData] = useState(null);
   const [label, setLabel] = useState(null);
   const [datasets, setDatasets] = useState([]);
   const [labels, setLabels] = useState([]);
 
   const [deviceData, setDeviceData] = useState(null);
+
+  const chartTypes = ["line","bar","doughnut"];
 
   useEffect(() => {
     if (containerRef.current) {
@@ -170,13 +183,15 @@ const ChartCardComponent = ({
   }, [deviceID]);
 
   useEffect(() => {
-    const { label, records } = deviceData || {};
+    const { name, records } = deviceData || {};
     if (records) {
       logDev(`ChartCard #${deviceID} device data`, { deviceData });
 
-      setLabel(label);
+      setLabel(name);
       setData(Object.values(records));
-    }
+    } else if(data){
+        alert(`Device #${deviceID} Data Unavailable`)
+      }
   }, [deviceData]);
 
   useEffect(() => {
@@ -239,6 +254,35 @@ const ChartCardComponent = ({
             position: "top",
           },
         },
+        ...{
+          layout: {padding: {right:10}},
+          maintainAspectRatio: false,
+          legend: {
+            display: false
+          },
+          scales: {
+            display:false,
+            xAxes: [{
+              gridLines: {
+                display: false,
+                drawBorder: false
+              },
+              ticks: {
+                display: false
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                display: false,
+                beginAtZero: false
+              },
+              gridLines: {
+                display: false,
+                drawBorder: false
+              }
+            }]
+          }
+        },
         ...options,
       },
     });
@@ -257,12 +301,15 @@ const ChartCardComponent = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
     >
       <Header>
+        <div>
         <i className="fa fa-bar-chart" aria-hidden="true"></i>
         {label}
+        </div>
+       <ChartOptions>
+        {chartTypes.map((type, index) => <button key={index} onClick={() => setType(type)}>{capitalizeFirstLetter(type)}</button>)}
+       </ChartOptions>
       </Header>
       <CanvasWrapper>
         <Canvas ref={canvasRef}></Canvas>
@@ -271,17 +318,20 @@ const ChartCardComponent = ({
   );
 };
 
-const SCardContainer = styled(CardContainer)`
+const SCardContainer = styled(motion.div)`
   justify-content: flex-start;
   align-items: center;
   // min-height: 400px;
-  // height: auto;
   padding: 5px;
-  // min-width: 20vw;
-  // max-width: 60vw;
+width: 100%;
   padding: 1rem 2rem;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   box-sizing: border-box;
+  cursor: pointer;
+
+  &:hover{
+  transform: scale(1);
+  }
 `;
 
 const Header = styled.div`
@@ -293,11 +343,17 @@ const Header = styled.div`
   background-color: #f1f1f1;
   border-bottom: 1px solid #ddd;
 
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
   color: #333;
   font-size: 1.3rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  border-box: box-sizing;
+
+  margin-bottom: 1.5rem;
 
   i {
     margin-right: 10px;
@@ -305,19 +361,33 @@ const Header = styled.div`
   }
 `;
 
+const ChartOptions = styled(motion.div)`
+
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+
+  button {
+    font-size: 0.8rem;
+    
+    &:hover{
+    background: ${logoColors.primary};
+    }
+  }
+`;
 const CanvasWrapper = styled(motion.div)`
   flex-grow: 1;
   display: flex;
   width: 100%;
+  height: 500px;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+
 `;
 
 const Canvas = styled.canvas`
-  width: 90%;
-  height: 90%;
-  max-width: 100%;
+  
+  
 `;
 
 export default React.memo(ChartCardComponent);

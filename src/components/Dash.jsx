@@ -1,14 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import {renderCard} from "./dash.lib";
 
 const Dash = ({ APP, dashData }) => {
-
+  const [refFocus, setRefFocus] = useState(null);
   const { sections } = dashData || {};
 
   if(!sections){
     return <p>Invalid Dashboard</p>;
+  }
+
+  const refStates = {
+    refFocus,
+    setRefFocus
   }
 
   return (
@@ -19,7 +24,7 @@ const Dash = ({ APP, dashData }) => {
     >
       {sections?.map((section, index) => (
         <DashSection key={index} alignment="center">
-          {section.cards?.map((card, index) => renderCard(card, index))}
+          {section.cards?.map((card) => renderCard(card, refStates))}
         </DashSection>
       ))}
 
