@@ -7,10 +7,11 @@ import {
   studioProvider,
 } from '@livepeer/react';
 import { Stream } from './Stream';
-import VideoUpload from './VideoUpload';
+import VideoUpload from './MediaUpload';
 import { MediaPlayer, BasicStreamPlayer } from './elements';
 import { LivepeerAPI } from '../../../scripts/back_door';
 import { livepeer_API_KEY } from '../../../contracts/ref';
+import MediaGallery from './elements/MediaGallery';
 
 function Livepeer({ APP }) {
   const { serviceID, playbackID, liveID } = useParams();
@@ -45,7 +46,8 @@ function Livepeer({ APP }) {
         )
       case 'upload-media':
         return (
-          <VideoUpload APP={APP} />
+          <MediaGallery />
+          // <VideoUpload APP={APP} />
         )
       default:
         return (

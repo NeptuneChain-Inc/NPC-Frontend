@@ -29,6 +29,8 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
+
+  overflow-x: auto;
 `;
 
 const Header = styled.th`
@@ -44,11 +46,15 @@ const Row = styled(motion.tr)`
     background-color: #f9f9f9;
   }
 
+  
+
   &:hover {
     background-color: #e6f7ff;
     transform: scale(1.02);
     transition: transform 0.3s;
   }
+
+  width: 100%;
 `;
 
 const Cell = styled.td`
@@ -62,6 +68,11 @@ const Cell = styled.td`
 
   &.expense {
     color: red;
+  }
+
+  @media (max-width: 768px) {
+  padding: 0px;
+  text-align: center;
   }
 `;
 
@@ -83,7 +94,7 @@ const TransactionHistoryCard = memo(({data}) => {
       // const balance = income - expenses;
 
   return (
-    <CardContainer style={{width: '90vw'}}>
+    <CardContainer>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {/* <Summary>
