@@ -322,6 +322,9 @@ const DeviceAPI = {
 };
 
 //MetricAPI
+
+const allMetrics = ["credit_balance", "credit_price", "equity", "tx_pending"];
+
 const getMetric = async (metric, uid) => "10";
 // String(
 //   (await axios.post(`${configs.server_url}/metrics`, { metric, uid }))
@@ -329,6 +332,7 @@ const getMetric = async (metric, uid) => "10";
 // );
 
 const MetricAPI = {
+  allMetrics,
   getMetric,
 };
 

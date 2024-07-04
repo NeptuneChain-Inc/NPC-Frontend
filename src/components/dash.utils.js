@@ -2,12 +2,17 @@ import { DeviceAPI, MetricAPI } from "../scripts/back_door";
 import { handleError } from "../scripts/lib";
 
 export const getMetric = async (metric, uid) => {
+  if (!MetricAPI.allMetrics.includes(metric) || !uid) {
+    return;
+  }
+
   try {
+    const value = await MetricAPI.getMetric(metric, uid);
     switch (metric) {
       case "credit_balance":
         return {
           title: "Credit Balance",
-          value: await MetricAPI.getMetric(metric, uid),
+          value,
           unit: "credits",
           icon: "wallet",
         };
@@ -15,7 +20,7 @@ export const getMetric = async (metric, uid) => {
       case "credit_price":
         return {
           title: "Credit Price",
-          value: `$${await MetricAPI.getMetric(metric, uid)}`,
+          value: `$${value}`,
           unit: "USD",
           icon: "money-bill-1",
         };
@@ -23,7 +28,7 @@ export const getMetric = async (metric, uid) => {
       case "equity":
         return {
           title: "Total Equity",
-          value: `$${await MetricAPI.getMetric(metric, uid)}`,
+          value: `$${value}`,
           unit: "USD",
           icon: "sack-dollar",
         };
@@ -31,7 +36,7 @@ export const getMetric = async (metric, uid) => {
       case "tx_pending":
         return {
           title: "Pending Transactions",
-          value: await MetricAPI.getMetric(metric, uid),
+          value,
           unit: "pending",
           icon: "hourglass-half",
         };
@@ -55,7 +60,7 @@ export const fetchDeviceData = async (id, setDeviceData) => {
     if (deviceData) {
       setDeviceData(deviceData);
     } else {
-      alert(`Device #${id} Data Unavailable`)
+      alert(`Device #${id} Data Unavailable`);
     }
   } catch (error) {
     handleError(error.message, error);
@@ -73,7 +78,9 @@ export function getRandomColor() {
   const blue = Math.floor(Math.random() * 256);
 
   // Convert the RGB values to a hexadecimal string
-  const color = `#${red.toString(16).padStart(2, '0')}${green.toString(16).padStart(2, '0')}${blue.toString(16).padStart(2, '0')}`;
+  const color = `#${red.toString(16).padStart(2, "0")}${green
+    .toString(16)
+    .padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`;
 
   return color;
 }
