@@ -130,7 +130,7 @@ const Welcome = ({ APP }) => {
   const { user } = APP?.STATES || {};
   const { updateUser } = APP?.ACTIONS || {};
 
-  const enterDash = () => navigate("/dashboard/main");
+  const enterDash = () => navigate("/dashboard/environmental");
 
   console.log("onboarding", Boolean(cardState !== ""))
 

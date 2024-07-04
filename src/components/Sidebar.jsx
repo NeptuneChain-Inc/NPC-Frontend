@@ -66,7 +66,7 @@ const Sidebar = ({ APP }) => {
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
 
-      <UserInfo onClick={() => navigate('/dashboard/main')}>
+      <UserInfo onClick={() => navigate('/dashboard/environmental')}>
         <Heading>{user?.username.toUpperCase()}</Heading>
         <SubHeading>{user?.type.toUpperCase()} DASHBOARD</SubHeading>
       </UserInfo>
