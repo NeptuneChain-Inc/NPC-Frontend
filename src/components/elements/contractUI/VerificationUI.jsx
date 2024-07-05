@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { STRING } from '../../../scripts/helpers';
+import { STRING, logDev } from '../../../scripts/helpers';
 import { getVerificationInteractions } from '../../../smart_contracts/interactions';
+import {UploadButton} from '../livepeer/elements/MediaGallery';
 
 
 const neptuneColorPalette = {
@@ -176,8 +177,8 @@ const tabVariants = {
     exit: { x: 10, opacity: 0 },
 };
 
-function VerificationUI({ signer, open, APP }) {
-    const [isModalOpen, setIsModalOpen] = useState(open);
+function VerificationUI({ APP }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [accessibleTabs, setAccessibleTabs] = useState([])
     const [activeTab, setActiveTab] = useState('');
     const [ipfsHash, setIpfsHash] = useState('');
@@ -186,8 +187,10 @@ function VerificationUI({ signer, open, APP }) {
     const [verifierAddress, setVerifierAddress] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { user } = APP?.STATES || {};
-    const { setTxPopupVisible, setResult } = APP?.ACTIONS || {};
+    const { user, signer, verificationUIOpen, verificationData } = APP?.STATES || {};
+    const { setTxPopupVisible, setResult, setVerificationData } = APP?.ACTIONS || {};
+
+    const { assetID } = verificationData || {};
 
     const Interactions = getVerificationInteractions(signer);
 
@@ -200,8 +203,8 @@ function VerificationUI({ signer, open, APP }) {
     }, [user])
 
     useEffect(() => {
-        setIsModalOpen(open)
-    }, [open])
+        setIsModalOpen(verificationUIOpen)
+    }, [verificationUIOpen])
 
 
     if (!Interactions) {
@@ -255,6 +258,11 @@ function VerificationUI({ signer, open, APP }) {
         } finally {
             setIsLoading(false)
         }
+    }
+
+    const handleSubmission = async () => {
+      //Handle Submission
+      logDev("Verification: Handle Submission", {assetID})
     }
     
     const tabs = ['submitData', 'approveData', 'dispute', 'resolveDispute', 'verifier', 'contractControl'];
@@ -358,6 +366,10 @@ function VerificationUI({ signer, open, APP }) {
                                     </>
                                 )}
                             </TabContent>
+                        )}
+
+                        {assetID && (
+                          <UploadButton onClick={handleSubmission}>Submit for Verification</UploadButton>
                         )}
                     </ModalContainer>
                 </ModalOverlay>

@@ -69,6 +69,7 @@ function App() {
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [verificationUIOpen, setVerificationUIOpen] = useState(false);
+  const [verificationData, setVerificationData] = useState({});
   const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   const [settingsTab, setSettingsTab] = useState("Profile Settings");
@@ -232,6 +233,7 @@ function App() {
       sidebarOpen,
       notificationBarOpen,
       verificationUIOpen,
+      verificationData,
       settingsMenuOpen,
       calculatorOpen,
       settingsTab,
@@ -248,6 +250,8 @@ function App() {
       handleSidebar,
       handleNotificationsBar,
       handleVerificationUI,
+      setVerificationUIOpen,
+      setVerificationData,
       handleSettingsMenu,
       handleSettingsTab,
       toggleCalculator,
@@ -299,8 +303,6 @@ function App() {
             {settingsMenuOpen && <SettingsMenu APP={APP} />}
             {signer && (
               <VerificationUI
-                signer={signer}
-                open={verificationUIOpen}
                 APP={APP}
               />
             )}

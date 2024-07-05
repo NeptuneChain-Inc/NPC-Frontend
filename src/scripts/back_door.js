@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { Network, Alchemy } from "alchemy-sdk";
 import { alchemyAPI, mumbaiRPC, privateKey } from "../contracts/ref";
 
-/** * @returns firebase config object */
+
 const getFirebaseConfig = async () =>
   (await axios.post(`${configs.server_url}/firebase/config`, {}))?.data;
 
@@ -51,11 +51,11 @@ const getDashbord = async (uid) =>
   (response = await axios.post(`${configs.server_url}/db/user/get/dashboard`, {
     uid,
   }))?.data;
-const getUserVideos = async (uid) =>
-  (await axios.post(`${configs.server_url}/db/user/get/media/videos`, { uid }))
+const getUserMedia = async (userUID) =>
+  (await axios.post(`${configs.server_url}/db/user/get/media/assets`, { userUID }))
     ?.data;
 const getUserStreams = async (uid) =>
-  (await axios.post(`${configs.server_url}/db/user/get/media/streams`, { uid }))
+  (await axios.post(`${configs.server_url}/db/user/get/media/streams`, { userUID }))
     ?.data;
 
 const UserAPI = {
@@ -63,7 +63,7 @@ const UserAPI = {
     user: getUser,
     username: getUsername,
     dashboard: getDashbord,
-    videos: getUserVideos,
+    media: getUserMedia,
     streams: getUserStreams,
   },
   create: {
@@ -75,26 +75,33 @@ const UserAPI = {
   },
 };
 
-/** * @returns video or error object */
-const getVideo = async (playbackId) =>
-  (await axios.post(`${configs.server_url}/db/media/get/video`, { playbackId }))
+
+const getMedia = async (assetID) =>
+  (await axios.post(`${configs.server_url}/db/media/get/asset`, { assetID }))
     ?.data;
-/** * @returns stream or error object */
-const getStream = async (playbackId) =>
+
+const getStream = async (assetID) =>
   (
     await axios.post(`${configs.server_url}/db/media/get/stream`, {
-      playbackId,
+      assetID,
     })
   )?.data;
-/** * @returns result object */
-const createVideo = async (videoAsset, creatorUID) =>
+
+const createMedia = async (newAssetPaylaod, userUID) =>
   (
-    await axios.post(`${configs.server_url}/db/media/create/video`, {
-      videoAsset,
-      creatorUID,
+    await axios.post(`${configs.server_url}/db/media/create/asset`, {
+      newAssetPaylaod,
+      userUID,
     })
   )?.data;
-/** * @returns result object */
+  const createMediaMetadata = async (assetID, metadata) =>
+    (
+      await axios.post(`${configs.server_url}/db/media/create/asset/metadata`, {
+        assetID,
+        metadata,
+      })
+    )?.data;
+
 const createStream = async (streamData, creatorUID) =>
   (
     await axios.post(`${configs.server_url}/db/media/create/stream`, {
@@ -105,11 +112,12 @@ const createStream = async (streamData, creatorUID) =>
 
 const MediaAPI = {
   get: {
-    video: getVideo,
+    media: getMedia,
     stream: getStream,
   },
   create: {
-    video: createVideo,
+    media: createMedia,
+    mediaMetadata: createMediaMetadata,
     stream: createStream,
   },
 };
@@ -146,30 +154,52 @@ const EthereumAPI = {
   },
 };
 
-/** * @returns livepeerClient or error object */
-const getLivepeerClient = async () =>
-  (await axios.post(`${configs.server_url}/livepeer/get/client`, {}))?.data;
-/** * @returns viewership or error object */
-const getLivepeerViewership = async (playbackId) =>
+
+const createLivepeerAsset = async (newAssetPayload, userUID) =>
+  (await axios.post(`${configs.server_url}/livepeer/asset/create`, {newAssetPayload, userUID}))?.data;
+
+const getLivepeerAsset = async (assetID) =>
   (
-    await axios.post(`${configs.server_url}/livepeer/get/viewership`, {
-      playbackId,
-    })
-  )?.data;
-/** * @returns asset_metrics or error object */
-const getLivepeerAssetMetrics = async (assetId) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/get/asset_metrics`, {
-      assetId,
+    await axios.post(`${configs.server_url}/livepeer/asset/get`, {
+      assetID
     })
   )?.data;
 
+const updateLivepeerAsset = async (assetID, patch) =>
+  (
+    await axios.post(`${configs.server_url}/livepeer/asset/update`, {
+      assetID,
+      patch
+    })
+  )?.data;
+
+  const deleteLivepeerAsset = async (assetID) =>
+    (
+      await axios.post(`${configs.server_url}/livepeer/asset/delete`, {
+        assetID,
+      })
+    )?.data;
+
+    //playbackOps
+    const getPlaybackInfo = async (playbackID) =>
+      (
+        await axios.post(`${configs.server_url}/livepeer/playback/info`, {
+          playbackID,
+        })
+      )?.data;
+
 const LivepeerAPI = {
-  get: {
-    livepeerClient: getLivepeerClient,
-    viewership: getLivepeerViewership,
-    asset_metrics: getLivepeerAssetMetrics,
+  assetOps: {
+    create: createLivepeerAsset,
+    get: getLivepeerAsset,
+    update: updateLivepeerAsset,
+    delete: deleteLivepeerAsset
   },
+  playbackOps: {
+    get: {
+      playbackInfo: getPlaybackInfo
+    }
+  }
 };
 
 /** * @returns api or error object */

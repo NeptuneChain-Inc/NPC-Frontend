@@ -174,4 +174,17 @@ export function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+export const proxyLivepeerOriginEndpoint = (originalEndpoint) => {
+  const baseUrl = 'https://origin.livepeer.com';
+  const proxyBasePath = '/livepeer_origin';
+
+  if (!originalEndpoint.startsWith(baseUrl)) {
+    throw new Error('Original endpoint does not start with the base URL.');
+  }
+
+  const relativePath = originalEndpoint.substring(baseUrl.length);
+  return `${proxyBasePath}${relativePath}`;
+};
+
+
   export const logDev = (title, vars = {}) => console.warn("@DEV: ",title,vars);

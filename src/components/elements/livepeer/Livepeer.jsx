@@ -13,6 +13,8 @@ import { LivepeerAPI } from '../../../scripts/back_door';
 import { livepeer_API_KEY } from '../../../contracts/ref';
 import MediaGallery from './elements/MediaGallery';
 
+//livepeer github docs: https://github.com/livepeer/livepeer-js?tab=readme-ov-file
+
 function Livepeer({ APP }) {
   const { serviceID, playbackID, liveID } = useParams();
   const [livepeerClient, setLivepeerClient] = useState(null);
@@ -21,7 +23,7 @@ function Livepeer({ APP }) {
     fetchLivepeerClient()
   }, [])
 
-  const fetchLivepeerClient = async () => {
+  const fetchLivepeerClient =  () => {
     // const _client = await LivepeerAPI.get.livepeerClient();
     const client = createReactClient({
       provider: studioProvider(livepeer_API_KEY)
@@ -46,7 +48,7 @@ function Livepeer({ APP }) {
         )
       case 'upload-media':
         return (
-          <MediaGallery />
+          <MediaGallery APP={APP}/>
           // <VideoUpload APP={APP} />
         )
       default:

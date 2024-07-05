@@ -1,14 +1,48 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import {logoColors} from "../../../../styles/colors";
 import MediaUpload from "../MediaUpload";
+import {UserAPI} from "../../../../scripts/back_door";
+import {logDev} from "../../../../scripts/helpers";
 
 
 
-const MediaGallery = () => {
+const MediaGallery = ({APP}) => {
   const [isMediaUpload, setIsMediaUpload] = useState(false);
+  const [media, setMedia] = useState([]);
+
+  const { user } = APP?.STATES || {};
+  const { setVerificationUIOpen, setVerificationData } = APP?.ACTIONS || {};
+
+  useEffect(() => {
+    if(user){
+      getMedia(user.uid);
+    }
+  }, [])
+  
+
+  useEffect(() => {
+    if(media){
+      logDev("MediaGallery: user media", {media})
+    }
+  }, [media])
+  
+
+  //Get User Media
+  const getMedia = async (userUID) => {
+    const {user_media} = await UserAPI.get.media(userUID);
+    setMedia(user_media);
+  }
 
   const toggleMediaUpload = () => setIsMediaUpload(!isMediaUpload);
+
+  const handleAssetVerification = (assetID) => {
+    setVerificationUIOpen?.(true);
+    setVerificationData?.({
+      assetID
+    })
+  }
+
   return (
     <PageContainer>
       <UploadButton onClick={toggleMediaUpload}>Upload Media</UploadButton>
@@ -17,30 +51,46 @@ const MediaGallery = () => {
       <input type="text" />
       </GalleryBanner>
     <Gallery>
-{media.map((content, index) => {
-  const { id, name, description, url } = content || {};
 
-  if (url) {
+      {media.length === 0 && (
+        <div>No Uploads</div>
+      )}
+{media?.map((data, index) => {
+  const { assetID, playbackID, metadata } = data || {};
+  const { name, description, tags, thumbnailUrl } = metadata || {};
+  
+
+  if (metadata) {
     return (
-      <div key={id}>
-        <input type="radio" name="slide" id={`c${id}`} />
-        <label htmlFor={`c${id}`} className="card" style={{backgroundImage: `url(${url})`}}>
+      <div key={index}>
+        <input type="radio" name="slide" id={`c${index}`} />
+        <label htmlFor={`c${index}`} className="card" style={{backgroundImage: `url(${thumbnailUrl?.[0]})`}}>
           <div className="row">
-            <div className="icon">{id}</div>
-            {/* <div className="description">
+            <div className="icon">{index}</div>
+            <div className="description">
               <h4>{name}</h4>
               <p>{description}</p>
-            </div> */}
+            </div>
+            <div className="tags">
+              {tags?.map((tag, index) => {
+                <span key={index}>{tag}</span>
+              })}
+            </div>
           </div>
+          <UploadButton onClick={() => handleAssetVerification(assetID)}>Verification</UploadButton>
         </label>
       </div>
     );
+  } else{
+    return (
+      <div>N/A</div>
+    )
   }
 })}
 </Gallery>
 
       {isMediaUpload && (
-        <MediaUpload togglePopup={toggleMediaUpload}/>
+        <MediaUpload togglePopup={toggleMediaUpload} APP={APP}/>
       )}
     </PageContainer>
   );
