@@ -304,6 +304,7 @@ function App() {
             {signer && (
               <VerificationUI
                 APP={APP}
+                open={verificationUIOpen}
               />
             )}
           </>

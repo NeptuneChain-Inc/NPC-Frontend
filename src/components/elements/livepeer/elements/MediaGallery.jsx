@@ -67,17 +67,17 @@ const MediaGallery = ({APP}) => {
         <label htmlFor={`c${index}`} className="card" style={{backgroundImage: `url(${thumbnailUrl?.[0]})`}}>
           <div className="row">
             <div className="icon">{index}</div>
-            <div className="description">
+            <div className="metadata">
               <h4>{name}</h4>
               <p>{description}</p>
-            </div>
-            <div className="tags">
+              <div className="tags"> 
               {tags?.map((tag, index) => {
                 <span key={index}>{tag}</span>
               })}
             </div>
+              <VerificationButton onClick={() => handleAssetVerification(assetID)}>Verification</VerificationButton>
+            </div>
           </div>
-          <UploadButton onClick={() => handleAssetVerification(assetID)}>Verification</UploadButton>
         </label>
       </div>
     );
@@ -174,42 +174,56 @@ width: 90%;
   }
 
   .card > .row {
+  width: 100%;
     color: white;
     display: flex;
     flex-wrap: nowrap;
+  padding: 0.5rem;
+  box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+  background: #00000080;
+  backdrop-filter: blur(0.2rem);
   }
 
   .card > .row > .icon {
-    background: #223;
+    background: #000;
+   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(255, 255, 255, 0.5) 0px -3px 0px inset;
     color: white;
-    border-radius: 50%;
-    width: 50px;
+    border-radius: 10px;
+    width: 10%;
+    min-width: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 15px;
   }
 
-  .card > .row > .description {
+  .card > .row > .metadata {
+  flex: 1;
     display: flex;
     justify-content: center;
     flex-direction: column;
     overflow: hidden;
-    height: 80px;
-    width: 520px;
     opacity: 0;
     transform: translateY(30px);
     transition-delay: 0.3s;
     transition: all 0.3s ease;
+
   }
 
-  .description p {
+  .metadata p {
     color: #b0b0ba;
     padding-top: 5px;
+    margin: 0;
   }
 
-  .description h4 {
+  .metadata h4 {
     text-transform: uppercase;
+    margin: 0;
+
+  }
+
+    .metadata p {
+
   }
 
   input {
@@ -220,10 +234,16 @@ width: 90%;
     width: 600px;
   }
 
-  input:checked + label .description {
+  input:checked + label .metadata {
     opacity: 1 !important;
     transform: translateY(0) !important;
   }
+`;
+
+const VerificationButton = styled(UploadButton)`
+  width: 50%;
+  margin: auto;
+  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px inset, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px ;
 `;
 
 const media = [
