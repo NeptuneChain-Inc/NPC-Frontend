@@ -155,9 +155,6 @@ function App() {
       }
       return null;
 
-      logNotification("error", "Email not registered");
-
-      return null;
     } catch (error) {
       logNotification("error", error.message);
       return null;
@@ -290,7 +287,6 @@ function App() {
           onRetry={result?.handleRetry}
           onClose={() => setResult(null)}
         />
-
         {settingsMenuOpen && <SettingsMenu APP={APP} />}
 
         {user && (
@@ -313,7 +309,6 @@ function App() {
         <Flex config="column">
           {user && !navlessRoutes && (
             <>
-              <Navbar APP={APP} />
             </>
           )}
           <Flex config="row">
@@ -375,14 +370,7 @@ function App() {
               </Routes>
             </Main>
           </Flex>
-          {!navlessRoutes && (
-            <Footer>
-              <FooterContent>
-                © 2024 NeptuneChain, All Rights Reserved.
-              </FooterContent>
-              <FooterIconGroup>{/* ICONS HERE */}</FooterIconGroup>
-            </Footer>
-          )}
+         
         </Flex>
 
         {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
@@ -393,17 +381,12 @@ function App() {
   );
 }
 
+
+
 const AppContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
+display: flex;
 
-  font-family: "Albert Sans", "Albert Sans Placeholder", sans-serif;
 
-  width: 100vw;
-  height: 100vh;
-
-  overflow: hidden;
 `;
 
 const Flex = styled.div`
@@ -471,7 +454,6 @@ const FloatingButton = styled(motion.button)`
 `;
 
 const Footer = styled.footer`
-  position: fixed;
   bottom: 0;
 
   width: 100%;
