@@ -8,6 +8,7 @@ import { STRING, logDev } from "../../../scripts/helpers";
 import { getVerificationInteractions } from "../../../smart_contracts/interactions";
 import { UploadButton } from "../livepeer/elements/MediaGallery";
 import { UserAPI } from "../../../scripts/back_door";
+import AssetCard from "./AssetCard";
 
 const neptuneColorPalette = {
   lightBlue: "#8abbd0",
@@ -206,6 +207,9 @@ function VerificationUI({ APP, open }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [uploads, setUploads] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
+  const [disputes, setDisputes] = useState([]);
+  const [approvals, setApprovals] = useState([]);
 
   const { user, signer, verificationUIOpen, verificationData } =
     APP?.STATES || {};
@@ -223,6 +227,9 @@ function VerificationUI({ APP, open }) {
       setActiveTab(accessible[0]);
 
       getUploads();
+      getSubmissions();
+      getDisputes();
+      getApprovals();
     }
   }, [user]);
 
@@ -238,6 +245,27 @@ function VerificationUI({ APP, open }) {
     const { user_media } = await UserAPI.get.media(user.uid);
     if (Array.isArray(user_media)) {
       setUploads(user_media);
+    }
+  };
+
+  const getSubmissions = async () => {
+    const { user_submissions } = await UserAPI.get.asset.submissions(user.uid);
+    if (Array.isArray(user_submissions)) {
+      setSubmissions(user_submissions);
+    }
+  };
+
+  const getDisputes = async () => {
+    const { user_disputes } = await UserAPI.get.asset.disputes(user.uid);
+    if (Array.isArray(user_disputes)) {
+      setDisputes(user_disputes);
+    }
+  };
+
+  const getApprovals = async () => {
+    const { user_approvals } = await UserAPI.get.asset.approvals(user.uid);
+    if (Array.isArray(user_approvals)) {
+      setApprovals(user_approvals);
     }
   };
 
@@ -298,6 +326,8 @@ function VerificationUI({ APP, open }) {
     admin: tabs,
   };
 
+  const handleApprovalDetails = async () => {};
+
   const getAccessibleTabs = (userRole) => tabAccess[userRole] || [];
 
   const modalSpring = {
@@ -355,22 +385,36 @@ function VerificationUI({ APP, open }) {
                 {activeTab === "uploads" && (
                   <InputGroup>
                     {uploads.map((upload, index) => (
-                      <div key={index}>
-                        <label>{upload?.metadata?.name}</label>
-                        <Button
-                          onClick={() =>
-                            handleMutation(submitMutation, upload.assetID)
-                          }
-                        >
-                          Submit Data
-                        </Button>
-                      </div>
+                      <AssetCard
+                        metadata={upload?.metadata}
+                        onClick={() =>
+                          handleMutation(submitMutation, upload.assetID)
+                        }
+                      />
                     ))}
                   </InputGroup>
                 )}
                 {activeTab === "submissions" && (
                   <InputGroup>
-                    <label>Data ID for Approval:</label>
+                    {submissions.map((submission, index) => (
+                      <div key={index}>
+                        <label>{submission?.assetID}</label>
+                        <label>{submission?.txHash}</label>
+                        <Button
+                          onClick={() =>
+                            handleMutation(
+                              user?.type === "verifier"
+                                ? approveMutation
+                                : disputeMutation,
+                              submission?.assetID
+                            )
+                          }
+                        >
+                          {user?.type === "verifier" ? "Approve" : "Dispute"}
+                        </Button>
+                      </div>
+                    ))}
+                    {/* <label>Data ID for Approval:</label>
                     <input
                       type="text"
                       value={dataId}
@@ -380,12 +424,25 @@ function VerificationUI({ APP, open }) {
                       onClick={() => handleMutation(approveMutation, dataId)}
                     >
                       Approve Data
-                    </Button>
+                    </Button> */}
                   </InputGroup>
                 )}
                 {activeTab === "disputes" && (
                   <InputGroup>
-                    <label>Data ID for Dispute:</label>
+                    {disputes.map((dispute, index) => (
+                      <div key={index}>
+                        <label>{dispute?.assetID}</label>
+                        <label>{dispute?.txHash}</label>
+                        <Button
+                          onClick={() =>
+                            handleMutation(resolveMutation, dispute?.assetID)
+                          }
+                        >
+                          Resolve Dispute
+                        </Button>
+                      </div>
+                    ))}
+                    {/* <label>Data ID for Dispute:</label>
                     <input
                       type="text"
                       value={dataId}
@@ -403,12 +460,25 @@ function VerificationUI({ APP, open }) {
                       }
                     >
                       Raise Dispute
-                    </Button>
+                    </Button> */}
                   </InputGroup>
                 )}
                 {activeTab === "approvals" && (
                   <InputGroup>
-                    <label>Data ID to Resolve Dispute:</label>
+                    {approvals.map((approval, index) => (
+                      <div key={index}>
+                        <label>{approval?.assetID}</label>
+                        <label>{approval?.txHash}</label>
+                        <Button
+                          onClick={() =>
+                            handleApprovalDetails(approval?.assetID)
+                          }
+                        >
+                          Approval Details
+                        </Button>
+                      </div>
+                    ))}
+                    {/* <label>Data ID to Resolve Dispute:</label>
                     <input
                       type="text"
                       value={dataId}
@@ -418,10 +488,9 @@ function VerificationUI({ APP, open }) {
                       onClick={() => handleMutation(resolveMutation, dataId)}
                     >
                       Resolve Dispute
-                    </Button>
+                    </Button> */}
                   </InputGroup>
                 )}
-
               </TabContent>
             )}
 
