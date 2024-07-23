@@ -292,35 +292,40 @@ function App() {
         {user && (
           <>
             <NotificationBar APP={APP} />
-            <NutrientCalculator
-              isOpen={calculatorOpen}
-              onClose={toggleCalculator}
-            />
+
             {settingsMenuOpen && <SettingsMenu APP={APP} />}
-            {signer && (
+           {/*  {signer && (
               <VerificationUI
                 APP={APP}
                 open={verificationUIOpen}
               />
-            )}
+            )} */}
           </>
         )}
 
-        <Flex config="column">
           {user && !navlessRoutes && (
             <>
             </>
           )}
-          <Flex config="row">
             {user && <Sidebar APP={APP} />}
             <Main isSidebarOpen={sidebarOpen}>
               <Routes>
                 <Route path="/" element={<Welcome APP={APP} />} />
                 {user?.uid && (
                   <>
+                  <Route
+                  
+                    element={<VerificationUI APP={APP}
+                    open={verificationUIOpen} />}
+                    path="/features/verification" />
                     <Route
                       path="/dashboard/:dashID"
                       element={<Home APP={APP} />}
+                    />
+                    <Route
+                    
+                      path="/features/nutrient-calculator"
+                      element={<NutrientCalculator APP={APP} />}
                     />
 
                     <Route
@@ -369,9 +374,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Main>
-          </Flex>
          
-        </Flex>
 
         {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
           <FontAwesomeIcon icon={faInfo} />
@@ -385,7 +388,9 @@ function App() {
 
 const AppContainer = styled.div`
 display: flex;
-
+height: 100vh;
+width: 100vw;
+overflow: hidden;
 
 `;
 
@@ -399,12 +404,11 @@ const Flex = styled.div`
 `;
 
 const Main = styled.div`
-  width: ${({ isSidebarOpen }) => (isSidebarOpen ? "80vw" : "100vw")};
-  height: 95vh;
-
+  width: 100%;
+  height: 100%;
   ${style_template.flex_display.column_custom("flex-start", "flex-start")}
 
-  padding-bottom: 25px;
+  padding: 64px;
   box-sizing: border-box;
 
   overflow: auto;

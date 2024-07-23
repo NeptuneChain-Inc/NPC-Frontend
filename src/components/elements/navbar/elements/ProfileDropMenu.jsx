@@ -165,7 +165,7 @@ const ListItem = styled.div`
   align-items: center;
   gap:16px; 
   font-weight: 500;
-  color: ${props => props.theme.colors.primary500};
+  color: ${props => props.theme.colors.primary700};
   cursor: pointer;
 
   &:hover {

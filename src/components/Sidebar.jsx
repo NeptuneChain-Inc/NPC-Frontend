@@ -38,13 +38,13 @@ const Sidebar = ({ APP }) => {
       icon: faLeaf
     },
     {
-      route: '/**button**/',
+      route: '/features/verification',
       cta: 'Verification',
       onclick: handleVerificationUI,
       icon: faCheckCircle
     },
     {
-      route: '/**button**/',
+      route: '/features/nutrient-calculator',
       cta: 'Nutrient Calculator',
       onclick: toggleCalculator,
       icon: faCalculator

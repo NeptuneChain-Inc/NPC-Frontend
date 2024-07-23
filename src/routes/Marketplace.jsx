@@ -6,80 +6,41 @@ import {faCalendar, faSearch} from "@fortawesome/free-solid-svg-icons";
 import {MarketBrowser} from "../components/elements/marketplace";
 import EventsPopup from "../components/elements/marketplace/EventsPopup";
 import {colors} from "../styles/colors";
+import { Input } from "../components/shared/input/Input";
+import { ButtonSecondary } from "../components/shared/button/Button";
 
 const MarketplaceContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 60px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  color: #b2b2b2;
-  font-family: "Roboto", sans-serif;
-  box-sizing: border-box;
-  overflow: auto;
+    width: 100%;
 
-  @media (max-width: 768px) {
-  }
 `;
 
 const SearchBarContainer = styled.div`
-  width: 80%;
-  display: flex;
-  align-items: center;
-  margin: 20px 10%;
-  border-radius: 20px;
-  background-color: white;
-  padding: 5px;
+display: flex;
+align-items: center;
+gap:8px;
 
-  @media (max-width: 768px) {
-    width: 95%;
-    margin: 10px 2.5%;
-  }
+${Input} { 
+  width: 250px
+}
 `;
 
-const SearchBar = styled.input`
-  width: 90%;
-  padding: 10px;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  border-radius: 0;
+const BottomBar = styled.div`
+padding-top: 20px; 
+margin-top: 20px; 
+border-top: 1px solid ${({theme}) => theme.colors.ui200};
+`
 
-  @media (max-width: 768px) {
-    font-size: 0.9em;
-  }
-`;
+const TopBar = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+`
 
 const SearchIcon = styled(FontAwesomeIcon)`
-  color: #568ea3;
+  color: ${({theme}) => theme.colors.primary500};
   margin-left: 10px;
 `;
 
-const EventsButton = styled.button`
-position: absolute;
-right: 2rem;
-  background-color: ${colors.deepBlue};
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  margin: 10px 0;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.9em;
-    top: 10%;
-    padding: 8px 15px;
-  }
-`;
 
 const Marketplace = ({APP}) => {
   const [marketEvents, setMarketEvents] = useState(null);
@@ -117,14 +78,21 @@ const Marketplace = ({APP}) => {
   return (
     <MarketplaceContainer>
 
+      <TopBar>
       <SearchBarContainer>
-        <SearchBar placeholder="Search for NPCs..." />
+        <Input placeholder="Search for NPCs..." />
+        <ButtonSecondary>
+          Search
         <SearchIcon icon={faSearch} />
+        </ButtonSecondary>
       </SearchBarContainer>
 
-      <EventsButton onClick={toggleEventsPopup}><FontAwesomeIcon icon={faCalendar} /></EventsButton>
+      <ButtonSecondary onClick={toggleEventsPopup}><FontAwesomeIcon icon={faCalendar} />View all Events</ButtonSecondary>
+      </TopBar>
+      <BottomBar>
 
       <MarketBrowser marketEvents={marketEvents} />
+      </BottomBar>
 
       {showEventsPopup && (
         <EventsPopup

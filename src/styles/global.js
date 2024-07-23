@@ -28,10 +28,10 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0px;
     margin: 0px;
     box-sizing: border-box;
-    }
+    font-family: "Satoshi", sans-serif;
+}
 
-    body {
-         font-family: "Satoshi", sans-serif;
+body{
          box-sizing: border-box;
          padding: 0px;
          margin: 0px;

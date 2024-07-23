@@ -7,44 +7,31 @@ import { StreamPlayer } from './elements';
 
 // #BACKEND
 import { MediaAPI } from '../../../scripts/back_door';
+import { ButtonPrimary } from '../../shared/button/Button';
+import { Input } from '../../shared/input/Input';
+import FormSection from '../../shared/FormSection/FormSection';
+import { Label } from '../../shared/Label/Label';
 
-const StreamContainer = styled(motion.div)`
-width: 100%;
+const StreamContainer = styled.div`
 height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
+width: 100%;
+max-width: 400px;
+margin: 0 auto; 
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
 
-  background-color: #f5f5f5;
+${ButtonPrimary} { 
+  margin-top: 12px;
+}
 `;
 
-const StreamInput = styled.input`
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-`;
 
 const ActionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+width: 100%;
 `;
 
-const StreamButton = styled(motion.button)`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  &:disabled {
-    background-color: #ccc;
-  }
-`;
 
 
 
@@ -84,23 +71,27 @@ export const Stream = ({APP}) => {
     <StreamContainer initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 
       {!stream?.playbackId && (
-        <StreamInput
+        <FormSection>
+        <Label>
+        Stream name
+        </Label>
+        <Input
         type="text"
-        placeholder="Stream name"
         onChange={(e) => setStreamName(e.target.value)}
-      />
+        />
+        </FormSection>
       )}
     
       <ActionContainer>
         {!stream && (
-          <StreamButton
+          <ButtonPrimary
             onClick={() => {
               createStream?.();
             }}
             disabled={isLoading || !createStream}
           >
             Create Stream
-          </StreamButton>
+          </ButtonPrimary>
         )}
         
       </ActionContainer>

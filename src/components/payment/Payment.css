@@ -1,84 +1,84 @@
 /* Payment.css */
 
-body, html {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  
-  h1 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .form-container {
-    position: relative;
-    width: 100%;
-    min-height: 50vh;
-    max-width: 600px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  
-  /* Animation classes */
-  .slide-left {
-    animation: slideLeft 0.5s forwards;
-  }
-  
-  .slide-right {
-    animation: slideRight 0.5s forwards;
-  }
-  
-  @keyframes slideLeft {
-    100% {
-      opacity: 0;
-    }
-  }
-  
-  @keyframes slideRight {
-    100% {
-      opacity: 1;
-    }
-  }
-  
-  /* Navigation buttons */
-  .navigation {
-    width: 10%;
-    display: flex;
-    justify-content: space-between;
-    margin: auto;
-    margin-top: 1rem;
+body,
+html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
-  }
-  
-  button {
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  
-  button.prev {
-    background-color: #6c757d;
-  }
-  
-  button.next {
-    background-color: #000000;
-    padding: 10px;
-  }
-  
-  button svg {
-    margin: 0 5px;
-  }
+h1 {
+  text-align: center;
+  color: #333;
+}
 
-  /* Stylesheet for CustomerInfoForm */
+.form-container {
+  position: relative;
+  width: 100%;
+  min-height: 50vh;
+  max-width: 600px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Animation classes */
+.slide-left {
+  animation: slideLeft 0.5s forwards;
+}
+
+.slide-right {
+  animation: slideRight 0.5s forwards;
+}
+
+@keyframes slideLeft {
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes slideRight {
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Navigation buttons */
+.navigation {
+  width: 10%;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  margin-top: 1rem;
+}
+
+button {
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+button:focus {
+  outline: none;
+}
+
+button.prev {
+  background-color: #6c757d;
+}
+
+button.next {
+  background-color: #000000;
+  padding: 10px;
+}
+
+button svg {
+  margin: 0 5px;
+}
+
+/* Stylesheet for CustomerInfoForm */
 label {
   display: block;
   margin-bottom: 5px;
@@ -101,19 +101,15 @@ input.error {
   margin-bottom: 20px;
 }
 
-form div {
-  margin-bottom: 15px;
-}
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .form-container {
-      width: 90%;
-      padding: 15px;
-    }
-  
-    button {
-      font-size: 14px;
-      padding: 8px 16px;
-    }
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-container {
+    width: 90%;
+    padding: 15px;
   }
+
+  button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}

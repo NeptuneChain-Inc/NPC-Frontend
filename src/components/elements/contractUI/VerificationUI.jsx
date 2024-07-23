@@ -8,7 +8,12 @@ import { STRING, logDev } from "../../../scripts/helpers";
 import { getVerificationInteractions } from "../../../smart_contracts/interactions";
 import { UploadButton } from "../livepeer/elements/MediaGallery";
 import { UserAPI } from "../../../scripts/back_door";
-
+import { Badge } from "../../shared/Badge/Badge";
+import { Input } from "../../shared/input/Input";
+import {ButtonPrimary} from '../../shared/button/Button'
+import FormSection from "../../shared/FormSection/FormSection";
+import { Label } from "../../shared/Label/Label";
+import {Textarea} from "../../shared/textarea/Textarea";
 const neptuneColorPalette = {
   lightBlue: "#8abbd0",
   darkBlue: "#005f73",
@@ -71,7 +76,6 @@ const TabContainer = styled.div`
   align-items: center;
   padding: 10px;
   gap: 10px;
-  border-bottom: 1px solid #e0e0e0;
   overflow: auto;
   @media (min-width: 768px) {
     flex-direction: row;
@@ -95,55 +99,19 @@ const Tab = styled(motion.button)`
   }
 `;
 const InputGroup = styled.div`
-  display: flex;
+  display: flex; 
   flex-direction: column;
-  gap: 10px;
-  margin: 10px 0;
-  width: 100%;
+  width: 600px;
+  margin: 0 auto;
+  gap: 24px;
 
-  label {
-    margin-bottom: 5px;
-  }
-
-  input {
-    width: 100%;
-    padding: 10px; // Increased padding for better touch
-    font-size: 16px; // Increased font size for better visibility
-  }
-
-  @media (min-width: 768px) {
-    flex-direction: row;
+  .input-button-wrap { 
+    display: flex;
     align-items: center;
-
-    label,
-    input {
-      margin-right: 10px;
-    }
   }
 `;
 
-const Button = styled(motion.button)`
-  padding: 15px 25px; // Increased padding for better touch target
-  margin-top: 10px;
-  border: none;
-  background-color: ${neptuneColorPalette.green};
-  color: white;
-  cursor: pointer;
-  font-size: 16px; // Increased font size for better visibility
-  transition: background-color 0.3s, transform 0.3s;
 
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (min-width: 768px) {
-    margin-top: 0;
-  }
-`;
 
 const Loading = styled.div`
   margin-top: 20px;
@@ -187,6 +155,11 @@ const ErrorMsg = styled.div`
     }
   }
 `;
+
+const Page = styled.div`
+width: 100%;
+height: 100%;
+`
 
 // Framer Motion variants for animations
 const tabVariants = {
@@ -290,7 +263,7 @@ function VerificationUI({ APP, open }) {
     logDev("Verification: Handle Submission", { assetID });
   };
 
-  const tabs = ["uploads", "submissions", "disputes", "approvals"];
+  const tabs = ["uploads", "View Submissions", "Create Dispute", "Resolve Dispute"];
 
   const tabAccess = {
     farmer: tabs,
@@ -307,24 +280,8 @@ function VerificationUI({ APP, open }) {
   };
 
   return (
-    <AnimatePresence>
-      {isModalOpen && (
-        <ModalOverlay
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={modalSpring}
-        >
-          <ModalContainer
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            transition={modalSpring}
-          >
-            <CloseButton onClick={() => setIsModalOpen(false)}>
-              &times;
-            </CloseButton>
-            <h2>NeptuneChainVerification Interface</h2>
+    <Page>
+
             <TabContainer>
               {/* <Tab active={activeTab === 'submitData'} onClick={() => setActiveTab('submitData')}>Submit Data</Tab>
                             <Tab active={activeTab === 'approveData'} onClick={() => setActiveTab('approveData')}>Approve Data</Tab>
@@ -333,17 +290,17 @@ function VerificationUI({ APP, open }) {
                             <Tab active={activeTab === 'verifier'} onClick={() => setActiveTab('verifier')}>Verifier</Tab>
                             <Tab active={activeTab === 'contractControl'} onClick={() => setActiveTab('contractControl')}>Contract Control</Tab> */}
               {accessibleTabs.map((tab) => (
-                <Tab
-                  key={tab}
-                  active={activeTab === tab}
-                  onClick={() => setActiveTab(tab)}
-                  variants={tabVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
+                <Badge
+                key={tab}
+                active={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+                variants={tabVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
                 >
                   {STRING.toTitleCase(tab)}
-                </Tab>
+                </Badge>
               ))}
             </TabContainer>
             {isLoading ? (
@@ -357,68 +314,79 @@ function VerificationUI({ APP, open }) {
                     {uploads.map((upload, index) => (
                       <div key={index}>
                         <label>{upload?.metadata?.name}</label>
-                        <Button
+                        <ButtonPrimary
                           onClick={() =>
                             handleMutation(submitMutation, upload.assetID)
                           }
-                        >
+                          >
                           Submit Data
-                        </Button>
+                        </ButtonPrimary>
                       </div>
                     ))}
                   </InputGroup>
                 )}
                 {activeTab === "submissions" && (
                   <InputGroup>
-                    <label>Data ID for Approval:</label>
-                    <input
+
+                  <FormSection 
+                    label={"Submission ID"}>
+<div className="input-button-wrap">
+                    <Input                 
                       type="text"
+                      onChange={(e) => setDataId(e.target.value)} 
                       value={dataId}
-                      onChange={(e) => setDataId(e.target.value)}
-                    />
-                    <Button
+                      />
+                    <ButtonPrimary
                       onClick={() => handleMutation(approveMutation, dataId)}
-                    >
-                      Approve Data
-                    </Button>
+                      >
+                      Search
+                    </ButtonPrimary>
+                        </div>
+                        </FormSection>
                   </InputGroup>
                 )}
                 {activeTab === "disputes" && (
                   <InputGroup>
-                    <label>Data ID for Dispute:</label>
-                    <input
-                      type="text"
-                      value={dataId}
-                      onChange={(e) => setDataId(e.target.value)}
-                    />
-                    <label>Reason for Dispute:</label>
-                    <input
-                      type="text"
-                      value={reason}
-                      onChange={(e) => setReason(e.target.value)}
-                    />
-                    <Button
+                  <FormSection label={"Data ID"}>
+                  <Input
+                    label={"Data ID "}
+                    type="text"
+                    value={dataId}
+                    onChange={(e) => setDataId(e.target.value)}
+                    />                  
+
+                  </FormSection>
+                  <FormSection label={"Reason for Dispute"}>
+                    <Textarea
+                        type="text"
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                        />
+                  </FormSection>
+                    <ButtonPrimary
                       onClick={() =>
                         handleMutation(disputeMutation, { dataId, reason })
                       }
-                    >
-                      Raise Dispute
-                    </Button>
+                      >
+                      Submit dispute
+                    </ButtonPrimary>
+                             
+
                   </InputGroup>
                 )}
                 {activeTab === "approvals" && (
                   <InputGroup>
-                    <label>Data ID to Resolve Dispute:</label>
+                    <label>Data ID</label>
                     <input
                       type="text"
                       value={dataId}
                       onChange={(e) => setDataId(e.target.value)}
-                    />
-                    <Button
+                      />
+                    <ButtonPrimary
                       onClick={() => handleMutation(resolveMutation, dataId)}
-                    >
+                      >
                       Resolve Dispute
-                    </Button>
+                    </ButtonPrimary>
                   </InputGroup>
                 )}
 
@@ -430,10 +398,8 @@ function VerificationUI({ APP, open }) {
                 Submit for Verification
               </UploadButton>
             )}
-          </ModalContainer>
-        </ModalOverlay>
-      )}
-    </AnimatePresence>
+
+            </Page>
   );
 }
 

@@ -5,20 +5,19 @@ import { formatLongString } from '../../../../scripts/utils';
 
 import { colors } from '../../../../styles/colors';
 import placeholderIMG from '../../../../assets/icon.png';
+import { ButtonPrimary } from '../../../shared/button/Button';
 
 const Card = styled.div`
     background-color: white;
     border: none;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: ${({theme}) => theme.borderRadius.default};
     transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #00000050;
     cursor: pointer;
     max-height: 400px;
     overflow: auto;
     box-sizing: border-box;
-
+    border: 1px solid ${({theme}) => theme.colors.ui200};
     @media (max-width: 768px) {
         width: 100%
     }
@@ -54,29 +53,12 @@ const Seller = styled.p`
 `;
 
 const Price = styled.p`
-    color: #007BFF;
-    font-size: 1em;
-    font-weight: 500;
+    color: ${({theme}) => theme.colors.primary500};
+    font-size: 1.5rem;
+    font-weight: 600; 
 `;
 
-const BuyButton = styled.button`
-    background-color: ${colors.deepBlue};
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    width: 100%;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
 
-    &:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-    }
-`;
 
 const NFTCard = ({ nft, navigate }) => (
     <Card>
@@ -88,7 +70,7 @@ const NFTCard = ({ nft, navigate }) => (
             <Seller>Available: {Math.round(Math.random()*100)}</Seller>
             <Price>${Math.round(nft.price*Math.random()*100)}</Price>
         </NFTInfo>
-        <BuyButton onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</BuyButton>
+        <ButtonPrimary fullWidth={true} className onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</ButtonPrimary>
     </Card>
 );
 
