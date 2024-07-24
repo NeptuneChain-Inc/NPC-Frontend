@@ -23,7 +23,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 /** FIREBASE AUTH */
 import { auth } from "../../../apis/firebase";
 import { createUser } from "../../../apis/database";
-import { Input } from "../../../components/shared/Input";
+import { Input } from "../../../components/shared/input/Input";
 import FormSection from "../../../components/shared/FormSection/FormSection";
 import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
 
