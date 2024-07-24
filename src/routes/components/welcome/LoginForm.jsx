@@ -25,6 +25,9 @@ import {
 } from "../../../components/lib/styled";
 import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+import FormSection from "../../../components/shared/FormSection/FormSection";
+import { Input } from "../../../components/shared/input/Input";
+import { ButtonPrimary } from "../../../components/shared/button/Button";
 
 const InputGroup = styled.div`
   position: relative;
@@ -128,35 +131,36 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
               initial="hidden"
               animate="visible"
             /> */}
-            <InputGroup>
-              <Icon icon={faEnvelope} />
-              <INPUT
+            <FormSection label={"Email"}>
+              <Input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </InputGroup>
+            </FormSection>
 
-            <InputGroup>
-              <Icon icon={faLock} />
-              <INPUT
+            <FormSection label={"Password"}>
+              <Input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </InputGroup>
+            </FormSection>
 
-            <BUTTON type="submit">Log In</BUTTON>
+            <ButtonPrimary type="submit">Log In</ButtonPrimary>
+            <div>
+
             <TEXT_LINK type="button" onClick={handleResetPassword}>
               Forgot Password?
             </TEXT_LINK>
             <TEXT_LINK type="button" onClick={onSwitchToRegister}>
               Need an account? Register
             </TEXT_LINK>
+            </div>
           </PROMPT_FORM>
         ) : (
           <LOADING_ANIMATION

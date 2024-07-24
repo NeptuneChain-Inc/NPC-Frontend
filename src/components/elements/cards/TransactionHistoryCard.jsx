@@ -7,10 +7,12 @@ import {logDev} from '../../../scripts/helpers';
 
 // Enhanced Card Header
 const CardHeader = styled.div`
-  background: #134B5F;
+
+  color: ${({theme}) => theme.colors.ui800};
   width: 100%;
-  padding: 15px;
+  margin-bottom: 16px;
   box-sizing: border-box;
+
   color: white;
   display: flex;
   justify-content: space-between;
@@ -18,43 +20,39 @@ const CardHeader = styled.div`
 
 // Card Title with Gradient
 const CardTitle = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1rem;
+  color: ${({theme}) => theme.colors.ui800};
 `;
 
-const Summary = styled.div`
-  font-size: 1rem;
-`;
+const TableWrap = styled.div`
+border: 1px solid ${({theme}) => theme.colors.ui200};
+padding: 32px;
+width: 100%;
+border-radius: ${({theme}) => theme.borderRadius.default};
+
+`
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background-color: #fff;
-
   overflow-x: auto;
+  border-radius: ${({theme}) => theme.borderRadius.default};
 `;
 
 const Header = styled.th`
-  border-bottom: 2px solid #ddd;
   padding: 12px 15px;
   text-align: left;
   background-color: #f7f7f7;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({theme}) => theme.colors.ui600}
 `;
 
 const Row = styled(motion.tr)`
-  &:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  
-
-  &:hover {
-    background-color: #e6f7ff;
-    transform: scale(1.02);
-    transition: transform 0.3s;
-  }
-
   width: 100%;
+  color: ${({theme}) => theme.colors.ui900};
+  font-weight: 500;
+  font-size: 14px;
 `;
 
 const Cell = styled.td`
@@ -105,6 +103,7 @@ const TransactionHistoryCard = memo(({data}) => {
           `}
         </Summary> */}
       </CardHeader>
+      <TableWrap>
       <Table>
         <thead>
           <Row>
@@ -128,6 +127,7 @@ const TransactionHistoryCard = memo(({data}) => {
           ))}
         </tbody>
       </Table>
+      </TableWrap>
     </CardContainer>
   );
 });

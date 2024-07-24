@@ -14,33 +14,7 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 const GoogleButton = styled.div`
-      background: #DB4437e6;
-      backdrop-filter: blur(10px);
-      color: #444;
-      //width: 190px;
-      border-radius: 5px;
-      border: 0.1rem solid rgba(255, 255, 255, 1);
-      box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
-      white-space: nowrap;
-      padding: 0.4rem 1rem;
-      box-sizing: border-box;
-      transition: 0.3s ease-in-out;
-
-      &:hover {
-        cursor: pointer;
-        background: #DB4437;
-        scale: 1.05;
-      }
-
-      span.buttonText {
-        display: inline-block;
-        vertical-align: middle;
-        padding-left: 10px;
-        font-size: 1rem;
-        font-weight: bold;
-        font-family: 'Roboto', sans-serif;
-        color: white
-      }
+   
 `;
 
 const provider = new GoogleAuthProvider();

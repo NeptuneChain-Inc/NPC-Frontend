@@ -76,9 +76,7 @@ const MediaGallery = ({APP}) => {
       </div>
     );
   } else{
-    return (
-      <div>N/A</div>
-    )
+    return null
   }
 })}
 </Gallery>

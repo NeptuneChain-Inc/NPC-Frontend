@@ -408,7 +408,7 @@ const Main = styled.div`
   height: 100%;
   ${style_template.flex_display.column_custom("flex-start", "flex-start")}
 
-  padding: 64px;
+  padding: 32px 64px;
   box-sizing: border-box;
 
   overflow: auto;

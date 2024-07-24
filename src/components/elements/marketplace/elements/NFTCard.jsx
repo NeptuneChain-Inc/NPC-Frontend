@@ -13,23 +13,30 @@ const Card = styled.div`
     padding: 20px;
     border-radius: ${({theme}) => theme.borderRadius.default};
     transition: transform 0.3s, box-shadow 0.3s;
-    cursor: pointer;
     max-height: 400px;
     overflow: auto;
     box-sizing: border-box;
-    border: 1px solid ${({theme}) => theme.colors.ui200};
+/*     border: 1px solid ${({theme}) => theme.colors.ui200}; */
+background: ${({theme}) => theme.colors.ui50};
+border: 1px solid ${({theme}) => theme.colors.ui200};
+
+    .upper-section { 
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }   
     @media (max-width: 768px) {
         width: 100%
     }
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-    }
 `;
 
 export const NFTImage = styled.img`
-    height: 100px;
+    width: 64px;
+    height: 64px; 
+    padding: 8px;
+    background: white; 
+    border: 1px solid ${({theme}) => theme.colors.ui200};
     border-radius: 10px;
     object-fit: cover;
     margin-bottom: 10px;
@@ -40,21 +47,22 @@ const NFTInfo = styled.div`
 `;
 
 const Title = styled.h3`
-    font-size: 1.2em;
+    font-size: 1rem;
     margin: 0;
-    color: #333;
-    font-weight: 600;
+    color: ${({theme}) => theme.colors.ui800};
+    font-weight: 500;
 `;
 
 const Seller = styled.p`
-    color: #666;
-    font-size: 0.9em;
+    color: ${({theme}) => theme.colors.ui600};
+    font-size: 14px;
     margin: 5px 0;
+    font-weight: 500; 
 `;
 
 const Price = styled.p`
     color: ${({theme}) => theme.colors.primary500};
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 600; 
 `;
 
@@ -62,15 +70,21 @@ const Price = styled.p`
 
 const NFTCard = ({ nft, navigate }) => (
     <Card>
+        <div className='upper-section'>
+
         <NFTImage src={nft.image || placeholderIMG} alt={nft.name} />
-        <NFTInfo>
+        <div>
             <Title>{nft.name} #{Number(nft.tokenId)}</Title>
+            <Price>${Math.round(nft.price*Math.random()*100)}</Price>
+        </div>
+        </div>
+        <NFTInfo>
             {/* <Seller>Seller: {formatLongString(nft.seller)}</Seller> */}
             <Seller>Seller: NeptuneChain*</Seller>
             <Seller>Available: {Math.round(Math.random()*100)}</Seller>
-            <Price>${Math.round(nft.price*Math.random()*100)}</Price>
         </NFTInfo>
-        <ButtonPrimary fullWidth={true} className onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</ButtonPrimary>
+        
+        <ButtonPrimary  className onClick={() => navigate(`listing/${nft.listingId}`)}>Buy Now</ButtonPrimary>
     </Card>
 );
 

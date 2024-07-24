@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { ThemeConsumer } from "styled-components";
 import { motion } from "framer-motion";
 import {
   Chart,
@@ -22,6 +22,7 @@ import "font-awesome/css/font-awesome.min.css";
 import { fetchDeviceData, getRandomColor } from "../../dash.utils";
 import { capitalizeFirstLetter, logDev } from "../../../scripts/helpers";
 import {logoColors} from "../../../styles/colors";
+import {Badge} from '../../shared/Badge/Badge'
 
 const defaultModules = {
   BarController,
@@ -308,7 +309,7 @@ const ChartCardComponent = ({
         {label}
         </div>
        <ChartOptions>
-        {chartTypes.map((type, index) => <button key={index} onClick={() => setType(type)}>{capitalizeFirstLetter(type)}</button>)}
+        {chartTypes.map((type, index) => <Badge key={index} onClick={() => setType(type)}>{capitalizeFirstLetter(type)}</Badge>)}
        </ChartOptions>
       </Header>
       <CanvasWrapper>
@@ -324,10 +325,6 @@ const SCardContainer = styled(motion.div)`
   // min-height: 400px;
   padding: 5px;
 width: 100%;
-  padding: 1rem 2rem;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  box-sizing: border-box;
-  cursor: pointer;
 
   &:hover{
   transform: scale(1);
@@ -336,43 +333,29 @@ width: 100%;
 
 const Header = styled.div`
   font-weight: 600;
-  padding: 12px;
   box-sizing: border-box;
   text-align: center;
   width: 100%;
-  background-color: #f1f1f1;
-  border-bottom: 1px solid #ddd;
-
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-
-  color: #333;
-  font-size: 1.3rem;
+  color: ${({theme}) => theme.colors.ui800};
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  border-box: box-sizing;
-
-  margin-bottom: 1.5rem;
-
   i {
     margin-right: 10px;
-    color: #007bff;
+    color: ${({theme}) => theme.colors.ui800};
   }
 `;
 
 const ChartOptions = styled(motion.div)`
 
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   padding: 0.5rem;
 
   button {
     font-size: 0.8rem;
     
-    &:hover{
-    background: ${logoColors.primary};
-    }
   }
 `;
 const CanvasWrapper = styled(motion.div)`

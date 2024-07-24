@@ -15,6 +15,7 @@ import {Input} from '../../shared/input/Input'
 import FormSection from '../../shared/FormSection/FormSection'
 import { ButtonPrimary } from "../../shared/button/Button";
 import ButtonLoading from "../../shared/button/ButtonLoading";
+import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 
 const colors = {
   primaryBlue: "#1B3B6F",
@@ -438,13 +439,15 @@ const MediaUpload = ({ APP, togglePopup }) => {
   };
 
   return (
+    <DashboardPage title={"Upload media"}>
+
     <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
 {/*     <UploadProgress progress={50} />
  */}      {/* {(isLoading || uploadPercentage > 0) && (
-          {uploadPercentage > 0 && (
-            <UploadProgress progress={uploadPercentage} />
-          )}
-      )} */}
+  {uploadPercentage > 0 && (
+    <UploadProgress progress={uploadPercentage} />
+    )}
+    )} */}
 
       <InputPreviewContainer>
         {asset ? (
@@ -479,7 +482,7 @@ const MediaUpload = ({ APP, togglePopup }) => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.5 }}
-              >
+                >
                 <FormSection label={"File name"}>
                 <Input 
                   type="text"
@@ -503,7 +506,7 @@ const MediaUpload = ({ APP, togglePopup }) => {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleUpload}
                   disabled={isLoading}
-                >
+                  >
                   {
                     isLoading ? <ButtonLoading /> : "Upload"
                   }
@@ -515,6 +518,7 @@ const MediaUpload = ({ APP, togglePopup }) => {
         )}
       </InputPreviewContainer>
     </AssetContainer>
+        </DashboardPage>
   );
 };
 

@@ -51,23 +51,7 @@ const WelcomeHome = ({ user, setCardState, enterDash }) => {
       <Paragraph>
         Collaborate with fellow farmers to champion regenerative practices and protect our waterways. Together, we can create a cleaner, healthier planet.
       </Paragraph>
-      <ButtonContainer>
-        {username ? (
-          <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={enterDash}>
-            Open Dashboard
-          </BUTTON>
-        ) : (
-          <>
-            <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCardState?.('login')}>
-              Login
-            </BUTTON>
-            <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCardState?.('register')}>
-              Register
-            </BUTTON>
-          </>
-        )}
-      </ButtonContainer>
-
+      
     </PROMPT_CARD>
   )
 }

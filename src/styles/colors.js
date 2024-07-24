@@ -13,6 +13,7 @@ export const logoColors = {
 };
 export const theme = {
   colors: {
+    primary50: "#EFFBFB",
     primary500: "#1D7072",
     primary700: "#0F393A",
 

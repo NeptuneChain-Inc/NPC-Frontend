@@ -1,19 +1,46 @@
 import styled from "styled-components"
+import { ButtonIcon, ButtonLink, ButtonSecondary } from "../button/Button"
+import { FaChevronLeft } from "react-icons/fa6"
 
 const Dashboard = styled.main`
 width: 100%;
 height: 100%;
 `
 
-const TitleContent = styled.div``
+const TitleContent = styled.div`
+font-size: 20px;
+font-weight: 500;
+color: ${({theme}) => theme.colors.ui800};
+letter-spacing: -0.2px;
+`
+
+const DashboardTop = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+
+    gap: 8px;
+    border-bottom: 1px solid ${({theme}) => theme.colors.ui200};
+    `
 
 
-export const DashboardPage = ({children, title}) => {
+export const DashboardPage = ({children, title, backHref}) => {
     return ( 
         <Dashboard>
+            <DashboardTop>
+
+            {
+                typeof backHref !== "undefined" && (
+                    <ButtonIcon href={backHref} as="a" >
+                         <FaChevronLeft /> 
+                    </ButtonIcon>
+                )
+            }
             <TitleContent>
             {title}
             </TitleContent>
+            </DashboardTop>
             {children}
         </Dashboard>
     )

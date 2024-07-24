@@ -162,28 +162,7 @@ const ButtonContainer = styled.div`
   gap: 10px;
 `;
 
-const FloatingButton = styled(motion.button)`
-  position: fixed;
-  bottom: 50px;
-  left: -10px;
-  width: 50px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 30px;
-  background-color: ${colors.deepBlue};
-  color: white;
-  font-size: 0.8rem;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
 
-  z-index: 1000;
-
-  &:hover {
-    transform: translateY(-2px);
-    left: 20px;
-  }
-`;
 
 const Spinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -495,6 +474,7 @@ const SellerDashboard = ({ APP }) => {
             <NFTGrid>
               {highestBids.map((nft) => (
                 <NFT
+                  key={nft.listingId}
                   initial={{ scale: 1 }}
                   whileHover={hoverAnimation}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -522,10 +502,6 @@ const SellerDashboard = ({ APP }) => {
           )}
         </StyledTabPanel>
       </TabContainer>
-
-      <FloatingButton onClick={() => navigate("/marketplace")}>
-        <FontAwesomeIcon icon={faArrowLeft} />
-      </FloatingButton>
     </DashboardPage>
   );
 };
