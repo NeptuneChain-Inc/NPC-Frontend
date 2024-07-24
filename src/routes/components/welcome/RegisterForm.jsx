@@ -5,7 +5,6 @@ import Notification from "../../../components/popups/NotificationPopup";
 import { environmentalRotation, successAnimation } from "../../../assets/animations";
 import {
   BUTTON,
-  INPUT,
   LOADING_ANIMATION,
   PROMPT_CARD,
   PROMPT_FORM,
@@ -24,20 +23,11 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 /** FIREBASE AUTH */
 import { auth } from "../../../apis/firebase";
 import { createUser } from "../../../apis/database";
+import { Input } from "../../../components/shared/Input/Input";
+import FormSection from "../../../components/shared/FormSection/FormSection";
+import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
 
-const InputGroup = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 90%;
-  height: 50px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 5px;
-  padding-left: 10px;
-  box-sizing: border-box;
-`;
+
 
 const Icon = styled(FontAwesomeIcon)`
   color: #0077b6;
@@ -45,23 +35,15 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 const Dropdown = styled.select`
+  height: 40px;
+  background: ${({theme}) => theme.colors.ui50}; 
   width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: white;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
-  &:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-  }
+  border: 1px solid ${({ theme }) => theme.colors.ui300};
+  border-radius: ${({ theme }) => theme.borderRadius.default};
+  padding: 0 8px;
+  font-size: 14px; 
+  color: ${({ theme }) => theme.colors.ui800};
+  font-weight: 500;  
 `;
 
 const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) => {
@@ -147,48 +129,35 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) =>
             exit="exit"
             onSubmit={handleSubmit}
           >
-            {/* <CardLogo
-              src={logoImage}
-              alt="NeptuneChain Logo"
-              variants={logoVariants}
-              initial="hidden"
-              animate="visible"
-            /> */}
-            <InputGroup>
-              <Icon icon={faUser} />
-              <INPUT
+       
+            <FormSection label="Username">
+              <Input
                 type="text"
-                placeholder="Username..."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-            </InputGroup>
+            </FormSection>
 
-            <InputGroup>
-              <Icon icon={faEnvelope} />
-              <INPUT
+            <FormSection label="Email">
+              <Input
                 type="email"
-                placeholder="Email Address..."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </InputGroup>
+            </FormSection>
 
-            <InputGroup>
-              <Icon icon={faLock} />
-              <INPUT
+            <FormSection label={"Password"}>
+              <Input
                 type="password"
-                placeholder="Password..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </InputGroup>
+            </FormSection>
 
-            <InputGroup>
-              <Icon icon={faPeopleGroup} />
+            <FormSection label={"Account type"}>
               <Dropdown
                 value={accountType}
                 onChange={(e) => setAccountType(e.target.value)}
@@ -198,12 +167,15 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) =>
                 <option value="distributor">Distributor</option>
                 <option value="retailer">Retailer</option>
               </Dropdown>
-            </InputGroup>
+            </FormSection>
 
-            <BUTTON type="submit">Register</BUTTON>
-            <TEXT_LINK type="button" onClick={onSwitchToLogin}>
+            <ButtonPrimary type="submit">Register</ButtonPrimary>
+            <div>
+
+            <ButtonLink type="button" onClick={onSwitchToLogin}>
               Already have an account? Log in
-            </TEXT_LINK>
+            </ButtonLink>
+            </div>
           </PROMPT_FORM>
         ) : (
           <LOADING_ANIMATION

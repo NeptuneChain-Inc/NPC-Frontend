@@ -5,16 +5,29 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getUser } from "../../../apis/database";
+import { FcGoogle } from "react-icons/fc";
 
 const Icon = styled(FontAwesomeIcon)`
       display: inline-block;
       vertical-align: middle;
       width: 1rem;
-      color: white;
+      color: black
 `;
 
-const GoogleButton = styled.div`
-   
+const GoogleButton = styled.button`
+   border: 1px solid ${({theme}) => theme.colors.ui300};
+    border-radius: 10px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size:14px; 
+  color: ${({theme}) => theme.colors.ui800};
+  background: white;
+  svg {
+     font-size: 16px;
+  }
 `;
 
 const provider = new GoogleAuthProvider();
@@ -63,7 +76,7 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
 
     return (
       <GoogleButton onClick={handleSubmit}>
-        <Icon icon={faGoogle} />
+        <FcGoogle />
         <span className="buttonText">Continue With Google</span>
       </GoogleButton>
     );

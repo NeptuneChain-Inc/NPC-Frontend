@@ -116,9 +116,9 @@ const InputGroup = styled.div`
 const Loading = styled.div`
   margin-top: 20px;
   font-size: 18px;
-  color: #007bff;
-  animation: spin 1s infinite linear;
-
+  color: ${({ theme }) => theme.colors.ui800};  
+  animation: spin 0.2s infinite linear;
+  
   @keyframes spin {
     0% {
       transform: rotate(0deg);

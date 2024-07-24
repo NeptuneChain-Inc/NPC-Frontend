@@ -16,7 +16,9 @@ const Button = styled.button`
 export const ButtonPrimary = styled(Button)`
   background: ${({ theme }) => theme.colors.primary500};
   color: white;
-
+  :hover {
+    background: ${({ theme }) => theme.colors.primary700};
+  }
   :disabled {
     background: ${({ theme }) => theme.colors.ui200};
     color: ${({ theme }) => theme.colors.ui500};
@@ -34,7 +36,8 @@ export const ButtonSecondary = styled(Button)`
 export const ButtonLink = styled(Button)`
 text-decoration: underline; 
 color: ${({theme}) => theme.colors.ui600};
-padding: 24px 0px;
+padding: 0px;
+background: white;
 svg {
   color: ${({theme}) => theme.colors.ui600};
   font-size: 12px;

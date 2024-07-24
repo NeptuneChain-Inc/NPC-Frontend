@@ -37,6 +37,7 @@ const Table = styled.table`
   border-collapse: collapse;
   overflow-x: auto;
   border-radius: ${({theme}) => theme.borderRadius.default};
+  width: 100%;
 `;
 
 const Header = styled.th`

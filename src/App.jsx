@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Outlet } from "react-router-dom";
 import { ethers } from "ethers";
 import { motion } from "framer-motion";
 import styled from "styled-components";
@@ -303,16 +303,12 @@ function App() {
           </>
         )}
 
-          {user && !navlessRoutes && (
-            <>
-            </>
-          )}
+
             {user && <Sidebar APP={APP} />}
-            <Main isSidebarOpen={sidebarOpen}>
               <Routes>
                 <Route path="/" element={<Welcome APP={APP} />} />
                 {user?.uid && (
-                  <>
+                  <Route element={<Main isSidebarOpen={sidebarOpen} />}>
                   <Route
                   
                     element={<VerificationUI APP={APP}
@@ -357,7 +353,7 @@ function App() {
                       path="/marketplace/seller-dashboard"
                       element={<SellerDashboard APP={APP} />}
                     />
-                  </>
+                  </Route>
                 )}
 
                 {/* Registy Project Routes */}
@@ -373,7 +369,6 @@ function App() {
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </Main>
          
 
         {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
@@ -403,13 +398,13 @@ const Flex = styled.div`
         : style_template.flex_display.row_centered}
 `;
 
-const Main = styled.div`
+const StyledMain = styled.div`
   width: 100%;
   height: 100%;
-  ${style_template.flex_display.column_custom("flex-start", "flex-start")}
-
   padding: 32px 64px;
+
   box-sizing: border-box;
+  background: white; 
 
   overflow: auto;
 
@@ -496,3 +491,10 @@ const FooterIconGroup = styled.div`
 `;
 
 export default App;
+
+
+function Main() { 
+  return <StyledMain>
+    <Outlet />
+  </StyledMain>
+}

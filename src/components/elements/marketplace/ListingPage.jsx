@@ -31,12 +31,12 @@ const rotate = keyframes`
 
 
 const Spinner = styled.div`
-  border: 4px solid ${logoColors.secondary};
-  border-top: 4px solid ${logoColors.accent};
+  border: 4px solid ${({theme}) => theme.colors.ui200};
+  border-top: 4px solid ${({theme}) => theme.colors.ui800};
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  animation: ${rotate} 2s linear infinite;
+  animation: ${rotate} 0.8s linear infinite;
   margin: 20px auto;
 `;
 
