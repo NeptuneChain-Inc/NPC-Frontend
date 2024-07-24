@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 import { Network, Alchemy } from "alchemy-sdk";
 import { alchemyAPI, mumbaiRPC, privateKey } from "../contracts/ref";
 
-
 const getFirebaseConfig = async () =>
   (await axios.post(`${configs.server_url}/firebase/config`, {}))?.data;
 
@@ -36,6 +35,31 @@ const createEmailUser = async (email, username, type, password) =>
 const createDBUser = async (userdata = { uid, email, username, type }) =>
   (await axios.post(`${configs.server_url}/db/user/create/user`, userdata))
     ?.data;
+
+const AddUserSubmission = async (assetID, userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/media/create/asset/submission`, {
+      assetID,
+      userUID,
+    })
+  )?.data;
+
+const AddUserDispute = async (assetID, userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/media/create/asset/dispute`, {
+      assetID,
+      userUID,
+    })
+  )?.data;
+
+const AddUserApproval = async (assetID, userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/media/create/asset/approval`, {
+      assetID,
+      userUID,
+    })
+  )?.data;
+
 const handleResetPassword = async (email) =>
   (
     await axios.post(`${configs.server_url}/auth/email/password_reset`, {
@@ -52,11 +76,37 @@ const getDashbord = async (uid) =>
     uid,
   }))?.data;
 const getUserMedia = async (userUID) =>
-  (await axios.post(`${configs.server_url}/db/user/get/media/assets`, { userUID }))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/db/user/get/media/assets`, {
+      userUID,
+    })
+  )?.data;
+const getUserSubmissions = async (userUID) =>
+  (
+    await axios.post(
+      `${configs.server_url}/db/user/get/media/assets/submissions`,
+      { userUID }
+    )
+  )?.data;
+const getUserDisputes = async (userUID) =>
+  (
+    await axios.post(
+      `${configs.server_url}/db/user/get/media/assets/disputes`,
+      { userUID }
+    )
+  )?.data;
+const getUserApprovals = async (userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/user/get/media/approvals`, {
+      userUID,
+    })
+  )?.data;
 const getUserStreams = async (uid) =>
-  (await axios.post(`${configs.server_url}/db/user/get/media/streams`, { userUID }))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/db/user/get/media/streams`, {
+      userUID,
+    })
+  )?.data;
 
 const UserAPI = {
   get: {
@@ -64,17 +114,26 @@ const UserAPI = {
     username: getUsername,
     dashboard: getDashbord,
     media: getUserMedia,
+    asset: {
+      submissions: getUserSubmissions,
+      disputes: getUserDisputes,
+      approvals: getUserApprovals,
+    },
     streams: getUserStreams,
   },
   create: {
     emailUser: createEmailUser,
     dbUser: createDBUser,
+    asset: {
+      submission: AddUserSubmission,
+      dispute: AddUserDispute,
+      approval: AddUserApproval,
+    },
   },
   request: {
     passwordReset: handleResetPassword,
   },
 };
-
 
 const getMedia = async (assetID) =>
   (await axios.post(`${configs.server_url}/db/media/get/asset`, { assetID }))
@@ -94,13 +153,13 @@ const createMedia = async (newAssetPaylaod, userUID) =>
       userUID,
     })
   )?.data;
-  const createMediaMetadata = async (assetID, metadata) =>
-    (
-      await axios.post(`${configs.server_url}/db/media/create/asset/metadata`, {
-        assetID,
-        metadata,
-      })
-    )?.data;
+const createMediaMetadata = async (assetID, metadata) =>
+  (
+    await axios.post(`${configs.server_url}/db/media/create/asset/metadata`, {
+      assetID,
+      metadata,
+    })
+  )?.data;
 
 const createStream = async (streamData, creatorUID) =>
   (
@@ -154,14 +213,18 @@ const EthereumAPI = {
   },
 };
 
-
 const createLivepeerAsset = async (newAssetPayload, userUID) =>
-  (await axios.post(`${configs.server_url}/livepeer/asset/create`, {newAssetPayload, userUID}))?.data;
+  (
+    await axios.post(`${configs.server_url}/livepeer/asset/create`, {
+      newAssetPayload,
+      userUID,
+    })
+  )?.data;
 
 const getLivepeerAsset = async (assetID) =>
   (
     await axios.post(`${configs.server_url}/livepeer/asset/get`, {
-      assetID
+      assetID,
     })
   )?.data;
 
@@ -169,37 +232,37 @@ const updateLivepeerAsset = async (assetID, patch) =>
   (
     await axios.post(`${configs.server_url}/livepeer/asset/update`, {
       assetID,
-      patch
+      patch,
     })
   )?.data;
 
-  const deleteLivepeerAsset = async (assetID) =>
-    (
-      await axios.post(`${configs.server_url}/livepeer/asset/delete`, {
-        assetID,
-      })
-    )?.data;
+const deleteLivepeerAsset = async (assetID) =>
+  (
+    await axios.post(`${configs.server_url}/livepeer/asset/delete`, {
+      assetID,
+    })
+  )?.data;
 
-    //playbackOps
-    const getPlaybackInfo = async (playbackID) =>
-      (
-        await axios.post(`${configs.server_url}/livepeer/playback/info`, {
-          playbackID,
-        })
-      )?.data;
+//playbackOps
+const getPlaybackInfo = async (playbackID) =>
+  (
+    await axios.post(`${configs.server_url}/livepeer/playback/info`, {
+      playbackID,
+    })
+  )?.data;
 
 const LivepeerAPI = {
   assetOps: {
     create: createLivepeerAsset,
     get: getLivepeerAsset,
     update: updateLivepeerAsset,
-    delete: deleteLivepeerAsset
+    delete: deleteLivepeerAsset,
   },
   playbackOps: {
     get: {
-      playbackInfo: getPlaybackInfo
-    }
-  }
+      playbackInfo: getPlaybackInfo,
+    },
+  },
 };
 
 /** * @returns api or error object */
@@ -323,7 +386,8 @@ const removeDevice = async (deviceId) =>
     : null;
 
 //Get all devices
-const getDevices = async () => (await axios.post(`${configs.server_url}/devices`,  {}))?.data?.devices;
+const getDevices = async () =>
+  (await axios.post(`${configs.server_url}/devices`, {}))?.data?.devices;
 
 // *NB: update endpont
 const getDeviceData = async (deviceId) =>
