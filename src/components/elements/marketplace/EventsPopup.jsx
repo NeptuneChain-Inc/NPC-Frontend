@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { colors } from '../../../styles/colors';
+import { Badge } from '../../shared/Badge/Badge';
+import { FaChevronDown } from 'react-icons/fa';
+import Spinner from '../../shared/Spinner/Spinner';
 
 const FullScreenWrapper = styled.div`
   position: fixed;
@@ -23,10 +26,10 @@ const PopupWrapper = styled.div`
   top: 10vh;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
+  width: 700px;
   max-width: 1000px;
   height: 80vh;
-  background-color: #f8f8f8;
+  background-color: white;
   padding: 30px;
   border-radius: 15px;
   box-sizing: border-box;
@@ -47,74 +50,42 @@ const PopupWrapper = styled.div`
 `;
 
 const CloseButton = styled.button`
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
   cursor: pointer;
   border: none;
   background: none;
   font-size: 24px;
-  color: ${colors.deepBlue};
+  color: ${({theme}) => theme.colors.ui400};
   transition: color 0.2s, transform 0.2s;
-
+  font-size: 16px;
   &:hover {
-    color: ${colors.red};
-    transform: translateY(-2px);
-  }
-`;
-
-const FilterButton = styled.button`
-  padding: 10px 15px;
-  border: none;
-  background-color: ${colors.deepBlue};
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
-
-  &:hover {
-    background-color: ${colors.lightBlue};
+    color: ${({theme}) => theme.colors.ui800};
     transform: translateY(-2px);
   }
 `;
 
 const EventDetailWrapper = styled.div`
-  background-color: white;
-  margin-top: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+border-top: 1px solid ${({theme}) => theme.colors.ui100};
+border-bottom: 1px solid ${({theme}) => theme.colors.ui100};
+padding: 16px 0px;
 `;
 
 const EventSummary = styled(motion.div)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-width: 500px;
-  padding: 10px;
-  cursor: pointer;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+font-size: 16px;
+font-weight: 500; 
+color: ${({theme}) => theme.colors.ui800};
 
-  &:hover {
-    background-color: #f9f9f9;
-  }
 
-  @media (max-width: 767px) {
-    min-width: 200px;
-  }
 `;
 
 const EventTable = styled(motion.table)`
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-
-  th, td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-  }
+  margin-top: 12px;
+  text-transform: capitalize;
 
   th {
     background-color: #f4f4f4;
@@ -132,37 +103,34 @@ const NoEventsMessage = styled.p`
 `;
 
 const FilterSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+display: flex;
+align-items: center;
+gap:4px;
+flex-wrap: wrap; 
+text-transform: capitalize;
+width: 100%;
+justify-content: flex-start;
 `;
 
-const Spinner = styled.div`
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-top: 4px solid #568EA3;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin: auto;
-  animation: spin 2s linear infinite;
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
 
 const ScrollableEventContainer = styled.div`
   width: 100%;
   overflow-y: auto;
-  margin-top: 10px;
+  margin-top: 40px;
   padding-bottom: 10px;
 `;
+
+const Event = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+cursor: pointer;
+svg {
+  color: ${({theme}) => theme.colors.ui600};
+  font-size:12px
+}
+`
 
 
 const variants = {
@@ -175,14 +143,18 @@ const EventDetail = ({ event, filterType }) => {
   const toggleOpen = () => setIsOpen(!isOpen);
 
   const mainInfo = filterType === 'all' ?
-    { 'Event': event.type || 'unnamed', 'Timestamp': event.timestamp || 'Not Available' } :
-    { 'Listing #': event.listingId || 'Not Available', 'Timestamp': event.timestamp || 'Not Available' };
+    { '': event.type || 'unnamed'} :
+    { 'Listing #': event.listingId || 'Not Available'};
 
   return (
     <EventDetailWrapper>
+
       <EventSummary onClick={toggleOpen} initial="initial" animate={isOpen ? "open" : "collapsed"}>
         {Object.entries(mainInfo).map(([key, value], idx) => (
-          <p key={idx}><strong>{key}:</strong> {value}</p>
+          <Event key={idx}>
+          <p key={idx}>{value}</p>
+          <FaChevronDown />
+          </Event>
         ))}
       </EventSummary>
 
@@ -193,7 +165,7 @@ const EventDetail = ({ event, filterType }) => {
               {Object.entries(event).map(([key, value], idx) => (
                 <tr key={idx}>
                   <td>{key}</td>
-                  <td>{typeof value === 'string' ? value : JSON.stringify(value)} {(key === 'price' || key === 'amount') && 'Matic'}</td>
+                  <td>{typeof value === 'string' ? value : JSON.stringify(value)} {(key === 'price' || key === 'amount') && '$'}</td>
                 </tr>
               ))}
             </tbody>
@@ -226,19 +198,19 @@ const EventsPopup = ({ events, onClose, fetchEvents, marketEvents }) => {
   return (
     <FullScreenWrapper>
       <PopupWrapper>
-        <CloseButton onClick={onClose}>✖</CloseButton>
+        <CloseButton onClick={onClose}>✖ </CloseButton>
         <FilterSection>
-          <FilterButton onClick={() => handleFilterChange('all')}>All Events</FilterButton>
+          <Badge onClick={() => handleFilterChange('all')}>All Events</Badge>
           {Object.keys(marketEvents?.filtered ?? {}).map((eventFunction, index) => (
-            <FilterButton key={index} onClick={() => handleFilterChange(eventFunction)}>
+            <Badge key={index} onClick={() => handleFilterChange(eventFunction)}>
               {eventFunction.replace(/([A-Z])/g, ' $1').trim()} Events
-            </FilterButton>
+            </Badge>
           ))}
         </FilterSection>
 
         <ScrollableEventContainer>
           {isLoading ? (
-            <Spinner />
+            <Spinner text="Loading Events..." />
           ) : events.length === 0 ? (
             <NoEventsMessage>No events to display</NoEventsMessage>
           ) : (

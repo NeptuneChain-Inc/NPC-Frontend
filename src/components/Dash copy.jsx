@@ -202,13 +202,11 @@ const DashContainer = styled(motion.div)`
 const DashSection = styled(motion.div)`
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
   gap: 2rem;
   align-items: center;
   padding: 2.5rem;
   justify-content: ${({ alignment }) => alignment || 'flex-start'};
   border-radius: 10px;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   transition: 1s ease-in-out;
 
@@ -217,11 +215,6 @@ const DashSection = styled(motion.div)`
     justify-content: center;
   }
   
-  @media (min-width: 768px) {
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
 `;
 
 const FloatingLinks = styled.div`

@@ -3,19 +3,20 @@ import styled from 'styled-components';
 import { BUTTON, PROMPT_CARD } from '../../../components/lib/styled';
 
 const Title = styled.h1`
-  font-size: 2rem;
-  color: #003366;
-  text-align: center;
+  font-size: 1.5rem;
+  color: ${({theme}) => theme.colors.ui800};
+  
+  text-align: left;
   margin-bottom: 1rem;
 `;
 
 const Paragraph = styled.p`
-  font-size: 1rem;
+  font-size: 14px; 
+  font-weight: 500;
   line-height: 1.4;
-  color: #333;
-  text-align: center;
-  padding: 0rem 1rem;
-  margin-bottom: 1rem;
+  color: ${({theme}) => theme.colors.ui600};
+  text-align: left;
+  margin-bottom: 2rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -51,23 +52,7 @@ const WelcomeHome = ({ user, setCardState, enterDash }) => {
       <Paragraph>
         Collaborate with fellow farmers to champion regenerative practices and protect our waterways. Together, we can create a cleaner, healthier planet.
       </Paragraph>
-      <ButtonContainer>
-        {username ? (
-          <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={enterDash}>
-            Open Dashboard
-          </BUTTON>
-        ) : (
-          <>
-            <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCardState?.('login')}>
-              Login
-            </BUTTON>
-            <BUTTON whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setCardState?.('register')}>
-              Register
-            </BUTTON>
-          </>
-        )}
-      </ButtonContainer>
-
+      
     </PROMPT_CARD>
   )
 }

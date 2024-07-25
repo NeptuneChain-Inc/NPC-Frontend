@@ -1,5 +1,6 @@
 import { DeviceAPI, MetricAPI } from "../scripts/back_door";
 import { handleError } from "../scripts/lib";
+import { theme } from "../styles/colors";
 
 export const getMetric = async (metric, uid) => {
   if (!MetricAPI.allMetrics.includes(metric) || !uid) {
@@ -73,7 +74,7 @@ export const fetchDeviceData = async (id, setDeviceData) => {
  */
 export function getRandomColor() {
   // Generate random values for red, green, and blue
-  const red = Math.floor(Math.random() * 256);
+  /*   const red = Math.floor(Math.random() * 256);
   const green = Math.floor(Math.random() * 256);
   const blue = Math.floor(Math.random() * 256);
 
@@ -81,6 +82,6 @@ export function getRandomColor() {
   const color = `#${red.toString(16).padStart(2, "0")}${green
     .toString(16)
     .padStart(2, "0")}${blue.toString(16).padStart(2, "0")}`;
-
-  return color;
+ */
+  return theme.colors.primary500;
 }

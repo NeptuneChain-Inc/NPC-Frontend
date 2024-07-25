@@ -3,6 +3,10 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { ButtonPrimary } from "../../../shared/button/Button";
+import FormSection from "../../../shared/FormSection/FormSection";
+import { Input } from "../../../shared/input/Input";
+import { FaXmark } from "react-icons/fa6";
 
 const colors = {
   primary: '#005A87',
@@ -20,12 +24,35 @@ const colors = {
  justify-content: center;
  width: 100%;
  max-width: 400px;
- background-color: ${colors.white};
+ background-color: white;
  padding: 2rem;
  border-radius: 10px;
  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
  z-index: 100;
  margin: 0 auto;
+ position: relative;
+ .close-button { 
+  position: absolute;
+  top: 8px; 
+  background-color: white;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  border: none;
+  padding: 0px; 
+  svg {
+    color: ${({theme}) => theme.colors.ui600}; 
+    font-size: 16px;
+    height: 16px; 
+    width: 16px;
+    margin: 0px;
+  }
+ }
+  
+ h3 { 
+  text-align: left;
+  color: ${({theme}) => theme.colors.ui800};
+ }
 
  @media (min-width: 768px) {
    max-height: 80vh;
@@ -39,15 +66,6 @@ const Form = styled.form`
   gap: 1rem;
 `;
 
-const Input = styled.input`
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid ${colors.secondary};
-  &:focus {
-    outline: none;
-    border-color: ${colors.accent};
-  }
-`;
 
 const SubmitButton = styled.button`
   padding: 0.8rem;
@@ -131,20 +149,24 @@ const PoSPopup = ({ closePopup, actionType, listingId, buyNFT, placeBid, listing
       animate={{ scale: 1 }}
       exit={{ scale: 0 }}
     >
-      <h3>{actionType === 'buy' ? 'Buy NFT' : 'Place a Bid'}</h3>
+      <button onClick={closePopup} className="close-button">
+      <FaXmark />
+      </button>
+      <h3 className="">{actionType === 'buy' ? 'Buy NFT' : 'Place a Bid'}</h3>
       <Form onSubmit={handleSubmit}>
-        <p>Price:</p>
-        <Input
-          type="number"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Enter amount"
-          disabled={actionType === 'buy'}
-          required
-        />
-        <SubmitButton type="submit" disabled={isLoading}>
+        <FormSection label="Price">
+         <Input
+           type="number"
+           value={value}
+           onChange={(e) => setValue(e.target.value)}
+           placeholder="Enter amount"
+           disabled={actionType === 'buy'}
+           required
+         /> 
+        </FormSection>
+        <ButtonPrimary type="submit" disabled={isLoading}>
           {isLoading ? 'Processing...' : 'Submit'}
-        </SubmitButton>
+        </ButtonPrimary>
       </Form>
 
       {receipt && (
@@ -156,8 +178,6 @@ const PoSPopup = ({ closePopup, actionType, listingId, buyNFT, placeBid, listing
           {/* ... Other receipt details */}
         </Receipt>
       )}
-
-<CloseButton onClick={closePopup}>Close</CloseButton>
     </PoSPopupWrapper>
   );
 };

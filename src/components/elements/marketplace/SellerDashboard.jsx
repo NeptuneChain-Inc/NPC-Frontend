@@ -15,6 +15,7 @@ import { isNotZeroAddress } from "../../../scripts/utils";
 import {NFTGrid} from "./MarketBrowser";
 import {NFTImage} from "./elements/NFTCard";
 import placeholderIMG from '../../../assets/icon.png';
+import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 
 // Neptune Color Palette
 const colors = {
@@ -24,17 +25,7 @@ const colors = {
   white: "#FFF",
 };
 
-const DashboardWrapper = styled(Tabs)`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-`;
+
 
 const TabContainer = styled.div`
   display: flex;
@@ -43,7 +34,6 @@ const TabContainer = styled.div`
   padding: 20px;
   background: ${colors.white};
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   margin-top: 20px;
   width: 80%;
   height: 60vh;
@@ -140,7 +130,6 @@ gap: 10px;
     border-radius: 8px;
     transition: 0.3s ease-in-out;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #00000050;
     cursor: pointer;
     overflow: auto;
     overflow-x: hidden;
@@ -173,28 +162,7 @@ const ButtonContainer = styled.div`
   gap: 10px;
 `;
 
-const FloatingButton = styled(motion.button)`
-  position: fixed;
-  bottom: 50px;
-  left: -10px;
-  width: 50px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 30px;
-  background-color: ${colors.deepBlue};
-  color: white;
-  font-size: 0.8rem;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
 
-  z-index: 1000;
-
-  &:hover {
-    transform: translateY(-2px);
-    left: 20px;
-  }
-`;
 
 const Spinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -412,7 +380,7 @@ const SellerDashboard = ({ APP }) => {
   };
 
   return (
-    <DashboardWrapper>
+    <DashboardPage>
 
       <StyledTabList>
         <StyledTab>Owned</StyledTab>
@@ -429,6 +397,7 @@ const SellerDashboard = ({ APP }) => {
             <NFTGrid>
               {userNFTs.map((nft) => (
                 <NFT
+                  key={nft.listingId}
                   initial={{ scale: 1 }}
                   whileHover={hoverAnimation}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -467,6 +436,7 @@ const SellerDashboard = ({ APP }) => {
             <NFTGrid>
               {userListedNFTs.map((nft) => (
                 <NFT
+                  key={nft.listingId}
                   initial={{ scale: 1 }}
                   whileHover={hoverAnimation}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -504,6 +474,7 @@ const SellerDashboard = ({ APP }) => {
             <NFTGrid>
               {highestBids.map((nft) => (
                 <NFT
+                  key={nft.listingId}
                   initial={{ scale: 1 }}
                   whileHover={hoverAnimation}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -531,11 +502,7 @@ const SellerDashboard = ({ APP }) => {
           )}
         </StyledTabPanel>
       </TabContainer>
-
-      <FloatingButton onClick={() => navigate("/marketplace")}>
-        <FontAwesomeIcon icon={faArrowLeft} />
-      </FloatingButton>
-    </DashboardWrapper>
+    </DashboardPage>
   );
 };
 

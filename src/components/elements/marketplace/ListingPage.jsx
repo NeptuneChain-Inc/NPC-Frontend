@@ -10,6 +10,8 @@ import { formatLongString } from '../../../scripts/utils';
 import { colors } from '../../../styles/colors';
 import { ACTION_BUTTON } from '../../styled';
 import placeholder from '../../../assets/icon.png';
+import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
+import { DashboardPage } from '../../shared/DashboardPage/DashboardPage';
 
 const logoColors = {
   primary: '#005A87',  
@@ -29,23 +31,23 @@ const rotate = keyframes`
 
 
 const Spinner = styled.div`
-  border: 4px solid ${logoColors.secondary};
-  border-top: 4px solid ${logoColors.accent};
+  border: 4px solid ${({theme}) => theme.colors.ui200};
+  border-top: 4px solid ${({theme}) => theme.colors.ui800};
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  animation: ${rotate} 2s linear infinite;
+  animation: ${rotate} 0.8s linear infinite;
   margin: 20px auto;
 `;
 
 const ListingPageWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 80px 20px;
+  padding: 24px 0px;
   width: 100%;
   box-sizing: border-box;
   animation: ${fadeIn} 0.6s ease-out;
-  overflow: auto;
+
 `;
 
 const BlurredBack = styled(motion.div)`
@@ -58,6 +60,7 @@ const BlurredBack = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 10;
   `;
 
@@ -66,7 +69,7 @@ const BlurredBack = styled(motion.div)`
   height: auto;
   margin-right: 20px;
   animation: ${fadeIn} 0.8s ease-out;
-  border-bottom: 1px solid ${logoColors.secondary};
+
   border-radius: 4px;
   overflow: auto;
 
@@ -76,25 +79,11 @@ const BlurredBack = styled(motion.div)`
   }
 `;
 
-const Sidebar = styled.div`
-  width: 20%;
-  padding: 20px;
-  overflow: auto;
-  transition: transform 0.3s ease;
-  position: sticky;
-
-  @media (max-width: 768px) {
-    position: fixed;
-    width: 80%;
-    padding-top: 100px;
-    height: 100vh;
-    top: 0;
-    right: 0;
-    transform: translateX(${props => props.isOpen ? '0' : '100%'});
-    z-index: 20;
-    background-color: #fff;
-  }
-`;
+const ButtonSection = styled.div`
+display: flex;
+align-items: center;
+gap:8px;
+`
 
 const DrawerToggleButton = styled.button`
   display: none;
@@ -117,52 +106,43 @@ const DrawerToggleButton = styled.button`
   margin-bottom: 30px;
   padding: 20px;
   border-radius: 8px;
-  // background-color: ${logoColors.secondary};
-  box-sizing: border-box;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid ${logoColors.accent};
-  transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-    border-left: 4px solid ${logoColors.primary};
-  }
+  transition: all 0.3s ease;
 `;
 
 const HeroSection = styled(Section)`
   display: flex;
-  gap: 50px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: ${({theme}) => theme.colors.ui200};
+.hero-section-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+}
+
+
 `;
 
 const TokenImage = styled(motion.img)`
-  min-height: 200px;
-  min-width: 200px;
-  max-width: 400px;
+  max-width: 80px;
+
+  border: 1px solid ${({theme}) => theme.colors.ui200};
+  background: ${({theme}) => theme.colors.ui50};
+  border-radius: ${({theme}) => theme.borderRadius.default};
+  padding: 24px;
   height: auto;
-  border: 1px solid black;
 `;
 
 const SectionTitle = styled.h2`
-  margin-bottom: 15px;
-  color: #333;
+  margin-bottom: 4px;
+  font-size: 16px;
+  color: ${({theme}) => theme.colors.ui800};
 `;
 
 const Item = styled.div`
-display: flex;
-flex-direction: column;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  background-color: ${colors.accentBlue}80;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  box-sizing: border-box;
-  &:last-child {
-    border-bottom: none;
-  }
+
 `;
 
 const ItemLabel = styled.span`
@@ -170,7 +150,10 @@ const ItemLabel = styled.span`
 `;
 
 const ItemData = styled.span`
-  font-weight: 100;
+  font-weight: 400; 
+  color: ${({theme}) => theme.colors.ui600};
+  font-size: 16px;
+  font-weight: 500; 
 `;
 
 const ListingPage = ({ APP }) => {
@@ -270,6 +253,8 @@ const toggleDrawer = () => {
   }
 
   return (
+    <DashboardPage backHref={'/marketplace'}  title={"Listing"}>
+
     <ListingPageWrapper>
       {isLoading ? (
         <Spinner />
@@ -277,14 +262,35 @@ const toggleDrawer = () => {
         <MainContent>
           
         <HeroSection>
+          <div className='hero-section-info'>
+
           <TokenImage src={placeholder}/>
           <div>
           <SectionTitle>Listing #{id}</SectionTitle>
           <Item>
-            <ItemLabel>Token ID: <ItemData>{listingDetails.tokenId}</ItemData></ItemLabel>
-            <ItemLabel>Price: <ItemData>${listingDetails.price}</ItemData></ItemLabel>
+            <ItemData>${listingDetails.price}</ItemData>
           </Item>
           </div>
+          </div>
+          <ButtonSection>
+<ButtonPrimary
+  whileHover={{ scale: 1.05 }} 
+  whileTap={{ scale: 0.95 }} 
+  onClick={() => openPoSPopup('buy')} 
+  disabled={isLoading}
+  >
+  Buy Now
+</ButtonPrimary>
+<ButtonSecondary 
+  whileHover={{ scale: 1.05 }} 
+  whileTap={{ scale: 0.95 }} 
+  onClick={() => openPoSPopup('bid')} 
+  disabled={isLoading}
+  >
+  Make a Bid
+</ButtonSecondary>
+{/* Additional user actions */}
+  </ButtonSection>
         </HeroSection>
 
         <Section>
@@ -309,37 +315,8 @@ const toggleDrawer = () => {
             </Item>
           ))}
         </Section>
-
-      </MainContent>
-      )}
-
-<DrawerToggleButton onClick={toggleDrawer}>
-  <FontAwesomeIcon icon={isDrawerOpen ? faArrowLeft : faArrowRight} />
-</DrawerToggleButton>
-
-      <Sidebar isOpen={isDrawerOpen}>
-        <Section style={{backgroundColor: '#134b5f'}}>
-          <h3 style={{color: '#fff'}}>Purchase Credit</h3>
-          <ACTION_BUTTON 
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }} 
-            onClick={() => openPoSPopup('buy')} 
-            disabled={isLoading}
-          >
-            Buy
-          </ACTION_BUTTON>
-          <ACTION_BUTTON 
-            whileHover={{ scale: 1.05 }} 
-            whileTap={{ scale: 0.95 }} 
-            onClick={() => openPoSPopup('bid')} 
-            disabled={isLoading}
-          >
-            Bid
-          </ACTION_BUTTON>
-          {/* Additional user actions */}
-        </Section>
         <Section>
-          <h3>Your Bid History</h3>
+          <SectionTitle>Your Bid History</SectionTitle>
           {signedUser ? (
             <>
               {userBidHistory.length > 0 ? (
@@ -358,18 +335,30 @@ const toggleDrawer = () => {
             <p>User Not Connected</p>
           )}
         </Section>
-      </Sidebar>
+
+      </MainContent>
+      )}
+
+<DrawerToggleButton onClick={toggleDrawer}>
+  <FontAwesomeIcon icon={isDrawerOpen ? faArrowLeft : faArrowRight} />
+</DrawerToggleButton>
+
+        <Section>
+
+        </Section>
+
 
       {showPoSPopup && (
         <BlurredBack
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         >
           <PoSPopup closePopup={closePoSPopup} actionType={actionType} listingId={id} listingPrice={listingDetails.price} buyNFT={buyNFT} placeBid={placeBid} />
         </BlurredBack>
       )}
     </ListingPageWrapper>
+      </DashboardPage>
   );
 };
 

@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Outlet } from "react-router-dom";
 import { ethers } from "ethers";
 import { motion } from "framer-motion";
 import styled from "styled-components";
@@ -155,9 +155,6 @@ function App() {
       }
       return null;
 
-      logNotification("error", "Email not registered");
-
-      return null;
     } catch (error) {
       logNotification("error", error.message);
       return null;
@@ -290,42 +287,41 @@ function App() {
           onRetry={result?.handleRetry}
           onClose={() => setResult(null)}
         />
-
         {settingsMenuOpen && <SettingsMenu APP={APP} />}
 
         {user && (
           <>
             <NotificationBar APP={APP} />
-            <NutrientCalculator
-              isOpen={calculatorOpen}
-              onClose={toggleCalculator}
-            />
+
             {settingsMenuOpen && <SettingsMenu APP={APP} />}
-            {signer && (
+           {/*  {signer && (
               <VerificationUI
                 APP={APP}
                 open={verificationUIOpen}
               />
-            )}
+            )} */}
           </>
         )}
 
-        <Flex config="column">
-          {user && !navlessRoutes && (
-            <>
-              <Navbar APP={APP} />
-            </>
-          )}
-          <Flex config="row">
+
             {user && <Sidebar APP={APP} />}
-            <Main isSidebarOpen={sidebarOpen}>
               <Routes>
                 <Route path="/" element={<Welcome APP={APP} />} />
                 {user?.uid && (
-                  <>
+                  <Route element={<Main isSidebarOpen={sidebarOpen} />}>
+                  <Route
+                  
+                    element={<VerificationUI APP={APP}
+                    open={verificationUIOpen} />}
+                    path="/features/verification" />
                     <Route
                       path="/dashboard/:dashID"
                       element={<Home APP={APP} />}
+                    />
+                    <Route
+                    
+                      path="/features/nutrient-calculator"
+                      element={<NutrientCalculator APP={APP} />}
                     />
 
                     <Route
@@ -357,7 +353,7 @@ function App() {
                       path="/marketplace/seller-dashboard"
                       element={<SellerDashboard APP={APP} />}
                     />
-                  </>
+                  </Route>
                 )}
 
                 {/* Registy Project Routes */}
@@ -373,17 +369,7 @@ function App() {
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </Main>
-          </Flex>
-          {!navlessRoutes && (
-            <Footer>
-              <FooterContent>
-                © 2024 NeptuneChain, All Rights Reserved.
-              </FooterContent>
-              <FooterIconGroup>{/* ICONS HERE */}</FooterIconGroup>
-            </Footer>
-          )}
-        </Flex>
+         
 
         {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
           <FontAwesomeIcon icon={faInfo} />
@@ -393,17 +379,14 @@ function App() {
   );
 }
 
+
+
 const AppContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
+display: flex;
+height: 100vh;
+width: 100vw;
+overflow: hidden;
 
-  font-family: "Albert Sans", "Albert Sans Placeholder", sans-serif;
-
-  width: 100vw;
-  height: 100vh;
-
-  overflow: hidden;
 `;
 
 const Flex = styled.div`
@@ -415,14 +398,13 @@ const Flex = styled.div`
         : style_template.flex_display.row_centered}
 `;
 
-const Main = styled.div`
-  width: ${({ isSidebarOpen }) => (isSidebarOpen ? "80vw" : "100vw")};
-  height: 95vh;
+const StyledMain = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 32px 64px;
 
-  ${style_template.flex_display.column_custom("flex-start", "flex-start")}
-
-  padding-bottom: 25px;
   box-sizing: border-box;
+  background: white; 
 
   overflow: auto;
 
@@ -471,7 +453,6 @@ const FloatingButton = styled(motion.button)`
 `;
 
 const Footer = styled.footer`
-  position: fixed;
   bottom: 0;
 
   width: 100%;
@@ -510,3 +491,10 @@ const FooterIconGroup = styled.div`
 `;
 
 export default App;
+
+
+function Main() { 
+  return <StyledMain>
+    <Outlet />
+  </StyledMain>
+}

@@ -79,27 +79,15 @@ const ActiveIndicator = styled(motion.div)`
  * Styles the menu item container and includes responsive design.
  */
 const MenuItem = styled(motion.li)`
-  position: relative;
-  width: ${({ isRoute }) => (isRoute ? '100%' : '90%')};
-  height: auto;
-  display: flex;
-  padding: 0.5rem 1rem;
-  align-items: center;
-  justify-content: flex-start;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-  background-color: ${({ isRoute }) => (isRoute ? '#5bb8da' : 'transparent')};
-  color: ${({ isRoute }) => (isRoute ? '#000' : '#fff')};
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
+list-style: none;
+display: flex;
+align-items: center;
+gap:8px;
+padding: 12px 0px;
+cursor: pointer; 
+width: 100%;
+margin: 0px;
 
-  &:hover {
-    scale: 1.05;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0.25rem 0.5rem;
-  }
 `;
 
 /**
@@ -107,13 +95,14 @@ const MenuItem = styled(motion.li)`
  * Styles the FontAwesome icon displayed in the menu item.
  */
 const Icon = styled(FontAwesomeIcon)`
-  width: 1rem;
-  height: 1rem;
-  padding: 5px;
+  width: 14px;
+  height:14px;
+  padding: 10px;
   border-radius: 50%;
-  background-color: #eeeeee;
   cursor: pointer;
-`;
+  background: ${({theme}) => theme.colors.ui100};
+  color: ${({theme}) => theme.colors.primary500};
+  `;
 
 /**
  * RouteName Styled Component
@@ -123,7 +112,6 @@ const RouteName = styled.span`
   height: auto;
   font-size: 0.8rem;
   font-style: normal;
-  font-family: 'Work Sans';
   font-weight: 700;
   margin-left: 0.5rem;
   text-align: left;

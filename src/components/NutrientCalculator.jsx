@@ -11,6 +11,12 @@ import {
   Legend,
 } from 'chart.js';
 import { logoColors } from '../styles/colors';
+import { DashboardPage } from './shared/DashboardPage/DashboardPage';
+import { ButtonPrimary } from './shared/button/Button';
+import { Label } from './shared/Label/Label';
+import { Input } from './shared/input/Input';
+import { Select } from './shared/Select/Select';
+import FormSection from './shared/FormSection/FormSection';
 
 ChartJS.register(
   CategoryScale,
@@ -22,101 +28,23 @@ ChartJS.register(
 );
 
 
-const ModalBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 
-  z-index: 1000; 
-`;
 
-const Container = styled(motion.div)`
-  background: #fff;
-  padding: 20px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 600px;
-  max-height: 60vh;
-  overflow: auto;
-`;
 
-const CloseButton = styled(motion.button)`
-margin: 0;
-  background-color: #f44336;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 100%;
-  margin-bottom: 20px;
-  cursor: pointer;
-  &:hover {
-    background-color: #d32f2f;
-  }
-`;
 
 const Header = styled.h1`
-font-size: 2rem;
-  color: #333;
-  text-align: center;
+font-size: 1.25rem;
+font-weight: 500;
+  color: ${({ theme }) => theme.colors.ui800};
+  text-align: left;
 `;
 
 const Subheader = styled.h2`
-  color: #666;
-  text-align: center;
-  font-weight: normal;
-  font-size: 1rem;
-  margin-bottom: 20px;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 15px;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
-  color: #333;
-  font-weight: bold;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-`;
-
-const Button = styled(motion.button)`
-  width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
+margin-top: 8px;
+  color: ${({ theme }) => theme.colors.ui600};
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
 `;
 
 const LoadingIndicator = styled.div`
@@ -126,23 +54,41 @@ const LoadingIndicator = styled.div`
 `;
 
 const Result = styled.div`
-  margin-top: 20px;
+  margin-top: 64px;
   padding: 10px;
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  min-height: 600px;
 `;
 
-const ErrorMessage = styled.div`
-  color: red;
-  margin-top: 10px;
-`;
 
 const Footer = styled.footer`
-  text-align: center;
-  margin-top: auto;
+  text-align: left; 
+  color: ${({ theme }) => theme.colors.ui600};
+  font-size: 14px;
+    margin-top: 16px;
   font-size: 0.8em;
 `;
+
+const StyledNutrientCalculator = styled.div`
+
+
+
+
+.header-text {
+  width: 600px;
+
+}
+
+form { 
+  display: flex;
+  align-items: flex-end;
+  gap:16px;
+  > div {
+     max-width: 200px;
+  }
+
+}
+`
 
 const nutrientData = {
   'Corn Grain': {
@@ -430,50 +376,44 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <ModalBackground>
-          <CloseButton onClick={onClose}>Close</CloseButton>
-          <Container initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}>
+      <div>
+            <StyledNutrientCalculator>
+            <div className='header-text'>
+
             <Header>Nutrient Removal Calculator</Header>
             <Subheader>Each harvest depletes soil nutrients, varying by crop and yield. Identify what's lost with our Nutrient Removal Calculator by selecting your crop and yield.</Subheader>
-
+            </div>
             <form onSubmit={handleSubmit}>
-              <FormGroup>
-                <Label htmlFor="cropSelect">Select Crop:</Label>
+              <FormSection>
+                <Label htmlFor="cropSelect">Crop type</Label>
                 <Select id="cropSelect" value={crop} onChange={(e) => setCrop(e.target.value)}>
                   {Object.keys(nutrientData).map((cropName, index) => (
                     <option key={index} value={cropName}>{cropName}</option>
                   ))}
                 </Select>
-              </FormGroup>
+              </FormSection>
 
-              <FormGroup>
-                <Label htmlFor="yieldInput">Yield per Acre:</Label>
-                <Input type="number" id="yieldInput" placeholder="Enter yield" value={yieldPerAcre} onChange={(e) => setYieldPerAcre(e.target.value)} />
-              </FormGroup>
+              <FormSection error={errorMessage}>
+                <Label htmlFor="yieldInput">Yield per Acre</Label>
+                <Input error={errorMessage} type="number" id="yieldInput" placeholder="Enter yield" value={yieldPerAcre} onChange={(e) => setYieldPerAcre(e.target.value)} />
+              </FormSection>
 
-              <Button type="submit">Calculate</Button>
+              <ButtonPrimary type="submit">Calculate Nutrient Removal</ButtonPrimary>
             </form>
 
             <LoadingIndicator loading={isLoading}>Loading...</LoadingIndicator>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+{/*             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} */}
 
-            {result && (
               <Result>
                 <canvas ref={chartRef}></canvas>
               </Result>
-            )}
 
             <Footer>
               <p>Nutrient removal coefficients based on IPNI Nutrient Removal Calculator (Jan. 2018) and various sources including Alabama Extension: ANR-449, CFI, and North Carolina: AG-439-16. For more details, visit <a href="http://www.ipni.net/article/IPNI-3346">IPNI</a>.</p>
               <p>*Nutrient removal values may vary regionally. Use locally available data for accurate nutrient recommendations.</p>
             </Footer>
-          </Container>
-        </ModalBackground>
-      )}
-    </AnimatePresence>
-
+            </StyledNutrientCalculator>
+            </div>
   );
 };
 

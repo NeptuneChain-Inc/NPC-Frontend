@@ -5,42 +5,29 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getUser } from "../../../apis/database";
+import { FcGoogle } from "react-icons/fc";
 
 const Icon = styled(FontAwesomeIcon)`
       display: inline-block;
       vertical-align: middle;
       width: 1rem;
-      color: white;
+      color: black
 `;
 
-const GoogleButton = styled.div`
-      background: #DB4437e6;
-      backdrop-filter: blur(10px);
-      color: #444;
-      //width: 190px;
-      border-radius: 5px;
-      border: 0.1rem solid rgba(255, 255, 255, 1);
-      box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
-      white-space: nowrap;
-      padding: 0.4rem 1rem;
-      box-sizing: border-box;
-      transition: 0.3s ease-in-out;
-
-      &:hover {
-        cursor: pointer;
-        background: #DB4437;
-        scale: 1.05;
-      }
-
-      span.buttonText {
-        display: inline-block;
-        vertical-align: middle;
-        padding-left: 10px;
-        font-size: 1rem;
-        font-weight: bold;
-        font-family: 'Roboto', sans-serif;
-        color: white
-      }
+const GoogleButton = styled.button`
+   border: 1px solid ${({theme}) => theme.colors.ui300};
+    border-radius: 10px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size:14px; 
+  color: ${({theme}) => theme.colors.ui800};
+  background: white;
+  svg {
+     font-size: 16px;
+  }
 `;
 
 const provider = new GoogleAuthProvider();
@@ -89,7 +76,7 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
 
     return (
       <GoogleButton onClick={handleSubmit}>
-        <Icon icon={faGoogle} />
+        <FcGoogle />
         <span className="buttonText">Continue With Google</span>
       </GoogleButton>
     );

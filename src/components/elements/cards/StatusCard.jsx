@@ -5,6 +5,8 @@ import {fetchDeviceData} from "../../dash.utils";
 import {logDev} from "../../../scripts/helpers";
 import {faCircle} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { theme } from "../../../styles/colors";
+import {ButtonSecondary} from '../../shared/button/Button'
 
 const cardVariants = {
   hidden: {
@@ -49,46 +51,37 @@ const StatusCard = ({deviceID, setRefFocus}) => {
     <Container
       statusColor={status === "active" ? "green" : "red"}
       variants={cardVariants}
-      initial="hidden"
-      animate="visible"
-      onClick={handleClick}
     >
       <i className="fa-regular fa-lightbulb"></i>
       <h5>{name}</h5>
+        <div className="number-box">#{deviceID}</div>
       <StatusContainer>
+        <StatusText>{status}</StatusText>
           <StatusIcon
             icon={faCircle}
-            color={status === "active" ? "green" : "red"}
+            color={status === "active" ? theme.colors.primary500 : theme.colors.red500}
           />
-          <StatusText>{status}</StatusText>
         </StatusContainer>
-      <div className="number-box">#{deviceID}</div>
+        <ButtonSecondary onClick={handleClick}>
+        View details
+        </ButtonSecondary>
     </Container>
   );
 };
 
 const Container = styled(motion.div)`
-  background-image: linear-gradient(to bottom right, #e9eaecda, #ffffff);
-  filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.25));
-  border: 4px solid ${({ statusColor }) => statusColor};
-  text-align: center;
-
-  width: 150px;
-  padding: 2rem;
-  padding-bottom: 4rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  }
-
+  position: relative;
+  border: 1px solid ${({theme}) => theme.colors.ui200};
+  border-radius: ${({theme}) => theme.borderRadius.default};
+  padding: 24px 24px;
+  width: 100%; 
+  text-align: left; 
+  height: 100%;
   h5 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 800;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+  color: ${({theme}) => theme.colors.ui800};
   }
   h6 {
     font-size: 1rem;
@@ -103,20 +96,10 @@ const Container = styled(motion.div)`
   }
 
   .number-box {
-    position: absolute;
-    bottom: 0;
-    padding: 15px;
-    font-size: 12px;
-    border-radius: 60px 60px 0 0;
-    width: 40px;
-    height: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    box-shadow: inset 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.2),
-      0em 0.05em rgba(255, 255, 255, 0);
-    font-weight: 800;
-    color: #fff;
-    background: ${({ statusColor }) => statusColor};
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: ${({theme}) => theme.colors.ui700};
   }
 
   @media screen and (max-width: 991px) {
@@ -127,19 +110,25 @@ const Container = styled(motion.div)`
 `;
 
 const StatusContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 500;
+  color: ${({theme}) => theme.colors.ui700};
+  letter-spacing: -0.2px;
+  position: absolute;
+  top: 10px; 
+  right: 10px; 
 `;
 
 const StatusIcon = styled(FontAwesomeIcon)`
   font-size: 0.8rem;
-  margin-right: 0.5rem;
+
 `;
 
 const StatusText = styled.span`
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
 `;
 
 export default StatusCard;

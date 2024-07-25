@@ -25,6 +25,10 @@ import {
 } from "../../../components/lib/styled";
 import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
+import FormSection from "../../../components/shared/FormSection/FormSection";
+import { Input } from "../../../components/shared/input/Input";
+import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
+import GoogleSignIn from "./GoogleSignIn";
 
 const InputGroup = styled.div`
   position: relative;
@@ -38,16 +42,19 @@ const InputGroup = styled.div`
   border: 1px solid #ccc;
 `;
 
-const Icon = styled(FontAwesomeIcon)`
-  margin: auto;
-  min-width: 30px;
-  color: #fff;
-`;
+
 
 function isValidEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   return regex.test(email);
 }
+
+
+const StyledLoginForm = styled.div`
+.input-section { 
+
+}
+`
 
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [email, setEmail] = useState("");
@@ -95,7 +102,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   };
 
   return (
-    <AnimatePresence>
+    <StyledLoginForm>
       <Notification type="error" message={error} />
 
       <PROMPT_CARD>
@@ -121,42 +128,47 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             exit="exit"
             onSubmit={handleSubmit}
           >
-            {/* <CardLogo
-              src={logoImage}
-              alt="NeptuneChain Logo"
-              variants={logoVariants}
-              initial="hidden"
-              animate="visible"
-            /> */}
-            <InputGroup>
-              <Icon icon={faEnvelope} />
-              <INPUT
+
+          <div className="input-section">
+
+            <FormSection label={"Email"}>
+              <Input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-              />
-            </InputGroup>
+                />
+            </FormSection>
+                </div>
+            <div className="input-section">
 
-            <InputGroup>
-              <Icon icon={faLock} />
-              <INPUT
+            <FormSection label={"Password"}>
+              <Input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-              />
-            </InputGroup>
+                />
+            </FormSection>
+                </div>
 
-            <BUTTON type="submit">Log In</BUTTON>
-            <TEXT_LINK type="button" onClick={handleResetPassword}>
+            <ButtonPrimary type="submit">Log In</ButtonPrimary>
+            <div>
+            <div>
+
+            <ButtonLink type="button" onClick={handleResetPassword}>
               Forgot Password?
-            </TEXT_LINK>
-            <TEXT_LINK type="button" onClick={onSwitchToRegister}>
+            </ButtonLink>
+            </div>
+            <div>
+
+            <ButtonLink type="button" onClick={onSwitchToRegister}>
               Need an account? Register
-            </TEXT_LINK>
+            </ButtonLink>
+            </div>
+            </div>
           </PROMPT_FORM>
         ) : (
           <LOADING_ANIMATION
@@ -174,7 +186,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
           </LOADING_ANIMATION>
         )}
       </PROMPT_CARD>
-    </AnimatePresence>
+    </StyledLoginForm>
   );
 };
 

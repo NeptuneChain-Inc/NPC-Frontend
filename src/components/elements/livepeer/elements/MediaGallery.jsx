@@ -4,6 +4,7 @@ import {logoColors} from "../../../../styles/colors";
 import MediaUpload from "../MediaUpload";
 import {UserAPI} from "../../../../scripts/back_door";
 import {logDev} from "../../../../scripts/helpers";
+import { ButtonPrimary } from "../../../shared/button/Button";
 
 
 
@@ -45,16 +46,9 @@ const MediaGallery = ({APP}) => {
 
   return (
     <PageContainer>
-      <UploadButton onClick={toggleMediaUpload}>Upload Media</UploadButton>
-      <GalleryBanner>
-      <h1>Uploaded Media</h1>
-      <input type="text" />
-      </GalleryBanner>
+
     <Gallery>
 
-      {media.length === 0 && (
-        <div>No Uploads</div>
-      )}
 {media?.map((data, index) => {
   const { assetID, playbackID, metadata } = data || {};
   const { name, description, tags, thumbnailUrl } = metadata || {};
@@ -82,16 +76,13 @@ const MediaGallery = ({APP}) => {
       </div>
     );
   } else{
-    return (
-      <div>N/A</div>
-    )
+    return null
   }
 })}
 </Gallery>
 
-      {isMediaUpload && (
+
         <MediaUpload togglePopup={toggleMediaUpload} APP={APP}/>
-      )}
     </PageContainer>
   );
 };
@@ -99,7 +90,6 @@ const MediaGallery = ({APP}) => {
 const PageContainer = styled.div`
   width: 100%;
   height: 100vh;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -129,17 +119,7 @@ export const UploadButton = styled.div`
 `;
 
 
-const GalleryBanner = styled.div`
-  display: flex;
-  width: 90%;
-  justify-content: space-between;
-  align-items: center;
 
-  input {
-  width: 250px;
-  margin: 0;
-  }
-`;
 
 const Gallery = styled.div`
 width: 90%;

@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar_MenuItem } from './elements';
 import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
-
+import { AppIcon, AppLogo } from "../assets"
+import { ProfileDropMenu } from './elements/navbar/elements';
 const Sidebar = ({ APP }) => {
   const navigate = useNavigate();
   
@@ -37,13 +38,13 @@ const Sidebar = ({ APP }) => {
       icon: faLeaf
     },
     {
-      route: '/**button**/',
+      route: '/features/verification',
       cta: 'Verification',
       onclick: handleVerificationUI,
       icon: faCheckCircle
     },
     {
-      route: '/**button**/',
+      route: '/features/nutrient-calculator',
       cta: 'Nutrient Calculator',
       onclick: toggleCalculator,
       icon: faCalculator
@@ -65,13 +66,17 @@ const Sidebar = ({ APP }) => {
 
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
+      <LogoWrap>
 
-      <UserInfo onClick={() => navigate('/dashboard/environmental')}>
-        <Heading>{user?.username.toUpperCase()}</Heading>
-        <SubHeading>{user?.type.toUpperCase()} DASHBOARD</SubHeading>
-      </UserInfo>
+        <Logo alt="logo" src={AppIcon} />
+        <LogoName>
+          NeptuneChain
+        </LogoName>
+      </LogoWrap>
+ <div>
 
       <Menu>
+
         {sidebarItems?.map((data, index) => {
           const { route, cta, icon } = data || {};
           return (
@@ -80,19 +85,18 @@ const Sidebar = ({ APP }) => {
         })}
       </Menu>
 
-    {path.includes('dashboard/environmental') || path.includes('features') ? (
       <Menu>
         {environmentRoutes?.map((data, index) => {
           const { route, cta, icon, onclick } = data || {};
-
+          
           const isRoute = !route.includes('/**button**/');
-
+          
           return (
             <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={isRoute ? route : null} handleSidebar={isMobile ? handleSidebar : null} onClick={onclick}/>
           );
         })}
       </Menu>
-      ) : path.includes('') && (
+
         <Menu>
         {financeRoutes?.map((data, index) => {
           const { route, cta, icon } = data || {};
@@ -101,88 +105,50 @@ const Sidebar = ({ APP }) => {
           );
         })}
       </Menu>
-      )}
+        </div>
+
+
+        <ProfileDropMenu  APP={APP} />
       
     </StyledSidebar>
   );
 };
 
-const StyledSidebar = styled.div`
-  width: ${({ isOpen }) => isOpen ? '20vw' : "0"};
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: flex-start;
+const LogoWrap = styled.div`
+display: flex;
+align-items: center;
+gap:4px;
+`
 
-  overflow: auto;
-  transition: 0.3s ease-in-out;
+const LogoName = styled.div`
+  color: ${({theme}) => theme.colors.primary500};
+  font-weight: 600;
 
-  z-index: 999;
-  backdrop-filter: blur(3px);
+`
 
-  @media (max-width: 980px) {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: ${({ isOpen }) => isOpen ? '100vw' : "0vw"};
-    align-items: flex-start;
-    padding: ${({ isOpen }) => isOpen ? '2rem' : "0"};
-    padding-top: 20%;
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-  }
-`;
-
-const UserInfo = styled.span`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20%;
-  box-shadow: 1px 2px 2px 0px #000;
-  background-color: #134b5f;
-  padding: 1rem;
-  margin: 2rem 0;
-  margin-bottom: 0rem;
+const Logo = styled.img`
+  width: 24px;
+  margin-right: 8px;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
-
-  &:hover {
-    scale: 1.1;
-  }
 `;
 
-const Heading = styled.h1`
-  color: #fff;
-  font-size: 1rem;
-  font-style: normal;
-  margin: 0;
-  text-align: left;
-  font-family: Work Sans;
-  font-weight: 300;
+
+const StyledSidebar = styled.div`
+  width: 20vw;
+  height: 100vh; 
+  max-height: 100vh;
+  background: ${({theme}) => theme.colors.ui50}; 
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
 `;
 
-const SubHeading = styled.h4`
-  color: #fff;
-  font-size: 0.5rem;
-  text-align: left;
-`;
 
 const Menu = styled.ul`
-  width: 70%;
-  min-width: 200px;
-  padding: 1rem;
-  border-radius: 10px;
-
-  box-shadow: 1px 2px 2px 0px #000;
-  background-color: #134b5f;
-
-    @media (max-width: 767px) {
-      width: 50%;
-      min-width: 150px
-    }
-
+margin: 0px;
+padding: 0px;
 `;
 
 export default Sidebar;

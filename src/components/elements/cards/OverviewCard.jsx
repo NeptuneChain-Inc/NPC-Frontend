@@ -39,49 +39,42 @@ const OverviewCard = ({ data }) => {
       initial="hidden"
       animate="visible"
     >
+      <div className="title-wrap">
+
+        <Icon icon={iconDef} />
       <Title>{title}</Title>
+      </div>
       <CardContentContainer>
         <MetricContainer>
           <Value>{value}</Value>
           <Unit>{unit}</Unit>
         </MetricContainer>
-        <Icon icon={iconDef} />
       </CardContentContainer>
     </MotionOverviewCard>
   );
 };
 
-const fadeIn = keyframes`
-  0% {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  100% {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-`;
+
 
 const MotionOverviewCard = styled(motion.div)`
-  flex: 0 0 auto;
-  height: auto;
-  padding: 1.5rem;
-  margin: auto;
+border: 1px solid ${({theme}) => theme.colors.ui200};
+padding: 24px;
+width: 100%;
+border-radius: ${({theme}) => theme.borderRadius.default};
+height: 150px; 
+display: flex; 
+flex-direction: column;
+justify-content: center;
+background: ${({theme}) => theme.colors.primary700};
+ * {
+   color: White !important; 
+}
+.title-wrap{ 
   display: flex;
-  min-width: 300px;
-  position: relative;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  box-sizing: border-box;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #ffffff;
-  transition: all 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.1);
-    animation: ${fadeIn} 0.3s ease forwards;
-  }
-
+  align-items: center;
+  gap:8px;
+  margin-bottom: 16px;
+}
   @media (max-width: 767px) {
     width: 100%;
     min-width: 300px;
@@ -89,9 +82,8 @@ const MotionOverviewCard = styled(motion.div)`
 `;
 
 const Title = styled.span`
-  margin: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   text-align: left;
 `;
 
@@ -103,28 +95,33 @@ const CardContentContainer = styled.div`
 
 const MetricContainer = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: flex-end;
+
 `;
 
 const Value = styled.span`
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600; 
+  color: ${({theme}) => theme.colors.primary500};
   line-height: 1;
   transition: all 0.3s ease;
 `;
 
 const Unit = styled.span`
-  font-size: 1.2rem;
+margin-bottom: 4px;
+margin-left: 4px;
+  font-size: 0.85rem;
   font-weight: 500;
   line-height: 1;
   transition: all 0.3s ease;
+  text-transform: capitalize;
+  color: ${({theme}) => theme.colors.ui600};
 `;
 
 const Icon = styled(FontAwesomeIcon)`
-  color: #134b5f;
-  font-size: 3rem;
+  color: ${({theme}) => theme.colors.ui800};
+  font-size: 1rem;
 `;
 
 export default OverviewCard;

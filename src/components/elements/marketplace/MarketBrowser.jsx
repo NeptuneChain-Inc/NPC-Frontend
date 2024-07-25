@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const NFTGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 20px;
   width: 100%;
   max-width: 1200px;
@@ -18,12 +18,12 @@ export const NFTGrid = styled.div`
 `;
 
 const LoadingIndicator = styled.div`
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
+    border: 5px solid ${({theme}) => theme.colors.ui200};
+    border-top: 5px solid ${({theme}) => theme.colors.ui800};
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.8s linear infinite;
     margin: auto;
 
     @keyframes spin {
@@ -35,6 +35,16 @@ const LoadingIndicator = styled.div`
 const ErrorMsg = styled.p`
     color: red;
 `;
+
+const StyledLoading = styled.div`
+    .loading-text {
+        font-weight: 500; 
+        color: ${({theme}) => theme.colors.ui800};
+        text-align: center; 
+        margin-top: 8px; 
+        font-size: 14px;
+    }
+`
 
 const MarketBrowser = ({ marketEvents }) => {
     const navigate = useNavigate();
@@ -61,7 +71,10 @@ const MarketBrowser = ({ marketEvents }) => {
         }
     };
 
-    if (loading) return <LoadingIndicator />
+    if (loading) return <StyledLoading>
+        <LoadingIndicator />
+        <div className='loading-text'>Loading Items</div>
+        </StyledLoading>
     if (error) return <ErrorMsg>Error: {error}</ErrorMsg>
 
     return (

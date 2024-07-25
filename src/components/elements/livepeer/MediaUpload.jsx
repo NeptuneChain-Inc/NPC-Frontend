@@ -11,6 +11,11 @@ import configs from "../../../../configs";
 import UploadProgress from "./UploadProgress";
 import AssetDisplay from "./AssetDisplay";
 import { Player } from "@livepeer/react";
+import {Input} from '../../shared/input/Input'
+import FormSection from '../../shared/FormSection/FormSection'
+import { ButtonPrimary } from "../../shared/button/Button";
+import ButtonLoading from "../../shared/button/ButtonLoading";
+import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 
 const colors = {
   primaryBlue: "#1B3B6F",
@@ -21,60 +26,29 @@ const colors = {
 };
 
 const DropZoneContainer = styled(motion.div)`
-  width: 80%;
-  max-width: 500px;
-  margin: auto;
-  height: ${({ isPreview }) => (isPreview ? "25px" : "200px")};
-  margin-bottom: 10px;
-  border: 3px dashed ${colors.accentBlue};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: ${({ isPreview }) => (isPreview ? "0.8" : "1")}rem;
-  transition: all 0.5s ease-in-out;
-  background: ${colors.lightGrey};
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+border: 1px dashed ${({theme}) => theme.colors.ui300};
+padding: 40px 24px;
+height: 250px;
+border-radius: ${({theme}) => theme.borderRadius};
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 500; 
+background: ${({theme}) => theme.colors.ui50};
+border-radius: ${({theme}) => theme.borderRadius.default};
+min-width: 600px;
+margin-bottom: 40px;
+.drag-n-drop-title { 
+  text-align: center;
+  color: ${({theme}) => theme.colors.ui800};
+  font-weight: 500; 
 
-  &:hover {
-    border-color: ${colors.primaryBlue};
-    background: ${colors.accentBlue};
-    color: ${colors.white};
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 2rem;
-    box-sizing: border-box;
-  }
+}
 `;
 
 const AssetContainer = styled.div`
-  position: fixed;
-  top: 10%;
-  width: 70%;
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  text-align: center;
-  font-size: 18px;
-  padding: 2em;
-  box-sizing: border-box;
-  z-index: 1000;
-
-  background: ${colors.white}90;
-  backdrop-filter: blur(1rem);
-  border-radius: 2rem;
-
-  overflow: ${({ isLoading }) => (isLoading ? "hidden" : "auto")};
-
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
-    rgba(0, 0, 0, 0.22) 0px 10px 10px;
-
+  max-width: 600px; 
+  margin: 0 auto;
   .video-link {
     margin: 10px;
     padding: 5px 10px;
@@ -107,7 +81,7 @@ const AssetContainer = styled.div`
   @media (max-width: 768px) {
     width: 90%;
     height: 83vh;
-    padding: 0.5em;
+    padding: 0.5em; 
     justify-content: flex-start;
   }
 `;
@@ -150,8 +124,6 @@ const Spinner = styled(motion.div)`
 const InputPreviewContainer = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
 
   .flex-col {
     width: 100%;
@@ -172,17 +144,12 @@ const InputPreviewContainer = styled.div`
 `;
 
 const VideoInputContainer = styled(motion.div)`
-  width: 50%;
-  display: flx;
+  display: flex;
   flex-direction: column;
-  align-items: center;
+  gap:16px;
+  max-width: 600px;
+  margin:  0 auto;
 
-  padding: 4rem;
-
-  @media (max-width: 768px) {
-    width: 80%;
-    padding: 1rem;
-  }
 `;
 
 const TextInput = styled.input`
@@ -472,21 +439,15 @@ const MediaUpload = ({ APP, togglePopup }) => {
   };
 
   return (
+    <DashboardPage title={"Upload media"}>
+
     <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
-      <UploadButton onClick={togglePopup}>Exit</UploadButton>
-      {(isLoading || uploadPercentage > 0) && (
-        <LoaderContainer>
-          <Spinner
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          />
-          {uploadPercentage > 0 && (
-            <UploadProgress progress={uploadPercentage} />
-          )}
-        </LoaderContainer>
-      )}
+{/*     <UploadProgress progress={50} />
+ */}      {/* {(isLoading || uploadPercentage > 0) && (
+  {uploadPercentage > 0 && (
+    <UploadProgress progress={uploadPercentage} />
+    )}
+    )} */}
 
       <InputPreviewContainer>
         {asset ? (
@@ -500,7 +461,8 @@ const MediaUpload = ({ APP, togglePopup }) => {
             )}
             <DropZoneContainer {...getRootProps()} isPreview={previewURL}>
               <input {...getInputProps()} />
-              <p>Drag & drop a MP4 or PDF file here, or click to select one</p>
+              <p className="drag-n-drop-title">Drag & drop a MP4 or PDF file here. <br />
+              Or click to select one</p>
             </DropZoneContainer>
           </div>
         )}
@@ -520,33 +482,43 @@ const MediaUpload = ({ APP, togglePopup }) => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.5 }}
-              >
-                <TextInput
+                >
+                <FormSection label={"File name"}>
+                <Input 
                   type="text"
                   placeholder="Enter file name"
                   value={uploadName}
                   onChange={(e) => setUploadName(e.target.value)}
-                />
-                <TextInput
+                  />
+                  </FormSection>
+
+                <FormSection label={"File description"}>
+
+                <Input
                   type="text"
                   placeholder="Enter file description"
                   value={uploadDescription}
                   onChange={(e) => setUploadDescription(e.target.value)}
-                />
-                <UploadButton
+                  />
+                  </FormSection>
+                <ButtonPrimary
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleUpload}
-                  disabled={!activeFile}
-                >
-                  Upload
-                </UploadButton>
+                  disabled={isLoading}
+                  >
+                  {
+                    isLoading ? <ButtonLoading /> : "Upload"
+                  }
+
+                </ButtonPrimary>
               </VideoInputContainer>
             </AnimatePresence>
           )
         )}
       </InputPreviewContainer>
     </AssetContainer>
+        </DashboardPage>
   );
 };
 

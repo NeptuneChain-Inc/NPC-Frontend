@@ -9,114 +9,104 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import GoogleSignIn from "./components/welcome/GoogleSignIn";
 import { contentVariants } from "./components/welcome/WelcomeHome";
+import { ButtonPrimary, ButtonSecondary } from "../components/shared/button/Button";
+import { BackgroundImage } from "framer/render/types/BackgroundImage.js";
+
+
+export const logoImage = new URL("../assets/logo.png", import.meta.url).href;
+("./assets/");
 
 const backgroundImage = new URL(
   "../assets/wallpapers/welcome_wallpaper.jpg",
   import.meta.url
 ).href;
-export const logoImage = new URL("../assets/logo.png", import.meta.url).href;
-("./assets/");
 
 // Styled components
 const FullScreenWrapper = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
+width: 100%;
+width: 100vw;
+
+
+.separator { 
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0px;
+  .separator-line { 
+    width: 100%; 
+    height: 1px; 
+    background: ${({theme}) => theme.colors.ui100};
+  }
+  .separator-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: ${({theme}) => theme.colors.ui600}
+  }
+}
+
+.navbar { 
+  display: flex; 
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: space-between;
+  width: 100%;
+  height: 80px;
+  align-items: center;
+  .navbar-buttons {
+    display: flex;
+    gap: 8px; 
+    align-items: center;
+  }
+  img { 
+    width: 180px;
+  }
+}
+.content{
+  height: calc(100vh - 80px);
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+ }
+
+ .section-left {
+   width: 100%; 
+   width: 800px;
+   height: calc(100vh - 80px);
+   .section-left-image {
+      height: calc(100vh - 80px);
+
+      object-fit: cover;
+    width: 800px;
+    }
+
+ }
+
+.sign-in-form-section { 
+  width: 70%; 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  // ${({ isOnboarding }) => isOnboarding ? "filter: blur(5px);" : ''}
-  // background-image: url(${backgroundImage});
-  // background-size: cover;
-  // background-position: center;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
-  border: 1px solid black;
+  max-width: 500px; 
+  margin: 0 auto;
+  .form-content { 
+    max-width: 500px;
+  }
+}
 `;
 
 const Wallpaper = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  ${({ isOnboarding }) => isOnboarding ? "filter: blur(5px);" : ''}
-  background-image: url(${backgroundImage});
-  background-size: cover;
-  background-position: center;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
-  border: 1px solid black;
+
 `;
 
-const StyledLogo = styled(motion.img)`
-z-index: 1000;
-  width: 25vw;
-  //max-width: 250px;
-  margin-bottom: 1rem;
+const StyledLogo = styled.img`
 
-  background: rgba(230, 236, 213, 0.7);
-backdrop-filter: blur(5px);
-padding: 0.2rem 1rem;
-border-radius: 5px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 6px 0px rgba(0, 0, 0, 0.5);
-
-  @media (max-width: 980px) {
-    width: 30vw;
-  }
-  @media (max-width: 767px) {
-    width: 50vw;
-  }
 `;
 
 export const CardLogo = styled(StyledLogo)`
-  width: 50vw;
-  display: none;
-  @media (max-width: 980px) {
-    display: flex;
-  }
+
 `;
 
-const GoogleSignInWrapper = styled(motion.div)`
-margin-top: 0.5rem;
-background: rgba(230, 236, 213, 0.4);
-backdrop-filter: blur(5px);
-  padding: 0.1rem;
-  border-radius: 5px;
-  transition: 0.3s ease-in-out;
-
-  &:hover {
-    scale: 1.05;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
-`;
-
-const HomeIcon = styled(FontAwesomeIcon)`
-  background: rgba(255, 255, 255, 0.8);
-  padding: 0.5rem;
-  border-radius: 50%;
-  box-sizing: border-box;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  margin-top: 0.8rem;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
-  z-index: 10;
-
-  &:hover {
-    scale: 1.1;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
-`;
 
 export const logoVariants = {
   hidden: { y: -50, opacity: 0 },
@@ -132,63 +122,84 @@ const Welcome = ({ APP }) => {
 
   const enterDash = () => navigate("/dashboard/environmental");
 
-  console.log("onboarding", Boolean(cardState !== ""))
 
   return (
     <FullScreenWrapper>
-      <Wallpaper isOnboarding={Boolean(cardState !== "")} />
+
+      <div className="navbar">
       <StyledLogo
+        
         src={logoImage}
         alt="NeptuneChain Logo"
         variants={logoVariants}
         initial="hidden"
         animate="visible"
-      />
+        />
 
-      {cardState === "login" ? (
+        <div className="navbar-buttons">
+          <ButtonPrimary          onClick={() => setCardState("register")}>
+            Sign up
+          </ButtonPrimary>
+          <ButtonSecondary
+                      onClick={() => setCardState("login")}
+
+          >
+            Sign in
+          </ButtonSecondary>
+        </div>
+        </div>
+
+        <div className="content">
+
+    <div className="sign-in-form-section">
+          <WelcomeHome
+            key="welcome"
+            user={user}
+            setCardState={setCardState}
+            enterDash={enterDash}
+            />
+
+{!user && (
+        <GoogleSignIn APP={APP} setGoogleData={setGoogleData} setCardState={setCardState} enterDash={enterDash} />
+      )}
+      <div className="separator">
+        <div className="separator-line">
+
+        </div>
+        <div className="separator-text">
+          Or
+        </div>
+        <div className="separator-line"></div>
+      </div>
+      <div className="form-content">
+
         <AnimatePresence mode="wait">
+        {cardState !== "register" && 
           <LoginForm
-            key="login"
-            onSuccess={enterDash}
-            updateUser={updateUser}
-            onSwitchToRegister={() => setCardState("register")}
-            APP={APP}
+          key="login"
+          onSuccess={enterDash}
+          updateUser={updateUser}
+          onSwitchToRegister={() => setCardState("register")}
+          APP={APP}
           />
+        }
         </AnimatePresence>
-      ) : cardState === "register" ? (
-        <AnimatePresence mode="wait">
+{cardState === "register" && (
           <RegisterForm
             key="register"
             onSuccess={enterDash}
             updateUser={updateUser}
             onSwitchToLogin={() => setCardState("login")}
             googleData={googleData}
-          />
-        </AnimatePresence>
-      ) : (
-        <AnimatePresence mode="wait">
-          <WelcomeHome
-            key="welcome"
-            user={user}
-            setCardState={setCardState}
-            enterDash={enterDash}
-          />
-        </AnimatePresence>
-      )}
-
-      {!user && (
-        <AnimatePresence mode="wait">
-          <GoogleSignInWrapper variants={contentVariants} initial="hidden" animate="visible">
-            <GoogleSignIn APP={APP} setGoogleData={setGoogleData} setCardState={setCardState} enterDash={enterDash} />
-          </GoogleSignInWrapper>
-        </AnimatePresence>
-      )}
-
-      {cardState !== "" && (
-        <AnimatePresence mode="wait">
-          <HomeIcon icon={faHome} onClick={() => setCardState("")} />
-        </AnimatePresence>
-      )}
+            />
+)}
+  
+      </div>
+      </div>
+      <div className="section-left">
+      <img className="section-left-image" src={backgroundImage} />
+      </div>
+      </div>
     </FullScreenWrapper>
   );
 };
