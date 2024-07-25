@@ -9,12 +9,15 @@ name: Deploy to Firebase Hosting on merge
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Allows the Action to read the repository contents
+      checks: write   # Allows the Action to create and update check runs
     steps:
       - uses: actions/checkout@v4
       - run: npm ci --force && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GH_AM_TOKEN }}'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_NEPTUNECHAIN_NETWORK }}'
           channelId: live
           projectId: neptunechain-network
