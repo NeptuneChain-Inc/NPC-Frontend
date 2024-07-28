@@ -120,7 +120,9 @@ const Welcome = ({ APP }) => {
   const { user } = APP?.STATES || {};
   const { updateUser } = APP?.ACTIONS || {};
 
-  const enterDash = () => navigate("/dashboard/environmental");
+  const enterDash = () => {
+    navigate("/dashboard/environmental")
+  };
 
 
   return (
@@ -137,7 +139,7 @@ const Welcome = ({ APP }) => {
         />
 
         <div className="navbar-buttons">
-          <ButtonPrimary          onClick={() => setCardState("register")}>
+        {/*   <ButtonPrimary          onClick={() => setCardState("register")}>
             Sign up
           </ButtonPrimary>
           <ButtonSecondary
@@ -145,7 +147,7 @@ const Welcome = ({ APP }) => {
 
           >
             Sign in
-          </ButtonSecondary>
+          </ButtonSecondary> */}
         </div>
         </div>
 

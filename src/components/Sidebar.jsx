@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar_MenuItem } from './elements';
 import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
 import { AppIcon, AppLogo } from "../assets"
 import { ProfileDropMenu } from './elements/navbar/elements';
 const Sidebar = ({ APP }) => {
-  const navigate = useNavigate();
-  
+
   const { isMobile, sidebarOpen, user } = APP ? APP.STATES : {};
   const { handleSidebar, toggleCalculator, handleVerificationUI } = APP ? APP.ACTIONS : {};
 
   const path = window.location.pathname.replace(/^\//, '');
   const isMarketplace = path.startsWith('marketplace');
+  const location = useLocation()
 
   const sidebarItems = [
     {
@@ -21,17 +21,34 @@ const Sidebar = ({ APP }) => {
       icon: faLeaf
     },
     {
-      route: 'financial',
-      cta: 'Finance',
-      icon: faDollarSign
-    }, {
       route: '/marketplace',
       cta: 'Marketplace',
       icon: faShop
     },
+    {
+      route: 'financial',
+      cta: 'Finance',
+      icon: faDollarSign
+    },
+    {
+      route: '/marketplace/seller-dashboard',
+      cta: 'Dashboard',
+      icon: faStore
+    },
   ];
 
   const environmentRoutes = [
+    {
+      route: '/features/nutrient-calculator',
+      cta: 'Nutrient Calculator',
+      onclick: toggleCalculator,
+      icon: faCalculator
+    },
+    {
+      route: '/features/stream',
+      cta: 'Broadcast Live',
+      icon: faBroadcastTower
+    },
     {
       route: '/features/upload-media',
       cta: 'Upload Media',
@@ -43,26 +60,16 @@ const Sidebar = ({ APP }) => {
       onclick: handleVerificationUI,
       icon: faCheckCircle
     },
-    {
-      route: '/features/nutrient-calculator',
-      cta: 'Nutrient Calculator',
-      onclick: toggleCalculator,
-      icon: faCalculator
-    },
-    {
-      route: '/features/stream',
-      cta: 'Broadcast Live',
-      icon: faBroadcastTower
-    }
   ]; 
 
-  const financeRoutes = [
-    {
-      route: '/marketplace/seller-dashboard',
-      cta: 'Seller Dashboard',
-      icon: faStore
-    },
-  ];
+
+
+
+  const isEnvrionmentRoute = environmentRoutes.some(route => location.pathname.includes(route.route));
+
+  console.log(isEnvrionmentRoute)
+
+  console.log(" re render")
 
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
@@ -85,8 +92,10 @@ const Sidebar = ({ APP }) => {
         })}
       </Menu>
 
+  
+
       <Menu>
-        {environmentRoutes?.map((data, index) => {
+        {(isEnvrionmentRoute || location.pathname.includes("dashboard/environmental")) && environmentRoutes?.map((data, index) => {
           const { route, cta, icon, onclick } = data || {};
           
           const isRoute = !route.includes('/**button**/');
@@ -97,14 +106,6 @@ const Sidebar = ({ APP }) => {
         })}
       </Menu>
 
-        <Menu>
-        {financeRoutes?.map((data, index) => {
-          const { route, cta, icon } = data || {};
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={route} handleSidebar={isMobile ? handleSidebar : null} />
-          );
-        })}
-      </Menu>
         </div>
 
 
@@ -114,11 +115,13 @@ const Sidebar = ({ APP }) => {
   );
 };
 
+
 const LogoWrap = styled.div`
 display: flex;
 align-items: center;
 gap:4px;
 `
+
 
 const LogoName = styled.div`
   color: ${({theme}) => theme.colors.primary500};

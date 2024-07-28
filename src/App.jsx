@@ -304,7 +304,7 @@ function App() {
         )}
 
 
-            {user && <Sidebar APP={APP} />}
+            {user && <Sidebar key={window.location.pathname} APP={APP} />}
               <Routes>
                 <Route path="/" element={<Welcome APP={APP} />} />
                 {user?.uid && (

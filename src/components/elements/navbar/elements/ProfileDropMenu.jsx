@@ -36,8 +36,7 @@ const ProfileDropMenu = ({ APP }) => {
   };
 
   const menuItems = [
-    { label: 'Upload Media', icon: faVideo, action: '/features/upload-media' },
-    { label: 'Start Stream', icon: faVideo, action: '/features/stream' },
+
     { label: 'Settings', icon: faCog, action: 'Profile Settings' },
     { label: 'Logout', icon: faSignOutAlt, action: () => handleLogOut()}
   ];

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getUser } from "../../../apis/database";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 const Icon = styled(FontAwesomeIcon)`
       display: inline-block;
@@ -35,6 +36,7 @@ const provider = new GoogleAuthProvider();
 // Configure FirebaseUI sign-in options
 function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const { updateUser, handleLogout} = APP.ACTIONS || {};
 
   const handleSubmit = async () => {
@@ -51,6 +53,7 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
         if(await updateUser?.(user?.uid)){
           //Logged In
           setCardState("");
+          navigate("/dashboard/environmental");
         } else {
           //Redirect to register with user email
           setGoogleData({
