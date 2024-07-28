@@ -21,17 +21,34 @@ const Sidebar = ({ APP }) => {
       icon: faLeaf
     },
     {
-      route: 'financial',
-      cta: 'Finance',
-      icon: faDollarSign
-    }, {
       route: '/marketplace',
       cta: 'Marketplace',
       icon: faShop
     },
+    {
+      route: 'financial',
+      cta: 'Finance',
+      icon: faDollarSign
+    },
+    {
+      route: '/marketplace/seller-dashboard',
+      cta: 'Dashboard',
+      icon: faStore
+    },
   ];
 
   const environmentRoutes = [
+    {
+      route: '/features/nutrient-calculator',
+      cta: 'Nutrient Calculator',
+      onclick: toggleCalculator,
+      icon: faCalculator
+    },
+    {
+      route: '/features/stream',
+      cta: 'Broadcast Live',
+      icon: faBroadcastTower
+    },
     {
       route: '/features/upload-media',
       cta: 'Upload Media',
@@ -43,26 +60,9 @@ const Sidebar = ({ APP }) => {
       onclick: handleVerificationUI,
       icon: faCheckCircle
     },
-    {
-      route: '/features/nutrient-calculator',
-      cta: 'Nutrient Calculator',
-      onclick: toggleCalculator,
-      icon: faCalculator
-    },
-    {
-      route: '/features/stream',
-      cta: 'Broadcast Live',
-      icon: faBroadcastTower
-    }
   ]; 
 
-  const financeRoutes = [
-    {
-      route: '/marketplace/seller-dashboard',
-      cta: 'Dashboard',
-      icon: faStore
-    },
-  ];
+
 
 
   const isEnvrionmentRoute = environmentRoutes.some(route => location.pathname.includes(route.route));
@@ -92,14 +92,7 @@ const Sidebar = ({ APP }) => {
         })}
       </Menu>
 
-      <Menu>
-        {financeRoutes?.map((data, index) => {
-          const { route, cta, icon } = data || {};
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={route} handleSidebar={isMobile ? handleSidebar : null} />
-          );
-        })}
-      </Menu>
+  
 
       <Menu>
         {(isEnvrionmentRoute || location.pathname.includes("dashboard/environmental")) && environmentRoutes?.map((data, index) => {
@@ -122,11 +115,13 @@ const Sidebar = ({ APP }) => {
   );
 };
 
+
 const LogoWrap = styled.div`
 display: flex;
 align-items: center;
 gap:4px;
 `
+
 
 const LogoName = styled.div`
   color: ${({theme}) => theme.colors.primary500};

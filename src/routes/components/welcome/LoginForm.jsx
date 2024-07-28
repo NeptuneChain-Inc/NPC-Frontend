@@ -81,6 +81,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
     try {
       const userData = await signInWithEmailAndPassword(auth, email, password);
       setIsSuccess(Boolean(await updateUser?.(userData?.user?.uid)));
+      navigate("/dashboard/environmental");
     } catch (error) {
       setError(error.message);
     } finally {
