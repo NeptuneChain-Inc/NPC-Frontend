@@ -54,16 +54,16 @@ function App() {
   const [networkProvider, setNetworkProvider] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
-  const [routePath, setRoutePath] = useState(""); //record all routes of accessed components
+  const [routePath, setRoutePath] = useState(""); // record all routes of accessed components
   const [navlessRoutes, setNavlessRoutes] = useState(false);
+  const [showSubItems, setShowSubItems] = useState(false); // New state for sub-items visibility
 
   const [marketInteractions] = useState(
     getMarketInteractions(
       new ethers.JsonRpcProvider(NETWORKS?.[`${MODE?.toLowerCase()}net`]?.rpc)
     )
   );
-  const [signedMarketInteractions, setSignedMarketInteractions] =
-    useState(null);
+  const [signedMarketInteractions, setSignedMarketInteractions] = useState(null);
   const [signedUser, setSignedUser] = useState(null);
 
   const [notificationBarOpen, setNotificationBarOpen] = useState(false);
@@ -125,7 +125,7 @@ function App() {
       setNetworkProvider(connection.provider);
       const _signer = connection.signer;
       setSigner(_signer);
-      console.log('Eth connection', connection)
+      console.log('Eth connection', connection);
       const signerAddress = _signer.address;
       setSignedUser(signerAddress);
       setSignedMarketInteractions(getMarketInteractions(_signer));
@@ -134,7 +134,7 @@ function App() {
     }
   };
 
-  //ACTIONS
+  // ACTIONS
   const getUserSave = () => {
     const loggedUser = sessionStorage.getItem("user");
     if (loggedUser) {
@@ -146,7 +146,6 @@ function App() {
 
   const updateUser = async (uid) => {
     try {
-      //const { user, error} = await UserAPI.get.user(uid);
       const user = await getUser(uid);
       if (user) {
         sessionStorage.setItem("user", JSON.stringify(user));
@@ -154,7 +153,6 @@ function App() {
         return true;
       }
       return null;
-
     } catch (error) {
       logNotification("error", error.message);
       return null;
@@ -216,6 +214,10 @@ function App() {
     logConfirmation("Are you sure you want to log out?", logOut);
   };
 
+  const toggleEnvironmentSubItems = () => {
+    setShowSubItems(!showSubItems);
+  };
+
   const APP = {
     STATES: {
       isMobile,
@@ -237,7 +239,8 @@ function App() {
       confirmation,
       notification,
       txPopupVisible,
-      result
+      result,
+      showSubItems, // Add showSubItems to the state object
     },
     ACTIONS: {
       getUserSave,
@@ -258,6 +261,7 @@ function App() {
       cancelConfirmation,
       logNotification,
       handleLogOut,
+      toggleEnvironmentSubItems, // Add toggleEnvironmentSubItems to the actions object
     },
   };
 
@@ -294,207 +298,208 @@ function App() {
             <NotificationBar APP={APP} />
 
             {settingsMenuOpen && <SettingsMenu APP={APP} />}
-           {/*  {signer && (
-              <VerificationUI
-                APP={APP}
-                open={verificationUIOpen}
-              />
-            )} */}
           </>
         )}
 
-
-            {user && <Sidebar key={window.location.pathname} APP={APP} />}
-              <Routes>
-                <Route path="/" element={<Welcome APP={APP} />} />
-                {user?.uid && (
-                  <Route element={<Main isSidebarOpen={sidebarOpen} />}>
-                  <Route
-                  
-                    element={<VerificationUI APP={APP}
-                    open={verificationUIOpen} />}
-                    path="/features/verification" />
-                    <Route
-                      path="/dashboard/:dashID"
-                      element={<Home APP={APP} />}
-                    />
-                    <Route
-                    
-                      path="/features/nutrient-calculator"
-                      element={<NutrientCalculator APP={APP} />}
-                    />
-
-                    <Route
-                      path="/features/:serviceID"
-                      element={<Livepeer APP={APP} />}
-                    />
-
-                    <Route
-                      path="/media/:playbackID"
-                      element={<Livepeer APP={APP} />}
-                    />
-
-                    <Route
-                      path="/media/live/:liveID"
-                      element={<Livepeer APP={APP} />}
-                    />
-
-                    <Route
-                      path="/marketplace"
-                      element={<Marketplace APP={APP} />}
-                    />
-
-                    <Route
-                      path="/marketplace/listing/:id"
-                      element={<ListingPage APP={APP} />}
-                    />
-
-                    <Route
-                      path="/marketplace/seller-dashboard"
-                      element={<SellerDashboard APP={APP} />}
-                    />
-                  </Route>
-                )}
-
-                {/* Registy Project Routes */}
-                <Route path="/recent-removals" element={<RecentRemoval />} />
-                <Route path="/certificate/:id" element={<CertificatePage />} />
-                <Route path="/registry" element={<Registry />} />
-                <Route
-                  path="/purchase"
-                  element={<PurchaseScreen APP={APP} />}
-                />
-                <Route path="/map" element={<Map />} />
-                <Route path="/presale" element={<Presale APP={APP} />} />
-
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-         
-
-        {/* <FloatingButton onClick={() => console.log("Assistant Clicked")}>
-          <FontAwesomeIcon icon={faInfo} />
-        </FloatingButton> */}
-      </AppContainer>
-    </Router>
-  );
-}
-
-
-
-const AppContainer = styled.div`
-display: flex;
-height: 100vh;
-width: 100vw;
-overflow: hidden;
-
-`;
-
-const Flex = styled.div`
-  ${({ config }) =>
-    config === "row"
-      ? style_template.flex_display.row_custom("flex-start", "flex-start")
-      : config === "column"
-        ? style_template.flex_display.column_custom("flex-start", "center")
-        : style_template.flex_display.row_centered}
-`;
-
-const StyledMain = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 32px 64px;
-
-  box-sizing: border-box;
-  background: white; 
-
-  overflow: auto;
-
-  transition: 0.3s ease-in-out;
-
-  @media (max-width: 767px) {
-    width: 100vw;
-  }
-`;
-
-const FloatingButton = styled(motion.button)`
-  position: fixed;
-  bottom: 50px;
-  left: -10px;
-
-  width: 50px;
-
-  padding: 10px 20px;
-  box-sizing: border-box;
-
-  border: none;
-  border-radius: 30px;
-  background-color: ${colors.deepBlue};
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-  font-size: 0.8rem;
-
-  transition: 0.3s;
-  cursor: pointer;
-  z-index: 1000;
-
-  &:hover {
-    left: 20px;
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    bottom: 10px;
-    left: 5px;
-
-    width: 40px;
-
-    padding: 10px;
-  }
-`;
-
-const Footer = styled.footer`
-  bottom: 0;
-
-  width: 100%;
-  height: 3vh;
-
-  ${style_template.flex_display.row_custom("space-between;", "center")}
-
-  padding: 0.5rem;
-  box-sizing: border-box;
-
-  background-color: #ffffffa1;
-  box-shadow: 0px -2px 2px 0px #d4d4d4;
-  backdrop-filter: blur(10px);
-
-  z-index: 999;
-
-  @media (max-width: 767px) {
-    padding: 0;
-  }
-
-  @media (max-width: 479px) {
-    flex-direction: column;
-  }
-`;
-
-const FooterContent = styled.span`
-  font-size: 0.7rem;
-  margin: 0;
-  text-align: center;
-`;
-
-const FooterIconGroup = styled.div`
-  height: auto;
-
-  ${style_template.flex_display.row_custom("space-between;", "center")}
-`;
-
-export default App;
-
-
-function Main() { 
-  return <StyledMain>
-    <Outlet />
-  </StyledMain>
-}
+        {user && <Sidebar key={window.location.pathname} APP={APP} />}
+        <Routes>
+          <Route path="/" element={<Welcome APP={APP} />} />
+          {user?.uid && (
+            <Route element={<Main isSidebarOpen={sidebarOpen} />}>
+              <Route
+                path="/features/verification"
+                element={<VerificationUI APP={APP} open={verificationUIOpen} />}
+              />
+              <Route
+                path="/dashboard/:dashID"
+                element={<Home APP={APP} />}
+              />
+              <Route
+                path="/features/nutrient-calculator"
+                element={<NutrientCalculator APP={APP} />}
+              />
+              <Route
+                path="/features/:serviceID"
+                element={<Livepeer APP={APP} />}
+              />
+              <Route
+                                path="/media/:playbackID"
+                                element={<Livepeer APP={APP} />}
+                              />
+                              <Route
+                                path="/media/live/:liveID"
+                                element={<Livepeer APP={APP} />}
+                              />
+                              <Route
+                                path="/marketplace"
+                                element={<Marketplace APP={APP} />}
+                              />
+                              <Route
+                                path="/marketplace/listing/:id"
+                                element={<ListingPage APP={APP} />}
+                              />
+                              <Route
+                                path="/marketplace/seller-dashboard"
+                                element={<SellerDashboard APP={APP} />}
+                              />
+                            </Route>
+                          )}
+                
+                          {/* Registry Project Routes */}
+                          <Route path="/recent-removals" element={<RecentRemoval />} />
+                          <Route path="/certificate/:id" element={<CertificatePage />} />
+                          <Route path="/registry" element={<Registry />} />
+                          <Route
+                            path="/purchase"
+                            element={<PurchaseScreen APP={APP} />}
+                          />
+                          <Route path="/map" element={<Map />} />
+                          <Route path="/presale" element={<Presale APP={APP} />} />
+                
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </AppContainer>
+                    </Router>
+                  );
+                }
+                
+                const SidebarMenu = ({ APP }) => {
+                  return (
+                    <nav>
+                      <ul>
+                        <li onClick={APP.ACTIONS.toggleEnvironmentSubItems}>Environment</li>
+                        {APP.STATES.showSubItems ? (
+                          <>
+                            <li>Nutrient Calculator</li>
+                            <li>Broadcast Live</li>
+                            <li>Upload Media</li>
+                            <li>Verification</li>
+                          </>
+                        ) : (
+                          <>
+                            <li>Marketplace</li>
+                            <li>Finance</li>
+                            <li>Dashboard</li>
+                          </>
+                        )}
+                      </ul>
+                    </nav>
+                  );
+                };                
+                
+                const AppContainer = styled.div`
+                  display: flex;
+                  height: 100vh;
+                  width: 100vw;
+                  overflow: hidden;
+                `;
+                
+                const Flex = styled.div`
+                  ${({ config }) =>
+                    config === "row"
+                      ? style_template.flex_display.row_custom("flex-start", "flex-start")
+                      : config === "column"
+                      ? style_template.flex_display.column_custom("flex-start", "center")
+                      : style_template.flex_display.row_centered}
+                `;
+                
+                const StyledMain = styled.div`
+                  width: 100%;
+                  height: 100%;
+                  padding: 32px 64px;
+                
+                  box-sizing: border-box;
+                  background: white;
+                
+                  overflow: auto;
+                
+                  transition: 0.3s ease-in-out;
+                
+                  @media (max-width: 767px) {
+                    width: 100vw;
+                  }
+                `;
+                
+                const FloatingButton = styled(motion.button)`
+                  position: fixed;
+                  bottom: 50px;
+                  left: -10px;
+                
+                  width: 50px;
+                
+                  padding: 10px 20px;
+                  box-sizing: border-box;
+                
+                  border: none;
+                  border-radius: 30px;
+                  background-color: ${colors.deepBlue};
+                  color: white;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                
+                  font-size: 0.8rem;
+                
+                  transition: 0.3s;
+                  cursor: pointer;
+                  z-index: 1000;
+                
+                  &:hover {
+                    left: 20px;
+                    transform: translateY(-2px);
+                  }
+                
+                  @media (max-width: 768px) {
+                    bottom: 10px;
+                    left: 5px;
+                
+                    width: 40px;
+                
+                    padding: 10px;
+                  }
+                `;
+                
+                const Footer = styled.footer`
+                  bottom: 0;
+                
+                  width: 100%;
+                  height: 3vh;
+                
+                  ${style_template.flex_display.row_custom("space-between;", "center")}
+                
+                  padding: 0.5rem;
+                  box-sizing: border-box;
+                
+                  background-color: #ffffffa1;
+                  box-shadow: 0px -2px 2px 0px #d4d4d4;
+                  backdrop-filter: blur(10px);
+                
+                  z-index: 999;
+                
+                  @media (max-width: 767px) {
+                    padding: 0;
+                  }
+                
+                  @media (max-width: 479px) {
+                    flex-direction: column;
+                  }
+                `;
+                
+                const FooterContent = styled.span`
+                  font-size: 0.7rem;
+                  margin: 0;
+                  text-align: center;
+                `;
+                
+                const FooterIconGroup = styled.div`
+                  height: auto;
+                
+                  ${style_template.flex_display.row_custom("space-between;", "center")}
+                `;
+                
+                export default App;
+                
+                function Main() { 
+                  return <StyledMain>
+                    <Outlet />
+                  </StyledMain>
+                }
+                

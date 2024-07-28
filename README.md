@@ -117,5 +117,4 @@ Environment Variables: If the project uses environment variables (e.g., API keys
 - General User Experience Enhancements.
 
 ## Notes
-- Clicking on the NeptuneChain logo from any page opens the welcome screen.
 - Where a database is not yet implemented, cookies are used.
