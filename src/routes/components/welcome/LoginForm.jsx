@@ -29,6 +29,7 @@ import FormSection from "../../../components/shared/FormSection/FormSection";
 import { Input } from "../../../components/shared/input/Input";
 import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
 import GoogleSignIn from "./GoogleSignIn";
+import { useNavigate } from "react-router-dom";
 
 const InputGroup = styled.div`
   position: relative;
@@ -62,7 +63,7 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
+  const navigate = useNavigate();
   const { logNotification } = APP?.ACTIONS || {};
 
   useEffect(() => {

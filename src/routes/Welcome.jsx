@@ -137,7 +137,7 @@ const Welcome = ({ APP }) => {
         />
 
         <div className="navbar-buttons">
-          <ButtonPrimary          onClick={() => setCardState("register")}>
+        {/*   <ButtonPrimary          onClick={() => setCardState("register")}>
             Sign up
           </ButtonPrimary>
           <ButtonSecondary
@@ -145,7 +145,7 @@ const Welcome = ({ APP }) => {
 
           >
             Sign in
-          </ButtonSecondary>
+          </ButtonSecondary> */}
         </div>
         </div>
 
