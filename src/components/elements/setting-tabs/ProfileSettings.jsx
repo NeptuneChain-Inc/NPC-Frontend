@@ -1,9 +1,10 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import NeptuneIcon from '../../../assets/icon.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
+import FormSection from '../../shared/FormSection/FormSection';
+import { Input } from '../../shared/input/Input';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -11,18 +12,32 @@ const ProfileContainer = styled.div`
   gap:10px;
   padding: 20px;
   box-sizing: border-box;
+  
+
+  ${ButtonPrimary} { 
+    margin-top: 24px;
+  }
   @media (max-width: 992px) {
     flex-direction: column;
   }
 `;
 
 const Section = styled.div`
-width: 50%;
-height: 60vh;
+width: 100%; 
+height: auto;
+max-width: 400px;
 //overflow: auto;
 display: flex;
 flex-direction: column;
 align-items: center;
+
+
+.profile-image-section { 
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
   @media (max-width: 992px) {
     width: 100%;
@@ -30,37 +45,25 @@ align-items: center;
 `;
 
 const ProfileImage = styled(motion.img)`
-  width: 150px;
-  height: 150px;
+  height: 100px;
+  width: 100px;
   border-radius: 50%;
   margin-bottom: 20px;
   cursor: pointer;
-  border: 3px solid #63c3d1;
+  border: 1px solid ${({ theme }) => theme.colors.ui200};
   transition: 0.3s ease-in-out;
-  &:hover {
-    scale: 1.1;
-  }
+
 `;
 
 const ProfileForm = styled.form`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
-const Label = styled.label`
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
-`;
 
-const Input = styled.input`
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-`;
+
 
 const PasswordButton = styled(motion.div)`
   background: none;
@@ -125,22 +128,36 @@ const ProfileSettingsTab = ({APP}) => {
   return (
     <ProfileContainer>
       <Section>
+        <div className='profile-image-section'>
+
+
         <ProfileImage src={imagePreview} onClick={handleImageClick} />
+        <ButtonSecondary onClick={handleImageClick}>
+          Upload Profile Image
+        </ButtonSecondary>
+        </div>
         <Input type="file" id="profileImageInput" style={{ display: 'none' }} onChange={handleImageChange} />
 
         <ProfileForm>
-          <Label htmlFor="username">Username:</Label>
+        <FormSection label={"Username"}>
+
           <Input type="text" id="username" value={user?.username} readOnly />
 
-          <Label htmlFor="email">Email:</Label>
-          <Input type="email" id="email" value={user?.email} readOnly />
+        </FormSection>
+        <FormSection label={"Email"}>
 
-          <Label htmlFor="type">Account Type:</Label>
+          <Input type="email" id="email" value={user?.email} readOnly />
+        </FormSection>
+
+        <FormSection label={"Account type"}>
+
           <Input type="text" id="type" value={user?.type} readOnly 
           />
-          <SaveButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          </FormSection>
+
+          <ButtonPrimary whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             Edit Profile
-          </SaveButton>
+          </ButtonPrimary>
         </ProfileForm>
       </Section>
 

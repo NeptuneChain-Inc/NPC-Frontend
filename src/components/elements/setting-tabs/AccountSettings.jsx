@@ -3,10 +3,13 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
-
+import { Input } from "../../shared/input/Input";
 //#BACK_END
 import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
 import { firebaseAPI } from "../../../scripts/back_door";
+import { Label } from "../../shared/Label/Label";
+import FormSection from "../../shared/FormSection/FormSection";
+import { ButtonDanger, ButtonPrimary, ButtonSecondary } from "../../shared/button/Button";
 
 const AccountContainer = styled.div`
   display: flex;
@@ -14,6 +17,8 @@ const AccountContainer = styled.div`
   gap: 20px;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 320px;
+  margin: 0 auto;
 `;
 
 const OptionGroup = styled.div`
@@ -66,22 +71,9 @@ const ActionButton = styled(motion.button)`
 
 const ProfileForm = styled.form`
   width: 100%;
-`;
-
-const Label = styled.label`
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap:24px;
 `;
 
 const AccountSettingsTab = ({ APP }) => {
@@ -159,81 +151,81 @@ const AccountSettingsTab = ({ APP }) => {
 
   return (
     <AccountContainer>
-      <ActionButton
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <ButtonSecondary
         active={showPasswordFields}
         onClick={togglePasswordFields}
       >
         Change Password{" "}
         <FontAwesomeIcon icon={showPasswordFields ? faCaretUp : faCaretDown} />
-      </ActionButton>
+      </ButtonSecondary>
       {showPasswordFields && (
         <ProfileForm onSubmit={handleFormSubmit}>
-          <Label htmlFor="currentPassword">Current Password:</Label>
+          <FormSection label={"Current password"}>
           <Input
             type="password"
             id="currentPassword"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             required
-          />
+            />
+            </FormSection>
 
-          <Label htmlFor="newPassword">New Password:</Label>
+
+          <FormSection label={"New password"}>
           <Input
             type="password"
             id="newPassword"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-          />
+            />
+            </FormSection>  
 
-          <Label htmlFor="confirmNewPassword">Confirm New Password:</Label>
+          <FormSection label={"Confirm New Password"}>
           <Input
             type="password"
             id="confirmNewPassword"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
             required
-          />
-          <ActionButton
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
+            />
+            </FormSection>
+          <ButtonPrimary
+                      type="submit"
           >
             Save Password Changes
-          </ActionButton>
+          </ButtonPrimary>
         </ProfileForm>
       )}
 
-      <ActionButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <ButtonSecondary >
         Manage Email Settings
-      </ActionButton>
+      </ButtonSecondary>
 
-      <OptionGroup>
-        <OptionLabel>Two-Factor Authentication:</OptionLabel>
-        <ToggleButton isActive={twoFactorAuth} onClick={handle2FAToggle}>
+      <FormSection>
+        <Label>Two-Factor Authentication:</Label>
+        <ButtonSecondary isActive={twoFactorAuth} onClick={handle2FAToggle}>
           {twoFactorAuth ? "Enabled" : "Disabled"}
-        </ToggleButton>
-      </OptionGroup>
+        </ButtonSecondary>
+      </FormSection>
 
-      <ActionButton
+      <ButtonDanger
         danger
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={handleDeactivate}
       >
         Deactivate Account
-      </ActionButton>
+      </ButtonDanger>
 
-      <ActionButton
+      <ButtonDanger
         danger
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={handleDelete}
       >
         Delete Account
-      </ActionButton>
+      </ButtonDanger>
     </AccountContainer>
   );
 };

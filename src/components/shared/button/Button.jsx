@@ -30,6 +30,9 @@ export const ButtonSecondary = styled(Button)`
   color: ${({ theme }) => theme.colors.primary500};
   background: none;
   height: ${({ theme }) => theme.formHeightMd};
+  :hover {
+     background: ${({ theme }) => theme.colors.ui100};
+  }
 `;
 
 
@@ -55,4 +58,9 @@ border: 1px solid ${({theme}) => theme.colors.ui200};
 
 padding: 0px;
 
+`
+
+
+export const ButtonDanger = styled(Button)`
+background: ${({theme}) => theme.colors.red500};
 `

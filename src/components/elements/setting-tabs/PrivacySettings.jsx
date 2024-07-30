@@ -1,6 +1,10 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import FormSection from '../../shared/FormSection/FormSection';
+import { Label } from '../../shared/Label/Label';
+import { RadioWithLabel } from '../../shared/Radio/RadioButton';
+import { Select } from "../../shared/Select/Select";
 
 const PrivacyContainer = styled.div`
   display: flex;
@@ -8,6 +12,16 @@ const PrivacyContainer = styled.div`
   gap: 20px;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 320px;
+  margin: 0 auto;
+
+
+  .radio-button-area { 
+    display: flex;
+    flex-direction: column;
+    gap:4px;
+  }
+
 `;
 
 const OptionGroup = styled.div`
@@ -56,39 +70,64 @@ const PrivacySettingsTab = ({ APP }) => {
 
   return (
     <PrivacyContainer>
-      <OptionGroup>
-        <OptionLabel>Profile Visibility:</OptionLabel>
-        <Dropdown value={profileVisibility} onChange={(e) => setProfileVisibility(e.target.value)}>
+      <FormSection>
+        <Label>Profile Visibility:</Label>
+        <Select value={profileVisibility} onChange={(e) => setProfileVisibility(e.target.value)}>
           <option value="Everyone">Everyone</option>
           <option value="Only Verifiers">Only Verifiers</option>
           <option value="No one">No one</option>
-        </Dropdown>
-      </OptionGroup>
+        </Select>
+      </FormSection>
 
-      <OptionGroup>
-        <OptionLabel>Activity Status:</OptionLabel>
-        <ToggleButton isActive={activityStatus} onClick={() => setActivityStatus(!activityStatus)}>
-          {activityStatus ? "Visible" : "Hidden"}
-        </ToggleButton>
-      </OptionGroup>
+      <FormSection>
+        <Label>Activity Status:</Label>
+        <div className='radio-button-area'>
 
-      {accountType !== "verifier" && (
-        <OptionGroup>
-          <OptionLabel>Transaction Privacy:</OptionLabel>
-          <ToggleButton isActive={transactionPrivacy} onClick={() => setTransactionPrivacy(!transactionPrivacy)}>
-            {transactionPrivacy ? "Public" : "Private"}
-          </ToggleButton>
-        </OptionGroup>
-      )}
+   <RadioWithLabel onChange={() => {
+     setActivityStatus(true)
+    }} label={"Visible"} checked={activityStatus} />
+   <RadioWithLabel 
+    onChange={() => { 
+      setActivityStatus(false)
+    }}
+    label={"Hidden"} checked={!activityStatus} />
+    </div>
+        
+      </FormSection>
 
-      {accountType === "farmer" && (
-        <OptionGroup>
-          <OptionLabel>Data Upload Privacy:</OptionLabel>
-          <ToggleButton isActive={dataUploadPrivacy} onClick={() => setDataUploadPrivacy(!dataUploadPrivacy)}>
-            {dataUploadPrivacy ? "Public" : "Private"}
-          </ToggleButton>
-        </OptionGroup>
-      )}
+      <FormSection>
+            <Label>Transaction Privacy:</Label>
+            <div className='radio-button-area'>
+            <RadioWithLabel 
+              label={"Public"}
+              checked={transactionPrivacy}
+              onChange={() => setTransactionPrivacy(true)}
+            />
+            <RadioWithLabel
+              label={"Private"}
+              checked={!transactionPrivacy}
+              onChange={() => setTransactionPrivacy(false)}
+            />
+            </div>
+      </FormSection>
+
+    <FormSection>
+    <Label>Data Upload Privacy:</Label>
+    <div className='radio-button-area'>
+    <RadioWithLabel
+      label={"Public"}
+      checked={dataUploadPrivacy}
+      onChange={() => setDataUploadPrivacy(true)}
+    />
+    <RadioWithLabel
+      label={"Private"}
+      checked={!dataUploadPrivacy}
+      onChange={() => setDataUploadPrivacy(false)}
+    />
+    </div>  
+    </FormSection>
+
+
     </PrivacyContainer>
   );
 };
