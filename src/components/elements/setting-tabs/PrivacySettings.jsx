@@ -1,10 +1,10 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { Label } from '../../shared/Label/Label';
-import {Select} from "../../shared/Select/Select"
 import FormSection from '../../shared/FormSection/FormSection';
-import { RadioButton, RadioWithLabel } from '../../shared/Radio/RadioButton';
+import { Label } from '../../shared/Label/Label';
+import { RadioWithLabel } from '../../shared/Radio/RadioButton';
+import { Select } from "../../shared/Select/Select";
 
 const PrivacyContainer = styled.div`
   display: flex;

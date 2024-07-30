@@ -1,13 +1,10 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import NeptuneIcon from '../../../assets/icon.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
 import FormSection from '../../shared/FormSection/FormSection';
 import { Input } from '../../shared/input/Input';
-import { Label } from '../../shared/Label/Label';
-import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
 
 const ProfileContainer = styled.div`
   display: flex;
