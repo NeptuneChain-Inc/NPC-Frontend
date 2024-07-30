@@ -47,5 +47,5 @@ export const theme = {
   borderRadius: {
     default: "12px",
   },
-  formHeightMd: "40px",
+  formHeightMd: "44px",
 };

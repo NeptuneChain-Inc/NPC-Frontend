@@ -62,7 +62,7 @@ width: 100vw;
   }
 }
 .content{
-  height: calc(100vh - 80px);
+  height: 100vh; 
   overflow-y: hidden;
   display: flex;
   align-items: center;
@@ -70,15 +70,27 @@ width: 100vw;
   width: 100%;
  }
 
+
+ .content-logo img {
+   width: 200px;
+   margin-bottom: 80px;
+ }
+
  .section-left {
    width: 100%; 
    width: 800px;
-   height: calc(100vh - 80px);
+   height: 100vh;
+   img { 
+    height: 100vh;
+    border-radius: 40px;
+    padding: 24px;
+  }
    .section-left-image {
-      height: calc(100vh - 80px);
-
+      height: 100vh; 
+      overflow: hidden;
       object-fit: cover;
     width: 800px;
+ 
     }
 
  }
@@ -87,10 +99,10 @@ width: 100vw;
   width: 70%; 
   display: flex;
   flex-direction: column;
-  max-width: 500px; 
+  max-width: 400px; 
   margin: 0 auto;
   .form-content { 
-    max-width: 500px;
+    max-width: 400px;
   }
 }
 `;
@@ -128,8 +140,13 @@ const Welcome = ({ APP }) => {
   return (
     <FullScreenWrapper>
 
-      <div className="navbar">
-      <StyledLogo
+
+        <div className="content">
+
+    <div className="sign-in-form-section">
+      <div className="content-logo">
+
+    <StyledLogo
         
         src={logoImage}
         alt="NeptuneChain Logo"
@@ -137,23 +154,7 @@ const Welcome = ({ APP }) => {
         initial="hidden"
         animate="visible"
         />
-
-        <div className="navbar-buttons">
-        {/*   <ButtonPrimary          onClick={() => setCardState("register")}>
-            Sign up
-          </ButtonPrimary>
-          <ButtonSecondary
-                      onClick={() => setCardState("login")}
-
-          >
-            Sign in
-          </ButtonSecondary> */}
         </div>
-        </div>
-
-        <div className="content">
-
-    <div className="sign-in-form-section">
           <WelcomeHome
             key="welcome"
             user={user}
