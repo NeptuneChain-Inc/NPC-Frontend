@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import {ButtonDanger, ButtonSecondary} from '../../shared/Button/Button'
+import {ButtonDanger, ButtonSecondary} from '../../shared/button/Button'
 const DataContainer = styled.div`
   display: flex;
   flex-direction: column;
