@@ -15,7 +15,7 @@ const ProfileContainer = styled.div`
   gap:10px;
   padding: 20px;
   box-sizing: border-box;
-
+  
 
   ${ButtonPrimary} { 
     margin-top: 24px;
@@ -28,6 +28,7 @@ const ProfileContainer = styled.div`
 const Section = styled.div`
 width: 100%; 
 height: auto;
+max-width: 400px;
 //overflow: auto;
 display: flex;
 flex-direction: column;

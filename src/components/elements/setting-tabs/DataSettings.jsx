@@ -8,6 +8,8 @@ const DataContainer = styled.div`
   gap: 20px;
   padding: 20px;
   box-sizing: border-box;
+  max-width: 320px;
+  margin: 0 auto;
 `;
 
 const Button = styled(motion.div)`
