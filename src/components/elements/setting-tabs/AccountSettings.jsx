@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "../../shared/Input/Input";
+import { Input } from "../../shared/input/Input";
 //#BACK_END
 import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
 import { firebaseAPI } from "../../../scripts/back_door";
 import { Label } from "../../shared/Label/Label";
 import FormSection from "../../shared/FormSection/FormSection";
-import { ButtonDanger, ButtonPrimary, ButtonSecondary } from "../../shared/Button/Button";
+import { ButtonDanger, ButtonPrimary, ButtonSecondary } from "../../shared/button/Button";
 
 const AccountContainer = styled.div`
   display: flex;
