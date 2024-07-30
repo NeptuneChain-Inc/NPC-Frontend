@@ -48,8 +48,7 @@ const SettingsMenu = ({ APP }) => {
               key={index}
               active={tab.name === settingsTab}
               onClick={() => handleSettingsTab(tab.name)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+
               role="tab"
               tabIndex="0"
               aria-selected={tab.name === settingsTab}
@@ -76,6 +75,7 @@ const Container = styled(motion.div)`
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  
 `;
 
 const DropdownContainer = styled.div`
@@ -133,14 +133,14 @@ justify-content: center;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   height: 90%;
-  background-color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 10px;
   overflow: hidden;
-
+  background: white; 
+  overflow-y: auto;
   @media (min-width: 769px) {
-    width: 80%;
-    height: 80%;
+    max-width: 800px;
+    max-height: 80vh;
   }
 `;
 
@@ -149,7 +149,6 @@ const TabList = styled.div`
   flex-direction: column;
   overflow-y: auto;
   border-right: 1px solid #ddd;
-  background-color: #134b5f;
   overflow: hidden;
 
   @media (max-width: 768px) {
@@ -164,17 +163,14 @@ const Tab = styled(motion.div)`
   cursor: pointer;
   padding: 15px;
   font-weight: 500;
-  color: ${props => props.active ? '#000' : '#fff'};
-  background-color: ${props => props.active ? '#63c3d1' : '#134b5f'};
-  transition: background-color 0.2s ease;
-
+  color: ${props => props.active ? "#fff" : props.theme.colors.ui800};
+  background-color: ${props => props.active ? props.theme.colors.primary500 : "white"};
   display: flex;
   align-items: center;
   justify-content: center;
 
   &:hover {
-    background-color: #e5e5e5;
-    color: #222;
+
   }
 
   @media (max-width: 768px) {
@@ -189,7 +185,7 @@ const TabIcon = styled(FontAwesomeIcon)`
 
 
 const Content = styled.div`
-  padding: 20px;
+  padding: 40px 0px;
   overflow-y: auto;
   flex-grow: 1;
 
@@ -201,11 +197,11 @@ const Content = styled.div`
 
 const ExitIcon = styled(FontAwesomeIcon)`
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 16px;
+  right: 24px;
   padding: 8px;
-  font-size: 24px;
-  color: #222;
+  font-size: 16px;
+  color: ${props => props.theme.colors.ui600};
   // background-color: #222;
   border-radius: 50%;
   border: none;

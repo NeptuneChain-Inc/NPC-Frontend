@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-
+import {ButtonDanger, ButtonSecondary} from '../../shared/Button/Button'
 const DataContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,17 +54,17 @@ const DataSettingsTab = ({APP}) => {
 
   return (
     <DataContainer>
-      <Button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleBackup}>
+      <ButtonSecondary whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleBackup}>
         Backup My Data
-      </Button>
+      </ButtonSecondary>
 
-      <Button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleExport}>
+      <ButtonSecondary whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleExport}>
         Export My Data
-      </Button>
+      </ButtonSecondary>
 
-      <DangerButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDelete}>
+      <ButtonDanger whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDelete}>
         Delete My Data
-      </DangerButton>
+      </ButtonDanger>
     </DataContainer>
   );
 };
