@@ -55,6 +55,18 @@ const StyledLoginForm = styled.div`
 .input-section { 
 
 }
+
+${ButtonPrimary} { 
+  margin-top: 40px;
+}
+
+.secondary-actions { 
+  .secondary-action-text {
+     font-weight: 500; 
+     font-size: 14px;
+     color: ${({theme}) => theme.colors.ui600};
+  }
+}
 `
 
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
@@ -155,20 +167,21 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
                 />
             </FormSection>
                 </div>
+            <div>
 
             <ButtonPrimary type="submit">Log In</ButtonPrimary>
-            <div>
-            <div>
+            </div>
+            <div className="secondary-actions">
+            <div className="secondary-action-text">
 
             <ButtonLink type="button" onClick={handleResetPassword}>
               Forgot Password?
             </ButtonLink>
             </div>
-            <div>
+            <div className="secondary-action-text">
 
-            <ButtonLink type="button" onClick={onSwitchToRegister}>
-              Need an account? Register
-            </ButtonLink>
+           
+              Need an account? <ButtonLink type="button" onClick={onSwitchToRegister}> Register</ButtonLink>
             </div>
             </div>
           </PROMPT_FORM>

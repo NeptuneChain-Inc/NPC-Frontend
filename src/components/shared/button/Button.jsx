@@ -6,7 +6,7 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0px 16px;
+  padding: 0px 24px;
   border-radius: ${({ theme }) => theme.borderRadius.default};
   font-size: 14px;
   font-weight: 600;
@@ -35,7 +35,7 @@ export const ButtonSecondary = styled(Button)`
 
 export const ButtonLink = styled(Button)`
 text-decoration: underline; 
-color: ${({theme}) => theme.colors.ui600};
+color: ${({theme}) => theme.colors.primary500};
 padding: 0px;
 background: white;
 svg {
