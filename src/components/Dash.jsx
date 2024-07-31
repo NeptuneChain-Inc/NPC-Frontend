@@ -150,7 +150,7 @@ const Dash = ({ APP, dashData }) => {
           {section.cards?.map((card) => {
 
 
-          if(card.data.title === "Credit Balance") { 
+          if(card?.data?.title === "Credit Balance") { 
             return <Certificate key={card.data.title}>
               <img src={AppIcon} />
               <div className="title">
