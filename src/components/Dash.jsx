@@ -4,7 +4,53 @@ import { motion } from "framer-motion";
 import {renderCard} from "./dash.lib";
 import { DashboardPage } from "./shared/DashboardPage/DashboardPage";
 import { ButtonPrimary } from "./shared/button/Button";
+import { AppIcon, AppLogo } from "../assets";
 
+
+const Certificate = styled.div`
+width: 100%;
+background: ${({theme}) => theme.colors.primary50};
+height: 100%;
+border: 1px solid ${({theme}) => theme.colors.primary500};
+border-radius: ${({theme}) => theme.borderRadius.default};
+height: 150px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 24px;
+
+img { 
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border: 1px solid ${({theme}) => theme.colors.primary500};
+  border-radius: 50%;
+}
+.wrap { 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.title { 
+  font-size: 16px;
+  font-weight: 500; 
+  color: ${({theme}) => theme.colors.ui800};
+}
+
+.unit { 
+  text-transform: capitalize;
+   font-weight: 600; 
+   font-size: 16px;
+   color: ${({theme}) => theme.colors.primary700};
+}
+
+.amount {
+   text-transform: capitalize;
+   font-weight: 600; 
+   font-size: 32px;
+   color: ${({theme}) => theme.colors.primary700};
+}
+`
 
 const StyledPageWrap = styled.div`
 .card-wrap { 
@@ -102,6 +148,29 @@ const Dash = ({ APP, dashData }) => {
 
  return (<DashSection key={index} alignment="center">
           {section.cards?.map((card) => {
+
+
+          if(card.data.title === "Credit Balance") { 
+            return <Certificate key={card.data.title}>
+              <img src={AppIcon} />
+              <div className="title">
+
+              {card.data.title}
+              </div>
+
+<div className="wrap">
+
+              <div className="amount">
+            {card.data.value}
+              </div>
+              <div className="unit">
+              {card.data.unit}
+              </div>
+</div>
+            </Certificate>
+          }
+         
+
           return renderCard(card, refStates)
 
           })}
