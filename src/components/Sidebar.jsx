@@ -1,24 +1,29 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Sidebar_MenuItem } from './elements';
 import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
-import { AppIcon, AppLogo } from "../assets"
+import * as Accordion from '@radix-ui/react-accordion';
+import React, { useState } from 'react';
+import { FaChevronDown } from 'react-icons/fa6';
+import { Link, useLocation } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
+import { AppIcon } from "../assets";
+import { Sidebar_MenuItem } from './elements';
 import { ProfileDropMenu } from './elements/navbar/elements';
-const Sidebar = ({ APP }) => {
 
+const Sidebar = ({ APP }) => {
   const { isMobile, sidebarOpen, user } = APP ? APP.STATES : {};
   const { handleSidebar, toggleCalculator, handleVerificationUI } = APP ? APP.ACTIONS : {};
 
   const path = window.location.pathname.replace(/^\//, '');
   const isMarketplace = path.startsWith('marketplace');
-  const location = useLocation()
+  const location = useLocation();
+
+  const [isEnvironmentalOpen, setIsEnvironmentalOpen] = useState(false);
 
   const sidebarItems = [
     {
       route: 'environmental',
       cta: 'Environment',
-      icon: faLeaf
+      icon: faLeaf,
+      hasSubMenu: true
     },
     {
       route: '/marketplace',
@@ -38,6 +43,12 @@ const Sidebar = ({ APP }) => {
   ];
 
   const environmentRoutes = [
+    {
+      route: '/dashboard/environmental',
+      cta: 'Environmental Dashboard',
+      icon: faLeaf,
+      hasSubMenu: true
+    },
     {
       route: '/features/nutrient-calculator',
       cta: 'Nutrient Calculator',
@@ -60,98 +71,189 @@ const Sidebar = ({ APP }) => {
       onclick: handleVerificationUI,
       icon: faCheckCircle
     },
-  ]; 
+  ];
 
-
-
-
-  const isEnvrionmentRoute = environmentRoutes.some(route => location.pathname.includes(route.route));
-
-  console.log(isEnvrionmentRoute)
-
-  console.log(" re render")
+  const toggleEnvironmentalMenu = () => {
+    setIsEnvironmentalOpen(!isEnvironmentalOpen);
+  };
 
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
       <LogoWrap>
-
         <Logo alt="logo" src={AppIcon} />
         <LogoName>
           NeptuneChain
         </LogoName>
       </LogoWrap>
- <div>
+      <div>
+      <StyledAccordion type="single" collapsible>
+          {sidebarItems?.map((data, index) => {
+            const { route, cta, icon, hasSubMenu } = data || {};
+            return hasSubMenu ? (
+              <Accordion.Item value="environmental" key={index}>
+                <StyledAccordionTrigger className='trigger'>
+                  <Sidebar_MenuItem
+                    icon={icon}
+                    itemName={cta}
+                    isAccordionTrigger
+                  />
+                        <FaChevronDown className="AccordionChevron" aria-hidden />
 
-      <Menu>
-
-        {sidebarItems?.map((data, index) => {
-          const { route, cta, icon } = data || {};
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={route} handleSidebar={isMobile ? handleSidebar : null} />
-          );
-        })}
-      </Menu>
-
-  
-
-      <Menu>
-        {(isEnvrionmentRoute || location.pathname.includes("dashboard/environmental")) && environmentRoutes?.map((data, index) => {
-          const { route, cta, icon, onclick } = data || {};
-          
-          const isRoute = !route.includes('/**button**/');
-          
-          return (
-            <Sidebar_MenuItem key={index} icon={icon} itemName={cta} route={isRoute ? route : null} handleSidebar={isMobile ? handleSidebar : null} onClick={onclick}/>
-          );
-        })}
-      </Menu>
-
-        </div>
-
-
-        <ProfileDropMenu  APP={APP} />
-      
+                </StyledAccordionTrigger>
+                <StyledAccordionContent className='content'>
+                  {environmentRoutes.map((subData, subIndex) => {
+                    const { route, cta, icon, onclick } = subData || {};
+                    const isRoute = !route.includes('/**button**/');
+                    return (
+                      <Link to={route}  className='cta' key={cta}>
+            
+                          {cta}
+                        </Link>
+                    );
+                  })}
+                </StyledAccordionContent>
+              </Accordion.Item>
+            ) : (
+              <Sidebar_MenuItem
+                key={index}
+                icon={icon}
+                itemName={cta}
+                route={route}
+                handleSidebar={isMobile ? handleSidebar : null}
+              />
+            );
+          })}
+        </StyledAccordion>
+      </div>
+      <ProfileDropMenu APP={APP} />
     </StyledSidebar>
   );
 };
 
 
-const LogoWrap = styled.div`
-display: flex;
-align-items: center;
-gap:4px;
+
+const slideUp = keyframes`
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 `
 
-
-const LogoName = styled.div`
-  color: ${({theme}) => theme.colors.primary500};
-  font-weight: 600;
+const slideDown = keyframes`
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
 
 `
 
-const Logo = styled.img`
-  width: 24px;
-  margin-right: 8px;
-  cursor: pointer;
+const StyledAccordion = styled(Accordion.Root)`
+  width: 100%;
+
+
+
+
+.content[data-state='open'] {
+  animation: ${slideDown} 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.content[data-state='closed'] {
+  animation: ${slideUp} 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+`;
+
+const StyledAccordionTrigger = styled(Accordion.Trigger)`
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+
+  font-weight: 500;
+  .cta { 
+    font-weight: 500; 
+
+  }
+  &[data-state="open"] {
+    .AccordionChevron { 
+      transform: rotate(180deg);
+
+    }
+  }
+
+  .AccordionChevron {
+    transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+    font-size: 14px;
+    /* Apply styles based on the data-state attribute */
+}
+`;
+
+const StyledAccordionContent = styled(Accordion.Content)`
+  padding-left: 38px;
+  margin-left: 22px;
+  font-weight: 500;
+  color: ${({theme}) => theme.colors.ui600};
+  font-size: 14px;
+  overflow: hidden;
+/*   border-left: 1px solid ${({theme}) => theme.colors.ui300}; */
+  border-bottom: 1px solid ${({theme}) => theme.colors.ui300};
+  .cta {
+     padding: 8px 0px;
+    display: block; 
+    color: ${({theme}) => theme.colors.ui700};
+    text-decoration: none; 
+     font-weight: 500;
+     &:hover {
+      text-decoration: underline;
+      color: ${({theme}) => theme.colors.ui800};
+     }
+  }
 `;
 
 
-const StyledSidebar = styled.div`
-  width: 20vw;
-  height: 100vh; 
-  max-height: 100vh;
-  background: ${({theme}) => theme.colors.ui50}; 
-  padding: 24px;
+
+
+const StyledSidebar = styled.aside`
+
+  width: 400px;
+  background: ${({theme}) => theme.colors.ui50};
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  padding: 20px;
 `;
 
+const LogoWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  h1 { 
+    font-size: 16px;
+    color: ${({theme}) => theme.colors.ui800};
+  }
+`;
 
-const Menu = styled.ul`
-margin: 0px;
-padding: 0px;
+const Logo = styled.img`
+  width: 24px;
+`;
+
+const LogoName = styled.h1`
+  font-size: 1.5rem;
+  margin: 0;
+`;
+
+const Menu = styled.nav`
+  margin-top: 20px;
+`;
+
+const SubMenu = styled.div`
+  padding-left: 20px;
 `;
 
 export default Sidebar;
