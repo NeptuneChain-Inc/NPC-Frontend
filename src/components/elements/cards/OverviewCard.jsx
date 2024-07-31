@@ -65,9 +65,9 @@ height: 150px;
 display: flex; 
 flex-direction: column;
 justify-content: center;
-background: ${({theme}) => theme.colors.primary700};
+
  * {
-   color: White !important; 
+   color: ${({theme}) => theme.colors.ui800};
 }
 .title-wrap{ 
   display: flex;
