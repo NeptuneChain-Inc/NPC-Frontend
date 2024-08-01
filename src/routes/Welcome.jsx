@@ -78,7 +78,7 @@ width: 100vw;
 
  .section-left {
    width: 100%; 
-   width: 800px;
+  max-width: 45vw;
    height: 100vh;
    img { 
     height: 100vh;
@@ -89,7 +89,7 @@ width: 100vw;
       height: 100vh; 
       overflow: hidden;
       object-fit: cover;
-    width: 800px;
+      width: 100%;
  
     }
 
