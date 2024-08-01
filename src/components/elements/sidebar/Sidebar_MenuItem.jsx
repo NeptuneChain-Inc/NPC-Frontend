@@ -87,7 +87,9 @@ padding: 12px 0px;
 cursor: pointer; 
 width: 100%;
 margin: 0px;
-
+button {
+   margin: 0px;
+}
 `;
 
 /**
