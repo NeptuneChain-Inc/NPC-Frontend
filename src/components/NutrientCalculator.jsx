@@ -362,7 +362,7 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
         datasets: [{
           label: 'Nutrient Removal',
           data: Object.values(nutrientValues),
-          backgroundColor: ['#fcbe24', '#4CAF50', '#45a049', '#ddd', '#f4f4f4'],
+          backgroundColor: ['#3b82f6', '#e5e5e5', '#6366f1', '#eab308', '#a3a3a3'],
         }]
       },
       options: {
