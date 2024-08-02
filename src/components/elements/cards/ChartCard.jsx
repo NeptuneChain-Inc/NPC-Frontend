@@ -185,6 +185,7 @@ const ChartCardComponent = ({
 
   useEffect(() => {
     const { name, records } = deviceData || {};
+    console.log(deviceData, records)
     if (records) {
       logDev(`ChartCard #${deviceID} device data`, { deviceData });
 

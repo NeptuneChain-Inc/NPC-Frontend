@@ -55,13 +55,13 @@ export const getMetric = async (metric, uid) => {
  * @param {{id: number | string}} card
  * @param {React.Dispatch<React.SetStateAction<{}>>} setDeviceData
  */
-export const fetchDeviceData = async (id, setDeviceData) => {
+export const fetchDeviceData = async (deviceID, setDeviceData) => {
   try {
-    const deviceData = await DeviceAPI.data(id);
-    if (deviceData) {
-      setDeviceData(deviceData);
+    const { device } = (await DeviceAPI.data(deviceID)) || {};
+    if (device) {
+      setDeviceData(device);
     } else {
-      alert(`Device #${id} Data Unavailable`);
+      alert(`Device #${deviceID} Data Unavailable`);
     }
   } catch (error) {
     handleError(error.message, error);

@@ -366,22 +366,22 @@ const StripeAPI = {
  * @param {*} data object with device data including id { id, name, status, icon }
  * @returns run result
  */
-const addDevice = async (data) =>
-  (await axios.post(`${configs.server_url}/device`, data))?.data;
+const addDevice = async (devicePayload) =>
+  (await axios.post(`${configs.server_url}/device`, { devicePayload }))?.data;
 
-const editDevice = async (deviceId, update) =>
-  deviceId > 0
+const editDevice = async (deviceID, updateData) =>
+  deviceID > 0
     ? (
         await axios.post(`${configs.server_url}/device/edit`, {
-          deviceId,
-          update,
+          deviceID,
+          updateData,
         })
       )?.data
     : null;
 
-const removeDevice = async (deviceId) =>
-  deviceId > 0
-    ? (await axios.post(`${configs.server_url}/device/remove`, { deviceId }))
+const removeDevice = async (deviceID) =>
+  deviceID > 0
+    ? (await axios.post(`${configs.server_url}/device/remove`, { deviceID }))
         ?.data
     : null;
 
@@ -389,18 +389,17 @@ const removeDevice = async (deviceId) =>
 const getDevices = async () =>
   (await axios.post(`${configs.server_url}/devices`, {}))?.data?.devices;
 
-// *NB: update endpont
-const getDeviceData = async (deviceId) =>
-  deviceId > 0
-    ? (await axios.post(`${configs.server_url}/device/details`, { deviceId }))
+const getDeviceData = async (deviceID) =>
+  deviceID > 0
+    ? (await axios.post(`${configs.server_url}/device/details`, { deviceID }))
         ?.data
     : null;
 
-const emulateDevice = async (deviceId, interval) =>
-  deviceId > 0
+const emulateDevice = async (deviceID, interval) =>
+  deviceID > 0
     ? (
         await axios.post(`${configs.server_url}/device/emulate`, {
-          deviceId,
+          deviceID,
           interval,
         })
       )?.data
