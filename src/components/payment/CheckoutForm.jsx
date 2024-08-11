@@ -1,12 +1,20 @@
+/**
+ * Checkout component
+ * 
+ * Purpose:
+ * Handle and process transactions
+ * Only triggered when a checkoutItem is set
+ * 
+ */
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { PaymentElement } from "@stripe/react-stripe-js";
 import { useState, useEffect } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import Spinner from "./Spinner"; // Assume you have a Spinner component for loading states
+import Spinner from "./Spinner"; 
 import { configs } from "./configs";
-import { stripe_unitToString } from "./OrderConfirmation";
+import { unitToString } from "./OrderConfirmation";
 import { sContract } from "../../contracts/contractRef";
 
 const presaleProducer = {
@@ -113,7 +121,7 @@ const Form = ({ item }) => {
         {isProcessing ? (
           <Spinner />
         ) : (
-          `Pay ${item?.data?.currency?.toUpperCase?.()} ${stripe_unitToString(
+          `Pay ${item?.data?.currency?.toUpperCase?.()} ${unitToString(
             payAmount
           )}`
         )}

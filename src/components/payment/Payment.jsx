@@ -1,12 +1,23 @@
+/**
+ * Payment Processing Component
+ * 
+ * Purpose: Handles the payment processing process.
+ */
 import { useState, useEffect, useRef } from 'react';
 import CheckoutForm from './CheckoutForm';
 import CustomerInfoForm from './CustomerInfoForm';
-import { FaArrowLeft, FaTimes } from 'react-icons/fa'; 
-import { FormWrapper } from '../routes/Presale';
+import { FaTimes } from 'react-icons/fa'; 
 import OrderConfirmation from './OrderConfirmation';
 import './Payment.css';
+import {FormWrapper} from './styled';
 
-function Payment({setIsPaying, lineItems}) {
+/**
+ * 
+ * @param {function} setIsPaying set wheather paying or not
+ * @param {Array} checkoutItems 
+ * @returns 
+ */
+function Payment({setIsPaying, checkoutItems}) {
   const [currentStep, setCurrentStep] = useState(1);
   const [checkoutItem, setCheckoutItem] = useState(null);
 
@@ -19,6 +30,7 @@ function Payment({setIsPaying, lineItems}) {
     }
   }, [checkoutItem])
 
+  //Exit Payment
   const exitSteps = () => {
     setIsPaying?.(false);
   };
@@ -29,35 +41,28 @@ function Payment({setIsPaying, lineItems}) {
       formRef.current.classList.add('slide-left');
       setTimeout(() => {
         formRef.current.classList.remove('slide-left');
-      }, 500); // Match CSS animation duration
+      }, 500);
     }
   };
 
-  const goToPreviousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      formRef.current.classList.add('slide-right');
-      setTimeout(() => {
-        formRef.current.classList.remove('slide-right');
-      }, 500); // Match CSS animation duration
-    }
-  };
-
-  const proceedToPayment = (item) => setCheckoutItem(item);
+    /**
+     * 
+     * @param {Object} item 
+     * @param {number || null} payAmount 
+     * @returns 
+     */
+  const proceedToPayment = (item, payAmount) => setCheckoutItem({item, payAmount});
 
   return (
     <FormWrapper>
       <div className='form-container' ref={formRef}>
         {currentStep === 1 && <CustomerInfoForm onNextClick={goToNextStep} />}
-        {currentStep === 2 && <OrderConfirmation onNextClick={proceedToPayment} lineItems={lineItems} />}
+        {currentStep === 2 && <OrderConfirmation proceedToPayment={proceedToPayment} checkoutItems={checkoutItems} />}
         {currentStep === 3 && checkoutItem && (
             <CheckoutForm item={checkoutItem}/>
         )}
       </div>
       <div className='navigation'>
-        {currentStep > 1 && (
-          <FaArrowLeft onClick={goToPreviousStep} /> 
-        )}
         <FaTimes onClick={exitSteps} />
       </div>
     </FormWrapper>

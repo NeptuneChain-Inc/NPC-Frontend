@@ -1,3 +1,11 @@
+/**
+ * Main Component to confirm and process order
+ * 
+ * Purpose:
+ * gets checkout item from priceID which is retrieved from the first item within the checkout items. (Single item support)
+ * Calculates how much user has to currently pay based on custimized discounts and payment plans.
+ * On progression, checkout item and pay value is set into a checkout item  which triggers the checkout form
+ */
 import { useState, useEffect } from "react";
 import { configs } from "./configs";
 import { colors } from "../../data/styles";
@@ -22,34 +30,34 @@ const StyledButton = styled.button`
 
 const DISCOUT_PERCENTAGE = 50;
 
-export const stripe_unitToString = (unit) => String((unit / 100).toFixed(2));
+export const unitToString = (unit) => String((unit / 100).toFixed(2));
 
-function OrderConfirmation({ onNextClick, lineItems }) {
+function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   const [item, setItem] = useState(null);
   const [payAmount, setPayAmount] = useState(null);
+  const [error, setError] = useState(null);
   const { serverUrl } = configs || {};
 
-  //##TO-DO Support for more items later
-  const lineItem = lineItems?.[0] || {};
+  /**
+   * Retrieve the first line item
+   * ##TO-DO Support for more items later
+   */
+  const checkoutItem = checkoutItems?.[0] || {};
 
-  useEffect(() => {
-    const { unit_amount } = item || {};
-    if (unit_amount) {
-      const toPay = unit_amount - (DISCOUT_PERCENTAGE / 100) * unit_amount;
-      setPayAmount(toPay);
-    }
-  }, [item]);
-
+  /**
+   * Retrieve checkout item from priceID
+   */
   useEffect(() => {
     //#REQ# SERVER URL AND PRICE_ID IS DEFINED.
-    if (serverUrl && lineItem.priceID) {
+    const priceID = checkoutItem.priceID;
+    if (serverUrl && priceID) {
       fetch(`${serverUrl}/stripe/get/price`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          priceID: lineItem.priceID,
+          priceID,
         }),
       })
         .then((res) => res.json())
@@ -59,28 +67,35 @@ function OrderConfirmation({ onNextClick, lineItems }) {
           setItem({
             name: price.nickname,
             unit_amount: price.unit_amount,
-            string_amount: stripe_unitToString(price.unit_amount), // Convert from cents to dollars
+            string_amount: unitToString(price.unit_amount), 
             currency: price.currency.toUpperCase(),
           });
         })
         .catch((error) =>
-          console.error("Failed to fetch item details:", error)
+          setError({message: `Failed to fetch item details: ${error.message}`})
         );
     }
-
-    console.log(
-      "#REQ# SERVER URL AND PRICE_ID IS DEFINED",
-      serverUrl,
-      lineItem.priceID
-    );
   }, []);
+
+  useEffect(() => {
+    const { unit_amount } = item || {};
+    if (unit_amount) {
+      const toPay = unit_amount - (DISCOUT_PERCENTAGE / 100) * unit_amount;
+      setPayAmount(toPay);
+    }
+  }, [item]);
+
+  if (error?.message) {
+    return <div>{error.message}</div>; // Ideally, show a better loading state
+  }
 
   if (!item) {
     return <div>Loading...</div>; // Ideally, show a better loading state
   }
 
-  const proceedToPayment = () => {
-    onNextClick?.({ data: item, payAmount });
+  //Proceed to payment with item data and pay amount.
+  const _proceedToPayment = () => {
+    proceedToPayment?.(item, payAmount);
   };
 
   return (
@@ -104,8 +119,8 @@ function OrderConfirmation({ onNextClick, lineItems }) {
           be processed upon the release of our initial supply.
         </span>
       </p>
-      <StyledButton onClick={proceedToPayment}>
-        Proceed to Pay {item.currency} {stripe_unitToString(payAmount)}
+      <StyledButton onClick={_proceedToPayment}>
+        Proceed to Pay {item.currency} {unitToString(payAmount)}
         </StyledButton>
     </StyledDiv>
   );
