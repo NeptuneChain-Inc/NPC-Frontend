@@ -6,7 +6,7 @@
 import React from "react";
 import MapBox from "../elements/MapBox";
 import { CardContent, Flex, InfoBox } from "./styled";
-import {presaleProducer} from "./configs";
+import {presaleProducer} from "./data";
 
 const ProductDisplay = () => {
   return (
