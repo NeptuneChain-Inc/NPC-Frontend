@@ -1,5 +1,3 @@
-
-
 export const presaleProducer = {
   producer: "TBD/TBA",
   verifier: "npc network",

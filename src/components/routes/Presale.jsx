@@ -14,7 +14,7 @@ import { NUMBERS } from "../../scripts/helpers";
 
 import {ProductDisplay, ProductOrder} from "../payment";
 import {CARD_SECTION, CARD_WRAPPER, ErrorMessage, FULL_PAGE_CONTAINER} from "../payment/styled";
-import {presaleProducer} from "../payment/configs";
+import {presaleProducer} from "../payment/data";
 
 // ##TO_DO Check if amount is available from credit supply
 const isValidAmount = (amount) => {
