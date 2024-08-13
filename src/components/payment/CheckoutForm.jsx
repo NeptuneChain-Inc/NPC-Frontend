@@ -13,18 +13,12 @@ import { useState, useEffect } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import Spinner from "./Spinner"; 
-import { configs } from "./configs";
+import configs from "../../../configs";
 import { unitToString } from "./OrderConfirmation";
 import { sContract } from "../../contracts/contractRef";
+import {presaleProducer} from "./data";
 
-const presaleProducer = {
-  producer: "to be announced",
-  verifier: "npc network",
-  type: "mitigation",
-  location: "MN, USA",
-  supply: 10000, //Dummy
-  totalLandArea: 3600,
-};
+
 
 const Form = ({ item }) => {
   const stripe = useStripe();

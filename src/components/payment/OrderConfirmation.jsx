@@ -7,10 +7,10 @@
  * On progression, checkout item and pay value is set into a checkout item  which triggers the checkout form
  */
 import { useState, useEffect } from "react";
-import { configs } from "./configs";
 import { colors } from "../../data/styles";
 import { logoColors } from "../../styles/colors";
 import styled from 'styled-components';
+import configs from "../../../configs";
 
 const StyledDiv = styled.div`
   padding: 20px;
@@ -37,7 +37,6 @@ function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   const [payAmount, setPayAmount] = useState(null);
   const [error, setError] = useState(null);
   const { serverUrl } = configs || {};
-
   /**
    * Retrieve the first line item
    * ##TO-DO Support for more items later
