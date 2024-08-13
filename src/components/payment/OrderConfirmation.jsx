@@ -36,7 +36,7 @@ function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   const [item, setItem] = useState(null);
   const [payAmount, setPayAmount] = useState(null);
   const [error, setError] = useState(null);
-  const { serverUrl } = configs || {};
+  const serverUrl = configs.server_url;
   /**
    * Retrieve the first line item
    * ##TO-DO Support for more items later
@@ -49,6 +49,7 @@ function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   useEffect(() => {
     //#REQ# SERVER URL AND PRICE_ID IS DEFINED.
     const priceID = checkoutItem.priceID;
+    console.log("serverUrl", serverUrl)
     if (serverUrl && priceID) {
       fetch(`${serverUrl}/stripe/get/price`, {
         method: "POST",

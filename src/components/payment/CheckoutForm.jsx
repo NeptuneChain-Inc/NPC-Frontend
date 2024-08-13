@@ -140,7 +140,7 @@ const CheckoutForm = ({ item }) => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
 
-  const { serverUrl } = configs || {};
+  const serverUrl = configs.server_url;
   const stripe_config = { stripePromise, clientSecret };
 
   const { payAmount } = item || {};
