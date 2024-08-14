@@ -1,29 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Sidebar_MenuItem Component
- * 
+ *
  * Renders a sidebar menu item with optional route navigation.
- * 
+ *
  * @param {Object} props
  * @param {any} props.icon - The FontAwesome icon to display
  * @param {string} props.itemName - The label for the menu item
  * @param {string} props.route - The route to navigate to when clicked
  */
-const Sidebar_MenuItem = ({ icon, itemName, route, handleSidebar, onClick }) => {
+const Sidebar_MenuItem = ({
+  icon,
+  itemName,
+  route,
+  handleSidebar,
+  onClick,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isRoute, setIsRoute] = useState(false);
 
-  const normalizedRoute = route?.startsWith('/') ? route : `/dashboard/${route}`;
+  const normalizedRoute = route?.startsWith("/")
+    ? route
+    : `/dashboard/${route}`;
 
   // Effect to check if the current route matches the given route
   useEffect(() => {
-    if(route){
+    if (route) {
       setIsRoute(normalizedRoute === location.pathname);
     }
   }, [route, location]);
@@ -32,12 +40,12 @@ const Sidebar_MenuItem = ({ icon, itemName, route, handleSidebar, onClick }) => 
    * Handles the click event for navigation.
    */
   const handleClick = () => {
-    if (route && typeof route === 'string' && !isRoute) {
-      navigate(normalizedRoute)
-    } else if(onClick) {
+    if (route && typeof route === "string" && !isRoute) {
+      navigate(normalizedRoute);
+    } else if (onClick) {
       onClick();
     }
-    if(handleSidebar){
+    if (handleSidebar) {
       handleSidebar();
     }
   };
@@ -51,14 +59,27 @@ const Sidebar_MenuItem = ({ icon, itemName, route, handleSidebar, onClick }) => 
       isRoute={isRoute}
     >
       <AnimatePresence>
-        {isRoute && <ActiveIndicator initial={{ scale: 0 }} animate={{ scale: 1 }} />}
+        {isRoute && (
+          <ActiveIndicator initial={{ scale: 0 }} animate={{ scale: 1 }} />
+        )}
       </AnimatePresence>
-      <Icon icon={icon} color='#000' />
+      <StyledIconWrap>
+        <Icon icon={icon} color="#000" />
+      </StyledIconWrap>
       <RouteName>{itemName}</RouteName>
     </MenuItem>
   );
 };
 
+const StyledIconWrap = styled.div`
+  height: 40px;
+  width: 40px;
+  background: ${({ theme }) => theme.colors.ui100};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+`;
 /**
  * ActiveIndicator Styled Component
  * Displays a visual indicator for the active menu item.
@@ -79,17 +100,17 @@ const ActiveIndicator = styled(motion.div)`
  * Styles the menu item container and includes responsive design.
  */
 const MenuItem = styled(motion.li)`
-list-style: none;
-display: flex;
-align-items: center;
-gap:8px;
-padding: 12px 0px;
-cursor: pointer; 
-width: 100%;
-margin: 0px;
-button {
-   margin: 0px;
-}
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0px;
+  cursor: pointer;
+  width: 100%;
+  margin: 0px;
+  button {
+    margin: 0px;
+  }
 `;
 
 /**
@@ -98,13 +119,12 @@ button {
  */
 const Icon = styled(FontAwesomeIcon)`
   width: 14px;
-  height:14px;
-  padding: 10px;
+  height: 14px;
   border-radius: 50%;
   cursor: pointer;
-  background: ${({theme}) => theme.colors.ui100};
-  color: ${({theme}) => theme.colors.primary500};
-  `;
+  background: ${({ theme }) => theme.colors.ui100};
+  color: ${({ theme }) => theme.colors.primary500};
+`;
 
 /**
  * RouteName Styled Component
