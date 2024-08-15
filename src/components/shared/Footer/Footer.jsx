@@ -4,9 +4,12 @@ import styled from "styled-components";
 const StyledFooter = styled.footer`
   max-width: 1000px;
   margin: 0 auto;
+  text-align: center;
+
   @media (min-width: 648px) {
     display: flex;
     justify-content: space-between;
+    text-align: left;
   }
   .rights-reserved {
     color: ${({ theme }) => theme.colors.ui600};

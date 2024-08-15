@@ -69,22 +69,29 @@ const FullScreenWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: calc(100vh - 24px);
+    min-height: calc(100vh - 24px);
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
   }
 
   .content-logo img {
-    width: 200px;
-    height: 100%;
-    margin-bottom: 80px;
+    width: 120px;
+    margin-top: 40px;
+    margin-bottom: 24px;
   }
 
   .section-left {
     width: 100%;
-    max-width: 45vw;
+    @media (min-width: 1024px) {
+      max-width: 45vw;
+      height: calc(100vh - 24px);
+    }
     img {
       border-radius: 40px;
+      height: 100%;
+      width: 100%;
       padding: 24px;
-      height: calc(100vh - 24px);
     }
     .section-left-image {
       overflow: hidden;
