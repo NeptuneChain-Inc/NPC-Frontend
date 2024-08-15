@@ -1,75 +1,86 @@
-import { faBroadcastTower, faCalculator, faCheckCircle, faDollarSign, faLeaf, faShop, faStore } from '@fortawesome/free-solid-svg-icons';
-import * as Accordion from '@radix-ui/react-accordion';
-import React, { useState } from 'react';
-import { FaChevronDown } from 'react-icons/fa6';
-import { Link, useLocation } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import {
+  faBroadcastTower,
+  faCalculator,
+  faCheckCircle,
+  faDollarSign,
+  faLeaf,
+  faShop,
+  faStore,
+} from "@fortawesome/free-solid-svg-icons";
+import * as Accordion from "@radix-ui/react-accordion";
+import React, { useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
+import { Link, useLocation } from "react-router-dom";
+import styled, { keyframes } from "styled-components";
 import { AppIcon } from "../assets";
-import { Sidebar_MenuItem } from './elements';
-import { ProfileDropMenu } from './elements/navbar/elements';
+import { Sidebar_MenuItem } from "./elements";
+import LogoWhite from "../assets/logo.png";
+import { ProfileDropMenu } from "./elements/navbar/elements";
 
 const Sidebar = ({ APP }) => {
   const { isMobile, sidebarOpen, user } = APP ? APP.STATES : {};
-  const { handleSidebar, toggleCalculator, handleVerificationUI } = APP ? APP.ACTIONS : {};
+  const { handleSidebar, toggleCalculator, handleVerificationUI } = APP
+    ? APP.ACTIONS
+    : {};
 
-  const path = window.location.pathname.replace(/^\//, '');
-  const isMarketplace = path.startsWith('marketplace');
+  const path = window.location.pathname.replace(/^\//, "");
+  const isMarketplace = path.startsWith("marketplace");
   const location = useLocation();
 
   const [isEnvironmentalOpen, setIsEnvironmentalOpen] = useState(false);
 
   const sidebarItems = [
     {
-      route: 'environmental',
-      cta: 'Environment',
+      route: "environmental",
+      cta: "Environment",
       icon: faLeaf,
-      hasSubMenu: true
+      hasSubMenu: true,
     },
     {
-      route: '/marketplace',
-      cta: 'Marketplace',
-      icon: faShop
+      route: "/marketplace",
+      cta: "Marketplace",
+      icon: faShop,
     },
     {
-      route: 'financial',
-      cta: 'Finance',
-      icon: faDollarSign
+      route: "financial",
+      cta: "Finance",
+      icon: faDollarSign,
     },
     {
-      route: '/marketplace/seller-dashboard',
-      cta: 'Dashboard',
-      icon: faStore
+      route: "/marketplace/seller-dashboard",
+      cta: "Dashboard",
+      icon: faStore,
     },
   ];
 
   const environmentRoutes = [
     {
-      route: '/dashboard/environmental',
-      cta: 'Environmental Dashboard',
+      route: "/dashboard/environmental",
+      cta: "Environmental Dashboard",
       icon: faLeaf,
-      hasSubMenu: true
+      hasSubMenu: true,
     },
     {
-      route: '/features/nutrient-calculator',
-      cta: 'Nutrient Calculator',
+      route: "/features/nutrient-calculator",
+      cta: "Nutrient Calculator",
       onclick: toggleCalculator,
-      icon: faCalculator
+      icon: faCalculator,
     },
     {
-      route: '/features/stream',
-      cta: 'Broadcast Live',
-      icon: faBroadcastTower
+      route: "/features/stream",
+      cta: "Broadcast Live",
+      icon: faBroadcastTower,
     },
     {
-      route: '/features/upload-media',
-      cta: 'Upload Media',
-      icon: faLeaf
+      route: "/features/upload-media",
+      cta: "Upload Media",
+      icon: faLeaf,
     },
     {
-      route: '/features/verification',
-      cta: 'Verification',
+      route: "/features/verification",
+      cta: "Verification",
       onclick: handleVerificationUI,
-      icon: faCheckCircle
+      icon: faCheckCircle,
     },
   ];
 
@@ -80,35 +91,30 @@ const Sidebar = ({ APP }) => {
   return (
     <StyledSidebar isOpen={sidebarOpen} isMarketplace={isMarketplace}>
       <LogoWrap>
-        <Logo alt="logo" src={AppIcon} />
-        <LogoName>
-          NeptuneChain
-        </LogoName>
+        <img className="logo" src={LogoWhite} />
       </LogoWrap>
       <div>
-      <StyledAccordion type="single" collapsible>
+        <StyledAccordion type="single" collapsible>
           {sidebarItems?.map((data, index) => {
             const { route, cta, icon, hasSubMenu } = data || {};
             return hasSubMenu ? (
               <Accordion.Item value="environmental" key={index}>
-                <StyledAccordionTrigger className='trigger'>
+                <StyledAccordionTrigger className="trigger">
                   <Sidebar_MenuItem
                     icon={icon}
                     itemName={cta}
                     isAccordionTrigger
                   />
-                        <FaChevronDown className="AccordionChevron" aria-hidden />
-
+                  <FaChevronDown className="AccordionChevron" aria-hidden />
                 </StyledAccordionTrigger>
-                <StyledAccordionContent className='content'>
+                <StyledAccordionContent className="content">
                   {environmentRoutes.map((subData, subIndex) => {
                     const { route, cta, icon, onclick } = subData || {};
-                    const isRoute = !route.includes('/**button**/');
+                    const isRoute = !route.includes("/**button**/");
                     return (
-                      <Link to={route}  className='cta' key={cta}>
-            
-                          {cta}
-                        </Link>
+                      <Link to={route} className="cta" key={cta}>
+                        {cta}
+                      </Link>
                     );
                   })}
                 </StyledAccordionContent>
@@ -130,8 +136,6 @@ const Sidebar = ({ APP }) => {
   );
 };
 
-
-
 const slideUp = keyframes`
   from {
     height: var(--radix-accordion-content-height);
@@ -139,7 +143,7 @@ const slideUp = keyframes`
   to {
     height: 0;
   }
-`
+`;
 
 const slideDown = keyframes`
   from {
@@ -149,21 +153,17 @@ const slideDown = keyframes`
     height: var(--radix-accordion-content-height);
   }
 
-`
+`;
 
 const StyledAccordion = styled(Accordion.Root)`
   width: 100%;
 
-
-
-
-.content[data-state='open'] {
-  animation: ${slideDown} 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-.content[data-state='closed'] {
-  animation: ${slideUp} 300ms cubic-bezier(0.87, 0, 0.13, 1);
-}
-
+  .content[data-state="open"] {
+    animation: ${slideDown} 300ms cubic-bezier(0.87, 0, 0.13, 1);
+  }
+  .content[data-state="closed"] {
+    animation: ${slideUp} 300ms cubic-bezier(0.87, 0, 0.13, 1);
+  }
 `;
 
 const StyledAccordionTrigger = styled(Accordion.Trigger)`
@@ -175,14 +175,12 @@ const StyledAccordionTrigger = styled(Accordion.Trigger)`
   text-align: left;
 
   font-weight: 500;
-  .cta { 
-    font-weight: 500; 
-
+  .cta {
+    font-weight: 500;
   }
   &[data-state="open"] {
-    .AccordionChevron { 
+    .AccordionChevron {
       transform: rotate(180deg);
-
     }
   }
 
@@ -190,38 +188,34 @@ const StyledAccordionTrigger = styled(Accordion.Trigger)`
     transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
     font-size: 14px;
     /* Apply styles based on the data-state attribute */
-}
+  }
 `;
 
 const StyledAccordionContent = styled(Accordion.Content)`
   padding-left: 38px;
   margin-left: 22px;
   font-weight: 500;
-  color: ${({theme}) => theme.colors.ui600};
+  color: ${({ theme }) => theme.colors.ui600};
   font-size: 14px;
   overflow: hidden;
-/*   border-left: 1px solid ${({theme}) => theme.colors.ui300}; */
-  border-bottom: 1px solid ${({theme}) => theme.colors.ui300};
+  /*   border-left: 1px solid ${({ theme }) => theme.colors.ui300}; */
+  border-bottom: 1px solid ${({ theme }) => theme.colors.ui300};
   .cta {
-     padding: 8px 0px;
-    display: block; 
-    color: ${({theme}) => theme.colors.ui700};
-    text-decoration: none; 
-     font-weight: 500;
-     &:hover {
+    padding: 8px 0px;
+    display: block;
+    color: ${({ theme }) => theme.colors.ui700};
+    text-decoration: none;
+    font-weight: 500;
+    &:hover {
       text-decoration: underline;
-      color: ${({theme}) => theme.colors.ui800};
-     }
+      color: ${({ theme }) => theme.colors.ui800};
+    }
   }
 `;
 
-
-
-
 const StyledSidebar = styled.aside`
-
   width: 400px;
-  background: ${({theme}) => theme.colors.ui50};
+  background: ${({ theme }) => theme.colors.ui50};
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -233,9 +227,12 @@ const LogoWrap = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  h1 { 
+  img {
+    width: 125px;
+  }
+  h1 {
     font-size: 16px;
-    color: ${({theme}) => theme.colors.ui800};
+    color: ${({ theme }) => theme.colors.ui800};
   }
 `;
 

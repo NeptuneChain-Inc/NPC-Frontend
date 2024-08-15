@@ -9,13 +9,14 @@ import { motion } from "framer-motion";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-
+import { Badge } from "../../shared/Badge/Badge";
 import { NFT_API } from "../../../scripts/back_door";
 import { isNotZeroAddress } from "../../../scripts/utils";
-import {NFTGrid} from "./MarketBrowser";
-import {NFTImage} from "./elements/NFTCard";
-import placeholderIMG from '../../../assets/icon.png';
+import { NFTGrid } from "./MarketBrowser";
+import { NFTImage } from "./elements/NFTCard";
+import placeholderIMG from "../../../assets/icon.png";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
+import Certificate from "../../shared/Certificate/Certificate";
 
 // Neptune Color Palette
 const colors = {
@@ -24,8 +25,6 @@ const colors = {
   accentBlue: "#88CDDA",
   white: "#FFF",
 };
-
-
 
 const TabContainer = styled.div`
   display: flex;
@@ -50,7 +49,7 @@ const StyledTabList = styled(TabList)`
   padding: 0;
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 8px;
 `;
 
 const StyledTab = styled(Tab)`
@@ -119,41 +118,39 @@ const Button = styled.button`
 `;
 
 const NFT = styled(motion.div)`
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin: 10px;
   background-color: ${colors.white};
-    border: none;
-    padding: 20px 30px;
-    border-radius: 8px;
-    transition: 0.3s ease-in-out;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    overflow: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
+  border: none;
+  padding: 20px 30px;
+  border-radius: 8px;
+  transition: 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  overflow: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 
-    @media (max-width: 768px) {
-        width: 100%
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  p {
+    margin: 2px;
+
+    span {
+      color: ${colors.deepBlue};
+      font-weight: bold;
     }
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-}
-
-p {
-          margin: 2px;
-
-          span {
-          color: ${colors.deepBlue};
-          font-weight: bold;
-          }
-        }
-        
-    
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -161,8 +158,6 @@ const ButtonContainer = styled.div`
   justify-content: center;
   gap: 10px;
 `;
-
-
 
 const Spinner = styled.div`
   border: 4px solid rgba(0, 0, 0, 0.1);
@@ -200,8 +195,7 @@ const SellerDashboard = ({ APP }) => {
   const { signedUser, marketInteractions, signedMarketInteractions } =
     APP?.STATES || {};
 
-    const { setResult } =
-    APP?.ACTIONS || {};
+  const { setResult } = APP?.ACTIONS || {};
 
   useEffect(() => {
     if (signedUser) {
@@ -222,7 +216,7 @@ const SellerDashboard = ({ APP }) => {
       const wallet_nfts = await NFT_API.get.wallet_nfts(signedUser);
 
       if (wallet_nfts) {
-        console.log("DEV: wallet_nfts", wallet_nfts)
+        console.log("DEV: wallet_nfts", wallet_nfts);
         setUserNFTs(wallet_nfts);
         return true;
       }
@@ -252,7 +246,6 @@ const SellerDashboard = ({ APP }) => {
   const fetchHighestBids = async () => {
     setIsLoading(true);
     try {
-
       const bidsPromises = userListedNFTs.map(async (nft) => {
         const _bid = await marketInteractions.Functions.Getters.getHighestBids(
           nft.listingId
@@ -291,24 +284,24 @@ const SellerDashboard = ({ APP }) => {
           ethers.parseEther(price),
           listingFee
         );
-        console.log('@DEV Handle Result',result);
-        if(result?.hash) {
-          setResult({
+      console.log("@DEV Handle Result", result);
+      if (result?.hash) {
+        setResult({
           title: "Confirm",
           message: "Transaction Successful",
-          txHash: result?.hash
-        })
-        } else {
-          setResult({
-            title: "Failed",
-            message: "Cound not transact",
-          })
-        }
+          txHash: result?.hash,
+        });
+      } else {
+        setResult({
+          title: "Failed",
+          message: "Cound not transact",
+        });
+      }
     } catch (error) {
       setResult({
         title: "Error",
         message: error?.message,
-      })
+      });
       console.error("Error listing NFT:", error);
       setIsError("Error listing NFT");
     } finally {
@@ -323,24 +316,24 @@ const SellerDashboard = ({ APP }) => {
         await signedMarketInteractions.Functions.Seller.cancelListing(
           listingId
         );
-        console.log('@DEV Handle Result',result);
-        if(result?.hash) {
-          setResult({
+      console.log("@DEV Handle Result", result);
+      if (result?.hash) {
+        setResult({
           title: "Confirm",
           message: "Transaction Successful",
-          txHash: result?.hash
-        })
-        } else {
-          setResult({
-            title: "Failed",
-            message: "Cound not transact",
-          })
-        }
+          txHash: result?.hash,
+        });
+      } else {
+        setResult({
+          title: "Failed",
+          message: "Cound not transact",
+        });
+      }
     } catch (error) {
       setResult({
         title: "Error",
         message: error?.message,
-      })
+      });
       console.error("Error delisting NFT:", error);
       setIsError("Error delisting NFT");
     } finally {
@@ -354,24 +347,24 @@ const SellerDashboard = ({ APP }) => {
       const result = await signedMarketInteractions.Functions.Seller.acceptBid(
         listingId
       );
-      console.log('@DEV Handle Result',result);
-      if(result?.hash) {
+      console.log("@DEV Handle Result", result);
+      if (result?.hash) {
         setResult({
-        title: "Confirm",
-        message: "Transaction Successful",
-        txHash: result?.hash
-      })
+          title: "Confirm",
+          message: "Transaction Successful",
+          txHash: result?.hash,
+        });
       } else {
         setResult({
           title: "Failed",
           message: "Cound not transact",
-        })
+        });
       }
-  } catch (error) {
-    setResult({
-      title: "Error",
-      message: error?.message,
-    })
+    } catch (error) {
+      setResult({
+        title: "Error",
+        message: error?.message,
+      });
       console.error("Error accepting bid:", error);
       setIsError("Error accepting bid");
     } finally {
@@ -381,13 +374,12 @@ const SellerDashboard = ({ APP }) => {
 
   return (
     <DashboardPage>
-
       <StyledTabList>
-        <StyledTab>Owned</StyledTab>
-        <StyledTab>Listed</StyledTab>
-        <StyledTab>Proposals</StyledTab>
+        <Badge>Owned</Badge>
+        <Badge>Listed</Badge>
+        <Badge>Proposals</Badge>
       </StyledTabList>
-
+      <Certificate />
       <TabContainer>
         <StyledTabPanel>
           <SectionTitle>Your Assets</SectionTitle>
@@ -405,7 +397,10 @@ const SellerDashboard = ({ APP }) => {
                   <p>
                     {nft?.contract?.name} #{nft?.tokenId}
                   </p>
-                  <NFTImage src={nft?.image?.pngUrl || placeholderIMG} alt={nft?.contract?.name} />
+                  <NFTImage
+                    src={nft?.image?.pngUrl || placeholderIMG}
+                    alt={nft?.contract?.name}
+                  />
                   <Input
                     type="text"
                     value={price}
@@ -444,7 +439,9 @@ const SellerDashboard = ({ APP }) => {
                   <p>
                     {nft?.name} #{nft?.tokenId}
                   </p>
-                  <p><span>Listing #{nft.listingId}</span></p>
+                  <p>
+                    <span>Listing #{nft.listingId}</span>
+                  </p>
                   <p>${nft.price}</p>
                   <ButtonContainer>
                     <Button
