@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { APP_NAME } from "../../../constants/constants";
 
 const StyledFooter = styled.footer`
   max-width: 1000px;
@@ -35,7 +36,7 @@ function Footer() {
   return (
     <StyledFooter>
       <span className="rights-reserved">
-        © 2024 nutrient.trading powered by NeptuneChain, Inc. | All Rights
+        © 2024 nutrient.trading powered by {APP_NAME} Inc. | All Rights
         Reserved.
       </span>
       <div className="button-wrap">
