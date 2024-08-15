@@ -56,7 +56,7 @@ const Sidebar = ({ APP }) => {
   const environmentRoutes = [
     {
       route: "/dashboard/environmental",
-      cta: "Environmental Dashboard",
+      cta: "Dashboard",
       icon: faLeaf,
       hasSubMenu: true,
     },
