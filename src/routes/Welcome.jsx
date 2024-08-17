@@ -101,7 +101,7 @@ const FullScreenWrapper = styled.div`
   }
 
   .sign-in-form-section {
-    width: 70%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     max-width: 400px;

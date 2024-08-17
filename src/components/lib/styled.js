@@ -20,6 +20,10 @@ export const PROMPT_FORM = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  .register-button {
+    margin-top: 24px;
+  }
 `;
 
 export const BUTTON = styled(motion.button)``;

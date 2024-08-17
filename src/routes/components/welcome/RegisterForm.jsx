@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
 import Notification from "../../../components/popups/NotificationPopup";
-import { environmentalRotation, successAnimation } from "../../../assets/animations";
+import {
+  environmentalRotation,
+  successAnimation,
+} from "../../../assets/animations";
 import {
   BUTTON,
   LOADING_ANIMATION,
@@ -25,9 +28,10 @@ import { auth } from "../../../apis/firebase";
 import { createUser } from "../../../apis/database";
 import { Input } from "../../../components/shared/input/Input";
 import FormSection from "../../../components/shared/FormSection/FormSection";
-import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
-
-
+import {
+  ButtonLink,
+  ButtonPrimary,
+} from "../../../components/shared/button/Button";
 
 const Icon = styled(FontAwesomeIcon)`
   color: #0077b6;
@@ -35,18 +39,23 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 const Dropdown = styled.select`
-  height: 40px;
-  background: ${({theme}) => theme.colors.ui50}; 
+  height: ${({ theme }) => theme.formHeightMd};
+  background: ${({ theme }) => theme.colors.ui50};
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.ui300};
   border-radius: ${({ theme }) => theme.borderRadius.default};
   padding: 0 8px;
-  font-size: 14px; 
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.ui800};
-  font-weight: 500;  
+  font-weight: 500;
 `;
 
-const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) => {
+const RegisterForm = ({
+  onSuccess,
+  onSwitchToLogin,
+  updateUser,
+  googleData,
+}) => {
   const [username, setUsername] = useState(googleData?.name || "");
   const [email, setEmail] = useState(googleData?.gmail || "");
   const [password, setPassword] = useState("");
@@ -129,7 +138,6 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) =>
             exit="exit"
             onSubmit={handleSubmit}
           >
-       
             <FormSection label="Username">
               <Input
                 type="text"
@@ -169,12 +177,13 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, updateUser, googleData }) =>
               </Dropdown>
             </FormSection>
 
-            <ButtonPrimary type="submit">Register</ButtonPrimary>
+            <ButtonPrimary className="register-button" type="submit">
+              Register
+            </ButtonPrimary>
             <div>
-
-            <ButtonLink type="button" onClick={onSwitchToLogin}>
-              Already have an account? Log in
-            </ButtonLink>
+              <ButtonLink type="button" onClick={onSwitchToLogin}>
+                Already have an account? Log in
+              </ButtonLink>
             </div>
           </PROMPT_FORM>
         ) : (
