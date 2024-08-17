@@ -27,7 +27,11 @@ import { formVariant, loadingVariant } from "./motion_variants";
 import { CardLogo, logoImage, logoVariants } from "../../Welcome";
 import FormSection from "../../../components/shared/FormSection/FormSection";
 import { Input } from "../../../components/shared/input/Input";
-import { ButtonLink, ButtonPrimary } from "../../../components/shared/button/Button";
+import {
+  ButtonLink,
+  ButtonPrimary,
+  ButtonSecondary,
+} from "../../../components/shared/button/Button";
 import GoogleSignIn from "./GoogleSignIn";
 import { useNavigate } from "react-router-dom";
 
@@ -43,31 +47,32 @@ const InputGroup = styled.div`
   border: 1px solid #ccc;
 `;
 
-
-
 function isValidEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   return regex.test(email);
 }
 
-
 const StyledLoginForm = styled.div`
-.input-section { 
-
-}
-
-${ButtonPrimary} { 
-  margin-top: 40px;
-}
-
-.secondary-actions { 
-  .secondary-action-text {
-     font-weight: 500; 
-     font-size: 14px;
-     color: ${({theme}) => theme.colors.ui600};
+  .input-section {
   }
-}
-`
+
+  ${ButtonPrimary} {
+    margin-top: 40px;
+    width: 100%;
+  }
+
+  ${ButtonSecondary} {
+    width: 100%;
+  }
+
+  .secondary-actions {
+    .secondary-action-text {
+      font-weight: 500;
+      font-size: 14px;
+      color: ${({ theme }) => theme.colors.ui600};
+    }
+  }
+`;
 
 const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
   const [email, setEmail] = useState("");
@@ -142,47 +147,44 @@ const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
             exit="exit"
             onSubmit={handleSubmit}
           >
-
-          <div className="input-section">
-
-            <FormSection label={"Email"}>
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                />
-            </FormSection>
-                </div>
             <div className="input-section">
-
-            <FormSection label={"Password"}>
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+              <FormSection label={"Email"}>
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
-            </FormSection>
-                </div>
-            <div>
-
-            <ButtonPrimary type="submit">Log In</ButtonPrimary>
+              </FormSection>
+            </div>
+            <div className="input-section">
+              <FormSection label={"Password"}>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </FormSection>
+            </div>
+            <div className="button-area">
+              <ButtonPrimary type="submit">Log In</ButtonPrimary>
             </div>
             <div className="secondary-actions">
-            <div className="secondary-action-text">
-
-            <ButtonLink type="button" onClick={handleResetPassword}>
-              Forgot Password?
-            </ButtonLink>
-            </div>
-            <div className="secondary-action-text">
-
-           
-              Need an account? <ButtonLink type="button" onClick={onSwitchToRegister}> Register</ButtonLink>
-            </div>
+              <div className="secondary-action-text">
+                <ButtonLink type="button" onClick={handleResetPassword}>
+                  Forgot Password?
+                </ButtonLink>
+              </div>
+              <div className="secondary-action-text">
+                Need an account?{" "}
+                <ButtonLink type="button" onClick={onSwitchToRegister}>
+                  {" "}
+                  Register
+                </ButtonLink>
+              </div>
             </div>
           </PROMPT_FORM>
         ) : (
