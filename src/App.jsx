@@ -60,7 +60,6 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
   const [routePath, setRoutePath] = useState(""); // record all routes of accessed components
-  const [navlessRoutes, setNavlessRoutes] = useState(false);
   const [showSubItems, setShowSubItems] = useState(false); // New state for sub-items visibility
 
   const [marketInteractions] = useState(
@@ -118,9 +117,6 @@ function App() {
   /**
    * Handle routes that should not include a navbar
    */
-  useEffect(() => {
-    setNavlessRoutes(NAVLESS_ROUTES.includes(routePath));
-  }, [routePath]);
 
   /**
    * #NB: BACKEND
@@ -386,10 +382,14 @@ const SidebarMenu = ({ APP }) => {
 
 const AppContainer = styled.div`
   display: flex;
+  flex-direction: column;
   overflow: hidden;
   @media (min-width: 1024px) {
     height: 100vh;
     width: 100vw;
+  }
+  @media (min-width: 1200px) {
+    flex-direction: row;
   }
 `;
 
@@ -417,81 +417,6 @@ const StyledMain = styled.div`
   @media (max-width: 767px) {
     width: 100vw;
   }
-`;
-
-const FloatingButton = styled(motion.button)`
-  position: fixed;
-  bottom: 50px;
-  left: -10px;
-
-  width: 50px;
-
-  padding: 10px 20px;
-  box-sizing: border-box;
-
-  border: none;
-  border-radius: 30px;
-  background-color: ${colors.deepBlue};
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-  font-size: 0.8rem;
-
-  transition: 0.3s;
-  cursor: pointer;
-  z-index: 1000;
-
-  &:hover {
-    left: 20px;
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    bottom: 10px;
-    left: 5px;
-
-    width: 40px;
-
-    padding: 10px;
-  }
-`;
-
-const Footer = styled.footer`
-  bottom: 0;
-
-  width: 100%;
-  height: 3vh;
-
-  ${style_template.flex_display.row_custom("space-between;", "center")}
-
-  padding: 0.5rem;
-  box-sizing: border-box;
-
-  background-color: #ffffffa1;
-  box-shadow: 0px -2px 2px 0px #d4d4d4;
-  backdrop-filter: blur(10px);
-
-  z-index: 999;
-
-  @media (max-width: 767px) {
-    padding: 0;
-  }
-
-  @media (max-width: 479px) {
-    flex-direction: column;
-  }
-`;
-
-const FooterContent = styled.span`
-  font-size: 0.7rem;
-  margin: 0;
-  text-align: center;
-`;
-
-const FooterIconGroup = styled.div`
-  height: auto;
-
-  ${style_template.flex_display.row_custom("space-between;", "center")}
 `;
 
 export default App;
