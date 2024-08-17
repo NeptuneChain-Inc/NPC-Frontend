@@ -9,35 +9,36 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
 const Icon = styled(FontAwesomeIcon)`
-      display: inline-block;
-      vertical-align: middle;
-      width: 1rem;
-      color: black
+  display: inline-block;
+  vertical-align: middle;
+  width: 1rem;
+  color: black;
 `;
 
 const GoogleButton = styled.button`
-   border: 1px solid ${({theme}) => theme.colors.ui300};
-    border-radius: 10px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
+  border: 1px solid ${({ theme }) => theme.colors.ui300};
+  border-radius: 10px;
+  height: 40px;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size:14px; 
-  color: ${({theme}) => theme.colors.ui800};
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.ui800};
   background: white;
   svg {
-     font-size: 16px;
+    font-size: 16px;
   }
 `;
 
 const provider = new GoogleAuthProvider();
 
 // Configure FirebaseUI sign-in options
-function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
+function GoogleSignIn({ APP, setCardState, setGoogleData, enterDash }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { updateUser, handleLogout} = APP.ACTIONS || {};
+  const { updateUser, handleLogout } = APP.ACTIONS || {};
 
   const handleSubmit = async () => {
     signInWithPopup(auth, provider)
@@ -47,10 +48,10 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
         const token = credential?.accessToken;
         // The signed-in user info.
         const user = result?.user;
-        console.log("User", user)
-        
+        console.log("User", user);
+
         //Check if user is in database then login or register
-        if(await updateUser?.(user?.uid)){
+        if (await updateUser?.(user?.uid)) {
           //Logged In
           setCardState("");
           navigate("/dashboard/environmental");
@@ -60,12 +61,13 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
             uid: user?.uid,
             name: user?.displayName,
             gmail: user?.email,
-          })
+          });
           setCardState("register");
         }
 
-        setError(null)
-      }).catch((error) => {
+        setError(null);
+      })
+      .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -73,16 +75,16 @@ function GoogleSignIn({APP, setCardState, setGoogleData, enterDash}) {
         const email = error.customData.email;
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
-        setError("Could Not Continue :/")
+        setError("Could Not Continue :/");
       });
-  }
+  };
 
-    return (
-      <GoogleButton onClick={handleSubmit}>
-        <FcGoogle />
-        <span className="buttonText">Continue With Google</span>
-      </GoogleButton>
-    );
+  return (
+    <GoogleButton onClick={handleSubmit}>
+      <FcGoogle />
+      <span className="buttonText">Continue With Google</span>
+    </GoogleButton>
+  );
 }
 
 export default GoogleSignIn;

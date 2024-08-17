@@ -44,6 +44,8 @@ export const theme = {
     light: `rgba(17, 17, 26, 0.1) 0px 0px 16px`,
   },
 
+  mainBreakpoint: "1200px",
+
   borderRadius: {
     default: "12px",
   },

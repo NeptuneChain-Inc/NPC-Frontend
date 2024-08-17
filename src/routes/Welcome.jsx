@@ -29,6 +29,18 @@ const FullScreenWrapper = styled.div`
   width: 100%;
   width: 100vw;
 
+  .form-elements-wrap {
+    max-width: 400px;
+    width: 90%;
+    margin: 0 auto;
+    button {
+    }
+
+    @media (min-width: 1024px) {
+      margin: 0 0;
+    }
+  }
+
   .separator {
     display: flex;
     align-items: center;
@@ -79,12 +91,21 @@ const FullScreenWrapper = styled.div`
     width: 120px;
     margin-top: 40px;
     margin-bottom: 24px;
+    display: none;
+    margin-left: 24px;
+    @media (min-width: 1024px) {
+      display: block;
+      margin-bottom: 40px;
+    }
   }
 
   .section-left {
     width: 100%;
+    display: none;
+
     @media (min-width: 1024px) {
       max-width: 45vw;
+      display: block;
       height: calc(100vh - 24px);
     }
     img {
@@ -101,11 +122,17 @@ const FullScreenWrapper = styled.div`
   }
 
   .sign-in-form-section {
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    max-width: 400px;
-    margin: 0 auto;
+
+    @media (min-width: 1024px) {
+      padding-left: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 0px;
+    }
     .form-content {
       max-width: 400px;
     }
@@ -138,56 +165,48 @@ const Welcome = ({ APP }) => {
     <FullScreenWrapper>
       <div className="content">
         <div className="sign-in-form-section">
-          <div className="content-logo">
-            <StyledLogo
-              src={logoImage}
-              alt="NeptuneChain Logo"
-              variants={logoVariants}
-              initial="hidden"
-              animate="visible"
-            />
-          </div>
           <WelcomeHome
             key="welcome"
             user={user}
             setCardState={setCardState}
             enterDash={enterDash}
           />
-
-          {!user && (
-            <GoogleSignIn
-              APP={APP}
-              setGoogleData={setGoogleData}
-              setCardState={setCardState}
-              enterDash={enterDash}
-            />
-          )}
-          <div className="separator">
-            <div className="separator-line"></div>
-            <div className="separator-text">Or</div>
-            <div className="separator-line"></div>
-          </div>
-          <div className="form-content">
-            <AnimatePresence mode="wait">
-              {cardState !== "register" && (
-                <LoginForm
-                  key="login"
-                  onSuccess={enterDash}
-                  updateUser={updateUser}
-                  onSwitchToRegister={() => setCardState("register")}
-                  APP={APP}
-                />
-              )}
-            </AnimatePresence>
-            {cardState === "register" && (
-              <RegisterForm
-                key="register"
-                onSuccess={enterDash}
-                updateUser={updateUser}
-                onSwitchToLogin={() => setCardState("login")}
-                googleData={googleData}
+          <div className="form-elements-wrap">
+            {!user && (
+              <GoogleSignIn
+                APP={APP}
+                setGoogleData={setGoogleData}
+                setCardState={setCardState}
+                enterDash={enterDash}
               />
             )}
+            <div className="separator">
+              <div className="separator-line"></div>
+              <div className="separator-text">Or</div>
+              <div className="separator-line"></div>
+            </div>
+            <div className="form-content">
+              <AnimatePresence mode="wait">
+                {cardState !== "register" && (
+                  <LoginForm
+                    key="login"
+                    onSuccess={enterDash}
+                    updateUser={updateUser}
+                    onSwitchToRegister={() => setCardState("register")}
+                    APP={APP}
+                  />
+                )}
+              </AnimatePresence>
+              {cardState === "register" && (
+                <RegisterForm
+                  key="register"
+                  onSuccess={enterDash}
+                  updateUser={updateUser}
+                  onSwitchToLogin={() => setCardState("login")}
+                  googleData={googleData}
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="section-left">
