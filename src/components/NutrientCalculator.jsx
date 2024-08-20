@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,14 +9,14 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { logoColors } from '../styles/colors';
-import { DashboardPage } from './shared/DashboardPage/DashboardPage';
-import { ButtonPrimary } from './shared/button/Button';
-import { Label } from './shared/Label/Label';
-import { Input } from './shared/input/Input';
-import { Select } from './shared/Select/Select';
-import FormSection from './shared/FormSection/FormSection';
+} from "chart.js";
+import { logoColors } from "../styles/colors";
+import { DashboardPage } from "./shared/DashboardPage/DashboardPage";
+import { ButtonPrimary } from "./shared/button/Button";
+import { Label } from "./shared/Label/Label";
+import { Input } from "./shared/input/Input";
+import { Select } from "./shared/Select/Select";
+import FormSection from "./shared/FormSection/FormSection";
 
 ChartJS.register(
   CategoryScale,
@@ -27,20 +27,15 @@ ChartJS.register(
   Legend
 );
 
-
-
-
-
-
 const Header = styled.h1`
-font-size: 1.25rem;
-font-weight: 500;
+  font-size: 1.25rem;
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.ui800};
   text-align: left;
 `;
 
 const Subheader = styled.h2`
-margin-top: 8px;
+  margin-top: 8px;
   color: ${({ theme }) => theme.colors.ui600};
   font-weight: 500;
   font-size: 0.875rem;
@@ -48,50 +43,64 @@ margin-top: 8px;
 `;
 
 const LoadingIndicator = styled.div`
-  display: ${({ loading }) => (loading ? 'block' : 'none')};
+  display: ${({ loading }) => (loading ? "block" : "none")};
   text-align: center;
   margin-top: 10px;
 `;
 
 const Result = styled.div`
-  margin-top: 64px;
   padding: 10px;
   background-color: #fff;
-  min-height: 600px;
+  width: 100%;
+  margin-top: 40px;
+  @media (min-width: 768px) {
+    min-height: 600px;
+  }
 `;
 
-
 const Footer = styled.footer`
-  text-align: left; 
+  text-align: left;
   color: ${({ theme }) => theme.colors.ui600};
   font-size: 14px;
-    margin-top: 16px;
+  margin-top: 16px;
   font-size: 0.8em;
 `;
 
 const StyledNutrientCalculator = styled.div`
-
-
-
-
-.header-text {
-  width: 600px;
-
-}
-
-form { 
-  display: flex;
-  align-items: flex-end;
-  gap:16px;
-  > div {
-     max-width: 200px;
+  .header-text {
+    width: 600px;
   }
 
-}
-`
+  .form-section-wrapper {
+    @media (min-width: 768px) {
+      display: flex;
+      gap: 40px;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media (min-width: 768px) {
+      width: 250px;
+    }
+    .form-section-inputs {
+      display: flex;
+
+      gap: 8px;
+      @media (min-width: 768px) {
+        flex-direction: column;
+      }
+    }
+    > div {
+    }
+  }
+`;
 
 const nutrientData = {
-  'Corn Grain': {
+  "Corn Grain": {
     yields: {
       180: { N: 120.6, P2O5: 63, K2O: 45, S: 14.4, Mg: 14.4 },
       190: { N: 127.3, P2O5: 66.5, K2O: 47.5, S: 15.2, Mg: 15.2 },
@@ -107,7 +116,7 @@ const nutrientData = {
       290: { N: 194.3, P2O5: 101.5, K2O: 72.5, S: 23.2, Mg: 23.2 },
       300: { N: 201, P2O5: 105, K2O: 75, S: 24, Mg: 24 },
     },
-    unit: 'bushels',
+    unit: "bushels",
   },
   Alfalfa: {
     yields: {
@@ -125,9 +134,9 @@ const nutrientData = {
       7.5: { N: 382.5, P2O5: 90, K2O: 367.5, S: 40.5, Mg: 39 },
       8.0: { N: 408, P2O5: 96, K2O: 392, S: 43.2, Mg: 41.6 },
     },
-    unit: 'tons',
+    unit: "tons",
   },
-  'Corn Silage': {
+  "Corn Silage": {
     yields: {
       10: { N: 97, P2O5: 31, K2O: 73, S: 11, Mg: 23 },
       12: { N: 116.4, P2O5: 37.2, K2O: 87.6, S: 13.2, Mg: 27.6 },
@@ -143,7 +152,7 @@ const nutrientData = {
       32: { N: 310.4, P2O5: 99.2, K2O: 233.6, S: 35.2, Mg: 73.6 },
       34: { N: 329.8, P2O5: 105.4, K2O: 248.2, S: 37.4, Mg: 78.2 },
     },
-    unit: 'tons',
+    unit: "tons",
   },
   Soybean: {
     yields: {
@@ -161,7 +170,7 @@ const nutrientData = {
       95: { N: 308.8, P2O5: 69.4, K2O: 114, S: 17.1, Mg: 17.1 },
       100: { N: 325, P2O5: 73, K2O: 120, S: 18, Mg: 18 },
     },
-    unit: 'bushels',
+    unit: "bushels",
   },
   Canola: {
     yields: {
@@ -179,7 +188,7 @@ const nutrientData = {
       85: { N: 136, P2O5: 68, K2O: 34, S: 21.3, Mg: 25.5 },
       90: { N: 144, P2O5: 72, K2O: 36, S: 22.5, Mg: 27 },
     },
-    unit: 'bushels',
+    unit: "bushels",
   },
   Cotton: {
     yields: {
@@ -197,9 +206,9 @@ const nutrientData = {
       3.8: { N: 120, P2O5: 52.5, K2O: 71.3, S: 13.1, Mg: 0 },
       4.0: { N: 128, P2O5: 56, K2O: 76, S: 14, Mg: 0 },
     },
-    unit: 'bales', // Sulfur not provided
+    unit: "bales", // Sulfur not provided
   },
-  'Spring Wheat': {
+  "Spring Wheat": {
     yields: {
       40: { N: 59.6, P2O5: 22.8, K2O: 13.2, S: 4, Mg: 6 },
       45: { N: 67.1, P2O5: 25.7, K2O: 14.9, S: 4.5, Mg: 6.8 },
@@ -215,9 +224,9 @@ const nutrientData = {
       95: { N: 141.6, P2O5: 54.2, K2O: 31.4, S: 9.5, Mg: 14.3 },
       100: { N: 149, P2O5: 57, K2O: 33, S: 10, Mg: 15 },
     },
-    unit: 'bushels',
+    unit: "bushels",
   },
-  'Winter Wheat': {
+  "Winter Wheat": {
     yields: {
       40: { N: 46.4, P2O5: 19.2, K2O: 11.6, S: 4, Mg: 6 },
       45: { N: 52.2, P2O5: 21.6, K2O: 13.1, S: 4.5, Mg: 6.8 },
@@ -233,25 +242,24 @@ const nutrientData = {
       95: { N: 110.2, P2O5: 45.6, K2O: 27.6, S: 9.5, Mg: 14.3 },
       100: { N: 116, P2O5: 48, K2O: 29, S: 10, Mg: 15 },
     },
-    unit: 'bushels',
+    unit: "bushels",
   },
 };
 
 const NutrientCalculator = ({ isOpen, onClose }) => {
-  const [crop, setCrop] = useState('Corn Grain');
-  const [yieldPerAcre, setYieldPerAcre] = useState('');
+  const [crop, setCrop] = useState("Corn Grain");
+  const [yieldPerAcre, setYieldPerAcre] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const chartRef = useRef(null);
 
   useEffect(() => {
     const chartResult = result?.removalRates || null;
-    if(chartResult){
+    if (chartResult) {
       renderChart(chartResult);
     }
-  }, [result])
-  
+  }, [result]);
 
   const findClosestYield = (yieldData, yieldPerAcre) => {
     let closest = null;
@@ -270,35 +278,35 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
   const validateYield = (crop, yieldValue) => {
     let min, max;
     switch (crop) {
-      case 'Alfalfa':
+      case "Alfalfa":
         min = 2;
         max = 8;
         break;
-      case 'Corn Grain':
+      case "Corn Grain":
         min = 180;
         max = 300;
         break;
-      case 'Corn Silage':
+      case "Corn Silage":
         min = 10;
         max = 34;
         break;
-      case 'Soybean':
+      case "Soybean":
         min = 40;
         max = 100;
         break;
-      case 'Canola':
+      case "Canola":
         min = 30;
         max = 90;
         break;
-      case 'Cotton':
+      case "Cotton":
         min = 1;
         max = 4;
         break;
-      case 'Spring Wheat':
+      case "Spring Wheat":
         min = 40;
         max = 100;
         break;
-      case 'Winter Wheat':
+      case "Winter Wheat":
         min = 40;
         max = 100;
         break;
@@ -324,23 +332,27 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
     const yieldValidation = validateYield(crop, yieldAcre);
 
     if (!isNaN(yieldAcre) && yieldValidation.valid) {
-      setErrorMessage('');
+      setErrorMessage("");
       setIsLoading(true);
       try {
-        
-      // Simulate an asynchronous operation (e.g., data fetching)
-      setTimeout(() => {
-        const nutrientRemovalResult = calculateNutrientRemoval(crop, yieldAcre);
-        console.log('nutrientRemovalResult', nutrientRemovalResult)
-        setResult(nutrientRemovalResult);
-      }, 500); // Adjust the timeout as needed
+        // Simulate an asynchronous operation (e.g., data fetching)
+        setTimeout(() => {
+          const nutrientRemovalResult = calculateNutrientRemoval(
+            crop,
+            yieldAcre
+          );
+          console.log("nutrientRemovalResult", nutrientRemovalResult);
+          setResult(nutrientRemovalResult);
+        }, 500); // Adjust the timeout as needed
       } catch (error) {
-        setErrorMessage(error.message)
+        setErrorMessage(error.message);
       } finally {
         setIsLoading(false);
       }
     } else {
-      setErrorMessage(`Please enter a valid yield value within the accepted range for ${crop} (${yieldValidation.min} to ${yieldValidation.max} ${yieldValidation.unit}).`);
+      setErrorMessage(
+        `Please enter a valid yield value within the accepted range for ${crop} (${yieldValidation.min} to ${yieldValidation.max} ${yieldValidation.unit}).`
+      );
       setResult(null);
     }
   };
@@ -354,66 +366,103 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
       chartInstanceRef.current.destroy();
     }
 
-    const ctx = chartRef.current.getContext('2d');
+    const ctx = chartRef.current.getContext("2d");
     chartInstanceRef.current = new ChartJS(ctx, {
-      type: 'bar',
+      type: "bar",
       data: {
         labels: Object.keys(nutrientValues),
-        datasets: [{
-          label: 'Nutrient Removal',
-          data: Object.values(nutrientValues),
-          backgroundColor: ['#3b82f6', '#e5e5e5', '#6366f1', '#eab308', '#a3a3a3'],
-        }]
+        datasets: [
+          {
+            label: "Nutrient Removal",
+            data: Object.values(nutrientValues),
+            backgroundColor: [
+              "#3b82f6",
+              "#e5e5e5",
+              "#6366f1",
+              "#eab308",
+              "#a3a3a3",
+            ],
+          },
+        ],
       },
       options: {
         scales: {
           y: {
-            beginAtZero: true
-          }
-        }
-      }
+            beginAtZero: true,
+          },
+        },
+      },
     });
   };
 
   return (
-      <div>
-            <StyledNutrientCalculator>
-            <div className='header-text'>
-
-            <Header>Nutrient Removal Calculator</Header>
-            <Subheader>Each harvest depletes soil nutrients, varying by crop and yield. Identify what's lost with our Nutrient Removal Calculator by selecting your crop and yield.</Subheader>
-            </div>
+    <div>
+      <StyledNutrientCalculator>
+        <DashboardPage
+          title={"Nutrient Removal Calculator"}
+          description={`Each harvest depletes soil nutrients, varying by crop and yield.
+              Identify what's lost with our Nutrient Removal Calculator by
+              selecting your crop and yield.`}
+        >
+          <div className="form-section-wrapper">
             <form onSubmit={handleSubmit}>
-              <FormSection>
-                <Label htmlFor="cropSelect">Crop type</Label>
-                <Select id="cropSelect" value={crop} onChange={(e) => setCrop(e.target.value)}>
-                  {Object.keys(nutrientData).map((cropName, index) => (
-                    <option key={index} value={cropName}>{cropName}</option>
-                  ))}
-                </Select>
-              </FormSection>
+              <div className="form-section-inputs">
+                <FormSection>
+                  <Label htmlFor="cropSelect">Crop type</Label>
+                  <Select
+                    id="cropSelect"
+                    value={crop}
+                    onChange={(e) => setCrop(e.target.value)}
+                  >
+                    {Object.keys(nutrientData).map((cropName, index) => (
+                      <option key={index} value={cropName}>
+                        {cropName}
+                      </option>
+                    ))}
+                  </Select>
+                </FormSection>
 
-              <FormSection error={errorMessage}>
-                <Label htmlFor="yieldInput">Yield per Acre</Label>
-                <Input error={errorMessage} type="number" id="yieldInput" placeholder="Enter yield" value={yieldPerAcre} onChange={(e) => setYieldPerAcre(e.target.value)} />
-              </FormSection>
+                <FormSection error={errorMessage}>
+                  <Label htmlFor="yieldInput">Yield per Acre</Label>
+                  <Input
+                    error={errorMessage}
+                    type="number"
+                    id="yieldInput"
+                    placeholder="Enter yield"
+                    value={yieldPerAcre}
+                    onChange={(e) => setYieldPerAcre(e.target.value)}
+                  />
+                </FormSection>
+              </div>
 
-              <ButtonPrimary type="submit">Calculate Nutrient Removal</ButtonPrimary>
+              <ButtonPrimary type="submit">Calculate</ButtonPrimary>
             </form>
 
             <LoadingIndicator loading={isLoading}>Loading...</LoadingIndicator>
-{/*             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} */}
+            {/*             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} */}
 
+            <div>
               <Result>
                 <canvas ref={chartRef}></canvas>
               </Result>
-
-            <Footer>
-              <p>Nutrient removal coefficients based on IPNI Nutrient Removal Calculator (Jan. 2018) and various sources including Alabama Extension: ANR-449, CFI, and North Carolina: AG-439-16. For more details, visit <a href="http://www.ipni.net/article/IPNI-3346">IPNI</a>.</p>
-              <p>*Nutrient removal values may vary regionally. Use locally available data for accurate nutrient recommendations.</p>
-            </Footer>
-            </StyledNutrientCalculator>
+              <Footer>
+                <p>
+                  Nutrient removal coefficients based on IPNI Nutrient Removal
+                  Calculator (Jan. 2018) and various sources including Alabama
+                  Extension: ANR-449, CFI, and North Carolina: AG-439-16. For
+                  more details, visit{" "}
+                  <a href="http://www.ipni.net/article/IPNI-3346">IPNI</a>.
+                </p>
+                <p>
+                  *Nutrient removal values may vary regionally. Use locally
+                  available data for accurate nutrient recommendations.
+                </p>
+              </Footer>
             </div>
+          </div>
+        </DashboardPage>
+      </StyledNutrientCalculator>
+    </div>
   );
 };
 

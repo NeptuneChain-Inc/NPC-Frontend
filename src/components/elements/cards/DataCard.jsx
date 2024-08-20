@@ -33,11 +33,14 @@ const DataCard = ({ deviceID }) => {
 
   const iconDef = getIcon(icon);
 
-  if(!records){
+  if (!records) {
     return <p>No Data</p>;
   }
 
-  logDev(`Device #${deviceID} Records`, {records, filter: Object.values(records)})
+  logDev(`Device #${deviceID} Records`, {
+    records,
+    filter: Object.values(records),
+  });
 
   return (
     <CardContainer>
