@@ -108,7 +108,7 @@ const Certificate = ({ data }) => {
         sizes="(max-width: 479px) 75.98958587646484px, (max-width: 767px) 83.99305725097656px, (max-width: 991px) 12vw, 120.00000762939453px"
         alt="NeptuneChain AppIcon"
       />
-      <Heading1>NEPTUNECHAIN.IO</Heading1>
+      <Heading1>Nutrient Trading</Heading1>
       <Heading4>Nutrient Pollution Removal Certificate</Heading4>
       <Heading1>
         <span>{Number(balance)}</span> NPRCs
@@ -120,14 +120,17 @@ const Certificate = ({ data }) => {
           Credits was transferred to <span>
             {buyer?.toUpperCase()}
           </span> from <span>{producer?.toUpperCase()}</span> on{" "}
-          <span>{date}</span> at the price of <span>${Number(price)}</span>/Credit.
+          <span>{date}</span> at the price of <span>${Number(price)}</span>
+          /Credit.
         </Heading6>
       ) : (
         <Heading6>
           This certifies that the buyer, <span>{buyer?.toUpperCase()}</span>,
           paid the producer, <span>{producer?.toUpperCase()}</span>, for the
-          ownership of <span>{`${Number(balance)} ${creditType?.toUpperCase()} `}</span>
-          Credits on <span>{date}</span> at the price of <span>${Number(price)}</span>
+          ownership of{" "}
+          <span>{`${Number(balance)} ${creditType?.toUpperCase()} `}</span>
+          Credits on <span>{date}</span> at the price of{" "}
+          <span>${Number(price)}</span>
           /Credit.
         </Heading6>
       )}

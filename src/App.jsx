@@ -405,7 +405,7 @@ const Flex = styled.div`
 const StyledMain = styled.div`
   width: 100%;
   height: 100%;
-  padding: 32px 64px;
+  padding: 0px 24px;
 
   box-sizing: border-box;
   background: white;
@@ -416,6 +416,10 @@ const StyledMain = styled.div`
 
   @media (max-width: 767px) {
     width: 100vw;
+  }
+
+  @media (min-width: 768px) {
+    padding: 32px 64px;
   }
 `;
 

@@ -11,8 +11,8 @@ import configs from "../../../../configs";
 import UploadProgress from "./UploadProgress";
 import AssetDisplay from "./AssetDisplay";
 import { Player } from "@livepeer/react";
-import {Input} from '../../shared/input/Input'
-import FormSection from '../../shared/FormSection/FormSection'
+import { Input } from "../../shared/input/Input";
+import FormSection from "../../shared/FormSection/FormSection";
 import { ButtonPrimary } from "../../shared/button/Button";
 import ButtonLoading from "../../shared/button/ButtonLoading";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
@@ -26,28 +26,31 @@ const colors = {
 };
 
 const DropZoneContainer = styled(motion.div)`
-border: 1px dashed ${({theme}) => theme.colors.ui300};
-padding: 40px 24px;
-height: 250px;
-border-radius: ${({theme}) => theme.borderRadius};
-display: flex;
-align-items: center;
-justify-content: center;
-font-weight: 500; 
-background: ${({theme}) => theme.colors.ui50};
-border-radius: ${({theme}) => theme.borderRadius.default};
-min-width: 600px;
-margin-bottom: 40px;
-.drag-n-drop-title { 
-  text-align: center;
-  color: ${({theme}) => theme.colors.ui800};
-  font-weight: 500; 
+  border: 1px dashed ${({ theme }) => theme.colors.ui300};
+  padding: 40px 24px;
+  height: 250px;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  background: ${({ theme }) => theme.colors.ui50};
+  border-radius: ${({ theme }) => theme.borderRadius.default};
 
-}
+  @media (min-width: 768px) {
+    min-width: 600px;
+  }
+
+  margin-bottom: 40px;
+  .drag-n-drop-title {
+    text-align: center;
+    color: ${({ theme }) => theme.colors.ui800};
+    font-weight: 500;
+  }
 `;
 
 const AssetContainer = styled.div`
-  max-width: 600px; 
+  max-width: 600px;
   margin: 0 auto;
   .video-link {
     margin: 10px;
@@ -77,48 +80,6 @@ const AssetContainer = styled.div`
       transform: scale(1.1);
     }
   }
-
-  @media (max-width: 768px) {
-    width: 90%;
-    height: 83vh;
-    padding: 0.5em; 
-    justify-content: flex-start;
-  }
-`;
-
-const LoaderContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 105%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.1);
-  z-index: 999;
-`;
-
-const Spinner = styled(motion.div)`
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border-top: 4px solid ${colors.primaryBlue};
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
 `;
 
 const InputPreviewContainer = styled.div`
@@ -129,7 +90,6 @@ const InputPreviewContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
   }
 
   @media (max-width: 768px) {
@@ -146,25 +106,9 @@ const InputPreviewContainer = styled.div`
 const VideoInputContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  gap:16px;
+  gap: 16px;
   max-width: 600px;
-  margin:  0 auto;
-
-`;
-
-const TextInput = styled.input`
-  width: 80%;
-  max-width: 500px;
-  padding: 10px;
-
-  border: 1px solid ${colors.accentBlue};
-  border-radius: 4px;
-
-  &:focus {
-    border-color: ${colors.primaryBlue};
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(27, 59, 111, 0.25);
-  }
+  margin: 0 auto;
 `;
 
 const previewStyles = `
@@ -218,7 +162,9 @@ const renderPreview = (previewURL, fileType) => {
   }
 };
 
-const DEFAULT_THUMBNAIL = ["https://www.ncl.ac.uk/mediav8/newcastle-university-in-singapore/images/key-water.jpg"]
+const DEFAULT_THUMBNAIL = [
+  "https://www.ncl.ac.uk/mediav8/newcastle-university-in-singapore/images/key-water.jpg",
+];
 
 const MediaUpload = ({ APP, togglePopup }) => {
   const [file, setFile] = useState(null);
@@ -354,8 +300,7 @@ const MediaUpload = ({ APP, togglePopup }) => {
     }
 
     async function getThumbnailUrls(playbackInfo) {
-
-      if(!playbackInfo){
+      if (!playbackInfo) {
         return DEFAULT_THUMBNAIL;
       }
       const jpegSource = playbackInfo.meta.source.find(
@@ -406,26 +351,29 @@ const MediaUpload = ({ APP, togglePopup }) => {
         var _playbackInfo;
         try {
           // *TO-DO Listen When playback is ready
-          const { playbackInfo } = await LivepeerAPI.playbackOps.get.playbackInfo(
-            asset.playbackId
-          );
+          const { playbackInfo } =
+            await LivepeerAPI.playbackOps.get.playbackInfo(asset.playbackId);
 
-          logDev("playbackInfo", { playbackInfo, playbackID: asset.playbackId });
+          logDev("playbackInfo", {
+            playbackInfo,
+            playbackID: asset.playbackId,
+          });
           _playbackInfo = playbackInfo;
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
 
-        
         const { result } = await MediaAPI.create.mediaMetadata(asset.id, {
           name: uploadName,
           description: uploadDescription,
           tags: ["NPC"],
-          thumbnailUrl: _playbackInfo ? await getThumbnailUrls(_playbackInfo) : DEFAULT_THUMBNAIL,
+          thumbnailUrl: _playbackInfo
+            ? await getThumbnailUrls(_playbackInfo)
+            : DEFAULT_THUMBNAIL,
         });
 
         setAsset(asset);
-          setuploadPercentage(0);
+        setuploadPercentage(0);
       }
     };
   };
@@ -440,85 +388,84 @@ const MediaUpload = ({ APP, togglePopup }) => {
 
   return (
     <DashboardPage title={"Upload media"}>
-
-    <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
-{/*     <UploadProgress progress={50} />
- */}      {/* {(isLoading || uploadPercentage > 0) && (
+      <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
+        {/*     <UploadProgress progress={50} />
+         */}{" "}
+        {/* {(isLoading || uploadPercentage > 0) && (
   {uploadPercentage > 0 && (
     <UploadProgress progress={uploadPercentage} />
     )}
     )} */}
-
-      <InputPreviewContainer>
-        {asset ? (
-          <div className="flex-col">
-            <AssetPlayer title={asset.name} playbackId={asset.playbackId} />
-          </div>
-        ) : (
-          <div className="flex-col">
-            {previewURL?.length > 0 && activeFile?.type === "video/mp4" && (
-              <>{renderPreview(previewURL, activeFile.type)}</>
-            )}
-            <DropZoneContainer {...getRootProps()} isPreview={previewURL}>
-              <input {...getInputProps()} />
-              <p className="drag-n-drop-title">Drag & drop a MP4 or PDF file here. <br />
-              Or click to select one</p>
-            </DropZoneContainer>
-          </div>
-        )}
-
-        {asset ? (
-          <AnimatePresence>
+        <InputPreviewContainer>
+          {asset ? (
             <div className="flex-col">
-              <AssetDisplay asset={asset} />
-              <ConcludeButton onClick={concludeUpload}>Conclude</ConcludeButton>
+              <AssetPlayer title={asset.name} playbackId={asset.playbackId} />
             </div>
-          </AnimatePresence>
-        ) : (
-          activeFile && (
+          ) : (
+            <div className="flex-col">
+              {previewURL?.length > 0 && activeFile?.type === "video/mp4" && (
+                <>{renderPreview(previewURL, activeFile.type)}</>
+              )}
+              <DropZoneContainer {...getRootProps()} isPreview={previewURL}>
+                <input {...getInputProps()} />
+                <p className="drag-n-drop-title">
+                  Drag & drop a MP4 or PDF file here. <br />
+                  Or click to select one
+                </p>
+              </DropZoneContainer>
+            </div>
+          )}
+
+          {asset ? (
             <AnimatePresence>
-              <VideoInputContainer
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.5 }}
-                >
-                <FormSection label={"File name"}>
-                <Input 
-                  type="text"
-                  placeholder="Enter file name"
-                  value={uploadName}
-                  onChange={(e) => setUploadName(e.target.value)}
-                  />
-                  </FormSection>
-
-                <FormSection label={"File description"}>
-
-                <Input
-                  type="text"
-                  placeholder="Enter file description"
-                  value={uploadDescription}
-                  onChange={(e) => setUploadDescription(e.target.value)}
-                  />
-                  </FormSection>
-                <ButtonPrimary
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleUpload}
-                  disabled={isLoading}
-                  >
-                  {
-                    isLoading ? <ButtonLoading /> : "Upload"
-                  }
-
-                </ButtonPrimary>
-              </VideoInputContainer>
+              <div className="flex-col">
+                <AssetDisplay asset={asset} />
+                <ConcludeButton onClick={concludeUpload}>
+                  Conclude
+                </ConcludeButton>
+              </div>
             </AnimatePresence>
-          )
-        )}
-      </InputPreviewContainer>
-    </AssetContainer>
-        </DashboardPage>
+          ) : (
+            activeFile && (
+              <AnimatePresence>
+                <VideoInputContainer
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <FormSection label={"File name"}>
+                    <Input
+                      type="text"
+                      placeholder="Enter file name"
+                      value={uploadName}
+                      onChange={(e) => setUploadName(e.target.value)}
+                    />
+                  </FormSection>
+
+                  <FormSection label={"File description"}>
+                    <Input
+                      type="text"
+                      placeholder="Enter file description"
+                      value={uploadDescription}
+                      onChange={(e) => setUploadDescription(e.target.value)}
+                    />
+                  </FormSection>
+                  <ButtonPrimary
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleUpload}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? <ButtonLoading /> : "Upload"}
+                  </ButtonPrimary>
+                </VideoInputContainer>
+              </AnimatePresence>
+            )
+          )}
+        </InputPreviewContainer>
+      </AssetContainer>
+    </DashboardPage>
   );
 };
 
