@@ -11,15 +11,29 @@ import { ButtonSecondary } from "../components/shared/button/Button";
 
 const MarketplaceContainer = styled.div`
   width: 100%;
-`;
 
-const SearchBarContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  .button-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+
+    @media (min-width: 450px) {
+      width: auto;
+    }
+  }
+
+  ${ButtonSecondary} {
+    width: 100%;
+
+    @media (min-width: 450px) {
+      width: auto;
+    }
+  }
 
   ${Input} {
-    width: 250px;
+    max-width: 400px;
+    width: 100%;
   }
 `;
 
@@ -31,8 +45,8 @@ const BottomBar = styled.div`
 
 const TopBar = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
 `;
 
 const SearchIcon = styled(FontAwesomeIcon)`
@@ -76,18 +90,18 @@ const Marketplace = ({ APP }) => {
   return (
     <MarketplaceContainer>
       <TopBar>
-        <SearchBarContainer>
-          <Input placeholder="Search for NPCs..." />
+        <Input placeholder="Search for NPCs..." />
+        <div className="button-wrapper">
           <ButtonSecondary>
             Search
             <SearchIcon icon={faSearch} />
           </ButtonSecondary>
-        </SearchBarContainer>
 
-        <ButtonSecondary onClick={toggleEventsPopup}>
-          <FontAwesomeIcon icon={faCalendar} />
-          View all Events
-        </ButtonSecondary>
+          <ButtonSecondary onClick={toggleEventsPopup}>
+            <FontAwesomeIcon icon={faCalendar} />
+            View all Events
+          </ButtonSecondary>
+        </div>
       </TopBar>
       <BottomBar>
         <MarketBrowser marketEvents={marketEvents} />

@@ -27,21 +27,6 @@ ChartJS.register(
   Legend
 );
 
-const Header = styled.h1`
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.ui800};
-  text-align: left;
-`;
-
-const Subheader = styled.h2`
-  margin-top: 8px;
-  color: ${({ theme }) => theme.colors.ui600};
-  font-weight: 500;
-  font-size: 0.875rem;
-  margin-bottom: 16px;
-`;
-
 const LoadingIndicator = styled.div`
   display: ${({ loading }) => (loading ? "block" : "none")};
   text-align: center;
@@ -49,12 +34,11 @@ const LoadingIndicator = styled.div`
 `;
 
 const Result = styled.div`
-  padding: 10px;
   background-color: #fff;
   width: 100%;
   margin-top: 40px;
+
   @media (min-width: 768px) {
-    min-height: 600px;
   }
 `;
 
@@ -255,7 +239,15 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const chartResult = result?.removalRates || null;
+    const defaultChartResult = {
+      N: 0,
+      P2O5: 0,
+      K2O: 0,
+      S: 0,
+      Mg: 0,
+    };
+
+    const chartResult = result?.removalRates || defaultChartResult;
     if (chartResult) {
       renderChart(chartResult);
     }

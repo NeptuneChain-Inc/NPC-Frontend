@@ -87,6 +87,7 @@ const Container = styled(motion.div)`
   padding: 24px 24px;
   width: 100%;
   text-align: left;
+  background: ${({ theme }) => theme.colors.ui50};
   height: 100%;
   h5 {
     font-size: 1rem;

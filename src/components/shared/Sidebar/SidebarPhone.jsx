@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaBars, FaCross, FaX } from "react-icons/fa6";
 import styled, { keyframes } from "styled-components";
 import LogoWhite from "../../../assets/logo.png";
@@ -39,6 +39,12 @@ const StyledSidebarPhone = styled.div`
   padding: 24px 0px;
   .logo {
     width: 120px;
+  }
+
+  .dialog-trigger {
+    button {
+      backgorund: none;
+    }
   }
 
   @media (min-width: 1200px) {
@@ -89,7 +95,7 @@ function SidebarPhone({ APP }) {
       </div>
 
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
-        <Dialog.Trigger asChild>
+        <Dialog.Trigger className="dialog-trigger" asChild>
           <FaBars />
         </Dialog.Trigger>
         <Dialog.Portal>
