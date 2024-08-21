@@ -37,8 +37,8 @@ const Result = styled.div`
   background-color: #fff;
   width: 100%;
   margin-top: 40px;
+
   @media (min-width: 768px) {
-    min-height: 600px;
   }
 `;
 
@@ -239,7 +239,15 @@ const NutrientCalculator = ({ isOpen, onClose }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const chartResult = result?.removalRates || null;
+    const defaultChartResult = {
+      N: 0,
+      P2O5: 0,
+      K2O: 0,
+      S: 0,
+      Mg: 0,
+    };
+
+    const chartResult = result?.removalRates || defaultChartResult;
     if (chartResult) {
       renderChart(chartResult);
     }
