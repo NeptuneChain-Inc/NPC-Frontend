@@ -69,6 +69,7 @@ const StyledCardHalfSection = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.ui200};
   border-radius: ${({ theme }) => theme.borderRadius.default};
   width: 100%;
+  background: ${({ theme }) => theme.colors.ui50};
   .card-half-section-title {
     font-size: 24px;
     font-weight: 700;
