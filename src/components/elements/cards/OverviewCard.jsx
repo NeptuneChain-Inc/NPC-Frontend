@@ -40,9 +40,8 @@ const OverviewCard = ({ data }) => {
       animate="visible"
     >
       <div className="title-wrap">
-
         <Icon icon={iconDef} />
-      <Title>{title}</Title>
+        <Title>{title}</Title>
       </div>
       <CardContentContainer>
         <MetricContainer>
@@ -54,27 +53,26 @@ const OverviewCard = ({ data }) => {
   );
 };
 
-
-
 const MotionOverviewCard = styled(motion.div)`
-border: 1px solid ${({theme}) => theme.colors.ui200};
-padding: 24px;
-width: 100%;
-border-radius: ${({theme}) => theme.borderRadius.default};
-height: 150px; 
-display: flex; 
-flex-direction: column;
-justify-content: center;
-
- * {
-   color: ${({theme}) => theme.colors.ui800};
-}
-.title-wrap{ 
+  border: 1px solid ${({ theme }) => theme.colors.ui200};
+  padding: 24px;
+  width: 100%;
+  border-radius: ${({ theme }) => theme.borderRadius.default};
+  height: 150px;
+  background: ${({ theme }) => theme.colors.ui50};
   display: flex;
-  align-items: center;
-  gap:8px;
-  margin-bottom: 16px;
-}
+  flex-direction: column;
+  justify-content: center;
+
+  * {
+    color: ${({ theme }) => theme.colors.ui800};
+  }
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
   @media (max-width: 767px) {
     width: 100%;
     min-width: 300px;
@@ -97,30 +95,29 @@ const MetricContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-
 `;
 
 const Value = styled.span`
   font-size: 2rem;
-  font-weight: 600; 
-  color: ${({theme}) => theme.colors.primary500};
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primary500};
   line-height: 1;
   transition: all 0.3s ease;
 `;
 
 const Unit = styled.span`
-margin-bottom: 4px;
-margin-left: 4px;
+  margin-bottom: 4px;
+  margin-left: 4px;
   font-size: 0.85rem;
   font-weight: 500;
   line-height: 1;
   transition: all 0.3s ease;
   text-transform: capitalize;
-  color: ${({theme}) => theme.colors.ui600};
+  color: ${({ theme }) => theme.colors.ui600};
 `;
 
 const Icon = styled(FontAwesomeIcon)`
-  color: ${({theme}) => theme.colors.ui800};
+  color: ${({ theme }) => theme.colors.ui800};
   font-size: 1rem;
 `;
 

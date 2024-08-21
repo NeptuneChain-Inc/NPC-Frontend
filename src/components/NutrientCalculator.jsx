@@ -47,6 +47,7 @@ const Footer = styled.footer`
   color: ${({ theme }) => theme.colors.ui600};
   font-size: 14px;
   margin-top: 16px;
+  font-weight: 500;
   font-size: 0.8em;
 `;
 

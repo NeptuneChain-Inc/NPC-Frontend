@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { Sidebar_MenuItem } from "../../elements";
 import { FaChevronDown } from "react-icons/fa6";
@@ -83,9 +83,17 @@ const environmentRoutes = [
 ];
 
 function SidebarContent({ APP }) {
+  const [openSection, setOpenSection] = useState("");
   return (
     <StyledSidebarContent>
-      <StyledAccordion type="single" collapsible>
+      <StyledAccordion
+        value={openSection}
+        onValueChange={(value) => {
+          setOpenSection(value);
+        }}
+        type="single"
+        collapsible
+      >
         {sidebarItems?.map((data, index) => {
           const { route, cta, icon, hasSubMenu } = data || {};
           return hasSubMenu ? (
@@ -110,12 +118,15 @@ function SidebarContent({ APP }) {
               </StyledAccordionContent>
             </Accordion.Item>
           ) : (
-            <Sidebar_MenuItem
+            <Accordion.Item
+              onClick={() => {
+                setOpenSection(data.cta);
+              }}
               key={index}
-              icon={icon}
-              itemName={cta}
-              route={route}
-            />
+              value={data.cta}
+            >
+              <Sidebar_MenuItem icon={icon} itemName={cta} route={route} />
+            </Accordion.Item>
           );
         })}
       </StyledAccordion>
