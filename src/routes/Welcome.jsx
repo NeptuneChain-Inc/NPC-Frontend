@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import LoginForm from "./components/welcome/LoginForm";
@@ -156,6 +156,12 @@ const Welcome = ({ APP }) => {
   const [googleData, setGoogleData] = useState({});
   const { user } = APP?.STATES || {};
   const { updateUser } = APP?.ACTIONS || {};
+
+  useEffect(() => {
+    if (user) {
+      enterDash();
+    }
+  }, [navigate, user]);
 
   const enterDash = () => {
     navigate("/dashboard/environmental");
