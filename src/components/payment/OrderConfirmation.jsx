@@ -49,7 +49,6 @@ function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   useEffect(() => {
     //#REQ# SERVER URL AND PRICE_ID IS DEFINED.
     const priceID = checkoutItem.priceID;
-    console.log("serverUrl", serverUrl)
     if (serverUrl && priceID) {
       fetch(`${serverUrl}/stripe/get/price`, {
         method: "POST",
