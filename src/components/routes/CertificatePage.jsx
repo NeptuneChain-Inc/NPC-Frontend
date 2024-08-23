@@ -10,6 +10,7 @@ import {
   faTwitter,
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
+import configs from "../../../configs";
 
 const Container = styled.div`
   display: flex;
@@ -37,10 +38,9 @@ const Container = styled.div`
 `;
 
 const CertificateContainer = styled.div`
-width: 100%;
-padding-top: 50px; 
-overflow: auto;
-
+  width: 100%;
+  padding-top: 50px;
+  overflow: auto;
 `;
 
 const ShareLinksContainer = styled.div`
@@ -53,7 +53,7 @@ const ShareLinksContainer = styled.div`
   opacity: 0;
   transform: translateY(20px);
   animation: slideUp 0.5s ease forwards;
-z-index: 100;
+  z-index: 100;
 
   @keyframes slideUp {
     0% {
@@ -96,9 +96,7 @@ function createTwitterShareLink(url, text) {
 function createLinkedInShareLink(url, title, summary) {
   return `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(
     url
-  )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
-    summary
-  )}`;
+  )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}`;
 }
 
 const shareText = "My NeptuneChain Certificate";
@@ -113,15 +111,37 @@ const CertificatePage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const certificate = await contract.getCertificateById(id);
-        const certId = Number(certificate?.id);
-        if (certId > 0) {
-          const formattedCertificate = formatCertificate(certificate);
-          console.log(formattedCertificate, certificate, certificate?.buyer)
-          setCertificate(certificate);
-        } else {
-          setError("Certificate Not Found");
-        }
+        //API CALL TO GET CERTIFICATE DATA
+        fetch(`${configs.server_url}/npc_credits/certificates/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Data", data);
+            const { certificate } = data;
+            if (certificate) {
+              const certId = Number(certificate?.id);
+              if (certId > 0) {
+                const formattedCertificate = formatCertificate(certificate);
+                console.log(
+                  formattedCertificate,
+                  certificate,
+                  certificate?.buyer
+                );
+                setCertificate(certificate);
+              } else {
+                setError("Certificate Not Found");
+              }
+            }
+          })
+          .catch((error) =>
+            setError({
+              message: `Failed to fetch item details: ${error.message}`,
+            })
+          );
       } catch (error) {
         console.error(error);
         setError("Failed to fetch data");
@@ -133,7 +153,7 @@ const CertificatePage = () => {
     fetchData();
   }, [id]);
 
-  if (loading) {
+  if (loading || !certificate) {
     return <Loading />;
   }
 
@@ -144,10 +164,9 @@ const CertificatePage = () => {
   return (
     <Container>
       <CertificateContainer>
-
-      <Certificate data={certificate}/>
+        <Certificate data={certificate} />
       </CertificateContainer>
-      
+
       <ShareLinksContainer>
         <ShareLink href={createFacebookShareLink(certUrl)} target="_blank">
           <FontAwesomeIcon icon={faFacebookF} />

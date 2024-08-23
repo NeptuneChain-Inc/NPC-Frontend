@@ -71,8 +71,8 @@ const CustomerInfoForm = ({ onNextClick }) => {
       try {
         if (!isSignedIn) {
           // Implement account creation or email/password sign-in if needed
-          const auth = getAuth();
-          await signInWithEmailAndPassword(auth, customerInfo.email, 'password');
+          //const auth = getAuth();
+          //await signInWithEmailAndPassword(auth, customerInfo.email, 'password');
           setIsSignedIn(true);
         }
         // Proceed to the next form (checkout form)

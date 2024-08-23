@@ -3,35 +3,49 @@ export const mumbaiRPC =
   "https://polygon-amoy.g.alchemy.com/v2/xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75";
 export const alchemyAPI = "xNT0Vs-Kpgg3Lgdlqjd_Qlg9XNQNfl75";
 export const blockExplorerTxURL = 'https://amoy.polygonscan.com/tx';
-export const contractAddress = '0x11948a80ec36919e7999D54d7f6D7df971814809';
+export const contractAddress = '0xb0Fa031F4da17bfC1E1CBC736f3942d17b820f23';
 export const contractABI = [
-  "function getOwner() view returns (address _owner)",
-  "function getTotalSupply() view returns (int256 _totalSupply)",
-  "function getTotalDonatedSupply() view returns (int256 _totalDonatedSupply)",
-  "function getTotalSold() view returns(int256 _totalSold)",
-  "function getTotalCertificates() view returns (int256 _totalCertificates)",
-  "function getCertificateById(int256 certificateId) view returns (tuple(int256 id, string buyer, string producer, string verifier, string creditType, int256 balance, int256 price, uint256 timestamp))",
-  "function getCreditTypes() view returns(string[] _creditTypes)",
-  "function getProducers() view returns (string[] _producers)",
-  "function getProducerVerifiers(string producer) view returns (string[] _producerVerifiers)",
-  "function getSupply(string producer, string verifier, string creditType) view returns (tuple(int256 issued, int256 available, int256 donated))",
-  "function getAccountBalance(string accountID, string producer, string verifier, string creditType) view returns (int256 _accountBalance)",
-  "function getAccountTotalBalance(string accountID) view returns (int256 _accountTotalBalance)",
-  "function getAccountCertificates(string accountID) view returns (int256[] _accountCertificates)",
-  "function isCreditRegistered(string memory creditType) view returns (bool _creditRegistered)",
-  "function isProducerRegistered(string producer) view returns (bool _producerRegistered)",
-  "function isProducerVerified(string producer, string verifier) view returns (bool _producerVerified)",
-  "function issueCredits(string _producer, string _verifier, string _creditType, int256 amount) returns (bool _issued)",
-  "function buyCredits(string _accountID, string _producer, string _verifier, string _creditType, int256 amount, int256 price) returns (bool _creditsBought)",
-  "function transferCredits(string senderAccountID, string receiverAccountID, string _producer, string _verifier, string _creditType, int256 amount, int256 price) returns (bool _creditsTransferred)",
-  "function donateCredits(string _accountID, string _producer, string _verifier, string _creditType, int256 amount) returns (bool _creditsDonated)",
-  "function transferOwnership(address newOwner) returns (bool)",
-  "event CreditsIssued( string producer, string verifier, string creditType, int256 amount)",
-  "event CreditsBought(string accountID, string producer, string verifier, string creditType, int256 amount, int256 price)",
-  "event CreditsTransferred(string senderAccountID, string receiverAccountID, string producer, string verifier, string creditType, int256 amount, int256 price)",
-  "event CreditsDonated(string accountID, string producer, string verifier, string creditType, int256 amount)",
-  "event CertificateCreated(int256 certificateId, string accountID, string producer, string verifier, string creditType, int256 balance)",
-  "event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)"
+  // ERC20 Standard Functions
+  "function balanceOf(address account) view returns (uint256)",
+  "function transfer(address recipient, uint256 amount) returns (bool)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function transferFrom(address sender, address recipient, uint256 amount) returns (bool)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+
+  // ERC20 Standard Events
+  "event Transfer(address indexed from, address indexed to, uint256 value)",
+  "event Approval(address indexed owner, address indexed spender, uint256 value)",
+
+  // Custom Functions
+  "function issueCredits(string senderID, uint256 nftTokenId, string producer, string verifier, string creditType, uint256 amount) external returns (bool)",
+  "function buyCredits(string accountID, string producer, string verifier, string creditType, uint256 amount, uint256 price) external",
+  "function transferCredits(string senderID, string recipientID, string producer, string verifier, string creditType, uint256 amount, uint256 price) external",
+  "function donateCredits(string senderID, string producer, string verifier, string creditType, uint256 amount) external",
+  "function ownerOf(uint256 tokenId) external view returns (address)",
+  "function getCreditTypes(uint256 tokenId) external view returns (string[] memory)",
+  "function getCreditSupplyLimit(uint256 tokenId, string creditType) external view returns (uint256)",
+  
+  // Getter Functions
+  "function getTotalCertificates() external view returns (int256)",
+  "function getTotalSold() external view returns (int256)",
+  "function isProducerRegistered(string producer) external view returns (bool)",
+  "function isVerifierRegistered(string producer, string verifier) external view returns (bool)",
+  "function getProducerVerifiers(string producer) external view returns (string[] memory)",
+  "function getSupply(string producer, string verifier, string creditType) external view returns (uint256 issued, uint256 available, uint256 donated)",
+  "function getCertificateById(int256 certificateId) external view returns (int256 id, string memory recipient, string memory producer, string memory verifier, string memory creditType, int256 balance, int256 price, uint256 timestamp)",
+  "function getAccountCertificates(string accountID) external view returns (int256[] memory)",
+  "function getAccountCreditBalance(string accountID, string producer, string verifier, string creditType) external view returns (uint256)",
+  "function getCreditTypes() external view returns (string[] memory)",
+  "function getProducers() external view returns (string[] memory)",
+  "function getRecoveryDuration() external view returns (uint256)",
+
+  // Custom Events
+  "event CreditsIssued(string indexed producer, string verifier, string creditType, uint256 amount)",
+  "event CreditsBought(string indexed accountID, string producer, string verifier, string creditType, uint256 amount, uint256 price)",
+  "event CreditsTransferred(string indexed senderAccountID, string receiverAccountID, string producer, string verifier, string creditType, uint256 amount, uint256 price)",
+  "event CreditsDonated(string indexed accountID, string producer, string verifier, string creditType, uint256 amount)",
+  "event CertificateCreated(int256 indexed certificateId, string indexed accountID, string producer, string verifier, string creditType, uint256 balance)",
+  "event TokensRecovered(string indexed accountID, uint256 amount)"
 ];
 
 /** Keys => Not to be used in production - Only for testing purposes **/
