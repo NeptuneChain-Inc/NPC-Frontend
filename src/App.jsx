@@ -405,7 +405,7 @@ const Flex = styled.div`
 const StyledMain = styled.div`
   width: 100%;
   height: 100%;
-  padding: 0px 24px;
+  padding: 16px 24px;
 
   box-sizing: border-box;
   background: white;

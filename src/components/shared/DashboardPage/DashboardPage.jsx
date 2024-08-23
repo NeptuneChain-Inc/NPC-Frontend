@@ -17,6 +17,7 @@ const TitleContent = styled.div`
 const TitleDescription = styled.div`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.ui600};
+  font-weight: 500;
 `;
 
 const DashboardTop = styled.div`

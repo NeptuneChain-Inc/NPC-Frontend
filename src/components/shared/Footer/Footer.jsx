@@ -36,8 +36,7 @@ function Footer() {
   return (
     <StyledFooter>
       <span className="rights-reserved">
-        © 2024 nutrient.trading powered by {APP_NAME} Inc. | All Rights
-        Reserved.
+        © 2024 nutrient.trading powered by NEPTUNECHAIN.IO LLC
       </span>
       <div className="button-wrap">
         <a
