@@ -80,7 +80,7 @@ const Overlay = styled(motion.div)`
 
 // Dialog Styles
 const Dialog = styled(motion.div)`
-  background-color: #ffffffa1;
+  background-color: white; 
   padding: 20px;
 
     display: flex;
@@ -92,6 +92,11 @@ const Dialog = styled(motion.div)`
   max-width: 50%;
   box-sizing: border-box;
     z-index: 1000;
+
+  p { 
+    font-size: 20px;
+    color: ${({theme}) => theme.colors.ui800};
+  }
 
   @media (max-width: 768px) {
     max-width: 90%;
