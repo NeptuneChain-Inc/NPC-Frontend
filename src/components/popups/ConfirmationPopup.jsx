@@ -96,6 +96,7 @@ const Dialog = styled(motion.div)`
   p { 
     font-size: 20px;
     color: ${({theme}) => theme.colors.ui800};
+    font-weight: 500;
   }
 
   @media (max-width: 768px) {
@@ -111,11 +112,13 @@ const Button = styled.button`
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  background-color: ${(props) => (props.primary ? "#4CAF50" : "#f44336")};
+  background-color: ${(props) => (props.primary ? props.theme.colors.primary500 : props.theme.colors.red500)};
   display: flex;
   justify-content: center;
   color: white;
   transition: 0.3s ease-in-out;
+
+
 
   &:hover {
     scale: 1.05;
