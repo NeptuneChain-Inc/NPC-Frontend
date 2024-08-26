@@ -40,38 +40,50 @@ const Form = ({ item }) => {
   }, [stripe, elements, isProcessing]);
 
   const onSuccess = async () => {
+    let certReturn = 0;
     try {
       const { producer, verifier, type } = presaleProducer;
-      //API CALL TO BUY CREDITS
-      fetch(`${serverUrl}/credits/buy`, {
+  
+      // API CALL TO BUY CREDITS
+      const response = await fetch(`${configs.server_url}/npc_credits/credits/buy`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ accountID: "test_investor", producer, verifier, creditType: type, amount, price: payAmount }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Data", data);
-          const { receipt, certID } = data;
-          if(receipt){
-            return certID;
-          }
-        })
-        .catch((error) =>
-          setError({message: `Failed to fetch item details: ${error.message}`})
-        );
-
-    } catch (error) {
-      if(error?.shortMessage){
-        console.log("ERROR", error)
-        //handle Message
+        body: JSON.stringify({
+          accountID: "test_investor",
+          producer,
+          verifier,
+          creditType: type,
+          amount,
+          price: payAmount,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      console.log("Data", data);
+  
+      const { certID } = data.response;
+      if (certID > 0) {
+        certReturn = certID;
       }
-      throw error;
+  
+      console.log({ certReturn });
+  
+    } catch (error) {
+      if (error?.shortMessage) {
+        console.log("ERROR", error);
+        // handle Message
+      } else {
+        console.log({ message: `Failed to fetch item details: ${error.message}` });
+      }
+      throw error; // Re-throw the error after handling it
     }
-
-    return null;
+  
+    return certReturn;
   };
+  
   
 
   const handleSubmit = async (e) => {
@@ -94,11 +106,13 @@ const Form = ({ item }) => {
         setMessage(message);
       } else {
         // Successful Payment
-        alert("Payment Successful");
         setMessage("Payment Successful");
         const newCert = await onSuccess();
-        if (newCert) {
+        console.log({newCert});
+        if (newCert > 0) {
           naviagte(`/certificate/${newCert}`);
+        } else {
+          setMessage("Certificate Error");
         }
       }
 
