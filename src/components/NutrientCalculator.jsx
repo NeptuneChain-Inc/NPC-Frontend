@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
-import { logoColors } from "../styles/colors";
-import { DashboardPage } from "./shared/DashboardPage/DashboardPage";
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import { ButtonPrimary } from "./shared/button/Button";
-import { Label } from "./shared/Label/Label";
-import { Input } from "./shared/input/Input";
-import { Select } from "./shared/Select/Select";
+import { DashboardPage } from "./shared/DashboardPage/DashboardPage";
 import FormSection from "./shared/FormSection/FormSection";
+import { Input } from "./shared/input/Input";
+import { Label } from "./shared/Label/Label";
+import { Select } from "./shared/Select/Select";
 
 ChartJS.register(
   CategoryScale,
@@ -37,6 +35,11 @@ const Result = styled.div`
   background-color: #fff;
   width: 100%;
   margin-top: 40px;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
 
   @media (min-width: 768px) {
   }
