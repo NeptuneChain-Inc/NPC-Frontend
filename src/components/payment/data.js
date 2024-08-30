@@ -1,6 +1,6 @@
 export const presaleProducer = {
   producer: "TBD/TBA",
-  verifier: "npc network",
+  verifier: "npc_network",
   type: "mitigation",
   location: "Minnesota, USA",
   supply: 10000,

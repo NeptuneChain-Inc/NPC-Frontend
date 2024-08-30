@@ -15,16 +15,18 @@ import { motion } from "framer-motion";
 import Spinner from "./Spinner"; 
 import configs from "../../../configs";
 import { unitToString } from "./OrderConfirmation";
-import { sContract } from "../../contracts/contractRef";
 import {presaleProducer} from "./data";
 import { ButtonPrimary } from "../shared/button/Button";
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
+
 
 
 
 const Form = ({ item }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const naviagte = useNavigate();
 
   const [message, setMessage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -40,16 +42,51 @@ const Form = ({ item }) => {
   }, [stripe, elements, isProcessing]);
 
   const onSuccess = async () => {
+    let certReturn = 0;
     try {
-      const _lastCertId = await sContract.getTotalCertificates();
       const { producer, verifier, type } = presaleProducer;
-      await sContract.buyCredits("Test", producer, verifier, type, amount, 50);
-      return _lastCertId;
+  
+      // API CALL TO BUY CREDITS
+      const response = await fetch(`${configs.server_url}/npc_credits/credits/buy`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accountID: "test_investor",
+          producer,
+          verifier,
+          creditType: type,
+          amount,
+          price: payAmount,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      console.log("Data", data);
+  
+      const { certID } = data.response;
+      if (certID > 0) {
+        certReturn = certID;
+      }
+  
+      console.log({ certReturn });
+  
     } catch (error) {
-      setError(error.message);
-      return null;
+      if (error?.shortMessage) {
+        console.log("ERROR", error);
+        // handle Message
+      } else {
+        console.log({ message: `Failed to fetch item details: ${error.message}` });
+      }
+      throw error; // Re-throw the error after handling it
     }
+  
+    return certReturn;
   };
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,14 +95,9 @@ const Form = ({ item }) => {
     setIsProcessing(true);
     setMessage(null); // Clear previous messages
 
-    const newCert = await onSuccess();
-
-    //##TO-DO onSuccess should be run in order completion
-    if (newCert) {
       const { error } = await stripe.confirmPayment({
         elements,
-        //confirmParams: { return_url: `http://app.neptunechain.io/certificate/${newCert + 1}` },
-        confirmParams: { return_url: `${window.location.origin}/completion` },
+        redirect: 'if_required'
       });
 
       if (error) {
@@ -76,8 +108,15 @@ const Form = ({ item }) => {
         setMessage(message);
       } else {
         // Successful Payment
+        setMessage("Payment Successful");
+        const newCert = await onSuccess();
+        console.log({newCert});
+        if (newCert > 0) {
+          naviagte(`/certificate/${newCert}`);
+        } else {
+          setMessage("Certificate Error");
+        }
       }
-    }
 
     setIsProcessing(false);
   };
@@ -117,7 +156,7 @@ const Form = ({ item }) => {
         {isProcessing ? (
           <Spinner />
         ) : (
-          `Pay ${item?.data?.currency?.toUpperCase?.()} ${unitToString(
+          `Pay ${item?.item?.currency?.toUpperCase?.()} ${unitToString(
             payAmount
           )}`
         )}

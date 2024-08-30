@@ -1,0 +1,154 @@
+{
+  "Database": [
+    {
+      "CompanyName": "Florida Waterworks Co.",
+      "Website": "floridawaterworks.com",
+      "Address": "1234 Gulf Blvd",
+      "City": "Clearwater",
+      "States": "FL",
+      "Zip Code": "33767",
+      "geometry": {
+        "coordinates": [
+          -81.5158,
+          27.6648
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Sunshine Water Authority",
+      "Website": "sunshinewater.com",
+      "Address": "5678 Ocean Dr",
+      "City": "Miami",
+      "States": "FL",
+      "Zip Code": "33139",
+      "geometry": {
+        "coordinates": [
+          -81.5058,
+          27.6748
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Palm Coast Water Services",
+      "Website": "palmcoastwater.com",
+      "Address": "4321 Palm Harbor Pkwy",
+      "City": "Palm Coast",
+      "States": "FL",
+      "Zip Code": "32137",
+      "geometry": {
+        "coordinates": [
+          -81.5258,
+          27.6548
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Everglades Water Authority",
+      "Website": "evergladeswater.com",
+      "Address": "9876 Swamp Rd",
+      "City": "Everglades City",
+      "States": "FL",
+      "Zip Code": "34139",
+      "geometry": {
+        "coordinates": [
+          -81.4958,
+          27.6648
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Orlando Water Utilities",
+      "Website": "orlandowaterutilities.com",
+      "Address": "7890 International Dr",
+      "City": "Orlando",
+      "States": "FL",
+      "Zip Code": "32819",
+      "geometry": {
+        "coordinates": [
+          -81.5358,
+          27.6848
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "St. Augustine Water Authority",
+      "Website": "staugustinewater.com",
+      "Address": "3456 Anastasia Blvd",
+      "City": "St. Augustine",
+      "States": "FL",
+      "Zip Code": "32080",
+      "geometry": {
+        "coordinates": [
+          -81.5158,
+          27.6948
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Tampa Bay Water",
+      "Website": "tampabaywater.com",
+      "Address": "6543 Bayshore Blvd",
+      "City": "Tampa",
+      "States": "FL",
+      "Zip Code": "33611",
+      "geometry": {
+        "coordinates": [
+          -81.4858,
+          27.6748
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Naples Water Department",
+      "Website": "napleswaterdept.com",
+      "Address": "1011 5th Ave S",
+      "City": "Naples",
+      "States": "FL",
+      "Zip Code": "34102",
+      "geometry": {
+        "coordinates": [
+          -81.5258,
+          27.6548
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Panama City Water Authority",
+      "Website": "panamacitywater.com",
+      "Address": "2200 W Beach Dr",
+      "City": "Panama City",
+      "States": "FL",
+      "Zip Code": "32401",
+      "geometry": {
+        "coordinates": [
+          -81.5058,
+          27.6748
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "CompanyName": "Key West Water Works",
+      "Website": "keywestwaterworks.com",
+      "Address": "987 Truman Ave",
+      "City": "Key West",
+      "States": "FL",
+      "Zip Code": "33040",
+      "geometry": {
+        "coordinates": [
+          -81.4958,
+          27.6648
+        ],
+        "type": "Point"
+      }
+    }
+  ]  
+}

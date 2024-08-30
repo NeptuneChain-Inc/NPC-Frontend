@@ -163,7 +163,7 @@ function GoogleStoreLocator({ storesData }) {
 
   //const center = { lat: 37.926868, lng: -78.024902 };
 
-  const center  = { lat: 27.83782401026334, lng: -81.62930826197768 };
+  const center  = { lat: 27.6648, lng: -81.5158 };
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -254,7 +254,7 @@ function GoogleStoreLocator({ storesData }) {
             zoom={7}
             options={mapOptions}
           >
-            {stores.map((store, index) => (
+            {/* {stores.map((store, index) => (
               <Marker
                 key={index}
                 position={store.location}
@@ -275,7 +275,7 @@ function GoogleStoreLocator({ storesData }) {
                   {selectedStore.email && <p><a href={`mailto:${selectedStore.email}`}>Email</a></p>}
                 </InfoWindowContent>
               </InfoWindow>
-            )}
+            )} */}
           </GoogleMap>
         </LoadScript>
       </MapContainer>
