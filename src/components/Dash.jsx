@@ -84,7 +84,7 @@ const StyledCardHalfSection = styled.div`
   }
 `;
 
-const Dash = ({ APP, dashData }) => {
+const Dash = ({ dashData }) => {
   const [refFocus, setRefFocus] = useState(null);
   const { sections } = dashData || {};
 

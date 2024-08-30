@@ -21,14 +21,15 @@ const isValidAmount = (amount) => {
   return !isNaN(amount);
 }
 
-const Presale = ({ APP }) => {
+const Presale = () => {
+  const { ACTIONS } = useAppContext();
   const [amount, setAmount] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [error, setError] = useState("");
 
-  const { setRoutePath } = APP?.ACTIONS || {};
+  const { setRoutePath } = ACTIONS || {};
 
   useEffect(() => {
     setRoutePath("presale");

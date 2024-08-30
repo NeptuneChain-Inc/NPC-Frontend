@@ -35,10 +35,11 @@ const GoogleButton = styled.button`
 const provider = new GoogleAuthProvider();
 
 // Configure FirebaseUI sign-in options
-function GoogleSignIn({ APP, setCardState, setGoogleData, enterDash }) {
+function GoogleSignIn({ setCardState, setGoogleData, enterDash }) {
+  const {  ACTIONS } = useAppContext();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { updateUser, handleLogout } = APP.ACTIONS || {};
+  const { updateUser } = ACTIONS || {};
 
   const handleSubmit = async () => {
     signInWithPopup(auth, provider)

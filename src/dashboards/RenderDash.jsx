@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Dash } from "../components";
 import { dashDataInit } from "../components/dash.data";
 
-const RenderDash = ({ APP, route }) => {
+const RenderDash = ({ route }) => {
+  const { STATES } = useAppContext();
   const [userDashes, setUserDashes] = useState(null);
   const [dashData, setDashData] = useState(null);
-  const { user, searchResults } = APP ? APP.STATES : {};
+  const { user, searchResults } = STATES || {};
   const { uid } = user || {};
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const RenderDash = ({ APP, route }) => {
     return <p>Dashboard Not Available</p>
   }
 
-  return <Dash dashData={dashData} APP={APP} />;
+  return <Dash dashData={dashData} />;
 };
 
 export default RenderDash;

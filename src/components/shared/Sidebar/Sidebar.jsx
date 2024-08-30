@@ -1,118 +1,31 @@
-import {
-  faBroadcastTower,
-  faCalculator,
-  faCheckCircle,
-  faDollarSign,
-  faLeaf,
-  faShop,
-  faStore,
-} from "@fortawesome/free-solid-svg-icons";
-import * as Accordion from "@radix-ui/react-accordion";
-import React, { useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
-import { Link, useLocation } from "react-router-dom";
-import styled, { keyframes } from "styled-components";
-import { AppIcon } from "../../../assets";
-import { Sidebar_MenuItem } from "../../elements";
+import React from "react";
+import styled from "styled-components";
 import LogoWhite from "../../../assets/logo.png";
-import { ProfileDropMenu } from "../../elements/navbar/elements";
 import SidebarPhone from "./SidebarPhone";
 import SidebarContent from "./SidebarContent";
 
-const Sidebar = ({ APP }) => {
+const Sidebar = () => {
+  const { STATES } = useAppContext();
+  const { user } = STATES || {};
   const path = window.location.pathname.replace(/^\//, "");
   const isMarketplace = path.startsWith("marketplace");
 
+  if(!user){
+    return;
+  }
+
   return (
     <>
-      <SidebarPhone APP={APP} />
+      <SidebarPhone />
       <StyledSidebar isMarketplace={isMarketplace}>
         <LogoWrap>
           <img className="logo" src={LogoWhite} />
         </LogoWrap>
-        <SidebarContent APP={APP} />
+        <SidebarContent />
       </StyledSidebar>
     </>
   );
 };
-
-const slideUp = keyframes`
-  from {
-    height: var(--radix-accordion-content-height);
-  }
-  to {
-    height: 0;
-  }
-`;
-
-const slideDown = keyframes`
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-  }
-
-`;
-
-const StyledAccordion = styled(Accordion.Root)`
-  width: 100%;
-
-  .content[data-state="open"] {
-    animation: ${slideDown} 300ms cubic-bezier(0.87, 0, 0.13, 1);
-  }
-  .content[data-state="closed"] {
-    animation: ${slideUp} 300ms cubic-bezier(0.87, 0, 0.13, 1);
-  }
-`;
-
-const StyledAccordionTrigger = styled(Accordion.Trigger)`
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  color: inherit;
-  text-align: left;
-
-  font-weight: 500;
-  .cta {
-    font-weight: 500;
-  }
-  &[data-state="open"] {
-    .AccordionChevron {
-      transform: rotate(180deg);
-    }
-  }
-
-  .AccordionChevron {
-    transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
-    font-size: 14px;
-    /* Apply styles based on the data-state attribute */
-  }
-`;
-
-const StyledAccordionContent = styled(Accordion.Content)`
-  padding-left: 38px;
-  margin-left: 22px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.ui600};
-  font-size: 14px;
-  overflow: hidden;
-  /*   border-left: 1px solid ${({ theme }) => theme.colors.ui300}; */
-  border-bottom: 1px solid ${({ theme }) => theme.colors.ui300};
-  .cta {
-    padding: 8px 0px;
-    display: block;
-    color: ${({ theme }) => theme.colors.ui700};
-    text-decoration: none;
-    font-weight: 500;
-    &:hover {
-      text-decoration: underline;
-      color: ${({ theme }) => theme.colors.ui800};
-    }
-  }
-`;
-
 const StyledSidebar = styled.aside`
   width: 400px;
   background: ${({ theme }) => theme.colors.ui50};
@@ -139,23 +52,6 @@ const LogoWrap = styled.div`
     font-size: 16px;
     color: ${({ theme }) => theme.colors.ui800};
   }
-`;
-
-const Logo = styled.img`
-  width: 24px;
-`;
-
-const LogoName = styled.h1`
-  font-size: 1.5rem;
-  margin: 0;
-`;
-
-const Menu = styled.nav`
-  margin-top: 20px;
-`;
-
-const SubMenu = styled.div`
-  padding-left: 20px;
 `;
 
 export default Sidebar;

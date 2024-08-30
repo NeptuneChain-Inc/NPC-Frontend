@@ -76,15 +76,16 @@ const ProfileForm = styled.form`
   gap:24px;
 `;
 
-const AccountSettingsTab = ({ APP }) => {
+const AccountSettingsTab = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-  const { user } = APP?.STATES || {};
-  const { logNotification } = APP?.ACTIONS || {};
+  const { user } = STATES || {};
+  const { logNotification } = ACTIONS || {};
 
   const togglePasswordFields = () => {
     setShowPasswordFields(!showPasswordFields);

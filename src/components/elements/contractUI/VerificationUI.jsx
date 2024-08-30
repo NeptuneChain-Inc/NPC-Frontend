@@ -166,7 +166,8 @@ const tabVariants = {
   exit: { x: 10, opacity: 0 },
 };
 
-function VerificationUI({ APP, open }) {
+function VerificationUI({ open }) {
+  const { STATES, ACTIONS } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(open);
   const [accessibleTabs, setAccessibleTabs] = useState([]);
   const [activeTab, setActiveTab] = useState("");
@@ -182,9 +183,9 @@ function VerificationUI({ APP, open }) {
   const [approvals, setApprovals] = useState([]);
 
   const { user, signer, verificationUIOpen, verificationData } =
-    APP?.STATES || {};
+    STATES || {};
   const { setTxPopupVisible, setResult, setVerificationData } =
-    APP?.ACTIONS || {};
+    ACTIONS || {};
 
   const { assetID } = verificationData || {};
 

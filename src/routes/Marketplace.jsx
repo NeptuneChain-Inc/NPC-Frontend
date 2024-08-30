@@ -54,12 +54,14 @@ const SearchIcon = styled(FontAwesomeIcon)`
   margin-left: 10px;
 `;
 
-const Marketplace = ({ APP }) => {
+//USE API
+const Marketplace = () => {
+  const { STATES } = useAppContext();
   const [marketEvents, setMarketEvents] = useState(null);
   const [showEventsPopup, setShowEventsPopup] = useState(false);
   const [events, setEvents] = useState([]);
 
-  const { marketInteractions } = APP?.STATES || {};
+  const { marketInteractions } = STATES || {};
 
   useEffect(() => {
     setMarketEvents(marketInteractions?.Events);

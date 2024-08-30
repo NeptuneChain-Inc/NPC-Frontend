@@ -1,54 +1,99 @@
-import React from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp, faClose, faDatabase, faMaskFace, faPalette, faPerson, faUpload, faUser, faUserGear, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import ProfileSettingsTab from './elements/setting-tabs/ProfileSettings';
-import { AccountSettingsTab, DataSettingsTab, PersonalizationTab, PrivacySettingsTab, UploadsTab } from './elements/setting-tabs';
+import React from "react";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronDown,
+  faChevronUp,
+  faClose,
+  faDatabase,
+  faMaskFace,
+  faPalette,
+  faPerson,
+  faUpload,
+  faUser,
+  faUserGear,
+  faUserLock,
+} from "@fortawesome/free-solid-svg-icons";
+import ProfileSettingsTab from "./elements/setting-tabs/ProfileSettings";
+import {
+  AccountSettingsTab,
+  DataSettingsTab,
+  PersonalizationTab,
+  PrivacySettingsTab,
+  UploadsTab,
+} from "./elements/setting-tabs";
 
 /**
  * SettingsMenu Component to render setting tabs
- * 
- * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
-const SettingsMenu = ({ APP }) => {
-  const { user, settingsTab } = APP ? APP.STATES : {};
-  const { handleSettingsTab, handleSettingsMenu } = APP ? APP.ACTIONS : {};
+const SettingsMenu = () => {
+  const { STATES, ACTIONS } = useAppContext();
+  const { user, settingsTab, settingsMenuOpen } = STATES || {};
+  const { handleSettingsTab, handleSettingsMenu } = ACTIONS || {};
+
+  if(!user || !settingsMenuOpen){
+    return;
+  }
 
   const tabData = [
-    { name: 'Profile Settings', icon: faUser, component: <ProfileSettingsTab APP={APP} /> },
-    { name: 'Account Settings', icon: faUserGear, component: <><PrivacySettingsTab APP={APP} /><DataSettingsTab APP={APP} /><AccountSettingsTab APP={APP} /></> },
+    {
+      name: "Profile Settings",
+      icon: faUser,
+      component: <ProfileSettingsTab />,
+    },
+    {
+      name: "Account Settings",
+      icon: faUserGear,
+      component: (
+        <>
+          <PrivacySettingsTab />
+          <DataSettingsTab  />
+          <AccountSettingsTab />
+        </>
+      ),
+    },
   ];
 
-  const activeComponent = tabData.find((tab) => tab.name === settingsTab)?.component;
+  const activeComponent = tabData.find(
+    (tab) => tab.name === settingsTab
+  )?.component;
 
   return (
-    <Container initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-
+    <Container
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Responsive dropdown for mobile view */}
       <DropdownContainer>
-          <TabDropdown 
-            value={settingsTab}
-            onChange={e => handleSettingsTab(e.target.value)}
-          >
-            {tabData.map((tab, index) => (
-              <option key={index} value={tab.name}>
-                {tab.name}
-              </option>
-            ))}
-          </TabDropdown>
-          <DropdownIcon icon={faChevronUp} />
-        </DropdownContainer>
+        <TabDropdown
+          value={settingsTab}
+          onChange={(e) => handleSettingsTab(e.target.value)}
+        >
+          {tabData.map((tab, index) => (
+            <option key={index} value={tab.name}>
+              {tab.name}
+            </option>
+          ))}
+        </TabDropdown>
+        <DropdownIcon icon={faChevronUp} />
+      </DropdownContainer>
 
       <Menu role="dialog" aria-labelledby="settingsMenuTitle">
-        <ExitIcon icon={faClose} color='#fff' onClick={handleSettingsMenu} aria-label="Close settings menu" tabIndex="0" />
+        <ExitIcon
+          icon={faClose}
+          color="#fff"
+          onClick={handleSettingsMenu}
+          aria-label="Close settings menu"
+          tabIndex="0"
+        />
         <TabList role="tablist">
           {tabData.map((tab, index) => (
             <Tab
               key={index}
               active={tab.name === settingsTab}
               onClick={() => handleSettingsTab(tab.name)}
-
               role="tab"
               tabIndex="0"
               aria-selected={tab.name === settingsTab}
@@ -58,7 +103,7 @@ const SettingsMenu = ({ APP }) => {
             </Tab>
           ))}
         </TabList>
-        <Content role='tabpanel'>{activeComponent}</Content>
+        <Content role="tabpanel">{activeComponent}</Content>
       </Menu>
     </Container>
   );
@@ -75,22 +120,20 @@ const Container = styled(motion.div)`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  
 `;
 
 const DropdownContainer = styled.div`
-  display: none; 
+  display: none;
 
   @media (max-width: 768px) {
     display: flex;
     position: absolute;
-    bottom: 15px; 
+    bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
   }
 `;
-
 
 const TabDropdown = styled.select`
   padding: 12px 40px 12px 15px;
@@ -100,7 +143,7 @@ const TabDropdown = styled.select`
   appearance: none;
   background-color: #f7f7f7;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: relative; 
+  position: relative;
 
   &:focus {
     outline: none;
@@ -108,7 +151,7 @@ const TabDropdown = styled.select`
   }
 
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     left: 0;
@@ -116,8 +159,6 @@ const TabDropdown = styled.select`
     z-index: -1;
   }
 `;
-
-
 
 const DropdownIcon = styled(FontAwesomeIcon)`
   position: absolute;
@@ -128,15 +169,15 @@ const DropdownIcon = styled(FontAwesomeIcon)`
 `;
 
 const Menu = styled(motion.div)`
-display: flex;
-justify-content: center;
+  display: flex;
+  justify-content: center;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   width: 90%;
   height: 90%;
   backdrop-filter: blur(10px);
   border-radius: 10px;
   overflow: hidden;
-  background: white; 
+  background: white;
   overflow-y: auto;
   @media (min-width: 769px) {
     max-width: 800px;
@@ -156,21 +197,20 @@ const TabList = styled.div`
   }
 `;
 
-
 const Tab = styled(motion.div)`
   // flex-grow: 1;
   text-align: center;
   cursor: pointer;
   padding: 15px;
   font-weight: 500;
-  color: ${props => props.active ? "#fff" : props.theme.colors.ui800};
-  background-color: ${props => props.active ? props.theme.colors.primary500 : "white"};
+  color: ${(props) => (props.active ? "#fff" : props.theme.colors.ui800)};
+  background-color: ${(props) =>
+    props.active ? props.theme.colors.primary500 : "white"};
   display: flex;
   align-items: center;
   justify-content: center;
 
   &:hover {
-
   }
 
   @media (max-width: 768px) {
@@ -178,11 +218,9 @@ const Tab = styled(motion.div)`
   }
 `;
 
-
 const TabIcon = styled(FontAwesomeIcon)`
   margin-right: 10px;
 `;
-
 
 const Content = styled.div`
   padding: 40px 0px;
@@ -194,14 +232,13 @@ const Content = styled.div`
   }
 `;
 
-
 const ExitIcon = styled(FontAwesomeIcon)`
   position: absolute;
   top: 16px;
   right: 24px;
   padding: 8px;
   font-size: 16px;
-  color: ${props => props.theme.colors.ui600};
+  color: ${(props) => props.theme.colors.ui600};
   // background-color: #222;
   border-radius: 50%;
   border: none;
@@ -209,10 +246,9 @@ const ExitIcon = styled(FontAwesomeIcon)`
   transition: 0.3s ease-in-out;
 
   &:hover {
-  scale: 1.1;
+    scale: 1.1;
     color: #f00;
   }
 `;
-
 
 export default SettingsMenu;

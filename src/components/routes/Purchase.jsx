@@ -325,7 +325,8 @@ const getCreditPrice = (creditType) => {
   }
 };
 
-const Purchase = ({APP}) => {
+const Purchase = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [producers, setProducers] = useState([]);
   const [selectedProducer, setSelectedProducer] = useState(null);
   const [producerList, setProducerList] = useState([]);
@@ -339,7 +340,7 @@ const Purchase = ({APP}) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const { setRoutePath } = APP?.ACTIONS || {};
+  const { setRoutePath } = ACTIONS || {};
 
 
   // Query the contract to retrieve the list of producers
@@ -608,10 +609,10 @@ const Purchase = ({APP}) => {
   );
 };
 
-const PurchaseScreen = ({APP}) => {
+const PurchaseScreen = () => {
   return (
     <Elements stripe={stripePromise}>
-      <Purchase APP={APP}/>
+      <Purchase />
     </Elements>
   );
 };

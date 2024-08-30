@@ -8,12 +8,13 @@ import { ButtonPrimary } from "../../../shared/button/Button";
 
 
 
-const MediaGallery = ({APP}) => {
+const MediaGallery = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [isMediaUpload, setIsMediaUpload] = useState(false);
   const [media, setMedia] = useState([]);
 
-  const { user } = APP?.STATES || {};
-  const { setVerificationUIOpen, setVerificationData } = APP?.ACTIONS || {};
+  const { user } = STATES || {};
+  const { setVerificationUIOpen, setVerificationData } = ACTIONS || {};
 
   useEffect(() => {
     if(user){
@@ -82,7 +83,7 @@ const MediaGallery = ({APP}) => {
 </Gallery>
 
 
-        <MediaUpload togglePopup={toggleMediaUpload} APP={APP}/>
+        <MediaUpload togglePopup={toggleMediaUpload} />
     </PageContainer>
   );
 };

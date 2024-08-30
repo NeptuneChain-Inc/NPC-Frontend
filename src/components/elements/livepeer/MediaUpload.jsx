@@ -166,7 +166,8 @@ const DEFAULT_THUMBNAIL = [
   "https://www.ncl.ac.uk/mediav8/newcastle-university-in-singapore/images/key-water.jpg",
 ];
 
-const MediaUpload = ({ APP, togglePopup }) => {
+const MediaUpload = ({ togglePopup }) => {
+  const { STATES } = useAppContext();
   const [file, setFile] = useState(null);
   const [uploadName, setUploadName] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
@@ -174,7 +175,7 @@ const MediaUpload = ({ APP, togglePopup }) => {
   const [uploadPercentage, setuploadPercentage] = useState(0);
   const [asset, setAsset] = useState(null);
 
-  const { user } = APP?.STATES || {};
+  const { user } = STATES || {};
 
   const { activeFile, previewURL } = file || {};
 

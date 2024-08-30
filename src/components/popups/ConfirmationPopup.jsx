@@ -1,26 +1,31 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { useAppContext } from "../../context/AppContext";
 
 /**
  * Confirmation Dialog
- * 
+ *
  * @param {Object} props
  * @param {string} props.message - Confirmation message to display
  * @param {Function} props.onConfirm - Function to execute on confirmation
  * @param {Function} props.onCancel - Function to execute on cancellation
  */
-const Confirmation = ({ message, onConfirm, onCancel }) => {
-  if (!message) return null;  // Exit early if no message is provided
+const Confirmation = () => {
+  const { STATES, ACTIONS } = useAppContext();
+
+  const message = STATES.confirmation?.msg;
+  const onConfirm = STATES.confirmation?.action;
+  const onCancel = ACTIONS.cancelConfirmation;
+
+  if (!message) return null; // Exit early if no message is provided
 
   // Function to execute when the user confirms the action
   const handleConfirm = () => {
     onConfirm && onConfirm();
     onCancel(true);
-  }
-
+  };
 
   return (
     <AnimatePresence>
@@ -44,9 +49,7 @@ const Confirmation = ({ message, onConfirm, onCancel }) => {
                 Confirm
               </Button>
             )}
-            <Button onClick={() => onCancel(false)}>
-              Cancel
-            </Button>
+            <Button onClick={() => onCancel(false)}>Cancel</Button>
           </Dialog>
         </Overlay>
       )}
@@ -54,11 +57,10 @@ const Confirmation = ({ message, onConfirm, onCancel }) => {
   );
 };
 
-
 Confirmation.propTypes = {
   message: PropTypes.string.isRequired,
   onConfirm: PropTypes.func,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
 };
 
 // Overlay Styles
@@ -80,22 +82,22 @@ const Overlay = styled(motion.div)`
 
 // Dialog Styles
 const Dialog = styled(motion.div)`
-  background-color: white; 
+  background-color: white;
   padding: 20px;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
   border-radius: 10px;
   box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.5);
 
   max-width: 50%;
   box-sizing: border-box;
-    z-index: 1000;
+  z-index: 1000;
 
-  p { 
+  p {
     font-size: 20px;
-    color: ${({theme}) => theme.colors.ui800};
+    color: ${({ theme }) => theme.colors.ui800};
     font-weight: 500;
   }
 
@@ -112,13 +114,12 @@ const Button = styled.button`
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  background-color: ${(props) => (props.primary ? props.theme.colors.primary500 : props.theme.colors.red500)};
+  background-color: ${(props) =>
+    props.primary ? props.theme.colors.primary500 : props.theme.colors.red500};
   display: flex;
   justify-content: center;
   color: white;
   transition: 0.3s ease-in-out;
-
-
 
   &:hover {
     scale: 1.05;

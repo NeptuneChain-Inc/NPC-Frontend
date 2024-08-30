@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppContext } from "../../context/AppContext";
 
 /**
  * Notification Component
@@ -9,7 +10,12 @@ import { motion, AnimatePresence } from "framer-motion";
  * @param {String} type - The type of the notification, can be 'notification', 'alert', or 'error'.
  * @param {Function} clearNotification - Function to clear the notification.
  */
-const Notification = ({ message, type, clearNotification }) => {
+const Notification = () => {
+  const { STATES, ACTIONS } = useAppContext();
+
+  const message=STATES.notification?.[Object.keys(STATES.notification)?.[0]];
+  const type= Object.keys(STATES.notification)?.[0];
+  const clearNotification= ACTIONS.clearNotification;
 
   if (!message) return null;
 

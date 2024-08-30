@@ -8,12 +8,16 @@ import { pushLocalNotification } from "../scripts/notifications";
 /**
  * NotificationBar Component to render application notifications from storage
  *
- * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
-const NotificationBar = ({ APP }) => {
+const NotificationBar = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [notifications, setNotifications] = useState([]);
-  const { notificationBarOpen } = APP ? APP.STATES : {};
-  const { handleNotificationsBar, logNotification } = APP ? APP.ACTIONS : {};
+  const { user, notificationBarOpen } = STATES || {};
+  const { handleNotificationsBar, logNotification } = ACTIONS || {};
+
+  if(!user){
+    return;
+  }
 
   useEffect(() => {
     // Fetch stored notifications
@@ -22,7 +26,7 @@ const NotificationBar = ({ APP }) => {
     if (_notifications) {
       setNotifications(_notifications);
     }
-  }, [APP]);
+  }, [STATES]);
 
   const handleSmapleNotification = (type) => {
     const _notification = pushLocalNotification(

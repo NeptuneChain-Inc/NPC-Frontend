@@ -82,7 +82,7 @@ const environmentRoutes = [
   },
 ];
 
-function SidebarContent({ APP }) {
+function SidebarContent() {
   const [openSection, setOpenSection] = useState("");
   return (
     <StyledSidebarContent>
@@ -130,7 +130,7 @@ function SidebarContent({ APP }) {
           );
         })}
       </StyledAccordion>
-      <ProfileDropMenu APP={APP} />
+      <ProfileDropMenu />
     </StyledSidebarContent>
   );
 }
@@ -188,7 +188,6 @@ const StyledAccordionTrigger = styled(Accordion.Trigger)`
   .AccordionChevron {
     transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
     font-size: 14px;
-    /* Apply styles based on the data-state attribute */
   }
 `;
 

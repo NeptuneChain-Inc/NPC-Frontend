@@ -15,7 +15,7 @@ import MediaGallery from './elements/MediaGallery';
 
 //livepeer github docs: https://github.com/livepeer/livepeer-js?tab=readme-ov-file
 
-function Livepeer({ APP }) {
+function Livepeer() {
   const { serviceID, playbackID, liveID } = useParams();
   const [livepeerClient, setLivepeerClient] = useState(null);
   
@@ -44,12 +44,11 @@ function Livepeer({ APP }) {
     switch (serviceID) {
       case 'stream':
         return (
-          <Stream APP={APP} />
+          <Stream />
         )
       case 'upload-media':
         return (
-          <MediaGallery APP={APP}/>
-          // <VideoUpload APP={APP} />
+          <MediaGallery />
         )
       default:
         return (

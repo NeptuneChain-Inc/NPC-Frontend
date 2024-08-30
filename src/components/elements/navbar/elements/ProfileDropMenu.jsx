@@ -7,14 +7,14 @@ import { useNavigate } from 'react-router-dom';
 
 /**
  * ProfileDropMenu Component
- * @param {Object} APP - Application states and actions
  */
-const ProfileDropMenu = ({ APP }) => {
-  console.log(APP)
+const ProfileDropMenu = () => {
+  const { STATES, ACTIONS } = useAppContext();
+
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = APP ? APP.STATES : {};
-  const { handleSettingsTab, handleLogOut } = APP ? APP.ACTIONS : {};
+  const { user } = STATES || {};
+  const { handleSettingsTab, handleLogOut } = ACTIONS || {};
 
   const handleSettings = (action) => {
     console.log(typeof action)

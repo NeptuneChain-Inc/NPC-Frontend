@@ -181,7 +181,9 @@ const hoverAnimation = {
   boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
 };
 
-const SellerDashboard = ({ APP }) => {
+//USE API
+const SellerDashboard = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const navigate = useNavigate();
   const [price, setPrice] = useState("");
   const [userNFTs, setUserNFTs] = useState([]);
@@ -190,17 +192,14 @@ const SellerDashboard = ({ APP }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState("");
 
-  const { signedUser, marketInteractions, signedMarketInteractions } =
-    APP?.STATES || {};
-
-  const { setResult } = APP?.ACTIONS || {};
+  const { setResult } = ACTIONS || {};
 
   useEffect(() => {
     if (signedUser) {
       fetchUserNFTs();
       fetchListedNFTs();
     }
-  }, [APP]);
+  }, [STATES]);
 
   useEffect(() => {
     if (userListedNFTs.length > 0) {
