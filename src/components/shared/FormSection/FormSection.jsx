@@ -19,9 +19,9 @@ const Error = styled.div`
   font-weight: 500;
 `;
 
-function FormSection({ label, children, error }) {
+function FormSection({ label, children, error, className }) {
   return (
-    <StyledFormSection>
+    <StyledFormSection className={className ?? ""}>
       <Label>{label}</Label>
       {children}
       <Error>{error}</Error>

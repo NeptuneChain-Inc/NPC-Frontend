@@ -4,15 +4,14 @@ import styled from "styled-components";
 import {colors} from "../../data/styles";
 
 export const FULL_PAGE_CONTAINER = styled(motion.div)`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-
+  height: 100%;
+margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+ 
+  max-width: 800px;
   padding: 2rem 1rem;
   box-sizing: border-box;
 
@@ -20,20 +19,42 @@ export const FULL_PAGE_CONTAINER = styled(motion.div)`
   overflow-x: hidden;
 
   transition: 0.5s ease-in-out;
+  .features { 
+    display: grid;
+    gap:32px;
+    margin-top: 64px;
+
+    @media(min-width: 672px) { 
+      grid-template-columns: 1fr 1fr;
+    } 
+  }
+
+  .features-section {
+    border: 1px solid ${({ theme }) => theme.colors.ui200};
+    border-radius: 10px;
+    padding: 24px;
+    svg {
+      font-size: 40px;
+      color: ${({ theme }) => theme.colors.primary500};
+      margin-bottom: 24px;
+    }
+    .features-section-title {
+      font-size: 16px;
+      color: ${({ theme }) => theme.colors.ui800};
+      font-weight: 600;
+    }
+    .features-section-paragraph {
+      font-size: 14px;
+      color: ${({ theme }) => theme.colors.ui700};
+      font-weight: 500;
+      margin-top: 8px;
+    }
+  }
 `;
 
 export const CARD_WRAPPER = styled.div`
-  width: 100vw;
-  height: 100vh;
-  max-width: 1080px;
 
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
 
-  padding: 1rem;
   box-sizing: border-box;
 
   ${({ popup }) => popup && "filter: blur(20px);"}
@@ -41,6 +62,7 @@ export const CARD_WRAPPER = styled.div`
   overflow: hidden;
 
   border-radius: 10px;
+  width: 100%;
   // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
   @media (max-width: 768px) {
@@ -54,12 +76,7 @@ export const CARD_WRAPPER = styled.div`
 export const CARD_SECTION = styled(animated.div)`
   flex: 1;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
-  padding: 1rem;
   box-sizing: border-box;
 
   border-radius: 10px;
@@ -84,25 +101,21 @@ export const InfoBox = styled.div`
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
   border-radius: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  text-align: left;
 
-  padding: 0.5rem 0;
-
-  margin-bottom: 30px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  border: 2px solid black;
-  border-top: none;
+  .disclaimer { 
+    margin-top: 12px;
+  }
 
   h3 {
     margin: 0 0 10px;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
-    color: ${colors.accent};
+    color: ${({theme}) => theme.colors.ui800}
   }
 
   p {
@@ -111,14 +124,30 @@ export const InfoBox = styled.div`
 `;
 
 export const CardContent = styled.div`
-  width: 80%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+margin-top: 40px;
   font-size: 0.8rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  width: 100%;
 
-  padding: 0.1rem;
+  .card-stats { 
+    display: flex;
+    margin-top: 8px;
+    gap:16px;
+  }
+  .card-stat { 
+    display: flex; 
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: ${({theme}) => theme.colors.ui600};
+    svg {
+       color: ${({theme}) => theme.colors.primary500};
+    }
+  }
 
   h3 {
     margin: 0;
@@ -173,7 +202,6 @@ export const FormWrapper = styled.div`
   overflow: auto;
 
   margin: 0;
-  padding: 10px;
   box-sizing: border-box;
 `;
 

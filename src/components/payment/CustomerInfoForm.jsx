@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import styled from 'styled-components';
 import {InputBox} from './styled';
+import { Input } from '../shared/input/Input';
+import FormSection from '../shared/FormSection/FormSection';
+import { ButtonPrimary } from '../shared/button/Button';
 
 const CustomerInfoForm = ({ onNextClick }) => {
   const [customerInfo, setCustomerInfo] = useState({
@@ -33,6 +36,7 @@ const CustomerInfoForm = ({ onNextClick }) => {
 
   const validateForm = () => {
     let tempErrors = {};
+    console.log(customerInfo)
     if (!customerInfo.firstName.trim()) {
       tempErrors.firstName = 'First name is required';
     }
@@ -47,6 +51,7 @@ const CustomerInfoForm = ({ onNextClick }) => {
       tempErrors.lastName = 'Last name is required for businesses';
     }
 
+    console.log(tempErrors)
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -65,6 +70,7 @@ const CustomerInfoForm = ({ onNextClick }) => {
   };
 
   const handleSubmit = async (event) => {
+    console.log(validateForm());
     event.preventDefault();
     if (validateForm()) {
       setLoading(true);
@@ -100,11 +106,10 @@ const CustomerInfoForm = ({ onNextClick }) => {
           <p>or</p>
         </>
       ) : (
-        <p>Welcome back! Please confirm your details.</p>
+        <p className='form-title'>Please confirm your details.</p>
       )}
-      <FormField>
-        <label htmlFor="firstName">First Name</label>
-        <InputBox
+        <FormSection  label={"First Name"} error={errors.firstName}>
+        <Input
           type="text"
           id="firstName"
           name="firstName"
@@ -112,12 +117,14 @@ const CustomerInfoForm = ({ onNextClick }) => {
           onChange={handleChange}
           className={errors.firstName ? 'error' : ''}
           required
-        />
-        {errors.firstName && <ErrorMessage>{errors.firstName}</ErrorMessage>}
-      </FormField>
-      <FormField>
-        <label htmlFor="lastName">Last Name</label>
-        <InputBox
+          />
+          </FormSection>
+
+      <FormSection
+        error={errors.lastName}
+        label={"Last Name"}
+      >
+        <Input
           type="text"
           id="lastName"
           name="lastName"
@@ -125,11 +132,9 @@ const CustomerInfoForm = ({ onNextClick }) => {
           onChange={handleChange}
           className={errors.lastName ? 'error' : ''}
         />
-        {errors.lastName && <ErrorMessage>{errors.lastName}</ErrorMessage>}
-      </FormField>
-      <FormField>
-        <label htmlFor="email">Email</label>
-        <InputBox
+      </FormSection>
+      <FormSection label={"Email"} error={errors.email}>
+        <Input
           type="email"
           id="email"
           name="email"
@@ -138,14 +143,14 @@ const CustomerInfoForm = ({ onNextClick }) => {
           className={errors.email ? 'error' : ''}
           required
         />
-        {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-      </FormField>
-      <FormField>
-        <label htmlFor="isBusiness">
+      </FormSection>
+      <div className=''>
+        <label className='checkbox-section' htmlFor="isBusiness">
           <input
             type="checkbox"
             id="isBusiness"
             name="isBusiness"
+            className='checkbox'
             checked={customerInfo.isBusiness}
             onChange={(e) =>
               setCustomerInfo({ ...customerInfo, isBusiness: e.target.checked })
@@ -153,10 +158,10 @@ const CustomerInfoForm = ({ onNextClick }) => {
           />
           Is this for a business?
         </label>
-      </FormField>
-      <SubmitButton type="submit" disabled={loading}>
+      </div>
+      <ButtonPrimary type="submit" disabled={loading}>
         {loading ? 'Processing...' : 'Next'}
-      </SubmitButton>
+      </ButtonPrimary>
       {errors.form && <ErrorMessage>{errors.form}</ErrorMessage>}
     </FormContainer>
   );
@@ -169,11 +174,30 @@ const FormContainer = styled.form`
   flex-direction: column;
   align-items: flex-start;
   gap: 15px;
+  margin-top: 40px;
+
+  .checkbox-section { 
+    display: flex;
+    align-items: center;
+    gap:8px;
+    font-weight: 500; 
+    font-size: 14px;
+    .checkbox {
+      height: 20px;
+      width: 20px;
+      margin-bottom: 0px;
+      border: 1px solid ${({theme}) => theme.colors.ui200};
+      accent-color: ${({theme}) => theme.colors.primary500};
+    }
+  }
+
+  .form-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.ui800};
+  }
 `;
 
-const FormField = styled.div`
-  width: 100%;
-`;
 
 const ErrorMessage = styled.div`
   color: red;
@@ -191,23 +215,5 @@ const SignInButton = styled.button`
 
   &:hover {
     background-color: #357ae8;
-  }
-`;
-
-const SubmitButton = styled.button`
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: #218838;
-  }
-
-  &:disabled {
-    background-color: #94d3a2;
-    cursor: not-allowed;
   }
 `;

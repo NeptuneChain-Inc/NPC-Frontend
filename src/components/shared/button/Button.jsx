@@ -15,11 +15,12 @@ const Button = styled.button`
 
 export const ButtonPrimary = styled(Button)`
   background: ${({ theme }) => theme.colors.primary500};
+  transition: 0.1s linear all; 
   color: white;
-  :hover {
-    background: ${({ theme }) => theme.colors.primary700};
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary600};
   }
-  :disabled {
+  &:disabled {
     background: ${({ theme }) => theme.colors.ui200};
     color: ${({ theme }) => theme.colors.ui500};
   }
@@ -30,7 +31,7 @@ export const ButtonSecondary = styled(Button)`
   color: ${({ theme }) => theme.colors.primary500};
   background: white;
   height: ${({ theme }) => theme.formHeightMd};
-  :hover {
+  &:hover {
     background: ${({ theme }) => theme.colors.ui100};
   }
 `;

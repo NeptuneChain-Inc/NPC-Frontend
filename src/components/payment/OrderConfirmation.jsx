@@ -11,22 +11,59 @@ import { colors } from "../../data/styles";
 import { logoColors } from "../../styles/colors";
 import styled from 'styled-components';
 import configs from "../../../configs";
+import { ButtonPrimary } from "../shared/button/Button";
+import { Label } from "../shared/Label/Label";
+import { FaCheck } from "react-icons/fa6";
 
 const StyledDiv = styled.div`
-  padding: 20px;
   background-color: ${colors.background};
-  color: ${colors.accent};
+
+
+h2 { 
+  font-size: 24px;
+  color: ${({theme}) => theme.colors.ui800};
+  font-weight: 600; 
+}
+
+.info-text {
+  color: ${({theme}) => theme.colors.ui600};
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+
+${ButtonPrimary} { 
+  margin-top: 24px;
+}
+
+.form-value {
+   color: ${({theme}) => theme.colors.ui800};
+   font-weight: 500; 
+}
+
+
+.form-section { 
+  margin-top: 16px;
+}
+
+
+.stripe-confirm{ 
+  margin-bottom: 16px;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${({theme}) => theme.colors.primary500};
+  svg {
+    margin-right: 2px;
+  }
+}
 `;
 
-const StyledButton = styled.button`
-  background-color: ${logoColors.primary};
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-`;
+
 
 const DISCOUT_PERCENTAGE = 50;
 
@@ -101,27 +138,41 @@ function OrderConfirmation({ proceedToPayment, checkoutItems }) {
   return (
     <StyledDiv>
       <h2>Order Confirmation</h2>
-      <p>Name: {item.name}</p>
-      <p>
-        Price: {item.currency} {item.string_amount}
+      <div className="form-section">
+
+      <Label>
+      Name: 
+      </Label>
+      <p className="form-value">{item.name}</p>
+      </div>
+      <div className="form-section">
+
+      <Label>
+      Price:
+      </Label>
+      <p className="form-value">
+        {item.currency} {item.string_amount}
       </p>
-      <i style={{textAlign: "left"}}>Purchase is accepted via Stripe.</i>
+      </div>
+      <p className="stripe-confirm" style={{textAlign: "left"}}>
+        <FaCheck />
+        Purchase is accepted via Stripe.</p>
         <hr />
-      <p>
-        <br />
+
+        <p className="info-text"> 
+
         Stripe will retain the card information, whereas we will retain the
         First and Last Name, Email Address, Quantity, Whether or not purchase is
         for a business, if so, what the business is named.
-        <br />
-        <br />
-        <span style={{ color: logoColors.primary }}>
+        </p>
+        <p className="info-text">
           During presale, we hold 50% of the payment total. The other 50% will
           be processed upon the release of our initial supply.
-        </span>
-      </p>
-      <StyledButton onClick={_proceedToPayment}>
+        </p>
+
+      <ButtonPrimary onClick={_proceedToPayment}>
         Proceed to Pay {item.currency} {unitToString(payAmount)}
-        </StyledButton>
+        </ButtonPrimary>
     </StyledDiv>
   );
 }

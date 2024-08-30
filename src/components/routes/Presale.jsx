@@ -15,19 +15,17 @@ import { NUMBERS } from "../../scripts/helpers";
 import {ProductDisplay, ProductOrder} from "../payment";
 import {CARD_SECTION, CARD_WRAPPER, ErrorMessage, FULL_PAGE_CONTAINER} from "../payment/styled";
 import {presaleProducer} from "../payment/data";
+import MapBox from "../elements/MapBox";
+import { FaCertificate, FaLeaf } from "react-icons/fa6";
+import styled from "styled-components";
 
-// ##TO_DO Check if amount is available from credit supply
-const isValidAmount = (amount) => {
-  return !isNaN(amount);
-}
+
 
 const Presale = ({ APP }) => {
   const [amount, setAmount] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
-  const [error, setError] = useState("");
-
   const { setRoutePath } = APP?.ACTIONS || {};
 
   useEffect(() => {
@@ -38,8 +36,7 @@ const Presale = ({ APP }) => {
   const transitions = useTransition(isPaying, {
     from: { opacity: 0 },
     enter: { opacity: 1 },
-    leave: { display: "none" },
-    config: { duration: 500 },
+
   });
 
   // Initialize checkout cart
@@ -51,33 +48,24 @@ const Presale = ({ APP }) => {
   ];
 
   const handlePayment = async () => {
-    if (!isValidAmount(amount)) {
-      setError("Please enter a valid amount.");
-      return;
-    }
-    setError("");
     setIsPaying(true);
   };
 
   return (
     <FULL_PAGE_CONTAINER
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+ 
     >
       <div id="checkout"></div>
 
+      <MapBox />
       <CARD_WRAPPER>
         <CARD_SECTION>
-        <ProductDisplay />
         </CARD_SECTION>
 
         {/* Loads payment processing component if isPaying, otherwise load ProductPage. */}
         {transitions((style, isPaying) =>
           !isPaying ? (
-            <CARD_SECTION style={style}>
-              <ProductOrder isLoading={loading} supplyManagement={{amount, setAmount}} handlePayment={handlePayment} />
-            </CARD_SECTION>
+            <ProductDisplay supplyManagement={{amount, setAmount}} handlePayment={handlePayment} />
           ) : (
             <CARD_SECTION style={style}>
               <Payment setIsPaying={setIsPaying} checkoutItems={checkoutItems} />
@@ -86,7 +74,28 @@ const Presale = ({ APP }) => {
         )}
       </CARD_WRAPPER>
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <div className="features">
+
+      <div className="features-section">
+        <FaLeaf />
+        <div className="features-section-title">Eliminate Pollution</div>
+        <div className="features-section-paragraph">
+          Enhance water quality and reduce pollution. Each purchase includes a
+          real-time tracking certificate, ensuring verified digital impacts.
+        </div>
+      </div>
+      <div className="features-section">
+        <FaCertificate />
+        <div className="features-section-title">
+          Nutrient Pollution Certificates
+        </div>
+        <div className="features-section-paragraph">
+          Each credit offsets 1 pound of mixed nutrient pollutants in the
+          watershed, supporting vital environmental conservation and restoration
+          efforts.
+        </div>
+      </div>
+</div>
     </FULL_PAGE_CONTAINER>
   );
 };
