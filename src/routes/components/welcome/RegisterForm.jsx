@@ -101,6 +101,13 @@ const RegisterForm = ({
         };
       }
 
+      /**
+       * create account /account/create
+       * use password as pin
+       */
+
+      
+
       if (await createUser(newUser)) {
         setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
       }
