@@ -3,17 +3,11 @@ import styled from 'styled-components';
 import { GoogleMaps_API_KEY } from '../../contracts/ref';
 
 const MapContainer = styled.div`
+height: 400px;
 width: 100%;
-  height: 250px;
-  max-height: 300px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border: 2px solid black;
-  border-bottom: none;
 
+
+  border-radius: 10px;
   /* Hide the links at the bottom of the map */
   .gm-style > div:nth-child(1) > a {
     display: none !important;

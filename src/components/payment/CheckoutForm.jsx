@@ -16,6 +16,8 @@ import Spinner from "./Spinner";
 import configs from "../../../configs";
 import { unitToString } from "./OrderConfirmation";
 import {presaleProducer} from "./data";
+import { ButtonPrimary } from "../shared/button/Button";
+import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -126,31 +128,31 @@ const Form = ({ item }) => {
   };
 
   return (
+    <StyledPayment>
+
     <form
       id="payment-form"
       onSubmit={handleSubmit}
       style={{ maxWidth: "400px", margin: "0 auto", position: "relative" }}
-    >
-      <p>Payments are handled by Stripe</p>
+      >
+      <p className="stripe-title">Payments are handled by Stripe</p>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
         id="payment-element-container"
-      >
+        >
         <PaymentElement id="payment-element" />
       </motion.div>
 
-      <motion.button
+      <ButtonPrimary
         variants={buttonVariants}
-        whileHover="hover"
-        whileTap="tap"
+        
         animate={isProcessing ? "disabled" : ""}
         disabled={!canSubmit}
         id="submit"
-        style={{ marginTop: "20px", width: "100%" }}
-      >
+        >
         {isProcessing ? (
           <Spinner />
         ) : (
@@ -158,30 +160,31 @@ const Form = ({ item }) => {
             payAmount
           )}`
         )}
-      </motion.button>
+      </ButtonPrimary>
 
       {message && (
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          id="payment-message"
-          style={{ marginTop: "20px", color: "red", textAlign: "center" }}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        id="payment-message"
+        style={{ marginTop: "20px", color: "red", textAlign: "center" }}
         >
           {message}
         </motion.div>
       )}
     </form>
+</StyledPayment>
   );
 };
 
 const CheckoutForm = ({ item }) => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
-
+  
   const serverUrl = configs.server_url;
   const stripe_config = { stripePromise, clientSecret };
-
+  
   const { payAmount } = item || {};
 
   useEffect(() => {
@@ -239,3 +242,14 @@ const CheckoutForm = ({ item }) => {
 };
 
 export default CheckoutForm;
+
+
+const StyledPayment = styled.div`
+  
+.stripe-title {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: ${({theme}) => theme.colors.ui800};
+}
+  
+`
