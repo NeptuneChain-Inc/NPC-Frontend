@@ -11,6 +11,7 @@ import {
 } from "../elements/index";
 import { colors } from "../../data/styles";
 import { NUMBERS } from "../../scripts/helpers";
+import {NPCCreditsAPI} from "../../scripts/back_door";
 
 const fadeIn = {
   hidden: { opacity: 0 },
@@ -257,7 +258,7 @@ function ExplorerPage() {
       console.log(event.log)
     };
 
-    contract.on("*", (e) => { 
+    NPCCreditsAPI.on("*", (e) => { 
       handleEvent(e)
       e.removeListener();
   });
@@ -275,14 +276,15 @@ function ExplorerPage() {
         }
       }
 
-      if (contract && (updateCache || !data)) {
+      if ((updateCache || !data)) {
         try {
-          const totalSupply = await contract.getTotalSupply();
-          const totalSold = await contract.getTotalSold();
-          const totalBurnedSupply = await contract.getTotalDonatedSupply();
-          const totalCertificates = await contract.getTotalCertificates();
-          const _producers = await contract.getProducers();
-          const creditTypes = await contract.getCreditTypes();
+          //const totalSupply = await NPCCreditsAPI.getSupply(); //***FIX */
+          const totalSupply = await NPCCreditsAPI.getTotalSold();
+          const totalSold = await NPCCreditsAPI.getTotalSold();
+          const totalBurnedSupply = await NPCCreditsAPI.getTotalSold(); //***FIX */
+          const totalCertificates = await NPCCreditsAPI.getTotalCertificates();
+          const _producers = await NPCCreditsAPI.getAllProducers();
+          const creditTypes = await NPCCreditsAPI.getCreditTypes(1);
 
           console.log("DATA STATES*****************************", {
             totalSupply: NUMBERS.toNumber(totalSupply),
@@ -375,17 +377,17 @@ function ExplorerPage() {
           console.log('creditTypes', creditTypes)
           //Re-request if not available
           if (!creditTypes) {
-            creditTypes = await contract.getCreditTypes();
+            creditTypes = await NPCCreditsAPI.getCreditTypes();
             console.log("Re-request of creditTypes");
           }
           const _producersData = await Promise.all(
             producers.map(async (producer) => {
-              const verifiers = await contract.getProducerVerifiers(producer);
+              const verifiers = await NPCCreditsAPI.getProducerVerifiers(producer);
               const verifiersData = await Promise.all(
                 verifiers.map(async (verifier) => {
                   const Supplies = await Promise.all(
                     creditTypes.map(async (creditType) => {
-                      const supply = await contract.getSupply(
+                      const supply = await NPCCreditsAPI.getSupply(
                         producer,
                         verifier,
                         creditType
@@ -447,23 +449,24 @@ function ExplorerPage() {
         }
       }
 
+      //FIX
       if (contract && (updateCache || !events)) {
         try {
           const allTransactions = await Promise.all([
-            contract.queryFilter(contract.filters.CreditsIssued(), 0, "latest"),
-            contract.queryFilter(contract.filters.CreditsBought(), 0, "latest"),
-            contract.queryFilter(
-              contract.filters.CreditsTransferred(),
+            NPCCreditsAPI.queryFilter(NPCCreditsAPI.filters.CreditsIssued(), 0, "latest"),
+            NPCCreditsAPI.queryFilter(NPCCreditsAPI.filters.CreditsBought(), 0, "latest"),
+            NPCCreditsAPI.queryFilter(
+              NPCCreditsAPI.filters.CreditsTransferred(),
               0,
               "latest"
             ),
-            contract.queryFilter(
-              contract.filters.CreditsDonated(),
+            NPCCreditsAPI.queryFilter(
+              NPCCreditsAPI.filters.CreditsDonated(),
               0,
               "latest"
             ),
-            contract.queryFilter(
-              contract.filters.CertificateCreated(),
+            NPCCreditsAPI.queryFilter(
+              NPCCreditsAPI.filters.CertificateCreated(),
               0,
               "latest"
             ),

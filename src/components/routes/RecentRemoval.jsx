@@ -1,8 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import styled, { keyframes } from "styled-components";
 import { Loading, Error } from "../elements";
-import { contract } from "../../contracts/contractRef";
 import { NUMBERS, formatCertificate } from "../../scripts/helpers";
+import {NPCCreditsAPI} from "../../scripts/back_door";
 
 const fadeIn = keyframes`
   0% {
@@ -79,7 +79,7 @@ const RecentRemoval = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const totalCertificates = await contract.getTotalCertificates();
+        const totalCertificates = await NPCCreditsAPI.getTotalCertificates();
         const certificatePromises = [];
 
         for (
@@ -87,7 +87,7 @@ const RecentRemoval = () => {
           i > Math.max(NUMBERS.toNumber(totalCertificates) - 10, 0);
           i--
         ) {
-          const certificatePromise = await contract.getCertificateById(i);
+          const certificatePromise = await NPCCreditsAPI.getCertificateById(i);
           certificatePromises.push(certificatePromise);
         }
 

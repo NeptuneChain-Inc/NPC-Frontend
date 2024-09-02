@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   LoadScript,
-  Marker,
-  InfoWindow,
 } from "@react-google-maps/api";
-import { GoogleMaps_API_KEY } from "../../contracts/ref";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
+import {MapsAPI} from "../../scripts/back_door";
+
 const colorScheme = {
   background: "#FFFFFF",
   accent: "#0C5B84",
@@ -126,6 +125,7 @@ function GoogleStoreLocator({ storesData }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredStores, setFilteredStores] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [apiKey, setApiKey] = useState(null);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -134,6 +134,7 @@ function GoogleStoreLocator({ storesData }) {
   };
 
   useEffect(() => {
+    getKey();
     checkViewpoint();
     window.addEventListener("resize", checkViewpoint);
     return () => {
@@ -176,6 +177,8 @@ function GoogleStoreLocator({ storesData }) {
       setFilteredStores(filtered);
     }
   }, [searchTerm]);
+
+  const getKey = async () => setApiKey(await MapsAPI.getAPI() || null);
 
   const mapOptions = {
     styles: [
@@ -246,8 +249,9 @@ function GoogleStoreLocator({ storesData }) {
           )}
         </StoreList>
       </StoreListContainer>
-      <MapContainer>
-        <LoadScript googleMapsApiKey={GoogleMaps_API_KEY}>
+      {apiKey ? (
+        <MapContainer>
+        <LoadScript googleMapsApiKey={apiKey}>
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
@@ -279,6 +283,9 @@ function GoogleStoreLocator({ storesData }) {
           </GoogleMap>
         </LoadScript>
       </MapContainer>
+      ) : (
+        <div>KEY INVALID</div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,14 @@
-import { DeviceAPI, MetricAPI } from "../scripts/back_door";
+import { DeviceAPI, MetricsAPI } from "../scripts/back_door";
 import { handleError } from "../scripts/lib";
 import { theme } from "../styles/colors";
 
 export const getMetric = async (metric, uid) => {
-  if (!MetricAPI.allMetrics.includes(metric) || !uid) {
+  if (!MetricsAPI.allMetrics.includes(metric) || !uid) {
     return;
   }
 
   try {
-    const value = await MetricAPI.getMetric(metric, uid);
+    const value = await MetricsAPI.getMetric(metric, uid);
     switch (metric) {
       case "credit_balance":
         return {

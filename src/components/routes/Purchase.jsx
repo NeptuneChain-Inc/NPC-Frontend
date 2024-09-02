@@ -7,8 +7,8 @@ import { STRIPE_PUBLISHABLE_KEY } from "../../contracts/ref";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { colors } from "../../data/styles";
-import { sContract } from "../../contracts/contractRef";
+import { colors } from "../../data/styles";;
+import {NPCCreditsAPI} from "../../scripts/back_door";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
@@ -343,19 +343,16 @@ const Purchase = () => {
   const { setRoutePath } = ACTIONS || {};
 
 
-  // Query the contract to retrieve the list of producers
   useEffect(() => {
     setRoutePath('purchase')
 
     const fetchProducers = async () => {
       try {
-        const _lastCertId = await sContract.getTotalCertificates();
-        setlastCertId(Number(_lastCertId));
-        const producers = await sContract.getProducers();
-        setProducers(producers);
+        setlastCertId(Number(await NPCCreditsAPI.getTotalCertificates() || 0));
+        setProducers(await NPCCreditsAPI.getAllProducers() || []);
       } catch (error) {
         console.error("Error fetching producers:", error);
-        setError("Error fetching data. Please try again later.");
+        setError(`Error fetching producers: ${error.message}`);
       }
     };
 
@@ -366,7 +363,7 @@ const Purchase = () => {
   useEffect(() => {
     const fetchProducerVerifierPairs = async () => {
       try {
-        const creditTypes = await sContract.getCreditTypes();
+        const creditTypes = [String(selectedProducer?.type)];
         const pairs = [];
         for (const producer of producers) {
           const verifiers = await fetchProducerVerifiers(producer);
@@ -406,8 +403,8 @@ const Purchase = () => {
 
   const fetchProducerVerifiers = async (producer) => {
     try {
-      const verifiers = await sContract.getProducerVerifiers(producer);
-
+      const verifiers = await NPCCreditsAPI.getProducerVerifiers(producer);
+      console.log("fetched: ", {verifiers});
       return verifiers;
     } catch (error) {
       console.error("Error fetching producer verifiers:", error);
@@ -418,9 +415,9 @@ const Purchase = () => {
 
   const fetchIssuedSupply = async (producer, verifier, creditType) => {
     try {
-      const supply = await sContract.getSupply(producer, verifier, creditType);
-      const _availableSupply = Number(supply?.available);
-      return _availableSupply;
+      const supply = Number(await NPCCreditsAPI.getSupply(producer, verifier, creditType)?.available);
+      console.log("fetched: ", {supply});
+      return supply;
     } catch (error) {
       console.error("Error fetching issued supply:", error);
       setError("Error fetching data. Please try again later.");
@@ -431,7 +428,7 @@ const Purchase = () => {
   //TO-DO: FOR DEV ___ TO BE REMOVED
   const onSuccess = async () => {
     try {
-      await sContract.buyCredits(
+      const bought = await NPCCreditsAPI.buyCredits(
         name,
         selectedProducer?.producer,
         selectedProducer?.verifier,
@@ -439,6 +436,7 @@ const Purchase = () => {
         quantity,
         getCreditPrice(selectedProducer?.type)
       );
+      console.log("Credits Bought: ", {bought});
       return true
     } catch (error) {
       console.error(error)

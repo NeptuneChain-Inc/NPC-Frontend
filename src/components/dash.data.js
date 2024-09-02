@@ -1,12 +1,12 @@
 // NB: retrieve list of ids from database and render all details and data for those ids in the appropriate sections.
 
-import { DeviceAPI, MetricAPI } from "../scripts/back_door";
+import { DeviceAPI, MetricsAPI } from "../scripts/back_door";
 import { logDev } from "../scripts/helpers";
 import { getMetric } from "./dash.utils";
 
 const dashDataInit = async (uid) => {
   const devices = await DeviceAPI.devices();
-  const metrics = MetricAPI.allMetrics;
+  const metrics = MetricsAPI.allMetrics;
   const metric_overviews = await Promise.all(
     metrics.map(async (metric) => await getMetric(metric, uid))
   );
