@@ -1,8 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import configs from '../../../configs';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import configs from "../../../configs";
+import {useAppContext} from "../../context/AppContext";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -14,8 +15,8 @@ const Overlay = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
-  opacity: ${props => (props.isVisible ? '1' : '0')};
+  visibility: ${(props) => (props.isVisible ? "visible" : "hidden")};
+  opacity: ${(props) => (props.isVisible ? "1" : "0")};
   transition: visibility 0.3s, opacity 0.3s;
   z-index: 10000;
 `;
@@ -51,7 +52,7 @@ const CTAButton = styled.a`
 `;
 
 const CloseButton = styled.a`
-margin: 0;
+  margin: 0;
   color: #aaa;
   font-size: 24px;
   cursor: pointer;
@@ -60,7 +61,16 @@ margin: 0;
   }
 `;
 
-const ResultPopup = ({ isVisible, title, message, txHash, onRetry, onClose }) => {
+const ResultPopup = () => {
+  const { STATES, ACTIONS } = useAppContext();
+
+  const isVisible = Boolean(STATES.result?.title);
+  const title = STATES.result?.title;
+  const message = STATES.result?.message;
+  const txHash = STATES.result?.txHash;
+  const onRetry = STATES.result?.handleRetry;
+  const onClose = () => ACTIONS.setResult(null);
+
   return (
     <Overlay
       isVisible={isVisible}
@@ -75,13 +85,20 @@ const ResultPopup = ({ isVisible, title, message, txHash, onRetry, onClose }) =>
         <Title>{title}</Title>
         <Message>{message}</Message>
         {txHash ? (
-          <CTAButton href={`${configs.blockchain.NETWORKS[configs.blockchain.MODE+"net"].explorer}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
+          <CTAButton
+            href={`${
+              configs.blockchain.NETWORKS[configs.blockchain.MODE + "net"]
+                .explorer
+            }/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Verify
           </CTAButton>
         ) : onRetry ? (
           <CTAButton onClick={onRetry}>Retry</CTAButton>
         ) : (
-            <CTAButton onClick={onClose}>Close</CTAButton>
+          <CTAButton onClick={onClose}>Close</CTAButton>
         )}
       </PopupContainer>
     </Overlay>

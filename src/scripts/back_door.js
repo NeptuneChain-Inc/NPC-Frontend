@@ -1,420 +1,680 @@
 import axios from "axios";
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
 import configs from "../../configs";
-import { ethers } from "ethers";
-import { Network, Alchemy } from "alchemy-sdk";
-import { alchemyAPI, mumbaiRPC, privateKey } from "../contracts/ref";
 
-const getFirebaseConfig = async () =>
-  (await axios.post(`${configs.server_url}/firebase/config`, {}))?.data;
+/*************************ACOUNT_ENDPOINTS************************************* */
+const createAccount = async (userdata) =>
+  (await axios.post(`${configs.server_url}/account/create`, userdata))?.data;
 
-const initAuth = async () =>
-  await getFirebaseConfig().then((result) => {
-    const { firebaseConfig } = result || {};
-    return getAuth(initializeApp(firebaseConfig));
-  });
+const registerAccount = async (accountID, role, txAddress) =>
+  (await axios.post(`${configs.server_url}/account/register`, { accountID, role, txAddress }))?.data;
 
-const firebaseAPI = {
-  get: {
-    firebaseConfig: getFirebaseConfig,
-    auth: initAuth,
+const verifyAccountRole = async (accountID, role) =>
+  (await axios.post(`${configs.server_url}/account/verifyRole`, { accountID, role }))?.data;
+
+const verifyAccountIsRegistered = async (accountID) =>
+  (await axios.post(`${configs.server_url}/account/isRegistered`, {accountID}))
+    ?.data;
+const verifyAccountIsNotBlacklisted = async (accountID) =>
+  (await axios.post(`${configs.server_url}/account/isNotBlacklisted`, {accountID}))
+    ?.data;
+
+const getAccountData = async (accountID) =>
+  (await axios.post(`${configs.server_url}/account/data`, {accountID}))?.data;
+
+const AccountAPI = {
+  create: createAccount,
+  register: registerAccount,
+  verify: {
+    role: verifyAccountRole,
+    isRegistered: verifyAccountIsRegistered,
+    isNotBlacklisted: verifyAccountIsNotBlacklisted,
   },
+  data: getAccountData
 };
 
-const createEmailUser = async (email, username, type, password) =>
+/*************************USER_DATABASE_ENDPOINTS************************************* */
+
+const getUserFromUID = async (uid) =>
+  (await axios.post(`${configs.server_url}/db/user/get/from/uid`, { userUID: uid }))
+    ?.data;
+const getUserFromUsername = async (username) =>
+  (await axios.post(`${configs.server_url}/db/user/get/from/username`, { username }))
+    ?.data;
+const getUIDFromUsername = async (username) =>
   (
-    await axios.post(`${configs.server_url}/auth/email/create`, {
-      email,
+    await axios.post(`${configs.server_url}/db/user/get/uid/from/username`, {
       username,
-      type,
-      password,
     })
   )?.data;
 
-const createDBUser = async (userdata = { uid, email, username, type }) =>
-  (await axios.post(`${configs.server_url}/db/user/create/user`, userdata))
-    ?.data;
-
-const AddUserSubmission = async (assetID, userUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/asset/submission`, {
-      assetID,
-      userUID,
-    })
-  )?.data;
-
-const AddUserDispute = async (assetID, userUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/asset/dispute`, {
-      assetID,
-      userUID,
-    })
-  )?.data;
-
-const AddUserApproval = async (assetID, userUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/asset/approval`, {
-      assetID,
-      userUID,
-    })
-  )?.data;
-
-const handleResetPassword = async (email) =>
-  (
-    await axios.post(`${configs.server_url}/auth/email/password_reset`, {
-      email,
-    })
-  )?.data;
-const getUser = async (uid) =>
-  (await axios.post(`${configs.server_url}/db/user/get/user`, { uid }))?.data;
-const getUsername = async (username) =>
-  (await axios.post(`${configs.server_url}/db/user/get/username`, { username }))
-    ?.data;
-const getDashbord = async (uid) =>
-  (response = await axios.post(`${configs.server_url}/db/user/get/dashboard`, {
-    uid,
-  }))?.data;
+/** USER_MEDIA */
 const getUserMedia = async (userUID) =>
   (
-    await axios.post(`${configs.server_url}/db/user/get/media/assets`, {
+    await axios.post(`${configs.server_url}/db/user/get/media`, {
       userUID,
     })
   )?.data;
-const getUserSubmissions = async (userUID) =>
+const getUserStreams = async (userUID) =>
   (
-    await axios.post(
-      `${configs.server_url}/db/user/get/media/assets/submissions`,
-      { userUID }
-    )
-  )?.data;
-const getUserDisputes = async (userUID) =>
-  (
-    await axios.post(
-      `${configs.server_url}/db/user/get/media/assets/disputes`,
-      { userUID }
-    )
-  )?.data;
-const getUserApprovals = async (userUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/user/get/media/approvals`, {
+    await axios.post(`${configs.server_url}/db/user/get/streams`, {
       userUID,
     })
   )?.data;
-const getUserStreams = async (uid) =>
+
+/** USER_ASSETS */
+const getUserAssets = async (userUID) =>
   (
-    await axios.post(`${configs.server_url}/db/user/get/media/streams`, {
+    await axios.post(`${configs.server_url}/db/user/get/assets`, {
+      userUID,
+    })
+  )?.data;
+
+const getUserAssetDisputes = async (userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/user/get/asset/disputes`, {
+      userUID,
+    })
+  )?.data;
+const getUserAssetApprovals = async (userUID) =>
+  (
+    await axios.post(`${configs.server_url}/db/user/get/asset/approvals`, {
       userUID,
     })
   )?.data;
 
 const UserAPI = {
-  get: {
-    user: getUser,
-    username: getUsername,
-    dashboard: getDashbord,
-    media: getUserMedia,
-    asset: {
-      submissions: getUserSubmissions,
-      disputes: getUserDisputes,
-      approvals: getUserApprovals,
-    },
-    streams: getUserStreams,
+  account: {
+    getUserFromUID,
+    getUserFromUsername,
+    getUIDFromUsername,
   },
-  create: {
-    emailUser: createEmailUser,
-    dbUser: createDBUser,
-    asset: {
-      submission: AddUserSubmission,
-      dispute: AddUserDispute,
-      approval: AddUserApproval,
-    },
+  media: {
+    getUserMedia,
+    getUserStreams,
   },
-  request: {
-    passwordReset: handleResetPassword,
+  assets: {
+    getUserAssets,
+    getUserAssetDisputes,
+    getUserAssetApprovals,
   },
 };
 
-const getMedia = async (assetID) =>
-  (await axios.post(`${configs.server_url}/db/media/get/asset`, { assetID }))
-    ?.data;
 
-const getStream = async (assetID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/get/stream`, {
-      assetID,
-    })
-  )?.data;
+/*************************MEDIA_ENDPOINTS************************************* */
 
-const createMedia = async (newAssetPaylaod, userUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/asset`, {
-      newAssetPaylaod,
-      userUID,
-    })
-  )?.data;
-const createMediaMetadata = async (assetID, metadata) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/asset/metadata`, {
-      assetID,
-      metadata,
-    })
-  )?.data;
-
-const createStream = async (streamData, creatorUID) =>
-  (
-    await axios.post(`${configs.server_url}/db/media/create/stream`, {
-      streamData,
-      creatorUID,
-    })
-  )?.data;
-
-const MediaAPI = {
-  get: {
-    media: getMedia,
-    stream: getStream,
-  },
-  create: {
-    media: createMedia,
-    mediaMetadata: createMediaMetadata,
-    stream: createStream,
-  },
-};
-
-const getSigner = () => {
+const getMedia = async (assetID) => {
   try {
-    const provider = new ethers.JsonRpcProvider(mumbaiRPC);
-    const wallet = new ethers.Wallet(privateKey, provider);
-    const signer = wallet.connect(provider);
-    return { provider, signer };
+    const response = await axios.post(`${configs.server_url}/db/media/get`, {assetID});
+    return response?.data;
   } catch (error) {
+    console.error("Error fetching media:", error);
     throw error;
   }
 };
 
-/** * @returns signer or error object */
-// const getSigner = async () => {
-//   const { signer, error } = (
-//     await axios.post(`${configs.server_url}/ethereum/get/signer`, {})
-//   )?.data;
-//   if (signer) {
-//     const { provider, wallet } = signer;
-//     const _provider = new ethers.providers.JsonRpcProvider(
-//       process.env[`${network.toUpperCase()}_RPC`]
-//     );
-//     const _wallet = new ethers.Wallet(process.env.APP_WALLET_KEY, provider);
-//     return wallet.connect(provider);
-//   }
-// };
-
-const EthereumAPI = {
-  get: {
-    signer: getSigner,
-  },
+const getMediaStream = async (streamID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/media/get/stream`, {streamID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching media stream:", error);
+    throw error;
+  }
 };
 
-const createLivepeerAsset = async (newAssetPayload, userUID) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/asset/create`, {
-      newAssetPayload,
-      userUID,
-    })
-  )?.data;
+const createMedia = async (newAssetPayload, userUID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/media/create`, {newAssetPayload, userUID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error creating media:", error);
+    throw error;
+  }
+};
 
-const getLivepeerAsset = async (assetID) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/asset/get`, {
-      assetID,
-    })
-  )?.data;
+const createMediaStream = async (userUID, streamData) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/media/create/stream`, {userUID, streamData});
+    return response?.data;
+  } catch (error) {
+    console.error("Error creating media stream:", error);
+    throw error;
+  }
+};
 
-const updateLivepeerAsset = async (assetID, patch) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/asset/update`, {
-      assetID,
-      patch,
-    })
-  )?.data;
+const MediaAPI = {
+  getMedia,
+  getStream: getMediaStream,
+  createMedia,
+  createStream: createMediaStream,
+};
 
-const deleteLivepeerAsset = async (assetID) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/asset/delete`, {
-      assetID,
-    })
-  )?.data;
+/*************************ASSET_ENDPOINTS************************************* */
+const addAssetMetadata = async (assetID, metadata) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/asset/create/metadata`, {assetID, metadata});
+    return response?.data;
+  } catch (error) {
+    console.error("Error adding asset metadata:", error);
+    throw error;
+  }
+};
 
-//playbackOps
-const getPlaybackInfo = async (playbackID) =>
-  (
-    await axios.post(`${configs.server_url}/livepeer/playback/info`, {
-      playbackID,
-    })
-  )?.data;
+const submitAsset = async (userUID, assetID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/asset/create/submit`, {userUID, assetID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error submitting asset:", error);
+    throw error;
+  }
+};
+
+const disputeAsset = async (userUID, assetID, reason) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/asset/create/dispute`, {userUID, assetID, reason});
+    return response?.data;
+  } catch (error) {
+    console.error("Error disputing asset:", error);
+    throw error;
+  }
+};
+
+const closeAssetDispute = async (userUID, disputeID, solution, status) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/asset/create/dispute/close`, {userUID, disputeID, solution, status});
+    return response?.data;
+  } catch (error) {
+    console.error("Error closing asset dispute:", error);
+    throw error;
+  }
+};
+
+const approveAsset = async (userUID, assetID, params) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/db/asset/create/approve`, {userUID, assetID, params});
+    return response?.data;
+  } catch (error) {
+    console.error("Error approving asset:", error);
+    throw error;
+  }
+};
+
+const AssetAPI = {
+  addMetadata: addAssetMetadata,
+  submit: submitAsset,
+  dispute: disputeAsset,
+  closeDispute: closeAssetDispute,
+  approve: approveAsset,
+};
+
+/*************************LIVEPEER_ENDPOINTS************************************* */
+
+const getLivepeerKey = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/key`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Livepeer key:", error);
+    throw error;
+  }
+};
+
+const createAsset = async (newAssetPaylaod, userUID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/asset/create`, {newAssetPaylaod, userUID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error creating asset:", error);
+    throw error;
+  }
+};
+
+const getLivepeerOriginDetails = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/origin`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Livepeer origin details:", error);
+    throw error;
+  }
+};
+
+const getLivepeerAsset = async (assetID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/asset/get`, {assetID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Livepeer asset:", error);
+    throw error;
+  }
+};
+
+const updateLivepeerAsset = async (assetID, updateData) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/asset/update`, {assetID, updateData});
+    return response?.data;
+  } catch (error) {
+    console.error("Error updating Livepeer asset:", error);
+    throw error;
+  }
+};
+
+const deleteLivepeerAsset = async (assetID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/asset/delete`, {assetID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error deleting Livepeer asset:", error);
+    throw error;
+  }
+};
+
+const getLivepeerAssetPlaybackInfo = async (playbackID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/livepeer/asset/info/playback`, {playbackID});
+    return response?.data;
+  } catch (error) {
+    console.error(`Error fetching Livepeer playback info for ${playbackID}:`, error);
+    throw error;
+  }
+};
 
 const LivepeerAPI = {
-  assetOps: {
-    create: createLivepeerAsset,
-    get: getLivepeerAsset,
-    update: updateLivepeerAsset,
-    delete: deleteLivepeerAsset,
-  },
-  playbackOps: {
-    get: {
-      playbackInfo: getPlaybackInfo,
-    },
-  },
+  getKey: getLivepeerKey,
+  createAsset,
+  getOriginDetails: getLivepeerOriginDetails,
+  getAsset: getLivepeerAsset,
+  updateAsset: updateLivepeerAsset,
+  deleteAsset: deleteLivepeerAsset,
+  getPlaybackInfo: getLivepeerAssetPlaybackInfo,
 };
 
-/** * @returns api or error object */
-const getMapsAPI = async () =>
-  (await axios.post(`${configs.server_url}/maps/get/api`, {}))?.data;
+/*************************MAPS_ENDPOINTS************************************* */
+
+const getMapsKey = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/maps/get/key`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Maps key:", error);
+    throw error;
+  }
+};
+
+const getMapsAPI = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/maps/get/api`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Maps API:", error);
+    throw error;
+  }
+};
 
 const MapsAPI = {
-  get: {
-    api: getMapsAPI,
-  },
+  getKey: getMapsKey,
+  getAPI: getMapsAPI,
 };
 
-// Alchemy Config object
-const settings = {
-  apiKey: alchemyAPI,
-  network: Network.MATIC_AMOY,
-};
+/*************************MORALIS_ENDPOINTS************************************* */
 
-const alchemy = new Alchemy(settings);
-
-/** * @returns wallet_nfts or error object */
 const getWalletNFTs = async (address) => {
-  console.log("fetching NFTs for address:", address);
-  console.log("...");
-  // Print total NFT count returned in the response:
-  const nftsForOwner = await alchemy.nft.getNftsForOwner(address);
-  console.log("number of NFTs found:", nftsForOwner.totalCount);
-  console.log("...");
-
-  const wallet_nfts = [];
-
-  // Print contract address and tokenId for each NFT:
-  for (const nft of nftsForOwner.ownedNfts) {
-    console.log("===");
-    console.log("contract address:", nft.contract.address);
-    console.log("token ID:", nft.tokenId);
-    wallet_nfts.push(nft);
+  try {
+    const response = await axios.post(`${configs.server_url}/alchemy/get/wallet_nfts`, {address});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching wallet NFTs:", error);
+    throw error;
   }
-  console.log("===");
-  console.log(wallet_nfts);
-  return wallet_nfts;
 };
-// (
-//   await axios.post(`${configs.server_url}/moralis/get/wallet_nfts`, {
-//     address,
-//   })
-// )?.data;
-/** * @returns nft_metadata or error object */
-const getNFT_metadata = async (address, tokenId) => {
-  // Fetch metadata for a particular NFT:
-  const response = await alchemy.nft.getNftMetadata(address, tokenId);
 
-  // Print some commonly used fields:
-  const metadata = {
-    name: response.contract.name,
-    symbol: response.contract.symbol,
-    type: response.tokenType,
-    tokenUri: response.tokenUri,
-  };
-
-  return metadata;
+const getNFTMetadata = async (address, tokenId) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/alchemy/get/nft_metadata`, {address, tokenId});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching NFT metadata:", error);
+    throw error;
+  }
 };
-// (
-//   await axios.post(`${configs.server_url}/moralis/get/nft_metadata`, {
-//     address,
-//     tokenId,
-//   })
-// )?.data;
 
 const NFT_API = {
   get: {
     wallet_nfts: getWalletNFTs,
-    nft_metadata: getNFT_metadata,
+    nft_metadata: getNFTMetadata,
   },
 };
 
-/** * @returns publishableKey or error object */
-const getPublishableKey = async () =>
-  (await axios.post(`${configs.server_url}/stripe/config`, {}))?.data;
-/** * @returns payment_intent or error object */
-const createPaymentIntent = async (body = { amount }) =>
-  (await axios.post(`${configs.server_url}/stripe/create/payment_intent`, body))
+/*************************NEPTUNE_CHAIN_CREDITS_ENDPOINTS************************************* */
+
+const issueCredits = async (senderID, nftTokenId, producer, verifier, creditType, amount) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/npc_credits/issue`, {senderID, nftTokenId, producer, verifier, creditType, amount});
+    return response?.data;
+  } catch (error) {
+    console.error("Error issuing credits:", error);
+    throw error;
+  }
+};
+
+const buyCredits = async (accountID, producer, verifier, creditType, amount, price) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/npc_credits/buy`, {accountID, producer, verifier, creditType, amount, price});
+    return response?.data;
+  } catch (error) {
+    console.error("Error buying credits:", error);
+    throw error;
+  }
+};
+
+const transferCredits = async (senderID, recipientID, producer, verifier, creditType, amount, price) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/npc_credits/transfer`, {senderID, recipientID, producer, verifier, creditType, amount, price});
+    return response?.data;
+  } catch (error) {
+    console.error("Error transferring credits:", error);
+    throw error;
+  }
+};
+
+const donateCredits = async (senderID, producer, verifier, creditType, amount) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/npc_credits/donate`, {senderID, producer, verifier, creditType, amount});
+    return response?.data;
+  } catch (error) {
+    console.error("Error donating credits:", error);
+    throw error;
+  }
+};
+
+const getNFTOwner = async (tokenId) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/nft/owner/${tokenId}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching NFT owner:", error);
+    throw error;
+  }
+};
+
+const getCreditTypes = async (tokenId) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/nft/credit-types/${tokenId}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching credit types:", error);
+    throw error;
+  }
+};
+
+const getCreditSupplyLimit = async (tokenId, creditType) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/nft/credit-supply-limit/${tokenId}/${creditType}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching credit supply limit:", error);
+    throw error;
+  }
+};
+
+const getTotalCertificates = async () => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/total-certificates`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching total certificates:", error);
+    throw error;
+  }
+};
+
+const getTotalSold = async () => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/total-sold`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching total sold:", error);
+    throw error;
+  }
+};
+
+const isProducerRegistered = async (producer) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/producer-registered/${producer}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error checking producer registration:", error);
+    throw error;
+  }
+};
+
+const isVerifierRegistered = async (producer, verifier) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/verifier-registered/${producer}/${verifier}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error checking verifier registration:", error);
+    throw error;
+  }
+};
+
+const getProducerVerifiers = async (producer) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/verifiers/${producer}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching producer verifiers:", error);
+    throw error;
+  }
+};
+
+const getSupply = async (producer, verifier, creditType) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/supply/${producer}/${verifier}/${creditType}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching supply:", error);
+    throw error;
+  }
+};
+
+const getCertificateById = async (certificateId) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/certificates/${certificateId}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching certificate:", error);
+    throw error;
+  }
+};
+
+const getAccountCertificates = async (accountID) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/account-certificates/${accountID}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching account certificates:", error);
+    throw error;
+  }
+};
+
+const getAccountCreditBalance = async (accountID, producer, verifier, creditType ) => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/account-balance/${accountID}/${producer}/${verifier}/${creditType}`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching account credit balance:", error);
+    throw error;
+  }
+};
+
+const getAllProducers = async () => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/all-producers`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching all producers:", error);
+    throw error;
+  }
+};
+
+const getRecoveryDuration = async () => {
+  try {
+    const response = await axios.get(`${configs.server_url}/npc_credits/recovery-duration`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching recovery duration:", error);
+    throw error;
+  }
+};
+
+const getNPCCreditEvents = async () =>
+  (await axios.post(`${configs.server_url}/npc_credits/events`))
     ?.data;
-/** * @returns price or error object */
-const getStripePrice = async (priceID) =>
-  (await axios.post(`${configs.server_url}/stripe/get/price`, { priceID }))
-    ?.data;
+
+const NPCCreditsAPI = {
+  issueCredits,
+  buyCredits,
+  transferCredits,
+  donateCredits,
+  getNFTOwner,
+  getCreditTypes,
+  getCreditSupplyLimit,
+  getTotalCertificates,
+  getTotalSold,
+  isProducerRegistered,
+  isVerifierRegistered,
+  getProducerVerifiers,
+  getSupply,
+  getCertificateById,
+  getAccountCertificates,
+  getAccountCreditBalance,
+  getAllProducers,
+  getRecoveryDuration,
+  getNPCCreditEvents
+};
+
+/*************************STRIPE_ENDPOINTS************************************* */
+
+const getStripeConfig = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/stripe/config`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Stripe config:", error);
+    throw error;
+  }
+};
+
+const createPaymentIntent = async (amount, currency, optional_params) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/stripe/create/payment_intent`, {amount, currency, optional_params});
+    return response?.data;
+  } catch (error) {
+    console.error("Error creating payment intent:", error);
+    throw error;
+  }
+};
+
+const getStripePrice = async (priceID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/stripe/get/price`, {priceID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching Stripe price:", error);
+    throw error;
+  }
+};
 
 const StripeAPI = {
-  get: {
-    publishableKey: getPublishableKey,
-    price: getStripePrice,
-  },
-  create: {
-    payment_intent: createPaymentIntent,
-  },
+  getConfig: getStripeConfig,
+  createPaymentIntent,
+  getPrice: getStripePrice,
 };
 
-/**
- *
- * @param {*} data object with device data including id { id, name, status, icon }
- * @returns run result
- */
-const addDevice = async (devicePayload) =>
-  (await axios.post(`${configs.server_url}/device`, { devicePayload }))?.data;
+/*************************DEVICE_MANAGEMENT_ENDPOINTS************************************* */
 
-const editDevice = async (deviceID, updateData) =>
-  deviceID > 0
-    ? (
-        await axios.post(`${configs.server_url}/device/edit`, {
-          deviceID,
-          updateData,
-        })
-      )?.data
-    : null;
+const getDevices = async () => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/all`);
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching devices:", error);
+    throw error;
+  }
+};
 
-const removeDevice = async (deviceID) =>
-  deviceID > 0
-    ? (await axios.post(`${configs.server_url}/device/remove`, { deviceID }))
-        ?.data
-    : null;
+const addDevice = async (devicePayload) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/add`, {devicePayload});
+    return response?.data;
+  } catch (error) {
+    console.error("Error adding device:", error);
+    throw error;
+  }
+};
 
-//Get all devices
-const getDevices = async () =>
-  (await axios.post(`${configs.server_url}/devices`, {}))?.data?.devices;
+const editDevice = async (deviceID, updateData) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/edit`, {deviceID, updateData});
+    return response?.data;
+  } catch (error) {
+    console.error("Error editing device:", error);
+    throw error;
+  }
+};
 
-const getDeviceData = async (deviceID) =>
-  deviceID > 0
-    ? (await axios.post(`${configs.server_url}/device/details`, { deviceID }))
-        ?.data
-    : null;
+const removeDevice = async (deviceID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/remove`, {deviceID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error removing device:", error);
+    throw error;
+  }
+};
 
-const emulateDevice = async (deviceID, interval) =>
-  deviceID > 0
-    ? (
-        await axios.post(`${configs.server_url}/device/emulate`, {
-          deviceID,
-          interval,
-        })
-      )?.data
-    : null;
+const getDeviceDetails = async (deviceID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/details`, {deviceID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching device details:", error);
+    throw error;
+  }
+};
+
+const emulateDevice = async (deviceID, interval) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/emulate`, {deviceID, interval});
+    return response?.data;
+  } catch (error) {
+    console.error("Error emulating device:", error);
+    throw error;
+  }
+};
+
+const getDeviceData = async (deviceID) => {
+  try {
+    const response = await axios.post(`${configs.server_url}/device/data`, {deviceID});
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching device data:", error);
+    throw error;
+  }
+};
 
 const DeviceAPI = {
-  devices: getDevices,
-  add: addDevice,
-  edit: editDevice,
-  remove: removeDevice,
-  emulate: emulateDevice,
-  data: getDeviceData,
+  getDevices,
+  addDevice,
+  editDevice,
+  removeDevice,
+  getDeviceDetails,
+  emulateDevice,
+  getDeviceData,
 };
 
-//MetricAPI
+//MetricsAPI
 
 const allMetrics = ["credit_balance", "credit_price", "equity", "tx_pending"];
 
@@ -424,20 +684,21 @@ const getMetric = async (metric, uid) => "10";
 //     ?.data || 10
 // );
 
-const MetricAPI = {
+const MetricsAPI = {
   allMetrics,
   getMetric,
 };
 
 export {
-  firebaseAPI,
+  AccountAPI,
   UserAPI,
   MediaAPI,
-  EthereumAPI,
+  AssetAPI,
   LivepeerAPI,
   MapsAPI,
+  NPCCreditsAPI,
   NFT_API,
   StripeAPI,
   DeviceAPI,
-  MetricAPI,
+  MetricsAPI,
 };

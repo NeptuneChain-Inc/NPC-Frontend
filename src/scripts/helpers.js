@@ -1,6 +1,3 @@
-
-import { hostDomain } from "../contracts/ref";
-
 export const OBJECTS = {
   sanitizeObject: function(obj, depth = 0, maxDepth = 32, cache = new WeakMap()) {
     if (depth >= maxDepth) return null;
@@ -160,7 +157,7 @@ export const timestampToLocale = (timestamp) => {
 };
 
 export const handleViewCertificate = (id) => {
-    const URL = `${hostDomain}/certificate?id=${id.toNumber()}`;
+    const URL = `${window.location.origin}/certificate?id=${id.toNumber()}`;
     window.open(URL, "_blank");
   };
 
@@ -176,7 +173,7 @@ export function capitalizeFirstLetter(str) {
 
 export const proxyLivepeerOriginEndpoint = (originalEndpoint) => {
   const baseUrl = 'https://origin.livepeer.com';
-  const proxyBasePath = '/livepeer_origin';
+  const proxyBasePath = '/livepeer/origin';
 
   if (!originalEndpoint.startsWith(baseUrl)) {
     throw new Error('Original endpoint does not start with the base URL.');

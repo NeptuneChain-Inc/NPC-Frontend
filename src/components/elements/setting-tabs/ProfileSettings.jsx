@@ -101,11 +101,13 @@ const SaveButton = styled(motion.div)`
   }
 `;
 
-const ProfileSettingsTab = ({APP}) => {
+const ProfileSettingsTab = () => {
+  const { STATES } = useAppContext();
+
   const [imagePreview, setImagePreview] = useState(NeptuneIcon);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
 
-  const { user } = APP ? APP.STATES : {};
+  const { user } = STATES || {};
 
   const togglePasswordFields = () => {
     setShowPasswordFields(!showPasswordFields);

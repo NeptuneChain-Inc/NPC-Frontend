@@ -58,13 +58,14 @@ const ToggleButton = styled(motion.div)`
   }
 `;
 
-const PrivacySettingsTab = ({ APP }) => {
+const PrivacySettingsTab = () => {
+  const { STATES } = useAppContext();
   const [profileVisibility, setProfileVisibility] = useState("Everyone");
   const [activityStatus, setActivityStatus] = useState(true);
   const [transactionPrivacy, setTransactionPrivacy] = useState(true);
   const [dataUploadPrivacy, setDataUploadPrivacy] = useState(true);
 
-  const { user } = APP ? APP.STATES : {};
+  const { user } = STATES || {};
   const accountType = user?.type;
   console.log({ accountType })
 

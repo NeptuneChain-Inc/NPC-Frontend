@@ -15,6 +15,7 @@ import {
 } from "../components/shared/button/Button";
 import { BackgroundImage } from "framer/render/types/BackgroundImage.js";
 import Footer from "../components/shared/Footer/Footer";
+import {useAppContext} from "../context/AppContext";
 
 export const logoImage = new URL("../assets/logo.png", import.meta.url).href;
 ("./assets/");
@@ -150,12 +151,13 @@ export const logoVariants = {
   visible: { y: 0, opacity: 1, transition: { duration: 1 } },
 };
 
-const Welcome = ({ APP }) => {
+const Welcome = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const navigate = useNavigate();
   const [cardState, setCardState] = useState("");
   const [googleData, setGoogleData] = useState({});
-  const { user } = APP?.STATES || {};
-  const { updateUser } = APP?.ACTIONS || {};
+  const { user } = STATES || {};
+  const { updateUser } = ACTIONS || {};
 
   useEffect(() => {
     if (user) {
@@ -180,7 +182,6 @@ const Welcome = ({ APP }) => {
           <div className="form-elements-wrap">
             {!user && (
               <GoogleSignIn
-                APP={APP}
                 setGoogleData={setGoogleData}
                 setCardState={setCardState}
                 enterDash={enterDash}
@@ -199,7 +200,6 @@ const Welcome = ({ APP }) => {
                     onSuccess={enterDash}
                     updateUser={updateUser}
                     onSwitchToRegister={() => setCardState("register")}
-                    APP={APP}
                   />
                 )}
               </AnimatePresence>

@@ -21,12 +21,15 @@ import styled from "styled-components";
 
 
 
-const Presale = ({ APP }) => {
+const Presale = () => {
+  const { ACTIONS } = useAppContext();
   const [amount, setAmount] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
-  const { setRoutePath } = APP?.ACTIONS || {};
+  const [error, setError] = useState("");
+
+  const { setRoutePath } = ACTIONS || {};
 
   useEffect(() => {
     setRoutePath("presale");

@@ -19,6 +19,7 @@ import {presaleProducer} from "./data";
 import { ButtonPrimary } from "../shared/button/Button";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
+import {NPCCreditsAPI} from "../../scripts/back_door";
 
 
 
@@ -46,23 +47,14 @@ const Form = ({ item }) => {
     try {
       const { producer, verifier, type } = presaleProducer;
   
-      // API CALL TO BUY CREDITS
-      const response = await fetch(`${configs.server_url}/npc_credits/credits/buy`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accountID: "test_investor",
-          producer,
-          verifier,
-          creditType: type,
-          amount,
-          price: payAmount,
-        }),
+      const data = await NPCCreditsAPI.buyCredits({
+        accountID: "test_investor",
+        producer,
+        verifier,
+        creditType: type,
+        amount,
+        price: payAmount,
       });
-  
-      const data = await response.json();
   
       console.log("Data", data);
   

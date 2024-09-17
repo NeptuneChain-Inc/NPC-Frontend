@@ -26,7 +26,8 @@ const cardVariants = {
 
 export const fetchDeviceData = async (deviceID) => {
   try {
-    const { device } = await DeviceAPI.data(deviceID);
+    const { device } = await DeviceAPI.getDeviceDetails(deviceID);
+    console.log("DEVICE DETTTAAAAAAAAAls", device)
     return device;
   } catch (error) {
     return error;
@@ -68,14 +69,16 @@ const StatusCard = ({ deviceID, setRefFocus }) => {
         <div className="loading-spinner">
           Loading.. <Spinner />
         </div>
-      ) : (
+      ) : data ? (
         <>
           <h5>{data.name}</h5>
           <div className="number-box">#{deviceID}</div>
 
           <ButtonSecondary onClick={handleClick}>View details</ButtonSecondary>
         </>
-      )}
+      ) : (
+      <div className="error">Couldn't fetch data for device #{deviceID}</div>
+      )} 
     </Container>
   );
 };

@@ -7,6 +7,7 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getUser } from "../../../apis/database";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../../../context/AppContext";
 
 const Icon = styled(FontAwesomeIcon)`
   display: inline-block;
@@ -35,12 +36,16 @@ const GoogleButton = styled.button`
 const provider = new GoogleAuthProvider();
 
 // Configure FirebaseUI sign-in options
-function GoogleSignIn({ APP, setCardState, setGoogleData, enterDash }) {
+function GoogleSignIn({ setCardState, setGoogleData, enterDash }) {
+  const { ACTIONS } = useAppContext();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { updateUser, handleLogout } = APP.ACTIONS || {};
+  const { updateUser } = ACTIONS || {};
+  console.log({ACTIONS});
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     signInWithPopup(auth, provider)
       .then(async (result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -50,19 +55,23 @@ function GoogleSignIn({ APP, setCardState, setGoogleData, enterDash }) {
         const user = result?.user;
         console.log("User", user);
 
-        //Check if user is in database then login or register
-        if (await updateUser?.(user?.uid)) {
-          //Logged In
-          setCardState("");
-          navigate("/dashboard/environmental");
+        if (user?.uid) {
+          //Check if user is in database then login or register
+          if (await updateUser?.(user.uid)) {
+            //Logged In
+            setCardState("");
+            navigate("/dashboard/environmental");
+          } else {
+            //Redirect to register with user email
+            setGoogleData({
+              uid: user?.uid,
+              name: user?.displayName,
+              gmail: user?.email,
+            });
+            setCardState("register");
+          }
         } else {
-          //Redirect to register with user email
-          setGoogleData({
-            uid: user?.uid,
-            name: user?.displayName,
-            gmail: user?.email,
-          });
-          setCardState("register");
+          setError("Could Not Get User :/");
         }
 
         setError(null);
@@ -76,13 +85,13 @@ function GoogleSignIn({ APP, setCardState, setGoogleData, enterDash }) {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         setError("Could Not Continue :/");
-      });
+      }).finally(() => setIsLoading(false));
   };
 
   return (
-    <GoogleButton onClick={handleSubmit}>
+    <GoogleButton onClick={handleSubmit} disabled={error || isLoading}>
       <FcGoogle />
-      <span className="buttonText">Continue With Google</span>
+      <span className="buttonText">{isLoading ? "Please Wait..." : error ? String(error) : "Continue With Google"}</span>
     </GoogleButton>
   );
 }

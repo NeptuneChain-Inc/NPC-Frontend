@@ -1,7 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { useAppContext } from "../context/AppContext";
 
 const Container = styled(motion.div)`
   display: flex;
@@ -45,6 +46,8 @@ const variants = {
 };
 
 const NotFound = () => {
+  const { STATES } = useAppContext();
+  const { user, isLoading } = STATES || {};
   return (
     <Container
       initial="initial"
@@ -52,9 +55,25 @@ const NotFound = () => {
       exit="exit"
       variants={variants}
     >
-      <Title>404 - Not Found</Title>
-      <Description>The page you're looking for doesn't exist or you do not have access.</Description>
-      <Button to="/">Go Home</Button>
+      {isLoading ? (
+        <>
+          <Description>Loading...</Description>
+        </>
+      ) : user?.uid ? (
+        <>
+          <Title>404 - Not Found</Title>
+          <Description>The page you're looking for doesn't exist.</Description>
+          <Button to="/">Go Home</Button>
+        </>
+      ) : (
+        <>
+          <Title>404 - Not Found</Title>
+          <Description>
+            The page you're looking for doesn't exist or you do not have access.
+          </Description>
+          <Button to="/">Go Home</Button>
+        </>
+      )}
     </Container>
   );
 };

@@ -35,7 +35,7 @@ const DangerButton = styled(Button)`
   }
 `;
 
-const DataSettingsTab = ({APP}) => {
+const DataSettingsTab = () => {
   
   const handleBackup = () => {
     // Logic to trigger data backup

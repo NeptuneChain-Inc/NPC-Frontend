@@ -1,55 +1,57 @@
 import React,  { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-import styled from 'styled-components';
 import {
   LivepeerConfig,
   createReactClient,
   studioProvider,
 } from '@livepeer/react';
 import { Stream } from './Stream';
-import VideoUpload from './MediaUpload';
 import { MediaPlayer, BasicStreamPlayer } from './elements';
-import { LivepeerAPI } from '../../../scripts/back_door';
-import { livepeer_API_KEY } from '../../../contracts/ref';
 import MediaGallery from './elements/MediaGallery';
+import {LivepeerAPI} from '../../../scripts/back_door';
 
 //livepeer github docs: https://github.com/livepeer/livepeer-js?tab=readme-ov-file
 
-function Livepeer({ APP }) {
+function Livepeer() {
   const { serviceID, playbackID, liveID } = useParams();
   const [livepeerClient, setLivepeerClient] = useState(null);
+  const [key, setKey] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    fetchLivepeerClient()
+    fetchKey()
   }, [])
 
-  const fetchLivepeerClient =  () => {
-    // const _client = await LivepeerAPI.get.livepeerClient();
-    const client = createReactClient({
-      provider: studioProvider(livepeer_API_KEY)
-    })
-    // const { livepeerClient, error} = _client || {};
+  useEffect(() => {
+    if(key){
+      const client = createReactClient({
+        provider: studioProvider(key)
+      })
+      console.log('client', {client});
+      setLivepeerClient(client);
+    }
+  }, [key])
+  
 
-
-    // if(error){
-    //   console.error(error)
-    //   return;
-    // }
-
-    // setLivepeerClient(livepeerClient);
-    setLivepeerClient(client);
+  const fetchKey =  async () => {
+     try {
+      setKey(await LivepeerAPI.getKey());
+     } catch (error) {
+      throw error;
+     } finally {
+      setIsLoading(false);
+     }
   }
 
   const renderService = (serviceID) => {
     switch (serviceID) {
       case 'stream':
         return (
-          <Stream APP={APP} />
+          <Stream />
         )
       case 'upload-media':
         return (
-          <MediaGallery APP={APP}/>
-          // <VideoUpload APP={APP} />
+          <MediaGallery />
         )
       default:
         return (
@@ -59,7 +61,7 @@ function Livepeer({ APP }) {
   }
 
   if(livepeerClient===null){
-    return <p>Client Unavailable</p>;
+    return <p style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{isLoading ? "Loading..." : "Client Unavailable"}</p>;
   }
 
 

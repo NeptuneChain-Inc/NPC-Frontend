@@ -4,12 +4,11 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../shared/input/Input";
-//#BACK_END
 import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
-import { firebaseAPI } from "../../../scripts/back_door";
 import { Label } from "../../shared/Label/Label";
 import FormSection from "../../shared/FormSection/FormSection";
 import { ButtonDanger, ButtonPrimary, ButtonSecondary } from "../../shared/button/Button";
+import {auth} from "../../../apis/firebase";
 
 const AccountContainer = styled.div`
   display: flex;
@@ -76,15 +75,16 @@ const ProfileForm = styled.form`
   gap:24px;
 `;
 
-const AccountSettingsTab = ({ APP }) => {
+const AccountSettingsTab = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-  const { user } = APP?.STATES || {};
-  const { logNotification } = APP?.ACTIONS || {};
+  const { user } = STATES || {};
+  const { logNotification } = ACTIONS || {};
 
   const togglePasswordFields = () => {
     setShowPasswordFields(!showPasswordFields);
@@ -104,7 +104,6 @@ const AccountSettingsTab = ({ APP }) => {
   const handlePasswordChange = async () => {
     if (newPassword === confirmNewPassword) {
       try {
-        const auth = await firebaseAPI.get.auth();
         const fbUser = await signInWithEmailAndPassword(
           auth,
           user?.email,

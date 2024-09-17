@@ -4,17 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faUser, faVideo, faCog, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import {useAppContext} from '../../../../context/AppContext';
 
 /**
  * ProfileDropMenu Component
- * @param {Object} APP - Application states and actions
  */
-const ProfileDropMenu = ({ APP }) => {
-  console.log(APP)
+const ProfileDropMenu = () => {
+  const { STATES, ACTIONS } = useAppContext();
+
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = APP ? APP.STATES : {};
-  const { handleSettingsTab, handleLogOut } = APP ? APP.ACTIONS : {};
+  const { user } = STATES || {};
+  const { handleSettingsTab, handleLogOut } = ACTIONS || {};
 
   const handleSettings = (action) => {
     console.log(typeof action)
@@ -48,7 +49,7 @@ const ProfileDropMenu = ({ APP }) => {
           user && (
         <ProfileWrap>
         <ProfileImage>
-          {user.username.charAt(0).toUpperCase()}
+          {user.username?.charAt(0).toUpperCase()}
         </ProfileImage>
         <ProfileNameWrap>
 

@@ -11,6 +11,7 @@ import { ButtonPrimary } from '../../shared/button/Button';
 import { Input } from '../../shared/input/Input';
 import FormSection from '../../shared/FormSection/FormSection';
 import { Label } from '../../shared/Label/Label';
+import {useAppContext} from '../../../context/AppContext';
 
 const StreamContainer = styled.div`
 height: 100%;
@@ -35,12 +36,13 @@ width: 100%;
 
 
 
-export const Stream = ({APP}) => {
+export const Stream = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [streamName, setStreamName] = useState('');
   const { mutate: createStream, data: stream, status } = useCreateStream(streamName ? { name: streamName } : null);
 
   const isLoading = useMemo(() => status === 'loading', [status]);
-  const { user } = APP ? APP.STATES : {};
+  const { user } = STATES || {};
   useEffect(() => {
     if (stream?.playbackId) {
       console.log(stream);
@@ -56,15 +58,15 @@ export const Stream = ({APP}) => {
 
     if(error){
       console.error(error)
-      APP?.ACTIONS?.logNotification('error', error.message);
+      ACTIONS?.logNotification('error', error.message);
     }
 
     if (result) {
-      APP?.ACTIONS?.logNotification('', "Stream Created");
+      ACTIONS?.logNotification('', "Stream Created");
       return result;
     }
 
-    APP?.ACTIONS?.logNotification('alert', "Could Not Save Stream");
+    ACTIONS?.logNotification('alert', "Could Not Save Stream");
   }
 
   return (

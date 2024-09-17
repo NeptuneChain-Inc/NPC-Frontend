@@ -5,21 +5,23 @@ import MediaUpload from "../MediaUpload";
 import {UserAPI} from "../../../../scripts/back_door";
 import {logDev} from "../../../../scripts/helpers";
 import { ButtonPrimary } from "../../../shared/button/Button";
+import {useAppContext} from "../../../../context/AppContext";
 
 
 
-const MediaGallery = ({APP}) => {
+const MediaGallery = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [isMediaUpload, setIsMediaUpload] = useState(false);
   const [media, setMedia] = useState([]);
 
-  const { user } = APP?.STATES || {};
-  const { setVerificationUIOpen, setVerificationData } = APP?.ACTIONS || {};
+  const { user } = STATES || {};
+  const { setVerificationUIOpen, setVerificationData } = ACTIONS || {};
 
   useEffect(() => {
     if(user){
       getMedia(user.uid);
     }
-  }, [])
+  }, [user])
   
 
   useEffect(() => {
@@ -31,7 +33,8 @@ const MediaGallery = ({APP}) => {
 
   //Get User Media
   const getMedia = async (userUID) => {
-    const {user_media} = await UserAPI.get.media(userUID);
+    const {user_media} = await UserAPI.media.getUserMedia(userUID);
+    console.log("USER MEDIA", user_media);
     setMedia(user_media);
   }
 
@@ -49,7 +52,9 @@ const MediaGallery = ({APP}) => {
 
     <Gallery>
 
-{media?.map((data, index) => {
+{media?.length < 1 ? (
+  <p className="no-media">No Media Uploaded</p>
+) : media?.map((data, index) => {
   const { assetID, playbackID, metadata } = data || {};
   const { name, description, tags, thumbnailUrl } = metadata || {};
   
@@ -82,14 +87,13 @@ const MediaGallery = ({APP}) => {
 </Gallery>
 
 
-        <MediaUpload togglePopup={toggleMediaUpload} APP={APP}/>
+        <MediaUpload togglePopup={toggleMediaUpload} />
     </PageContainer>
   );
 };
 
 const PageContainer = styled.div`
   width: 100%;
-  height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -103,26 +107,13 @@ const PageContainer = styled.div`
   }
 `;
 
-export const UploadButton = styled.div`
-  background: ${logoColors.primary};
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: 0.3s ease-in-out;
-  cursor: pointer;
-
-  &:hover {
-  padding: 0.8rem 1.3rem;
-  background: ${logoColors.primary};
-  color: #fff;
-  }
-`;
 
 
 
 
 const Gallery = styled.div`
-width: 90%;
+width: 100%;
+height: 40%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -136,6 +127,11 @@ width: 90%;
 
   img {
     height: auto;
+  }
+
+  .no-media {
+    width: 100%;
+    text-align: center;
   }
 
   .card {
@@ -217,6 +213,21 @@ width: 90%;
   input:checked + label .metadata {
     opacity: 1 !important;
     transform: translateY(0) !important;
+  }
+`;
+
+export const UploadButton = styled.div`
+  background: ${logoColors.primary};
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+  padding: 0.8rem 1.3rem;
+  background: ${logoColors.primary};
+  color: #fff;
   }
 `;
 

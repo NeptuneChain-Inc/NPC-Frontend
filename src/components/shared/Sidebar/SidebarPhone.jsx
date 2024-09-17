@@ -85,7 +85,7 @@ const StyledDialogContent = styled(Dialog.Content)`
   }
 `;
 
-function SidebarPhone({ APP }) {
+function SidebarPhone() {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -108,7 +108,7 @@ function SidebarPhone({ APP }) {
                 </DialogClose>
               </div>
             </div>
-            <SidebarContent APP={APP} />
+            <SidebarContent />
           </StyledDialogContent>
         </Dialog.Portal>
       </Dialog.Root>

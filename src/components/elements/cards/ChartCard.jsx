@@ -21,8 +21,8 @@ import { CardContainer } from "../../lib/styled";
 import "font-awesome/css/font-awesome.min.css";
 import { fetchDeviceData, getRandomColor } from "../../dash.utils";
 import { capitalizeFirstLetter, logDev } from "../../../scripts/helpers";
-import {logoColors} from "../../../styles/colors";
-import {Badge} from '../../shared/Badge/Badge'
+import { logoColors } from "../../../styles/colors";
+import { Badge } from "../../shared/Badge/Badge";
 
 const defaultModules = {
   BarController,
@@ -59,7 +59,7 @@ const transformDataToDatasets = (dataArray = []) => {
         labels.push(label);
       }
     });
-  }) 
+  });
   return dataArray.map((dataset) => {
     const label = dataset?.Timestamp || "*";
     const sanitizedData = { ...dataset };
@@ -80,7 +80,7 @@ const transformDataToLabels = (dataArray) => {
         labels.push(label);
       }
     });
-  }) 
+  });
   return labels;
 };
 
@@ -167,7 +167,7 @@ const ChartCardComponent = ({
 
   const [deviceData, setDeviceData] = useState(null);
 
-  const chartTypes = ["line","bar","doughnut"];
+  const chartTypes = ["line", "bar", "doughnut"];
 
   useEffect(() => {
     if (containerRef.current) {
@@ -185,15 +185,15 @@ const ChartCardComponent = ({
 
   useEffect(() => {
     const { name, records } = deviceData || {};
-    console.log(deviceData, records)
+    console.log(deviceData, records);
     if (records) {
       logDev(`ChartCard #${deviceID} device data`, { deviceData });
 
       setLabel(name);
       setData(Object.values(records));
-    } else if(data){
-        alert(`Device #${deviceID} Data Unavailable`)
-      }
+    } else if (data) {
+      alert(`Device #${deviceID} Data Unavailable`);
+    }
   }, [deviceData]);
 
   useEffect(() => {
@@ -257,33 +257,37 @@ const ChartCardComponent = ({
           },
         },
         ...{
-          layout: {padding: {right:10}},
+          layout: { padding: { right: 10 } },
           maintainAspectRatio: false,
           legend: {
-            display: false
+            display: false,
           },
           scales: {
-            display:false,
-            xAxes: [{
-              gridLines: {
-                display: false,
-                drawBorder: false
+            display: false,
+            xAxes: [
+              {
+                gridLines: {
+                  display: false,
+                  drawBorder: false,
+                },
+                ticks: {
+                  display: false,
+                },
               },
-              ticks: {
-                display: false
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                display: false,
-                beginAtZero: false
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  display: false,
+                  beginAtZero: false,
+                },
+                gridLines: {
+                  display: false,
+                  drawBorder: false,
+                },
               },
-              gridLines: {
-                display: false,
-                drawBorder: false
-              }
-            }]
-          }
+            ],
+          },
         },
         ...options,
       },
@@ -295,7 +299,7 @@ const ChartCardComponent = ({
   }, [data, label, type, options, backgroundColor, dimensions]);
 
   if (!data) {
-    return;
+    return <p>No Data for Device #{deviceID}</p>;
   }
 
   return (
@@ -306,12 +310,16 @@ const ChartCardComponent = ({
     >
       <Header>
         <div>
-        <i className="fa fa-bar-chart" aria-hidden="true"></i>
-        {label}
+          <i className="fa fa-bar-chart" aria-hidden="true"></i>
+          {label}
         </div>
-       <ChartOptions>
-        {chartTypes.map((type, index) => <Badge key={index} onClick={() => setType(type)}>{capitalizeFirstLetter(type)}</Badge>)}
-       </ChartOptions>
+        <ChartOptions>
+          {chartTypes.map((type, index) => (
+            <Badge key={index} onClick={() => setType(type)}>
+              {capitalizeFirstLetter(type)}
+            </Badge>
+          ))}
+        </ChartOptions>
       </Header>
       <CanvasWrapper>
         <Canvas ref={canvasRef}></Canvas>
@@ -325,10 +333,10 @@ const SCardContainer = styled(motion.div)`
   align-items: center;
   // min-height: 400px;
   padding: 5px;
-width: 100%;
+  width: 100%;
 
-  &:hover{
-  transform: scale(1);
+  &:hover {
+    transform: scale(1);
   }
 `;
 
@@ -337,26 +345,24 @@ const Header = styled.div`
   box-sizing: border-box;
   text-align: center;
   width: 100%;
-  color: ${({theme}) => theme.colors.ui800};
+  color: ${({ theme }) => theme.colors.ui800};
   font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   i {
     margin-right: 10px;
-    color: ${({theme}) => theme.colors.ui800};
+    color: ${({ theme }) => theme.colors.ui800};
   }
 `;
 
 const ChartOptions = styled(motion.div)`
-
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem;
 
   button {
     font-size: 0.8rem;
-    
   }
 `;
 const CanvasWrapper = styled(motion.div)`
@@ -366,12 +372,8 @@ const CanvasWrapper = styled(motion.div)`
   height: 500px;
   justify-content: center;
   align-items: center;
-
 `;
 
-const Canvas = styled.canvas`
-  
-  
-`;
+const Canvas = styled.canvas``;
 
 export default React.memo(ChartCardComponent);

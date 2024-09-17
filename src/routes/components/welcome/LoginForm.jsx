@@ -34,6 +34,7 @@ import {
 } from "../../../components/shared/button/Button";
 import GoogleSignIn from "./GoogleSignIn";
 import { useNavigate } from "react-router-dom";
+import {useAppContext} from "../../../context/AppContext";
 
 const InputGroup = styled.div`
   position: relative;
@@ -74,14 +75,15 @@ const StyledLoginForm = styled.div`
   }
 `;
 
-const LoginForm = ({ APP, onSuccess, onSwitchToRegister, updateUser }) => {
+const LoginForm = ({ onSuccess, onSwitchToRegister, updateUser }) => {
+  const { ACTIONS } = useAppContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
-  const { logNotification } = APP?.ACTIONS || {};
+  const { logNotification } = ACTIONS || {};
 
   useEffect(() => {
     if (isSuccess) {

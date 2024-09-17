@@ -4,16 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { pushLocalNotification } from "../scripts/notifications";
+import {useAppContext} from "../context/AppContext";
 
 /**
  * NotificationBar Component to render application notifications from storage
  *
- * @param {Object} APP - Contains STATES and ACTIONS for the application
  */
-const NotificationBar = ({ APP }) => {
+const NotificationBar = () => {
+  const { STATES, ACTIONS } = useAppContext();
   const [notifications, setNotifications] = useState([]);
-  const { notificationBarOpen } = APP ? APP.STATES : {};
-  const { handleNotificationsBar, logNotification } = APP ? APP.ACTIONS : {};
+  const { user, notificationBarOpen } = STATES || {};
+  const { handleNotificationsBar, logNotification } = ACTIONS || {};
 
   useEffect(() => {
     // Fetch stored notifications
@@ -22,7 +23,7 @@ const NotificationBar = ({ APP }) => {
     if (_notifications) {
       setNotifications(_notifications);
     }
-  }, [APP]);
+  }, [STATES]);
 
   const handleSmapleNotification = (type) => {
     const _notification = pushLocalNotification(
@@ -32,12 +33,17 @@ const NotificationBar = ({ APP }) => {
     logNotification(_notification.type, _notification.message);
   };
 
+  if(!user){
+    return;
+  }
+
   // Framer Motion variants
   const notificationVariants = {
     open: { opacity: 1, x: 0 },
     closed: { opacity: 0, x: "100%" },
   };
 
+  
   return (
     <>
       <AnimatePresence>

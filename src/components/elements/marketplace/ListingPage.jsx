@@ -156,7 +156,8 @@ const ItemData = styled.span`
   font-weight: 500; 
 `;
 
-const ListingPage = ({ APP }) => {
+//USE API
+const ListingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [listingDetails, setListingDetails] = useState({});
@@ -172,9 +173,6 @@ const ListingPage = ({ APP }) => {
 const toggleDrawer = () => {
   setIsDrawerOpen(!isDrawerOpen);
 };
-
-
-  const { signedUser, marketInteractions, signedMarketInteractions } = APP?.STATES || {};
   //   const [transferHistory, setTransferHistory] = useState([]);
 
   useEffect(() => {

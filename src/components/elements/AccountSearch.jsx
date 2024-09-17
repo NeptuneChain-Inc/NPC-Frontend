@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
 import styled, { keyframes } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-
-import { contractAddress, mumbaiRPC } from "../../contracts/ref";
 import {
   formatCertificateID,
   handleViewCertificate,
 } from "../../scripts/helpers";
+import {NPCCreditsAPI} from "../../scripts/back_door";
 
 const contractABI = [
   "function getAccountTotalBalance(string accountID) view returns (int256 _accountTotalBalance)",
@@ -170,18 +168,10 @@ const AccountSearch = ({ isOpen, setIsOpen }) => {
     setCertificates([]);
 
     try {
-      const provider = new ethers.providers.JsonRpcProvider(mumbaiRPC);
-      const contract = new ethers.Contract(
-        contractAddress,
-        contractABI,
-        provider
-      );
       setCurrAccount(accountID);
-      const accountBalance = await contract.getAccountTotalBalance(accountID);
+      const accountBalance = await NPCCreditsAPI.getAccountCreditBalance({accountID, producer: '' , verifier: '', creditType: ''});
       setBalance(accountBalance.toString());
-      const accountCertificates = await contract.getAccountCertificates(
-        accountID
-      );
+      const accountCertificates = await NPCCreditsAPI.getAccountCertificates(accountID);
       setCertificates(accountCertificates);
     } catch (err) {
       setError("Error retrieving data");
