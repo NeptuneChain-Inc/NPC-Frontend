@@ -8,6 +8,7 @@ import EventsPopup from "../components/elements/marketplace/EventsPopup";
 import { colors } from "../styles/colors";
 import { Input } from "../components/shared/input/Input";
 import { ButtonSecondary } from "../components/shared/button/Button";
+import {useAppContext} from "../context/AppContext";
 
 const MarketplaceContainer = styled.div`
   width: 100%;

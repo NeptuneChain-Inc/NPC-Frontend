@@ -15,6 +15,7 @@ import Certificate from "../../shared/Certificate/Certificate";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 import { NFTGrid } from "./MarketBrowser";
 import { NFTImage } from "./elements/NFTCard";
+import {useAppContext} from "../../../context/AppContext";
 
 // Neptune Color Palette
 const colors = {
@@ -182,6 +183,7 @@ const hoverAnimation = {
 };
 
 //USE API
+/** IMPLEMENT MARKETPLACE FUNCTIONALITY */
 const SellerDashboard = () => {
   const { STATES, ACTIONS } = useAppContext();
   const navigate = useNavigate();
@@ -195,11 +197,9 @@ const SellerDashboard = () => {
   const { setResult } = ACTIONS || {};
 
   useEffect(() => {
-    if (signedUser) {
       fetchUserNFTs();
       fetchListedNFTs();
-    }
-  }, [STATES]);
+  }, []);
 
   useEffect(() => {
     if (userListedNFTs.length > 0) {
