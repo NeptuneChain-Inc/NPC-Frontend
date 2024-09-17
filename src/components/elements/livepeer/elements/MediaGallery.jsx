@@ -21,7 +21,7 @@ const MediaGallery = () => {
     if(user){
       getMedia(user.uid);
     }
-  }, [])
+  }, [user])
   
 
   useEffect(() => {
@@ -33,7 +33,8 @@ const MediaGallery = () => {
 
   //Get User Media
   const getMedia = async (userUID) => {
-    const {user_media} = await UserAPI.get.media(userUID);
+    const {user_media} = await UserAPI.media.getUserMedia(userUID);
+    console.log("USER MEDIA", user_media);
     setMedia(user_media);
   }
 
