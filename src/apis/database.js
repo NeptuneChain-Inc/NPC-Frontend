@@ -61,12 +61,13 @@ const createUser = async (userData) => {
         if (userData?.uid) {
             if (await saveData(`dashboard/users/data/${userData?.uid}`, userData)) {
                 if (await saveData(`dashboard/users/usernames/${userData?.username}`, userData?.uid)) {
-                    await loadDefaultUserDashes(userData.uid, userData.type);
                     return true;
                 }
             } 
         } 
+        console.warn({userData})
     } catch (error) {
+      console.error(error)
         throw error
     }
 }

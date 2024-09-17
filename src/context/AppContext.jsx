@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import {UserAPI} from "../scripts/back_door";
-t
+import { UserAPI } from "../scripts/back_door";
+
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -25,31 +25,41 @@ export const AppProvider = ({ children }) => {
     const isMobileScreen = () => window.innerWidth <= 768;
     setIsMobile(isMobileScreen());
     window.addEventListener("resize", () => setIsMobile(isMobileScreen()));
-    return () => window.removeEventListener("resize", () => setIsMobile(isMobileScreen()));
+    return () =>
+      window.removeEventListener("resize", () => setIsMobile(isMobileScreen()));
   }, []);
 
   useEffect(() => {
     const loggedUser = sessionStorage.getItem("user");
-    if (loggedUser) setUser(JSON.parse(loggedUser));
+    const { uid } = loggedUser || {};
+    if (uid) updateUser(uid);
   }, []);
 
-  const updateUser = async (uid) => {
+  const updateUser = async (uid, _userdata = {}) => {
+    console.log('USER', uid)
     try {
-      const user = await UserAPI.account.getUserFromUID(uid);
-      if (user) {
-        sessionStorage.setItem("user", JSON.stringify(user));
-        setUser(user);
+      var userdata;
+      if (_userdata?.uid) {
+        userdata = _userdata;
+      } else {
+        userdata = (await UserAPI.account.getUserFromUID(uid))?.userdata;
+      }
+      console.log('USERDATA', userdata)
+      if (userdata?.uid) {
+        sessionStorage.setItem("user", JSON.stringify(userdata));
+        setUser(userdata);
+        console.log("Set User", userdata)
         return true;
       }
-      return null;
     } catch (error) {
       logNotification("error", error.message);
-      return null;
     }
+    return null;
   };
 
   const handleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const handleNotificationsBar = () => setNotificationBarOpen(!notificationBarOpen);
+  const handleNotificationsBar = () =>
+    setNotificationBarOpen(!notificationBarOpen);
   const handleVerificationUI = () => setVerificationUIOpen(!verificationUIOpen);
   const handleSettingsMenu = () => setSettingsMenuOpen(!settingsMenuOpen);
   const handleSettingsTab = (tab) => {
@@ -57,12 +67,14 @@ export const AppProvider = ({ children }) => {
     setSettingsMenuOpen(true);
   };
   const toggleCalculator = () => setCalculatorOpen(!calculatorOpen);
-  const logConfirmation = (message, action) => setConfirmation({ msg: message, action });
+  const logConfirmation = (message, action) =>
+    setConfirmation({ msg: message, action });
   const cancelConfirmation = (accepted) => {
     setConfirmation(null);
     if (!accepted) logNotification("error", "Action Denied");
   };
-  const logNotification = (type, message) => setNotification({ [type]: message });
+  const logNotification = (type, message) =>
+    setNotification({ [type]: message });
   const clearNotification = () => setNotification({});
   const handleLogOut = () => {
     logConfirmation("Are you sure you want to log out?", () => {
@@ -115,11 +127,7 @@ export const AppProvider = ({ children }) => {
     },
   };
 
-  return (
-    <AppContext.Provider value={APP}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={APP}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => useContext(AppContext);

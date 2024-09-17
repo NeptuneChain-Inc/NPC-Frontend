@@ -4,11 +4,9 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, isSupported } from "tus-js-client";
 //import { colors } from "../../../styles/colors";
-import { UploadButton } from "./elements/MediaGallery";
 import { LivepeerAPI, MediaAPI } from "../../../scripts/back_door";
 import { logDev, proxyLivepeerOriginEndpoint } from "../../../scripts/helpers";
 import configs from "../../../../configs";
-import UploadProgress from "./UploadProgress";
 import AssetDisplay from "./AssetDisplay";
 import { Player } from "@livepeer/react";
 import { Input } from "../../shared/input/Input";
@@ -16,6 +14,8 @@ import FormSection from "../../shared/FormSection/FormSection";
 import { ButtonPrimary } from "../../shared/button/Button";
 import ButtonLoading from "../../shared/button/ButtonLoading";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
+import {logoColors} from "../../../styles/colors";
+import {useAppContext} from "../../../context/AppContext";
 
 const colors = {
   primaryBlue: "#1B3B6F",
@@ -135,7 +135,20 @@ const DocPreview = styled.iframe`
   ${previewStyles}
 `;
 
-const ConcludeButton = styled(UploadButton)`
+const ConcludeButton = styled.div`
+  background: ${logoColors.primary};
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+  padding: 0.8rem 1.3rem;
+  background: ${logoColors.primary};
+  color: #fff;
+  }
+
   background: #000;
   width: 60%;
   margin: auto;

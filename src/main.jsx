@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { ThemeProvider } from "styled-components";
 import { colors, theme } from "./styles/colors.js";
+import {AppProvider} from "./context/AppContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <App />
+        <AppProvider><App /></AppProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>

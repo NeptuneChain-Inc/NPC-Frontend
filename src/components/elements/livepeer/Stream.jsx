@@ -11,6 +11,7 @@ import { ButtonPrimary } from '../../shared/button/Button';
 import { Input } from '../../shared/input/Input';
 import FormSection from '../../shared/FormSection/FormSection';
 import { Label } from '../../shared/Label/Label';
+import {useAppContext} from '../../../context/AppContext';
 
 const StreamContainer = styled.div`
 height: 100%;

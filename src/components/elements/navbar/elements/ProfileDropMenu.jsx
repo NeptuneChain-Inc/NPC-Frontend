@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faUser, faVideo, faCog, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import {useAppContext} from '../../../../context/AppContext';
 
 /**
  * ProfileDropMenu Component
@@ -48,7 +49,7 @@ const ProfileDropMenu = () => {
           user && (
         <ProfileWrap>
         <ProfileImage>
-          {user.username.charAt(0).toUpperCase()}
+          {user.username?.charAt(0).toUpperCase()}
         </ProfileImage>
         <ProfileNameWrap>
 

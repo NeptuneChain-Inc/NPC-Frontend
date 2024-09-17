@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import styled, { keyframes, css } from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import { contract, provider } from "../../contracts/contractRef";
+import styled, { keyframes } from "styled-components";
+import { motion } from "framer-motion";
 import {
   EventData,
   ProducersData,
@@ -11,7 +9,8 @@ import {
 } from "../elements/index";
 import { colors } from "../../data/styles";
 import { NUMBERS } from "../../scripts/helpers";
-import {NPCCreditsAPI} from "../../scripts/back_door";
+import { NPCCreditsAPI } from "../../scripts/back_door";
+import useFetchNPCCreditEvents from "../../hooks/useFetchNPCCreditEvents";
 
 const fadeIn = {
   hidden: { opacity: 0 },
@@ -220,13 +219,6 @@ const FixedTitle = styled.div`
   z-index: 1000;
 `;
 
-const getEventTimestamp = async (blockNumber) => {
-  const block = await provider.getBlock(blockNumber);
-  const timestamp = block.timestamp;
-  const date = new Date(timestamp * 1000);
-  return date.toLocaleString();
-};
-
 /******************** Caching **********************/
 // Helper function to check if cache is stale
 const isCacheStale = (key, expiryTime) => {
@@ -255,13 +247,13 @@ function ExplorerPage() {
   useEffect(() => {
     const handleEvent = (event) => {
       setUpdateCache(event);
-      console.log(event.log)
+      console.log(event.log);
     };
 
-    NPCCreditsAPI.on("*", (e) => { 
-      handleEvent(e)
+    NPCCreditsAPI.on("*", (e) => {
+      handleEvent(e);
       e.removeListener();
-  });
+    });
   }, []);
 
   useEffect(() => {
@@ -276,15 +268,17 @@ function ExplorerPage() {
         }
       }
 
-      if ((updateCache || !data)) {
+      if (updateCache || !data) {
         try {
-          //const totalSupply = await NPCCreditsAPI.getSupply(); //***FIX */
+          //const totalSupply = await NPCCreditsAPI.getSupply(); //***FIX ****/
           const totalSupply = await NPCCreditsAPI.getTotalSold();
           const totalSold = await NPCCreditsAPI.getTotalSold();
-          const totalBurnedSupply = await NPCCreditsAPI.getTotalSold(); //***FIX */
+          const totalBurnedSupply = await NPCCreditsAPI.getTotalSold(); //***FIX ****/
           const totalCertificates = await NPCCreditsAPI.getTotalCertificates();
           const _producers = await NPCCreditsAPI.getAllProducers();
-          const creditTypes = await NPCCreditsAPI.getCreditTypes(1);
+          const creditTypes = await NPCCreditsAPI.getCreditTypes(
+            1
+          ); /** FIX ** */
 
           console.log("DATA STATES*****************************", {
             totalSupply: NUMBERS.toNumber(totalSupply),
@@ -337,7 +331,7 @@ function ExplorerPage() {
             })
           );
 
-          //To reduce CUPS for Alchemy API 
+          //To reduce CUPS for Alchemy API
           setTimeout(() => {
             //This will trigger the useEffect to fetch data of the set producers
             setProducers(_producers);
@@ -371,18 +365,20 @@ function ExplorerPage() {
         }
       }
 
-      if (contract && (updateCache || !producersData)) {
+      if (updateCache || !producersData) {
         try {
           var { creditTypes } = liveCache;
-          console.log('creditTypes', creditTypes)
+          console.log("creditTypes", creditTypes);
           //Re-request if not available
           if (!creditTypes) {
-            creditTypes = await NPCCreditsAPI.getCreditTypes();
+            creditTypes = await NPCCreditsAPI.getCreditTypes(1);
             console.log("Re-request of creditTypes");
           }
           const _producersData = await Promise.all(
             producers.map(async (producer) => {
-              const verifiers = await NPCCreditsAPI.getProducerVerifiers(producer);
+              const verifiers = await NPCCreditsAPI.getProducerVerifiers(
+                producer
+              );
               const verifiersData = await Promise.all(
                 verifiers.map(async (verifier) => {
                   const Supplies = await Promise.all(
@@ -437,6 +433,7 @@ function ExplorerPage() {
     }
   }, [producers, updateCache]);
 
+  // Event Management
   useEffect(() => {
     async function fetchEvents() {
       const cacheKey = "REGISTRY_EVENT_DATA";
@@ -450,59 +447,24 @@ function ExplorerPage() {
       }
 
       //FIX
-      if (contract && (updateCache || !events)) {
-        try {
-          const allTransactions = await Promise.all([
-            NPCCreditsAPI.queryFilter(NPCCreditsAPI.filters.CreditsIssued(), 0, "latest"),
-            NPCCreditsAPI.queryFilter(NPCCreditsAPI.filters.CreditsBought(), 0, "latest"),
-            NPCCreditsAPI.queryFilter(
-              NPCCreditsAPI.filters.CreditsTransferred(),
-              0,
-              "latest"
-            ),
-            NPCCreditsAPI.queryFilter(
-              NPCCreditsAPI.filters.CreditsDonated(),
-              0,
-              "latest"
-            ),
-            NPCCreditsAPI.queryFilter(
-              NPCCreditsAPI.filters.CertificateCreated(),
-              0,
-              "latest"
-            ),
-          ]);
+      if (updateCache || !events) {
+        const { eventsData, errorMessage, loading } =
+          useFetchNPCCreditEvents(updateCache);
 
-          // Flatten the transactions array
-          const flattenedTransactions = allTransactions.reduce(
-            (arr, events) => arr.concat(events),
-            []
-          );
-
-          const eventsData = await Promise.all(
-            flattenedTransactions.map(async (event) => {
-              const _timestamp = await getEventTimestamp(event.blockNumber);
-              return {
-                txHash: event.transactionHash,
-                event: event.event,
-                args: event.args,
-                timestamp: _timestamp,
-              };
-            })
-          );
-          // Cache the fetched data
-          localStorage.setItem(
-            cacheKey,
-            JSON.stringify({
-              data: eventsData,
-              timestamp: Date.now(),
-            })
-          );
-
-          setUpdateCache(false);
-        } catch (error) {
-          console.error(error);
-          setErrorMessage("Failed to fetch events");
+        if (errorMessage) {
+          setErrorMessage(String(errorMessage));
+          return;
         }
+        // Cache the fetched data
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({
+            data: eventsData,
+            timestamp: Date.now(),
+          })
+        );
+
+        setUpdateCache(false);
       }
     }
 

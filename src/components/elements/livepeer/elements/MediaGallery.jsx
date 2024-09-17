@@ -5,6 +5,7 @@ import MediaUpload from "../MediaUpload";
 import {UserAPI} from "../../../../scripts/back_door";
 import {logDev} from "../../../../scripts/helpers";
 import { ButtonPrimary } from "../../../shared/button/Button";
+import {useAppContext} from "../../../../context/AppContext";
 
 
 
@@ -104,20 +105,6 @@ const PageContainer = styled.div`
   }
 `;
 
-export const UploadButton = styled.div`
-  background: ${logoColors.primary};
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: 0.3s ease-in-out;
-  cursor: pointer;
-
-  &:hover {
-  padding: 0.8rem 1.3rem;
-  background: ${logoColors.primary};
-  color: #fff;
-  }
-`;
 
 
 
@@ -218,6 +205,21 @@ width: 90%;
   input:checked + label .metadata {
     opacity: 1 !important;
     transform: translateY(0) !important;
+  }
+`;
+
+export const UploadButton = styled.div`
+  background: ${logoColors.primary};
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+  padding: 0.8rem 1.3rem;
+  background: ${logoColors.primary};
+  color: #fff;
   }
 `;
 

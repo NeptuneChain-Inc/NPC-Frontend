@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useMutation } from "react-query";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { STRING, logDev } from "../../../scripts/helpers";
-import { getVerificationInteractions } from "../../../smart_contracts/interactions";
 import { UploadButton } from "../livepeer/elements/MediaGallery";
-import { UserAPI } from "../../../scripts/back_door";
+import { AssetAPI, UserAPI } from "../../../scripts/back_door";
 import AssetCard from "./AssetCard";
 import { ButtonPrimary } from "../../shared/button/Button";
 import { Badge } from "../../shared/Badge/Badge";
+import {useAppContext} from "../../../context/AppContext";
 
 const neptuneColorPalette = {
   lightBlue: "#8abbd0",
@@ -166,15 +166,10 @@ const tabVariants = {
   exit: { x: 10, opacity: 0 },
 };
 
-function VerificationUI({ open }) {
+function VerificationUI() {
   const { STATES, ACTIONS } = useAppContext();
-  const [isModalOpen, setIsModalOpen] = useState(open);
   const [accessibleTabs, setAccessibleTabs] = useState([]);
   const [activeTab, setActiveTab] = useState("");
-  const [ipfsHash, setIpfsHash] = useState("");
-  const [dataId, setDataId] = useState("");
-  const [reason, setReason] = useState("");
-  const [verifierAddress, setVerifierAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const [uploads, setUploads] = useState([]);
@@ -182,14 +177,12 @@ function VerificationUI({ open }) {
   const [disputes, setDisputes] = useState([]);
   const [approvals, setApprovals] = useState([]);
 
-  const { user, signer, verificationUIOpen, verificationData } =
+  const { user, verificationUIOpen, verificationData } =
     STATES || {};
   const { setTxPopupVisible, setResult, setVerificationData } =
     ACTIONS || {};
 
   const { assetID } = verificationData || {};
-
-  const Interactions = getVerificationInteractions(signer);
 
   useEffect(() => {
     if (user?.type) {
@@ -202,15 +195,7 @@ function VerificationUI({ open }) {
       getDisputes();
       getApprovals();
     }
-  }, [user]);
-
-  useEffect(() => {
-    setIsModalOpen(open);
-  }, [open]);
-
-  if (!Interactions) {
-    return;
-  }
+  }, [user]);;
 
   const getUploads = async () => {
     const { user_media } = await UserAPI.get.media(user.uid);
@@ -240,18 +225,18 @@ function VerificationUI({ open }) {
     }
   };
 
-  const submitMutation = useMutation(Interactions.Functions.submitData);
-  const approveMutation = useMutation(Interactions.Functions.approveData);
-  const disputeMutation = useMutation(Interactions.Functions.raiseDispute);
-  const resolveMutation = useMutation(Interactions.Functions.resolveDispute);
+  const submitMutation = useMutation(AssetAPI.submit);
+  const approveMutation = useMutation(AssetAPI.approve);
+  const disputeMutation = useMutation(AssetAPI.dispute);
+  const resolveMutation = useMutation(AssetAPI.closeDispute);
 
-  useEffect(() => {
-    if (Interactions) {
-      Interactions.Listeners.onDataSubmitted(({ dataId, farmer }) => {
-        console.log(`Data with ID ${dataId} submitted by ${farmer}`);
-      });
-    }
-  }, [Interactions]);
+  // useEffect(() => {
+  //   if (Interactions) {
+  //     Interactions.Listeners.onDataSubmitted(({ dataId, farmer }) => {
+  //       console.log(`Data with ID ${dataId} submitted by ${farmer}`);
+  //     });
+  //   }
+  // }, [Interactions]);
 
   const handleMutation = async (mutation, params = null) => {
     setIsLoading(true);

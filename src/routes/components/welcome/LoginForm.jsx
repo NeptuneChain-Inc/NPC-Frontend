@@ -34,6 +34,7 @@ import {
 } from "../../../components/shared/button/Button";
 import GoogleSignIn from "./GoogleSignIn";
 import { useNavigate } from "react-router-dom";
+import {useAppContext} from "../../../context/AppContext";
 
 const InputGroup = styled.div`
   position: relative;

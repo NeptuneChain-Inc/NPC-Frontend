@@ -15,6 +15,7 @@ import {
 } from "../components/shared/button/Button";
 import { BackgroundImage } from "framer/render/types/BackgroundImage.js";
 import Footer from "../components/shared/Footer/Footer";
+import {useAppContext} from "../context/AppContext";
 
 export const logoImage = new URL("../assets/logo.png", import.meta.url).href;
 ("./assets/");

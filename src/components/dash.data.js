@@ -5,7 +5,7 @@ import { logDev } from "../scripts/helpers";
 import { getMetric } from "./dash.utils";
 
 const dashDataInit = async (uid) => {
-  const devices = await DeviceAPI.devices();
+  const devices = (await DeviceAPI.getDevices())?.devices || [];
   const metrics = MetricsAPI.allMetrics;
   const metric_overviews = await Promise.all(
     metrics.map(async (metric) => await getMetric(metric, uid))

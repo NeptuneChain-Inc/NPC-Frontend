@@ -23,6 +23,7 @@ import {
   PrivacySettingsTab,
   UploadsTab,
 } from "./elements/setting-tabs";
+import {useAppContext} from "../context/AppContext";
 
 /**
  * SettingsMenu Component to render setting tabs

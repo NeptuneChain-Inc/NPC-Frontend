@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { pushLocalNotification } from "../scripts/notifications";
+import {useAppContext} from "../context/AppContext";
 
 /**
  * NotificationBar Component to render application notifications from storage
@@ -14,10 +15,6 @@ const NotificationBar = () => {
   const [notifications, setNotifications] = useState([]);
   const { user, notificationBarOpen } = STATES || {};
   const { handleNotificationsBar, logNotification } = ACTIONS || {};
-
-  if(!user){
-    return;
-  }
 
   useEffect(() => {
     // Fetch stored notifications
@@ -36,12 +33,17 @@ const NotificationBar = () => {
     logNotification(_notification.type, _notification.message);
   };
 
+  if(!user){
+    return;
+  }
+
   // Framer Motion variants
   const notificationVariants = {
     open: { opacity: 1, x: 0 },
     closed: { opacity: 0, x: "100%" },
   };
 
+  
   return (
     <>
       <AnimatePresence>

@@ -32,6 +32,7 @@ import {
   ButtonLink,
   ButtonPrimary,
 } from "../../../components/shared/button/Button";
+import {AccountAPI} from "../../../scripts/back_door";
 
 const Icon = styled(FontAwesomeIcon)`
   color: #0077b6;
@@ -83,7 +84,8 @@ const RegisterForm = ({
           uid: googleData.uid,
           username: username.toLowerCase(),
           email: googleData.gmail,
-          type: accountType,
+          role: accountType,
+          PIN: 123456
         };
       } else {
         const userCredential = await createUserWithEmailAndPassword(
@@ -97,7 +99,8 @@ const RegisterForm = ({
           uid: userData.uid,
           username: username.toLowerCase(),
           email: userData.email.toLowerCase(),
-          type: accountType,
+          role: accountType,
+          PIN: 123456
         };
       }
 
@@ -107,9 +110,12 @@ const RegisterForm = ({
        */
 
       
-
-      if (await createUser(newUser)) {
-        setIsSuccess(Boolean(await updateUser?.(newUser.uid)));
+      console.log({newUser})
+      if ((await AccountAPI.create(newUser))?.result) {
+        setIsSuccess(Boolean(await updateUser?.(null,newUser)));
+        console.log({Logged: newUser})
+      } else {
+        alert("Not Created")
       }
     } catch (error) {
       setError(error.message);
