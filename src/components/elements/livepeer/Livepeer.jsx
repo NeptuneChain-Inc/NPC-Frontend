@@ -16,6 +16,7 @@ function Livepeer() {
   const { serviceID, playbackID, liveID } = useParams();
   const [livepeerClient, setLivepeerClient] = useState(null);
   const [key, setKey] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     fetchKey()
@@ -37,6 +38,8 @@ function Livepeer() {
       setKey(await LivepeerAPI.getKey());
      } catch (error) {
       throw error;
+     } finally {
+      setIsLoading(false);
      }
   }
 
@@ -58,7 +61,7 @@ function Livepeer() {
   }
 
   if(livepeerClient===null){
-    return <p>Client Unavailable</p>;
+    return <p style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{isLoading ? "Loading..." : "Client Unavailable"}</p>;
   }
 
 

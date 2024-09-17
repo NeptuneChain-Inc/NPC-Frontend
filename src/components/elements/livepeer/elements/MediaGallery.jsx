@@ -52,7 +52,9 @@ const MediaGallery = () => {
 
     <Gallery>
 
-{media?.map((data, index) => {
+{media?.length < 1 ? (
+  <p className="no-media">No Media Uploaded</p>
+) : media?.map((data, index) => {
   const { assetID, playbackID, metadata } = data || {};
   const { name, description, tags, thumbnailUrl } = metadata || {};
   
@@ -92,7 +94,6 @@ const MediaGallery = () => {
 
 const PageContainer = styled.div`
   width: 100%;
-  height: 100vh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -111,13 +112,15 @@ const PageContainer = styled.div`
 
 
 const Gallery = styled.div`
-width: 90%;
+width: 100%;
+height: 40%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
   box-sizing: border-box;
   overflow-x: auto;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
 
   ul {
     list-style-type: none;
@@ -125,6 +128,11 @@ width: 90%;
 
   img {
     height: auto;
+  }
+
+  .no-media {
+    width: 100%;
+    text-align: center;
   }
 
   .card {

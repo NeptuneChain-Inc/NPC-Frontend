@@ -25,6 +25,7 @@ const DashboardTop = styled.div`
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 8px;
+  padding: 1rem;
 
   gap: 8px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.ui200};

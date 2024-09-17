@@ -81,7 +81,6 @@ const TabContainer = styled.div`
 `;
 
 const TabContent = styled(TabContainer)`
-  border: 2px solid #000;
   height: 100%;
 `;
 
