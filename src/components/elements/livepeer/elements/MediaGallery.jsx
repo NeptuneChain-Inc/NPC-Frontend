@@ -120,7 +120,6 @@ height: 40%;
   flex-wrap: nowrap;
   box-sizing: border-box;
   overflow-x: auto;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
 
   ul {
     list-style-type: none;

@@ -173,7 +173,7 @@ export function capitalizeFirstLetter(str) {
 
 export const proxyLivepeerOriginEndpoint = (originalEndpoint) => {
   const baseUrl = 'https://origin.livepeer.com';
-  const proxyBasePath = '/livepeer_origin';
+  const proxyBasePath = '/livepeer/origin';
 
   if (!originalEndpoint.startsWith(baseUrl)) {
     throw new Error('Original endpoint does not start with the base URL.');

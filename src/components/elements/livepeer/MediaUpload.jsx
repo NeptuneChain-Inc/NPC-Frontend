@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, isSupported } from "tus-js-client";
 //import { colors } from "../../../styles/colors";
-import { LivepeerAPI, MediaAPI } from "../../../scripts/back_door";
+import { MediaAPI, LivepeerAPI, AssetAPI } from "../../../scripts/back_door";
 import { logDev, proxyLivepeerOriginEndpoint } from "../../../scripts/helpers";
 import configs from "../../../../configs";
 import AssetDisplay from "./AssetDisplay";
@@ -241,7 +241,7 @@ const MediaUpload = ({ togglePopup }) => {
     try {
       // Make an API call to get the tus endpoint
       const { result } =
-        (await LivepeerAPI.assetOps.create(
+        (await LivepeerAPI.createAsset(
           {
             name: uploadName,
             staticMp4: activeFile.type === "video/mp4",
@@ -273,7 +273,7 @@ const MediaUpload = ({ togglePopup }) => {
 
         //https://github.com/tus/tus-js-client/blob/main/docs/api.md
         const upload = new Upload(activeFile, {
-          endpoint,
+          endpoint: tusEndpoint,
           retryDelays: [0, 3000, 5000, 10000, 20000],
           metadata: {
             filename: uploadName,
@@ -365,8 +365,7 @@ const MediaUpload = ({ togglePopup }) => {
         var _playbackInfo;
         try {
           // *TO-DO Listen When playback is ready
-          const { playbackInfo } =
-            await LivepeerAPI.playbackOps.get.playbackInfo(asset.playbackId);
+          const { playbackInfo } = await LivepeerAPI.getPlaybackInfo(asset.playbackId);
 
           logDev("playbackInfo", {
             playbackInfo,
@@ -377,7 +376,7 @@ const MediaUpload = ({ togglePopup }) => {
           console.error(error);
         }
 
-        const { result } = await MediaAPI.create.mediaMetadata(asset.id, {
+        const { result } = await AssetAPI.addMetadata(asset.id, {
           name: uploadName,
           description: uploadDescription,
           tags: ["NPC"],
@@ -401,7 +400,7 @@ const MediaUpload = ({ togglePopup }) => {
   };
 
   return (
-    <DashboardPage title={"Upload"}>
+    <DashboardPage title={"Media Upload"}>
       <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
         {/*     <UploadProgress progress={50} />
          */}{" "}
