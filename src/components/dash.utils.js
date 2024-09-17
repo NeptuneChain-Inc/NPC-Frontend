@@ -57,10 +57,10 @@ export const getMetric = async (metric, uid) => {
  */
 export const fetchDeviceData = async (deviceID, setDeviceData) => {
   try {
-    const { data } = (await DeviceAPI.getDeviceData(deviceID)) || {};
-    console.log("DATA", data)
-    if (data) {
-      setDeviceData(data);
+    const { device } = (await DeviceAPI.getDeviceDetails(deviceID)) || {};
+    console.log("DATA", device)
+    if (device) {
+      setDeviceData(device);
     } else {
       alert(`Device #${deviceID} Data Unavailable`);
     }
