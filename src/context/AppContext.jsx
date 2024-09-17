@@ -20,6 +20,8 @@ export const AppProvider = ({ children }) => {
   const [result, setResult] = useState(null);
   const [notification, setNotification] = useState("");
   const [txPopupVisible, setTxPopupVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const isMobileScreen = () => window.innerWidth <= 768;
@@ -30,13 +32,12 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const loggedUser = sessionStorage.getItem("user");
+    const loggedUser = JSON.parse(sessionStorage.getItem("user"));
     const { uid } = loggedUser || {};
-    if (uid) updateUser(uid);
+    uid ? updateUser(uid) : setIsLoading(false);
   }, []);
 
   const updateUser = async (uid, _userdata = {}) => {
-    console.log('USER', uid)
     try {
       var userdata;
       if (_userdata?.uid) {
@@ -44,7 +45,6 @@ export const AppProvider = ({ children }) => {
       } else {
         userdata = (await UserAPI.account.getUserFromUID(uid))?.userdata;
       }
-      console.log('USERDATA', userdata)
       if (userdata?.uid) {
         sessionStorage.setItem("user", JSON.stringify(userdata));
         setUser(userdata);
@@ -53,6 +53,8 @@ export const AppProvider = ({ children }) => {
       }
     } catch (error) {
       logNotification("error", error.message);
+    } finally {
+      setIsLoading(false);
     }
     return null;
   };
@@ -87,6 +89,7 @@ export const AppProvider = ({ children }) => {
 
   const APP = {
     STATES: {
+      isLoading,
       isMobile,
       user,
       searchResults,
@@ -105,6 +108,7 @@ export const AppProvider = ({ children }) => {
       showSubItems,
     },
     ACTIONS: {
+      setIsLoading,
       updateUser,
       setSearchResults,
       setRoutePath,
