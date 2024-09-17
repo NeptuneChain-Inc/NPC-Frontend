@@ -94,7 +94,7 @@ const AppContainer = styled.div`
   flex-direction: column;
   overflow: hidden;
   @media (min-width: 1024px) {
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
   }
   @media (min-width: 1200px) {

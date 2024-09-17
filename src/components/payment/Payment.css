@@ -13,9 +13,7 @@ h1 {
 .form-container {
   position: relative;
   width: 100%;
-  min-height: 50vh;
   max-width: 600px;
-  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -103,10 +101,7 @@ input.error {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .form-container {
-    width: 90%;
-    padding: 15px;
-  }
+ 
 
   button {
     font-size: 14px;
