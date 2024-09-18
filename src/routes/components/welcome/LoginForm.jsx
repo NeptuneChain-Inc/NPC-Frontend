@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { AnimatePresence } from "framer-motion";
 import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -12,19 +11,12 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import successAnimation from "../../../assets/animations/success-animation.json";
 import environmentalRotation from "../../../assets/animations/environmental-friendly-animation.json";
 import Notification from "../../../components/popups/NotificationPopup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
 import {
-  BUTTON,
-  INPUT,
   LOADING_ANIMATION,
   PROMPT_CARD,
   PROMPT_FORM,
-  TEXT_LINK,
 } from "../../../components/lib/styled";
 import { formVariant, loadingVariant } from "./motion_variants";
-import { CardLogo, logoImage, logoVariants } from "../../Welcome";
 import FormSection from "../../../components/shared/FormSection/FormSection";
 import { Input } from "../../../components/shared/input/Input";
 import {
@@ -32,21 +24,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
 } from "../../../components/shared/button/Button";
-import GoogleSignIn from "./GoogleSignIn";
-import { useNavigate } from "react-router-dom";
-import {useAppContext} from "../../../context/AppContext";
-
-const InputGroup = styled.div`
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: #0077b6;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid #ccc;
-`;
+import { useAppContext } from "../../../context/AppContext";
 
 function isValidEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -82,16 +60,7 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, updateUser }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate();
   const { logNotification } = ACTIONS || {};
-
-  useEffect(() => {
-    if (isSuccess) {
-      setTimeout(() => {
-        onSuccess();
-      }, 2000);
-    }
-  }, [isSuccess]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,8 +68,18 @@ const LoginForm = ({ onSuccess, onSwitchToRegister, updateUser }) => {
 
     try {
       const userData = await signInWithEmailAndPassword(auth, email, password);
-      setIsSuccess(Boolean(await updateUser?.(userData?.user?.uid)));
-      navigate("/dashboard/environmental");
+      const userUID = userData?.user?.uid;
+      if (userUID) {
+        if (await updateUser?.(userUID)) {
+          onSuccess();
+        } else {
+          alert(`Could Not Log in user: ${userData?.user?.displayName}`);
+          setError(`Could Not Log in user: ${userData?.user?.displayName}`)
+        }
+      } else {
+        alert(`Invalid Log in!`);
+        setError(`Invalid Log in!`);
+      }
     } catch (error) {
       setError(error.message);
     } finally {
