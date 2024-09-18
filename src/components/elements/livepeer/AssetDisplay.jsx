@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import styled from "styled-components";
-import {UploadButton} from "./elements/MediaGallery";
+import {UploadButton} from "./MediaUpload";
 
 const AssetCard = styled(motion.div)`
   border: 1px solid #ccc;

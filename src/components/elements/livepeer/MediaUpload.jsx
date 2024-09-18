@@ -155,24 +155,27 @@ const ConcludeButton = styled.div`
   margin: auto;
 `;
 
- const UploadedMediaButton = styled.div`
- width: 20%;
-  background: ${logoColors.primary};
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: 0.3s ease-in-out;
-  display: flex;
-  justify-content: center;
-  margin: auto;
-  margin-bottom: 1rem;
-  cursor: pointer;
+export const UploadButton = styled.div`
+ background: ${logoColors.primary};
+ color: #fff;
+ padding: 0.5rem 1rem;
+ border-radius: 0.5rem;
+ transition: 0.3s ease-in-out;
+ display: flex;
+ justify-content: center;
+ margin: auto;
+ margin-bottom: 1rem;
+ cursor: pointer;
 
-  &:hover {
-  padding: 0.8rem 1.3rem;
-  background: ${logoColors.primary};
-  color: #fff;
-  }
+ &:hover {
+ padding: 0.8rem 1.3rem;
+ background: ${logoColors.primary};
+ color: #fff;
+ }
+`;
+
+ const UploadedMediaButton = styled(UploadButton)`
+ width: 20%;
 `;
 
 const renderPreview = (previewURL, fileType) => {
