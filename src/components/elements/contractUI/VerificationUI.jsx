@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { STRING, logDev } from "../../../scripts/helpers";
-import { UploadButton } from "../livepeer/elements/MediaGallery";
 import { AssetAPI, UserAPI } from "../../../scripts/back_door";
 import AssetCard from "./AssetCard";
 import { ButtonPrimary } from "../../shared/button/Button";
@@ -420,9 +419,9 @@ function VerificationUI() {
       )}
 
       {assetID && (
-        <UploadButton onClick={handleSubmission}>
+        <Button onClick={handleSubmission}>
           Submit for Verification
-        </UploadButton>
+        </Button>
       )}
     </Page>
   );
