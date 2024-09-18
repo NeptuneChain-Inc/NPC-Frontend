@@ -5,6 +5,7 @@ import NeptuneIcon from '../../../assets/icon.png';
 import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
 import FormSection from '../../shared/FormSection/FormSection';
 import { Input } from '../../shared/input/Input';
+import {useAppContext} from '../../../context/AppContext';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -127,6 +128,11 @@ const ProfileSettingsTab = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Edit Profile Opted")
+  }
+
   return (
     <ProfileContainer>
       <Section>
@@ -140,7 +146,7 @@ const ProfileSettingsTab = () => {
         </div>
         <Input type="file" id="profileImageInput" style={{ display: 'none' }} onChange={handleImageChange} />
 
-        <ProfileForm>
+        <ProfileForm onSubmit={handleSubmit}>
         <FormSection label={"Username"}>
 
           <Input type="text" id="username" value={user?.username} readOnly />
@@ -153,7 +159,7 @@ const ProfileSettingsTab = () => {
 
         <FormSection label={"Account type"}>
 
-          <Input type="text" id="type" value={user?.type} readOnly 
+          <Input type="text" id="type" value={user?.role} readOnly 
           />
           </FormSection>
 

@@ -11,13 +11,9 @@ import {
   LOADING_ANIMATION,
   PROMPT_CARD,
   PROMPT_FORM,
-  TEXT_LINK,
 } from "../../../components/lib/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faUser } from "@fortawesome/free-regular-svg-icons";
-import { faLock, faPeopleGroup } from "@fortawesome/free-solid-svg-icons";
 import { formVariant, loadingVariant } from "./motion_variants";
-import { CardLogo, logoImage, logoVariants } from "../../Welcome";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 /** #BACKEND */
@@ -25,7 +21,6 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 
 /** FIREBASE AUTH */
 import { auth } from "../../../apis/firebase";
-import { createUser } from "../../../apis/database";
 import { Input } from "../../../components/shared/input/Input";
 import FormSection from "../../../components/shared/FormSection/FormSection";
 import {

@@ -5,6 +5,7 @@ import FormSection from '../../shared/FormSection/FormSection';
 import { Label } from '../../shared/Label/Label';
 import { RadioWithLabel } from '../../shared/Radio/RadioButton';
 import { Select } from "../../shared/Select/Select";
+import {useAppContext} from '../../../context/AppContext';
 
 const PrivacyContainer = styled.div`
   display: flex;
@@ -66,7 +67,7 @@ const PrivacySettingsTab = () => {
   const [dataUploadPrivacy, setDataUploadPrivacy] = useState(true);
 
   const { user } = STATES || {};
-  const accountType = user?.type;
+  const accountType = user?.role;
   console.log({ accountType })
 
   return (

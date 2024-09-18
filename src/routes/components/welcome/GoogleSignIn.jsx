@@ -4,7 +4,6 @@ import { auth } from "../../../apis/firebase";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { getUser } from "../../../apis/database";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../../context/AppContext";

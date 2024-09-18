@@ -9,6 +9,7 @@ import { Label } from "../../shared/Label/Label";
 import FormSection from "../../shared/FormSection/FormSection";
 import { ButtonDanger, ButtonPrimary, ButtonSecondary } from "../../shared/button/Button";
 import {auth} from "../../../apis/firebase";
+import {useAppContext} from "../../../context/AppContext";
 
 const AccountContainer = styled.div`
   display: flex;
