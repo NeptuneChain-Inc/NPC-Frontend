@@ -16,6 +16,7 @@ import ButtonLoading from "../../shared/button/ButtonLoading";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 import { logoColors } from "../../../styles/colors";
 import { useAppContext } from "../../../context/AppContext";
+import {useNavigate} from "react-router-dom";
 
 const colors = {
   primaryBlue: "#1B3B6F",
@@ -154,6 +155,26 @@ const ConcludeButton = styled.div`
   margin: auto;
 `;
 
+ const UploadedMediaButton = styled.div`
+ width: 20%;
+  background: ${logoColors.primary};
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-bottom: 1rem;
+  cursor: pointer;
+
+  &:hover {
+  padding: 0.8rem 1.3rem;
+  background: ${logoColors.primary};
+  color: #fff;
+  }
+`;
+
 const renderPreview = (previewURL, fileType) => {
   if (!(previewURL?.length > 0)) return null;
 
@@ -179,7 +200,7 @@ const DEFAULT_THUMBNAIL = [
   "https://www.ncl.ac.uk/mediav8/newcastle-university-in-singapore/images/key-water.jpg",
 ];
 
-const MediaUpload = ({ togglePopup }) => {
+const MediaUpload = () => {
   const { STATES } = useAppContext();
   const [file, setFile] = useState(null);
   const [uploadName, setUploadName] = useState("");
@@ -187,6 +208,7 @@ const MediaUpload = ({ togglePopup }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadPercentage, setuploadPercentage] = useState(0);
   const [asset, setAsset] = useState(null);
+  const navigate = useNavigate();
 
   const { user } = STATES || {};
 
@@ -230,6 +252,10 @@ const MediaUpload = ({ togglePopup }) => {
       "application/pdf": [".pdf"],
     },
   });
+
+  const handleOpenUploads = () => {
+    navigate('/features/verification');
+  }
 
   const handleUpload = async () => {
     if (!activeFile) {
@@ -396,11 +422,11 @@ const MediaUpload = ({ togglePopup }) => {
     setUploadName("");
     setUploadDescription("");
     setAsset(null);
-    togglePopup?.();
   };
 
   return (
     <DashboardPage title={"Media Upload"}>
+      <UploadedMediaButton onClick={handleOpenUploads}>My Uploads</UploadedMediaButton>
       <AssetContainer isLoading={isLoading || uploadPercentage > 0}>
         {/*     <UploadProgress progress={50} />
          */}{" "}

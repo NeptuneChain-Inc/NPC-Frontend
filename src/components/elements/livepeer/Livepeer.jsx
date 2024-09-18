@@ -7,8 +7,8 @@ import {
 } from '@livepeer/react';
 import { Stream } from './Stream';
 import { MediaPlayer, BasicStreamPlayer } from './elements';
-import MediaGallery from './elements/MediaGallery';
 import {LivepeerAPI} from '../../../scripts/back_door';
+import MediaUpload from './MediaUpload';
 
 //livepeer github docs: https://github.com/livepeer/livepeer-js?tab=readme-ov-file
 
@@ -51,7 +51,7 @@ function Livepeer() {
         )
       case 'upload-media':
         return (
-          <MediaGallery />
+          <MediaUpload/>
         )
       default:
         return (
