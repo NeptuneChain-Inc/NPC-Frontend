@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { ethers } from 'ethers';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { motion } from 'framer-motion';
-import PoSPopup from './elements/PoSPopup';
-import { formatLongString } from '../../../scripts/utils';
-import { colors } from '../../../styles/colors';
-import { ACTION_BUTTON } from '../../styled';
-import placeholder from '../../../assets/icon.png';
-import { ButtonPrimary, ButtonSecondary } from '../../shared/button/Button';
-import { DashboardPage } from '../../shared/DashboardPage/DashboardPage';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import styled, { keyframes } from "styled-components";
+import { ethers } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "framer-motion";
+import PoSPopup from "./elements/PoSPopup";
+import { formatLongString } from "../../../scripts/utils";
+import placeholder from "../../../assets/icon.png";
+import { ButtonPrimary, ButtonSecondary } from "../../shared/button/Button";
+import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
+import { MarketplaceAPI } from "../../../scripts/back_door";
+import { useAppContext } from "../../../context/AppContext";
 
 const logoColors = {
-  primary: '#005A87',  
-  secondary: '#003F5E', 
-  accent: '#007BB5', 
+  primary: "#005A87",
+  secondary: "#003F5E",
+  accent: "#007BB5",
 };
 
 const fadeIn = keyframes`
@@ -29,10 +29,9 @@ const rotate = keyframes`
   to { transform: rotate(360deg); }
 `;
 
-
 const Spinner = styled.div`
-  border: 4px solid ${({theme}) => theme.colors.ui200};
-  border-top: 4px solid ${({theme}) => theme.colors.ui800};
+  border: 4px solid ${({ theme }) => theme.colors.ui200};
+  border-top: 4px solid ${({ theme }) => theme.colors.ui800};
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -47,7 +46,6 @@ const ListingPageWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   animation: ${fadeIn} 0.6s ease-out;
-
 `;
 
 const BlurredBack = styled(motion.div)`
@@ -62,9 +60,9 @@ const BlurredBack = styled(motion.div)`
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
   z-index: 10;
-  `;
+`;
 
-  const MainContent = styled.div`
+const MainContent = styled.div`
   width: 80%;
   height: auto;
   margin-right: 20px;
@@ -80,10 +78,10 @@ const BlurredBack = styled(motion.div)`
 `;
 
 const ButtonSection = styled.div`
-display: flex;
-align-items: center;
-gap:8px;
-`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
 const DrawerToggleButton = styled.button`
   display: none;
@@ -99,9 +97,7 @@ const DrawerToggleButton = styled.button`
   }
 `;
 
-
-
-  const Section = styled.div`
+const Section = styled.div`
   height: auto;
   margin-bottom: 30px;
   padding: 20px;
@@ -114,23 +110,20 @@ const HeroSection = styled(Section)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: ${({theme}) => theme.colors.ui200};
-.hero-section-info {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-
-}
-
-
+  border-bottom: ${({ theme }) => theme.colors.ui200};
+  .hero-section-info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
 `;
 
 const TokenImage = styled(motion.img)`
   max-width: 80px;
 
-  border: 1px solid ${({theme}) => theme.colors.ui200};
-  background: ${({theme}) => theme.colors.ui50};
-  border-radius: ${({theme}) => theme.borderRadius.default};
+  border: 1px solid ${({ theme }) => theme.colors.ui200};
+  background: ${({ theme }) => theme.colors.ui50};
+  border-radius: ${({ theme }) => theme.borderRadius.default};
   padding: 24px;
   height: auto;
 `;
@@ -138,58 +131,69 @@ const TokenImage = styled(motion.img)`
 const SectionTitle = styled.h2`
   margin-bottom: 4px;
   font-size: 16px;
-  color: ${({theme}) => theme.colors.ui800};
+  color: ${({ theme }) => theme.colors.ui800};
 `;
 
-const Item = styled.div`
-
-`;
+const Item = styled.div``;
 
 const ItemLabel = styled.span`
   font-weight: bold;
 `;
 
 const ItemData = styled.span`
-  font-weight: 400; 
-  color: ${({theme}) => theme.colors.ui600};
+  font-weight: 400;
+  color: ${({ theme }) => theme.colors.ui600};
   font-size: 16px;
-  font-weight: 500; 
+  font-weight: 500;
 `;
 
 //USE API
 const ListingPage = () => {
   const { id } = useParams();
+  const { STATES } = useAppContext();
+  const { user } = STATES || {};
   const navigate = useNavigate();
   const [listingDetails, setListingDetails] = useState({});
   const [bidHistory, setBidHistory] = useState([]);
   const [saleHistory, setSaleHistory] = useState([]);
-  const [actionType, setActionType] = useState('');
+  const [actionType, setActionType] = useState("");
   const [showPoSPopup, setShowPoSPopup] = useState(false);
   const [userBidHistory, setUserBidHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-const toggleDrawer = () => {
-  setIsDrawerOpen(!isDrawerOpen);
-};
+  const marketEvents = MarketplaceAPI.Events;
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
   //   const [transferHistory, setTransferHistory] = useState([]);
 
   useEffect(() => {
     const fetchListingData = async () => {
       setIsLoading(true);
       try {
-        const allEvents = await marketInteractions.Events.getAllEvents();
-        console.log({ allEvents })
-        const listingEvents = allEvents.filter(event => event.listingId?.toString() === id);
+        const allEvents = (await marketEvents.getAllEvents())?.events;
+        if (!allEvents) return;
+        console.log({ allEvents });
+        const listingEvents = allEvents.filter(
+          (event) => event.listingId?.toString() === id
+        );
 
         // Set the state based on the processed data
-        setListingDetails(listingEvents.find(event => event.type === 'Listing') || {});
-        setBidHistory(listingEvents.filter(event => event.type === 'Bid Placed' || event.type === 'Bid Accepted'));
-        setSaleHistory(listingEvents.filter(event => event.type === 'Sale'));
-
+        setListingDetails(
+          listingEvents.find((event) => event.type === "Listing") || {}
+        );
+        setBidHistory(
+          listingEvents.filter(
+            (event) =>
+              event.type === "Bid Placed" || event.type === "Bid Accepted"
+          )
+        );
+        setSaleHistory(listingEvents.filter((event) => event.type === "Sale"));
       } catch (error) {
-        console.error('Error fetching listing data:', error);
+        console.error("Error fetching listing data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -199,25 +203,23 @@ const toggleDrawer = () => {
   }, [id]);
 
   useEffect(() => {
-    if (signedUser) {
+    if (user) {
       fetchUserBids();
     }
-  }, [signedUser])
+  }, [user]);
 
   const fetchUserBids = async () => {
-    const bidEvents = await marketInteractions.Events.filtered.bidded();
-    setUserBidHistory(bidEvents.filter(event => event.bidder === signedUser && event.listingId === Number(id)));
-  }
-
+    const bidEvents = (await marketEvents.filtered.bidded())?.events;
+    if (!bidEvents) return;
+    //setUserBidHistory(bidEvents.filter(event => event.bidder === user.address && event.listingId === Number(id)));
+    setUserBidHistory(
+      bidEvents.filter((event) => event.listingId === Number(id))
+    );
+  };
 
   const openPoSPopup = (type) => {
-    if (signedMarketInteractions) {
-      setActionType(type);
-      setShowPoSPopup(true);
-    } else {
-      alert('User Not Signed')
-    }
-
+    setActionType(type);
+    setShowPoSPopup(true);
   };
 
   const closePoSPopup = () => {
@@ -226,18 +228,24 @@ const toggleDrawer = () => {
 
   const buyNFT = async (listingId, value) => {
     try {
-      return await signedMarketInteractions?.Functions?.Buyer?.buyNFT(listingId, ethers.parseUnits(value, 'ether'));
+      return await MarketplaceAPI.Buyer.buyNFT(
+        listingId,
+        ethers.parseUnits(value, "ether")
+      );
     } catch (error) {
-      console.error('Error buying NFT:', error);
+      console.error("Error buying NFT:", error);
       throw error; // Rethrow the error to handle it in the component
     }
   };
 
   const placeBid = async (listingId, value) => {
     try {
-      return await signedMarketInteractions?.Functions?.Buyer?.placeBid(listingId, ethers.parseUnits(value, 'ether'));
+      return await MarketplaceAPI.Buyer.placeBid(
+        listingId,
+        ethers.parseUnits(value, "ether")
+      );
     } catch (error) {
-      console.error('Error placing bid:', error);
+      console.error("Error placing bid:", error);
       throw error;
     }
   };
@@ -251,112 +259,129 @@ const toggleDrawer = () => {
   }
 
   return (
-    <DashboardPage backHref={'/marketplace'}  title={"Listing"}>
-
-    <ListingPageWrapper>
-      {isLoading ? (
-        <Spinner />
-      ):(
-        <MainContent>
-          
-        <HeroSection>
-          <div className='hero-section-info'>
-
-          <TokenImage src={placeholder}/>
-          <div>
-          <SectionTitle>Listing #{id}</SectionTitle>
-          <Item>
-            <ItemData>${listingDetails.price}</ItemData>
-          </Item>
-          </div>
-          </div>
-          <ButtonSection>
-<ButtonPrimary
-  whileHover={{ scale: 1.05 }} 
-  whileTap={{ scale: 0.95 }} 
-  onClick={() => openPoSPopup('buy')} 
-  disabled={isLoading}
-  >
-  Buy Now
-</ButtonPrimary>
-<ButtonSecondary 
-  whileHover={{ scale: 1.05 }} 
-  whileTap={{ scale: 0.95 }} 
-  onClick={() => openPoSPopup('bid')} 
-  disabled={isLoading}
-  >
-  Make a Bid
-</ButtonSecondary>
-{/* Additional user actions */}
-  </ButtonSection>
-        </HeroSection>
-
-        <Section>
-          <SectionTitle>Bid History</SectionTitle>
-          {bidHistory.map((bid, index) => (
-            <Item key={index}>
-              <ItemLabel>Action: <ItemData>{bid.type}</ItemData></ItemLabel>
-              <ItemLabel>Bidder: <ItemData>{bid.bidder}</ItemData></ItemLabel>
-              <ItemLabel>Amount: <ItemData>{bid.amount} Matic</ItemData></ItemLabel>
-              {/* ... Other bid details */}
-            </Item>
-          ))}
-        </Section>
-
-        <Section>
-          <SectionTitle>Sale History</SectionTitle>
-          {saleHistory.map((sale, index) => (
-            <Item key={index}>
-              <ItemLabel>Buyer: <ItemData>{sale.buyer}</ItemData></ItemLabel>
-              <ItemLabel>Sale Price: <ItemData>{sale.price} Matic</ItemData></ItemLabel>
-              {/* ... Other sale details */}
-            </Item>
-          ))}
-        </Section>
-        <Section>
-          <SectionTitle>Your Bid History</SectionTitle>
-          {signedUser ? (
-            <>
-              {userBidHistory.length > 0 ? (
-                userBidHistory.map((bidEvent) => (
-                  <Item key={bidEvent.blockNumber}>
-                    <ItemLabel>Block: <ItemData>{bidEvent.blockNumber}</ItemData></ItemLabel>
-                    <ItemLabel>Amount: <ItemData>{bidEvent.amount} Matic</ItemData></ItemLabel>
-                    {/* ... Other bid details */}
+    <DashboardPage backHref={"/marketplace"} title={"Listing"}>
+      <ListingPageWrapper>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <MainContent>
+            <HeroSection>
+              <div className="hero-section-info">
+                <TokenImage src={placeholder} />
+                <div>
+                  <SectionTitle>Listing #{id}</SectionTitle>
+                  <Item>
+                    <ItemData>${listingDetails.price}</ItemData>
                   </Item>
-                ))
+                </div>
+              </div>
+              <ButtonSection>
+                <ButtonPrimary
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => openPoSPopup("buy")}
+                  disabled={isLoading}
+                >
+                  Buy Now
+                </ButtonPrimary>
+                <ButtonSecondary
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => openPoSPopup("bid")}
+                  disabled={isLoading}
+                >
+                  Make a Bid
+                </ButtonSecondary>
+                {/* Additional user actions */}
+              </ButtonSection>
+            </HeroSection>
+
+            <Section>
+              <SectionTitle>Bid History</SectionTitle>
+              {bidHistory.map((bid, index) => (
+                <Item key={index}>
+                  <ItemLabel>
+                    Action: <ItemData>{bid.type}</ItemData>
+                  </ItemLabel>
+                  <ItemLabel>
+                    Bidder: <ItemData>{bid.bidder}</ItemData>
+                  </ItemLabel>
+                  <ItemLabel>
+                    Amount: <ItemData>{bid.amount} Matic</ItemData>
+                  </ItemLabel>
+                  {/* ... Other bid details */}
+                </Item>
+              ))}
+            </Section>
+
+            <Section>
+              <SectionTitle>Sale History</SectionTitle>
+              {saleHistory.map((sale, index) => (
+                <Item key={index}>
+                  <ItemLabel>
+                    Buyer: <ItemData>{sale.buyer}</ItemData>
+                  </ItemLabel>
+                  <ItemLabel>
+                    Sale Price: <ItemData>{sale.price} Matic</ItemData>
+                  </ItemLabel>
+                  {/* ... Other sale details */}
+                </Item>
+              ))}
+            </Section>
+            <Section>
+              <SectionTitle>Your Bid History</SectionTitle>
+              {user ? (
+                <>
+                  {userBidHistory.length > 0 ? (
+                    userBidHistory.map((bidEvent) => (
+                      <Item key={bidEvent.blockNumber}>
+                        <ItemLabel>
+                          Block: <ItemData>{bidEvent.blockNumber}</ItemData>
+                        </ItemLabel>
+                        <ItemLabel>
+                          Amount: <ItemData>{bidEvent.amount} Matic</ItemData>
+                        </ItemLabel>
+                        {/* ... Other bid details */}
+                      </Item>
+                    ))
+                  ) : (
+                    <p>
+                      No Bids
+                      {/* for {frmoatLongString(user)} */}
+                    </p>
+                  )}
+                </>
               ) : (
-                <p>No Bids for {formatLongString(signedUser)}</p>
+                <p>User Not Connected</p>
               )}
-            </>
-          ) : (
-            <p>User Not Connected</p>
-          )}
-        </Section>
+            </Section>
+          </MainContent>
+        )}
 
-      </MainContent>
-      )}
+        <DrawerToggleButton onClick={toggleDrawer}>
+          <FontAwesomeIcon icon={isDrawerOpen ? faArrowLeft : faArrowRight} />
+        </DrawerToggleButton>
 
-<DrawerToggleButton onClick={toggleDrawer}>
-  <FontAwesomeIcon icon={isDrawerOpen ? faArrowLeft : faArrowRight} />
-</DrawerToggleButton>
+        <Section></Section>
 
-        <Section>
-
-        </Section>
-
-
-      {showPoSPopup && (
-        <BlurredBack
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        >
-          <PoSPopup closePopup={closePoSPopup} actionType={actionType} listingId={id} listingPrice={listingDetails.price} buyNFT={buyNFT} placeBid={placeBid} />
-        </BlurredBack>
-      )}
-    </ListingPageWrapper>
-      </DashboardPage>
+        {showPoSPopup && (
+          <BlurredBack
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <PoSPopup
+              closePopup={closePoSPopup}
+              actionType={actionType}
+              listingId={id}
+              listingPrice={listingDetails.price}
+              buyNFT={buyNFT}
+              placeBid={placeBid}
+            />
+          </BlurredBack>
+        )}
+      </ListingPageWrapper>
+    </DashboardPage>
   );
 };
 

@@ -900,17 +900,17 @@ const MarketplaceAPI = {
     listAvailableNFTs: () => handleMarketplacePost("events/listings", {}),
     getAllEvents: () => handleMarketplacePost("events/all", {}),
     filtered: {
-      listed: (fromBlock, toblock) =>
+      listed: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/listed", { fromBlock, toblock }),
-      sale: (fromBlock, toblock) =>
+      sale: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/sale", { fromBlock, toblock }),
-      delisted: (fromBlock, toblock) =>
+      delisted: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/delisted", { fromBlock, toblock }),
-      bidded: (fromBlock, toblock) =>
+      bidded: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/bidded", { fromBlock, toblock }),
-      bidAccepted: (fromBlock, toblock) =>
+      bidAccepted: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/bidAccepted", { fromBlock, toblock }),
-      bidWithdrawn: (fromBlock, toblock) =>
+      bidWithdrawn: (fromBlock = 500, toblock = "latest") =>
         handleMarketplacePost("events/bidWithdrawn", { fromBlock, toblock }),
     },
   },

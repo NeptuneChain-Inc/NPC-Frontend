@@ -4,14 +4,12 @@ import { ethers } from "ethers";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Tab, TabList, TabPanel } from "react-tabs";
+import { Tabs, Tab, TabList, TabPanel } from "react-tabs";
 import styled from "styled-components";
-
+import "react-tabs/style/react-tabs.css";
 import placeholderIMG from "../../../assets/icon.png";
-import { NFT_API } from "../../../scripts/back_door";
+import { MarketplaceAPI, NFT_API } from "../../../scripts/back_door";
 import { isNotZeroAddress } from "../../../scripts/utils";
-import { Badge } from "../../shared/Badge/Badge";
-import Certificate from "../../shared/Certificate/Certificate";
 import { DashboardPage } from "../../shared/DashboardPage/DashboardPage";
 import { NFTGrid } from "./MarketBrowser";
 import { NFTImage } from "./elements/NFTCard";
@@ -69,6 +67,19 @@ const StyledTab = styled(Tab)`
   &:focus {
     outline: none;
   }
+`;
+
+const Badge = styled(StyledTab)`
+  height: 32px;
+  border: 1px solid black;
+  font-size: 14px;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #000;
+  color: #fff;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
 `;
 
 StyledTab.tabsRole = "Tab";
@@ -182,6 +193,8 @@ const hoverAnimation = {
   boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
 };
 
+export const signedUser = '0x94439f811328BAD743F68C26b5bF5B0A67b3b1df';
+
 //USE API
 /** IMPLEMENT MARKETPLACE FUNCTIONALITY */
 const SellerDashboard = () => {
@@ -210,7 +223,7 @@ const SellerDashboard = () => {
   const fetchUserNFTs = async () => {
     setIsLoading(true);
     try {
-      const wallet_nfts = await NFT_API.get.wallet_nfts(signedUser);
+      const {wallet_nfts} = await NFT_API.get.wallet_nfts(signedUser);
 
       if (wallet_nfts) {
         console.log("DEV: wallet_nfts", wallet_nfts);
@@ -229,7 +242,7 @@ const SellerDashboard = () => {
   const fetchListedNFTs = async () => {
     setIsLoading(true);
     try {
-      const nfts = await marketInteractions.Events.listAvailableNFTs();
+      const nfts = await MarketplaceAPI.Events.listAvailableNFTs();
       const _userListed = nfts.filter((event) => event.seller === signedUser);
       setUserListedNFTs(_userListed);
       return _userListed;
@@ -244,7 +257,7 @@ const SellerDashboard = () => {
     setIsLoading(true);
     try {
       const bidsPromises = userListedNFTs.map(async (nft) => {
-        const _bid = await marketInteractions.Functions.Getters.getHighestBids(
+        const _bid = await MarketplaceAPI.Getters.getHighestBids(
           nft.listingId
         );
         if (isNotZeroAddress(_bid.bidder)) {
@@ -272,10 +285,10 @@ const SellerDashboard = () => {
     setIsLoading(true);
     try {
       const listingFee =
-        await marketInteractions.Functions.Getters.getListingFee();
+        await MarketplaceAPI.Getters.getListingFee();
 
       const result =
-        await signedMarketInteractions.Functions.Seller.approveAndListNFT(
+        await MarketplaceAPI.Seller.approveAndListNFT(
           tokenAddress,
           tokenId,
           ethers.parseEther(price),
@@ -310,7 +323,7 @@ const SellerDashboard = () => {
     setIsLoading(true);
     try {
       const result =
-        await signedMarketInteractions.Functions.Seller.cancelListing(
+        await MarketplaceAPI.Seller.cancelListing(
           listingId
         );
       console.log("@DEV Handle Result", result);
@@ -341,7 +354,7 @@ const SellerDashboard = () => {
   const handleAcceptBid = async (listingId) => {
     setIsLoading(true);
     try {
-      const result = await signedMarketInteractions.Functions.Seller.acceptBid(
+      const result = await MarketplaceAPI.Seller.acceptBid(
         listingId
       );
       console.log("@DEV Handle Result", result);
@@ -371,6 +384,7 @@ const SellerDashboard = () => {
 
   return (
     <DashboardPage>
+      <Tabs>
       <StyledTabList>
         <Badge>Owned</Badge>
         <Badge>Listed</Badge>
@@ -497,6 +511,7 @@ const SellerDashboard = () => {
           )}
         </StyledTabPanel>
       </TabContainer>
+      </Tabs>
     </DashboardPage>
   );
 };
