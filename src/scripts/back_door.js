@@ -862,7 +862,7 @@ const MetricsAPI = {
 const handleMarketplacePost = async (endpoint, body) => {
   try {
     const response = await axios.post(
-      `${configs.server_url}/${endpoint}`,
+      `${configs.server_url}/marketplace/${endpoint}`,
       body
     );
     return response?.data;
@@ -875,7 +875,7 @@ const handleMarketplacePost = async (endpoint, body) => {
 const MarketplaceAPI = {
   Seller: {
     approveAndListNFT: (tokenAddress, tokenId, price, value) =>
-      handleMarketplacePost("marketplace/seller/list_nft", {
+      handleMarketplacePost("seller/list_nft", {
         tokenAddress,
         tokenId,
         price,
