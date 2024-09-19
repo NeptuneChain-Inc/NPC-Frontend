@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { colors } from '../../../styles/colors';
-import { Badge } from '../../shared/Badge/Badge';
-import { FaChevronDown } from 'react-icons/fa';
-import Spinner from '../../shared/Spinner/Spinner';
-import {MarketplaceAPI} from '../../../scripts/back_door';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
+import { colors } from "../../../styles/colors";
+import { Badge } from "../../shared/Badge/Badge";
+import { FaChevronDown } from "react-icons/fa";
+import Spinner from "../../shared/Spinner/Spinner";
+import { MarketplaceAPI } from "../../../scripts/back_door";
+import {Button} from "react-bootstrap";
+import {FaX} from "react-icons/fa6";
 
 const FullScreenWrapper = styled.div`
   position: fixed;
@@ -42,7 +44,6 @@ const PopupWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  
 
   @media (max-width: 768px) {
     width: 95%;
@@ -58,27 +59,25 @@ const CloseButton = styled.button`
   border: none;
   background: none;
   font-size: 24px;
-  color: ${({theme}) => theme.colors.ui400};
+  color: ${({ theme }) => theme.colors.ui400};
   transition: color 0.2s, transform 0.2s;
   font-size: 16px;
   &:hover {
-    color: ${({theme}) => theme.colors.ui800};
+    color: ${({ theme }) => theme.colors.ui800};
     transform: translateY(-2px);
   }
 `;
 
 const EventDetailWrapper = styled.div`
-border-top: 1px solid ${({theme}) => theme.colors.ui100};
-border-bottom: 1px solid ${({theme}) => theme.colors.ui100};
-padding: 16px 0px;
+  border-top: 1px solid ${({ theme }) => theme.colors.ui100};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.ui100};
+  padding: 16px 0px;
 `;
 
 const EventSummary = styled(motion.div)`
-font-size: 16px;
-font-weight: 500; 
-color: ${({theme}) => theme.colors.ui800};
-
-
+  font-size: 16px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.ui800};
 `;
 
 const EventTable = styled(motion.table)`
@@ -104,16 +103,14 @@ const NoEventsMessage = styled.p`
 `;
 
 const FilterSection = styled.div`
-display: flex;
-align-items: center;
-gap:4px;
-flex-wrap: wrap; 
-text-transform: capitalize;
-width: 100%;
-justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  text-transform: capitalize;
+  width: 100%;
+  justify-content: flex-start;
 `;
-
-
 
 const ScrollableEventContainer = styled.div`
   width: 100%;
@@ -123,16 +120,15 @@ const ScrollableEventContainer = styled.div`
 `;
 
 const Event = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-cursor: pointer;
-svg {
-  color: ${({theme}) => theme.colors.ui600};
-  font-size:12px
-}
-`
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  svg {
+    color: ${({ theme }) => theme.colors.ui600};
+    font-size: 12px;
+  }
+`;
 
 const variants = {
   open: { opacity: 1, height: "auto" },
@@ -143,47 +139,67 @@ const EventDetail = ({ event, filterType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  const mainInfo = filterType === 'all' ?
-    { '': event.type || 'unnamed'} :
-    { 'Listing #': event.listingId || 'Not Available'};
+  const mainInfo =
+    filterType === "all"
+      ? { "": event.type || "unnamed" }
+      : { "Listing #": event.listingId || "Not Available" };
 
   return (
     <EventDetailWrapper>
-
-      <EventSummary onClick={toggleOpen} initial="initial" animate={isOpen ? "open" : "collapsed"}>
+      <EventSummary
+        onClick={toggleOpen}
+        initial="initial"
+        animate={isOpen ? "open" : "collapsed"}
+      >
         {Object.entries(mainInfo).map(([key, value], idx) => (
           <Event key={idx}>
-          <p key={idx}>{value}</p>
-          <FaChevronDown />
+            <p key={idx}>{value}</p>
+            <FaChevronDown />
           </Event>
         ))}
       </EventSummary>
 
       <AnimatePresence>
         {isOpen && (
-          <EventTable variants={variants} initial="initial" animate="open" exit="collapsed">
+          <EventTable
+            variants={variants}
+            initial="initial"
+            animate="open"
+            exit="collapsed"
+          >
             <tbody>
               {Object.entries(event).map(([key, value], idx) => (
                 <tr key={idx}>
                   <td>{key}</td>
-                  <td>{typeof value === 'string' ? value : JSON.stringify(value)} {(key === 'price' || key === 'amount') && '$'}</td>
+                  <td>
+                    {typeof value === "string" ? value : JSON.stringify(value)}{" "}
+                    {(key === "price" || key === "amount") && "$"}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </EventTable>
         )}
       </AnimatePresence>
-
     </EventDetailWrapper>
   );
 };
 
 const EventsPopup = ({ onClose }) => {
   const [events, setEvents] = useState([]);
-  const [filterType, setFilterType] = useState('all');
+  const [filterType, setFilterType] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [error, setError] = useState(null);
+
   const marketEvents = MarketplaceAPI.Events;
+
+  useEffect(() => {
+    fetchData();
+  }, [filterType]);
+
+  const handleFilterChange = (type) => {
+    setFilterType(type);
+  };
 
   const fetchEvents = async (
     filterType,
@@ -192,31 +208,28 @@ const EventsPopup = ({ onClose }) => {
   ) => {
     let _events;
     if (filterType in marketEvents.filtered) {
-      _events = await marketEvents.filtered[filterType](rangeFilter, toBlock);
+      _events = (await marketEvents.filtered[filterType](rangeFilter, toBlock))
+        ?.events;
       console.log("filtered", { filterType, _events });
     } else {
-      _events = await marketEvents.getAllEvents(rangeFilter, toBlock);
-      const fListed = marketEvents.filtered.listed(rangeFilter, toBlock);
-      console.log("filtered Listings", { _events, fListed });
+      _events = (await marketEvents.getAllEvents(rangeFilter, toBlock))?.events;
+      console.log("all events", { _events });
     }
 
-    if (_events) {
+    if (Array.isArray(_events)) {
       setEvents(_events);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
       await fetchEvents(filterType);
+    } catch (error) {
+      setError(error?.message);
+    } finally {
       setIsLoading(false);
-    };
-
-    fetchData();
-  }, [filterType]);
-
-  const handleFilterChange = (type) => {
-    setFilterType(type);
+    }
   };
 
   return (
@@ -224,23 +237,41 @@ const EventsPopup = ({ onClose }) => {
       <PopupWrapper>
         <CloseButton onClick={onClose}>✖ </CloseButton>
         <FilterSection>
-          <Badge onClick={() => handleFilterChange('all')}>All Events</Badge>
-          {Object.keys(marketEvents?.filtered ?? {}).map((eventFunction, index) => (
-            <Badge key={index} onClick={() => handleFilterChange(eventFunction)}>
-              {eventFunction.replace(/([A-Z])/g, ' $1').trim()} Events
-            </Badge>
-          ))}
+          <Badge onClick={() => handleFilterChange("all")}>All Events</Badge>
+          {Object.keys(marketEvents?.filtered ?? {}).map(
+            (eventFunction, index) => (
+              <Badge
+                key={index}
+                onClick={() => handleFilterChange(eventFunction)}
+              >
+                {eventFunction.replace(/([A-Z])/g, " $1").trim()} Events
+              </Badge>
+            )
+          )}
         </FilterSection>
 
         <ScrollableEventContainer>
+          {error && (
+            <>
+              <NoEventsMessage style={{ color: "red", display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <FaX onClick={() => setError(null)} />{error}
+              </NoEventsMessage>
+              
+            </>
+          )}
           {isLoading ? (
             <Spinner text="Loading Events..." />
-          ) : events.length === 0 ? (
+          ) : events?.length === 0 ? (
             <NoEventsMessage>No events to display</NoEventsMessage>
           ) : (
             <AnimatePresence>
-              {events.map((event, index) => (
-                <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              {events?.map((event, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
                   <EventDetail event={event} filterType={filterType} />
                 </motion.div>
               ))}
