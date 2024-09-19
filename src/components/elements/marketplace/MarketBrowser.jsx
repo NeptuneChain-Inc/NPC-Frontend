@@ -63,9 +63,8 @@ const MarketBrowser = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const fetchedNfts = await marketEvents?.listAvailableNFTs() || [];
-            console.log(fetchedNfts)
-            setNfts(fetchedNfts);
+            const {nfts} = await marketEvents?.listAvailableNFTs() || [];
+            setNfts(nfts);
         } catch (err) {
             console.error(err)
             setError(err.message);
