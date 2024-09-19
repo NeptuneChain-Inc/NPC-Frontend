@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ethers } from 'ethers';
 import { NFTCard } from './elements';
 import { useNavigate } from 'react-router-dom';
+import {MarketplaceAPI} from '../../../scripts/back_door';
 
 export const NFTGrid = styled.div`
   display: grid;
@@ -46,15 +47,17 @@ const StyledLoading = styled.div`
     }
 `
 
-const MarketBrowser = ({ marketEvents }) => {
+const MarketBrowser = () => {
     const navigate = useNavigate();
     const [nfts, setNfts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const marketEvents = MarketplaceAPI.Events;
+
     useEffect(() => {
         fetchData()
-    }, [marketEvents])
+    }, [])
 
 
     const fetchData = async () => {

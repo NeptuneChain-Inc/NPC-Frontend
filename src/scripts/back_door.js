@@ -6,20 +6,37 @@ const createAccount = async (userdata) =>
   (await axios.post(`${configs.server_url}/account/create`, userdata))?.data;
 
 const registerAccount = async (accountID, role, txAddress) =>
-  (await axios.post(`${configs.server_url}/account/register`, { accountID, role, txAddress }))?.data;
+  (
+    await axios.post(`${configs.server_url}/account/register`, {
+      accountID,
+      role,
+      txAddress,
+    })
+  )?.data;
 
 const verifyAccountRole = async (accountID, role) =>
-  (await axios.post(`${configs.server_url}/account/verifyRole`, { accountID, role }))?.data;
+  (
+    await axios.post(`${configs.server_url}/account/verifyRole`, {
+      accountID,
+      role,
+    })
+  )?.data;
 
 const verifyAccountIsRegistered = async (accountID) =>
-  (await axios.post(`${configs.server_url}/account/isRegistered`, {accountID}))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/account/isRegistered`, {
+      accountID,
+    })
+  )?.data;
 const verifyAccountIsNotBlacklisted = async (accountID) =>
-  (await axios.post(`${configs.server_url}/account/isNotBlacklisted`, {accountID}))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/account/isNotBlacklisted`, {
+      accountID,
+    })
+  )?.data;
 
 const getAccountData = async (accountID) =>
-  (await axios.post(`${configs.server_url}/account/data`, {accountID}))?.data;
+  (await axios.post(`${configs.server_url}/account/data`, { accountID }))?.data;
 
 const AccountAPI = {
   create: createAccount,
@@ -29,17 +46,23 @@ const AccountAPI = {
     isRegistered: verifyAccountIsRegistered,
     isNotBlacklisted: verifyAccountIsNotBlacklisted,
   },
-  data: getAccountData
+  data: getAccountData,
 };
 
 /*************************USER_DATABASE_ENDPOINTS************************************* */
 
 const getUserFromUID = async (uid) =>
-  (await axios.post(`${configs.server_url}/db/user/get/from/uid`, { userUID: uid }))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/db/user/get/from/uid`, {
+      userUID: uid,
+    })
+  )?.data;
 const getUserFromUsername = async (username) =>
-  (await axios.post(`${configs.server_url}/db/user/get/from/username`, { username }))
-    ?.data;
+  (
+    await axios.post(`${configs.server_url}/db/user/get/from/username`, {
+      username,
+    })
+  )?.data;
 const getUIDFromUsername = async (username) =>
   (
     await axios.post(`${configs.server_url}/db/user/get/uid/from/username`, {
@@ -99,12 +122,13 @@ const UserAPI = {
   },
 };
 
-
 /*************************MEDIA_ENDPOINTS************************************* */
 
 const getMedia = async (assetID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/media/get`, {assetID});
+    const response = await axios.post(`${configs.server_url}/db/media/get`, {
+      assetID,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error fetching media:", error);
@@ -114,7 +138,10 @@ const getMedia = async (assetID) => {
 
 const getMediaStream = async (streamID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/media/get/stream`, {streamID});
+    const response = await axios.post(
+      `${configs.server_url}/db/media/get/stream`,
+      { streamID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching media stream:", error);
@@ -124,7 +151,10 @@ const getMediaStream = async (streamID) => {
 
 const createMedia = async (newAssetPayload, userUID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/media/create`, {newAssetPayload, userUID});
+    const response = await axios.post(`${configs.server_url}/db/media/create`, {
+      newAssetPayload,
+      userUID,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error creating media:", error);
@@ -134,7 +164,10 @@ const createMedia = async (newAssetPayload, userUID) => {
 
 const createMediaStream = async (userUID, streamData) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/media/create/stream`, {userUID, streamData});
+    const response = await axios.post(
+      `${configs.server_url}/db/media/create/stream`,
+      { userUID, streamData }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error creating media stream:", error);
@@ -152,7 +185,10 @@ const MediaAPI = {
 /*************************ASSET_ENDPOINTS************************************* */
 const addAssetMetadata = async (assetID, metadata) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/asset/create/metadata`, {assetID, metadata});
+    const response = await axios.post(
+      `${configs.server_url}/db/asset/create/metadata`,
+      { assetID, metadata }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error adding asset metadata:", error);
@@ -162,7 +198,10 @@ const addAssetMetadata = async (assetID, metadata) => {
 
 const submitAsset = async (userUID, assetID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/asset/create/submit`, {userUID, assetID});
+    const response = await axios.post(
+      `${configs.server_url}/db/asset/create/submit`,
+      { userUID, assetID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error submitting asset:", error);
@@ -172,7 +211,10 @@ const submitAsset = async (userUID, assetID) => {
 
 const disputeAsset = async (userUID, assetID, reason) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/asset/create/dispute`, {userUID, assetID, reason});
+    const response = await axios.post(
+      `${configs.server_url}/db/asset/create/dispute`,
+      { userUID, assetID, reason }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error disputing asset:", error);
@@ -182,7 +224,10 @@ const disputeAsset = async (userUID, assetID, reason) => {
 
 const closeAssetDispute = async (userUID, disputeID, solution, status) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/asset/create/dispute/close`, {userUID, disputeID, solution, status});
+    const response = await axios.post(
+      `${configs.server_url}/db/asset/create/dispute/close`,
+      { userUID, disputeID, solution, status }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error closing asset dispute:", error);
@@ -192,7 +237,10 @@ const closeAssetDispute = async (userUID, disputeID, solution, status) => {
 
 const approveAsset = async (userUID, assetID, params) => {
   try {
-    const response = await axios.post(`${configs.server_url}/db/asset/create/approve`, {userUID, assetID, params});
+    const response = await axios.post(
+      `${configs.server_url}/db/asset/create/approve`,
+      { userUID, assetID, params }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error approving asset:", error);
@@ -222,7 +270,10 @@ const getLivepeerKey = async () => {
 
 const createAsset = async (newAssetPaylaod, userUID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/livepeer/asset/create`, {newAssetPaylaod, userUID});
+    const response = await axios.post(
+      `${configs.server_url}/livepeer/asset/create`,
+      { newAssetPaylaod, userUID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error creating asset:", error);
@@ -242,7 +293,10 @@ const getLivepeerOriginDetails = async () => {
 
 const getLivepeerAsset = async (assetID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/livepeer/asset/get`, {assetID});
+    const response = await axios.post(
+      `${configs.server_url}/livepeer/asset/get`,
+      { assetID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching Livepeer asset:", error);
@@ -252,7 +306,10 @@ const getLivepeerAsset = async (assetID) => {
 
 const updateLivepeerAsset = async (assetID, updateData) => {
   try {
-    const response = await axios.post(`${configs.server_url}/livepeer/asset/update`, {assetID, updateData});
+    const response = await axios.post(
+      `${configs.server_url}/livepeer/asset/update`,
+      { assetID, updateData }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error updating Livepeer asset:", error);
@@ -262,7 +319,10 @@ const updateLivepeerAsset = async (assetID, updateData) => {
 
 const deleteLivepeerAsset = async (assetID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/livepeer/asset/delete`, {assetID});
+    const response = await axios.post(
+      `${configs.server_url}/livepeer/asset/delete`,
+      { assetID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error deleting Livepeer asset:", error);
@@ -272,10 +332,16 @@ const deleteLivepeerAsset = async (assetID) => {
 
 const getLivepeerAssetPlaybackInfo = async (playbackID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/livepeer/asset/info/playback`, {playbackID});
+    const response = await axios.post(
+      `${configs.server_url}/livepeer/asset/info/playback`,
+      { playbackID }
+    );
     return response?.data;
   } catch (error) {
-    console.error(`Error fetching Livepeer playback info for ${playbackID}:`, error);
+    console.error(
+      `Error fetching Livepeer playback info for ${playbackID}:`,
+      error
+    );
     throw error;
   }
 };
@@ -321,7 +387,10 @@ const MapsAPI = {
 
 const getWalletNFTs = async (address) => {
   try {
-    const response = await axios.post(`${configs.server_url}/alchemy/get/wallet_nfts`, {address});
+    const response = await axios.post(
+      `${configs.server_url}/alchemy/get/wallet_nfts`,
+      { address }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching wallet NFTs:", error);
@@ -331,7 +400,10 @@ const getWalletNFTs = async (address) => {
 
 const getNFTMetadata = async (address, tokenId) => {
   try {
-    const response = await axios.post(`${configs.server_url}/alchemy/get/nft_metadata`, {address, tokenId});
+    const response = await axios.post(
+      `${configs.server_url}/alchemy/get/nft_metadata`,
+      { address, tokenId }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching NFT metadata:", error);
@@ -348,9 +420,19 @@ const NFT_API = {
 
 /*************************NEPTUNE_CHAIN_CREDITS_ENDPOINTS************************************* */
 
-const issueCredits = async (senderID, nftTokenId, producer, verifier, creditType, amount) => {
+const issueCredits = async (
+  senderID,
+  nftTokenId,
+  producer,
+  verifier,
+  creditType,
+  amount
+) => {
   try {
-    const response = await axios.post(`${configs.server_url}/npc_credits/issue`, {senderID, nftTokenId, producer, verifier, creditType, amount});
+    const response = await axios.post(
+      `${configs.server_url}/npc_credits/issue`,
+      { senderID, nftTokenId, producer, verifier, creditType, amount }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error issuing credits:", error);
@@ -358,9 +440,23 @@ const issueCredits = async (senderID, nftTokenId, producer, verifier, creditType
   }
 };
 
-const buyCredits = async (accountID, producer, verifier, creditType, amount, price) => {
+const buyCredits = async (
+  accountID,
+  producer,
+  verifier,
+  creditType,
+  amount,
+  price
+) => {
   try {
-    const response = await axios.post(`${configs.server_url}/npc_credits/buy`, {accountID, producer, verifier, creditType, amount, price});
+    const response = await axios.post(`${configs.server_url}/npc_credits/buy`, {
+      accountID,
+      producer,
+      verifier,
+      creditType,
+      amount,
+      price,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error buying credits:", error);
@@ -368,9 +464,20 @@ const buyCredits = async (accountID, producer, verifier, creditType, amount, pri
   }
 };
 
-const transferCredits = async (senderID, recipientID, producer, verifier, creditType, amount, price) => {
+const transferCredits = async (
+  senderID,
+  recipientID,
+  producer,
+  verifier,
+  creditType,
+  amount,
+  price
+) => {
   try {
-    const response = await axios.post(`${configs.server_url}/npc_credits/transfer`, {senderID, recipientID, producer, verifier, creditType, amount, price});
+    const response = await axios.post(
+      `${configs.server_url}/npc_credits/transfer`,
+      { senderID, recipientID, producer, verifier, creditType, amount, price }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error transferring credits:", error);
@@ -378,9 +485,18 @@ const transferCredits = async (senderID, recipientID, producer, verifier, credit
   }
 };
 
-const donateCredits = async (senderID, producer, verifier, creditType, amount) => {
+const donateCredits = async (
+  senderID,
+  producer,
+  verifier,
+  creditType,
+  amount
+) => {
   try {
-    const response = await axios.post(`${configs.server_url}/npc_credits/donate`, {senderID, producer, verifier, creditType, amount});
+    const response = await axios.post(
+      `${configs.server_url}/npc_credits/donate`,
+      { senderID, producer, verifier, creditType, amount }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error donating credits:", error);
@@ -390,7 +506,9 @@ const donateCredits = async (senderID, producer, verifier, creditType, amount) =
 
 const getNFTOwner = async (tokenId) => {
   try {
-    const response = await axios.get(`${configs.server_url}/nft/owner/${tokenId}`);
+    const response = await axios.get(
+      `${configs.server_url}/nft/owner/${tokenId}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching NFT owner:", error);
@@ -400,7 +518,9 @@ const getNFTOwner = async (tokenId) => {
 
 const getCreditTypes = async (tokenId) => {
   try {
-    const response = await axios.get(`${configs.server_url}/nft/credit-types/${tokenId}`);
+    const response = await axios.get(
+      `${configs.server_url}/nft/credit-types/${tokenId}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching credit types:", error);
@@ -410,7 +530,9 @@ const getCreditTypes = async (tokenId) => {
 
 const getCreditSupplyLimit = async (tokenId, creditType) => {
   try {
-    const response = await axios.get(`${configs.server_url}/nft/credit-supply-limit/${tokenId}/${creditType}`);
+    const response = await axios.get(
+      `${configs.server_url}/nft/credit-supply-limit/${tokenId}/${creditType}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching credit supply limit:", error);
@@ -420,7 +542,9 @@ const getCreditSupplyLimit = async (tokenId, creditType) => {
 
 const getTotalCertificates = async () => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/total-certificates`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/total-certificates`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching total certificates:", error);
@@ -430,7 +554,9 @@ const getTotalCertificates = async () => {
 
 const getTotalSold = async () => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/total-sold`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/total-sold`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching total sold:", error);
@@ -440,7 +566,9 @@ const getTotalSold = async () => {
 
 const isProducerRegistered = async (producer) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/producer-registered/${producer}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/producer-registered/${producer}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error checking producer registration:", error);
@@ -450,7 +578,9 @@ const isProducerRegistered = async (producer) => {
 
 const isVerifierRegistered = async (producer, verifier) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/verifier-registered/${producer}/${verifier}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/verifier-registered/${producer}/${verifier}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error checking verifier registration:", error);
@@ -460,7 +590,9 @@ const isVerifierRegistered = async (producer, verifier) => {
 
 const getProducerVerifiers = async (producer) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/verifiers/${producer}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/verifiers/${producer}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching producer verifiers:", error);
@@ -470,7 +602,9 @@ const getProducerVerifiers = async (producer) => {
 
 const getSupply = async (producer, verifier, creditType) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/supply/${producer}/${verifier}/${creditType}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/supply/${producer}/${verifier}/${creditType}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching supply:", error);
@@ -480,7 +614,9 @@ const getSupply = async (producer, verifier, creditType) => {
 
 const getCertificateById = async (certificateId) => {
   try {
-    const response = await axios.get(`${configs.server_url}/certificates/${certificateId}`);
+    const response = await axios.get(
+      `${configs.server_url}/certificates/${certificateId}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching certificate:", error);
@@ -490,7 +626,9 @@ const getCertificateById = async (certificateId) => {
 
 const getAccountCertificates = async (accountID) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/account-certificates/${accountID}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/account-certificates/${accountID}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching account certificates:", error);
@@ -498,9 +636,16 @@ const getAccountCertificates = async (accountID) => {
   }
 };
 
-const getAccountCreditBalance = async (accountID, producer, verifier, creditType ) => {
+const getAccountCreditBalance = async (
+  accountID,
+  producer,
+  verifier,
+  creditType
+) => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/account-balance/${accountID}/${producer}/${verifier}/${creditType}`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/account-balance/${accountID}/${producer}/${verifier}/${creditType}`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching account credit balance:", error);
@@ -510,7 +655,9 @@ const getAccountCreditBalance = async (accountID, producer, verifier, creditType
 
 const getAllProducers = async () => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/all-producers`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/all-producers`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching all producers:", error);
@@ -520,7 +667,9 @@ const getAllProducers = async () => {
 
 const getRecoveryDuration = async () => {
   try {
-    const response = await axios.get(`${configs.server_url}/npc_credits/recovery-duration`);
+    const response = await axios.get(
+      `${configs.server_url}/npc_credits/recovery-duration`
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching recovery duration:", error);
@@ -529,8 +678,7 @@ const getRecoveryDuration = async () => {
 };
 
 const getNPCCreditEvents = async () =>
-  (await axios.post(`${configs.server_url}/npc_credits/events`))
-    ?.data;
+  (await axios.post(`${configs.server_url}/npc_credits/events`))?.data;
 
 const NPCCreditsAPI = {
   issueCredits,
@@ -551,7 +699,7 @@ const NPCCreditsAPI = {
   getAccountCreditBalance,
   getAllProducers,
   getRecoveryDuration,
-  getNPCCreditEvents
+  getNPCCreditEvents,
 };
 
 /*************************STRIPE_ENDPOINTS************************************* */
@@ -568,7 +716,10 @@ const getStripeConfig = async () => {
 
 const createPaymentIntent = async (amount, currency, optional_params) => {
   try {
-    const response = await axios.post(`${configs.server_url}/stripe/create/payment_intent`, {amount, currency, optional_params});
+    const response = await axios.post(
+      `${configs.server_url}/stripe/create/payment_intent`,
+      { amount, currency, optional_params }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error creating payment intent:", error);
@@ -578,7 +729,10 @@ const createPaymentIntent = async (amount, currency, optional_params) => {
 
 const getStripePrice = async (priceID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/stripe/get/price`, {priceID});
+    const response = await axios.post(
+      `${configs.server_url}/stripe/get/price`,
+      { priceID }
+    );
     return response?.data;
   } catch (error) {
     console.error("Error fetching Stripe price:", error);
@@ -606,7 +760,9 @@ const getDevices = async () => {
 
 const addDevice = async (devicePayload) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/add`, {devicePayload});
+    const response = await axios.post(`${configs.server_url}/device/add`, {
+      devicePayload,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error adding device:", error);
@@ -616,7 +772,10 @@ const addDevice = async (devicePayload) => {
 
 const editDevice = async (deviceID, updateData) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/edit`, {deviceID, updateData});
+    const response = await axios.post(`${configs.server_url}/device/edit`, {
+      deviceID,
+      updateData,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error editing device:", error);
@@ -626,7 +785,9 @@ const editDevice = async (deviceID, updateData) => {
 
 const removeDevice = async (deviceID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/remove`, {deviceID});
+    const response = await axios.post(`${configs.server_url}/device/remove`, {
+      deviceID,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error removing device:", error);
@@ -636,7 +797,9 @@ const removeDevice = async (deviceID) => {
 
 const getDeviceDetails = async (deviceID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/details`, {deviceID});
+    const response = await axios.post(`${configs.server_url}/device/details`, {
+      deviceID,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error fetching device details:", error);
@@ -646,7 +809,10 @@ const getDeviceDetails = async (deviceID) => {
 
 const emulateDevice = async (deviceID, interval) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/emulate`, {deviceID, interval});
+    const response = await axios.post(`${configs.server_url}/device/emulate`, {
+      deviceID,
+      interval,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error emulating device:", error);
@@ -656,7 +822,9 @@ const emulateDevice = async (deviceID, interval) => {
 
 const getDeviceData = async (deviceID) => {
   try {
-    const response = await axios.post(`${configs.server_url}/device/data`, {deviceID});
+    const response = await axios.post(`${configs.server_url}/device/data`, {
+      deviceID,
+    });
     return response?.data;
   } catch (error) {
     console.error("Error fetching device data:", error);
@@ -689,6 +857,65 @@ const MetricsAPI = {
   getMetric,
 };
 
+/**************MARKETPLACE*ROUTES *********************** */
+
+const handleMarketplacePost = async (endpoint, body) => {
+  try {
+    const response = await axios.post(
+      `${configs.server_url}/${endpoint}`,
+      body
+    );
+    return response?.data;
+  } catch (error) {
+    console.error("Error fetching device data:", error);
+    throw error;
+  }
+};
+
+const MarketplaceAPI = {
+  Seller: {
+    approveAndListNFT: (tokenAddress, tokenId, price, value) =>
+      handleMarketplacePost("marketplace/seller/list_nft", {
+        tokenAddress,
+        tokenId,
+        price,
+        value,
+      }),
+    cancelListing: (listingId) =>
+      handleMarketplacePost("seller/cancel_listing", { listingId }),
+    acceptBid: (listingId) =>
+      handleMarketplacePost("seller/accept_bid", { listingId }),
+  },
+  Buyer: {
+    buyNFT: (listingId, value) =>
+      handleMarketplacePost("buyer/buy_nft", { listingId, value }),
+    placeBid: (listingId, value) =>
+      handleMarketplacePost("buyer/place_bid", { listingId, value }),
+  },
+  Getters: {
+    getListingFee: () => handleMarketplacePost("get/listing_fee", {}),
+    getHighestBids: () => handleMarketplacePost("get/highest_bids", {}),
+  },
+  Events: {
+    listAvailableNFTs: () => handleMarketplacePost("events/listings", {}),
+    getAllEvents: () => handleMarketplacePost("events/all", {}),
+    filtered: {
+      listed: (fromBlock, toblock) =>
+        handleMarketplacePost("events/listed", { fromBlock, toblock }),
+      sale: (fromBlock, toblock) =>
+        handleMarketplacePost("events/sale", { fromBlock, toblock }),
+      delisted: (fromBlock, toblock) =>
+        handleMarketplacePost("events/delisted", { fromBlock, toblock }),
+      bidded: (fromBlock, toblock) =>
+        handleMarketplacePost("events/bidded", { fromBlock, toblock }),
+      bidAccepted: (fromBlock, toblock) =>
+        handleMarketplacePost("events/bidAccepted", { fromBlock, toblock }),
+      bidWithdrawn: (fromBlock, toblock) =>
+        handleMarketplacePost("events/bidWithdrawn", { fromBlock, toblock }),
+    },
+  },
+};
+
 export {
   AccountAPI,
   UserAPI,
@@ -701,4 +928,5 @@ export {
   StripeAPI,
   DeviceAPI,
   MetricsAPI,
+  MarketplaceAPI,
 };

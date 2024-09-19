@@ -5,6 +5,7 @@ import { colors } from '../../../styles/colors';
 import { Badge } from '../../shared/Badge/Badge';
 import { FaChevronDown } from 'react-icons/fa';
 import Spinner from '../../shared/Spinner/Spinner';
+import {MarketplaceAPI} from '../../../scripts/back_door';
 
 const FullScreenWrapper = styled.div`
   position: fixed;
@@ -177,9 +178,32 @@ const EventDetail = ({ event, filterType }) => {
   );
 };
 
-const EventsPopup = ({ events, onClose, fetchEvents, marketEvents }) => {
+const EventsPopup = ({ onClose }) => {
+  const [events, setEvents] = useState([]);
   const [filterType, setFilterType] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+  
+  const marketEvents = MarketplaceAPI.Events;
+
+  const fetchEvents = async (
+    filterType,
+    rangeFilter = 500,
+    toBlock = "latest"
+  ) => {
+    let _events;
+    if (filterType in marketEvents.filtered) {
+      _events = await marketEvents.filtered[filterType](rangeFilter, toBlock);
+      console.log("filtered", { filterType, _events });
+    } else {
+      _events = await marketEvents.getAllEvents(rangeFilter, toBlock);
+      const fListed = marketEvents.filtered.listed(rangeFilter, toBlock);
+      console.log("filtered Listings", { _events, fListed });
+    }
+
+    if (_events) {
+      setEvents(_events);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
