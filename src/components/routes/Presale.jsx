@@ -18,6 +18,7 @@ import {presaleProducer} from "../payment/data";
 import MapBox from "../elements/MapBox";
 import { FaCertificate, FaLeaf } from "react-icons/fa6";
 import styled from "styled-components";
+import { useAppContext } from "../../context/AppContext";
 
 
 
@@ -27,9 +28,7 @@ const Presale = () => {
 
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
-  const [error, setError] = useState("");
-
-  const { setRoutePath } = ACTIONS || {};
+  const { setRoutePath } = APP?.ACTIONS || {};
 
   useEffect(() => {
     setRoutePath("presale");
