@@ -29,9 +29,9 @@ function MapBox() {
   }, []);
 
   useEffect(() => {
-    if (key) {
+
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${String(key)}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyC84TiV0-W9JMWCHWGmnh-9M9CjQFPG6XY`;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
@@ -53,8 +53,7 @@ function MapBox() {
           window.google.maps.event.clearInstanceListeners(map);
         }
       };
-    }
-  }, [key]);
+  }, []);
 
   const getKey = async () => setKey(await MapsAPI.getKey());
 
