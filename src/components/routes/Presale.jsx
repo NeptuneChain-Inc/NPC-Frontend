@@ -6,33 +6,25 @@
  * Creates a lineItems with the featured producer's item/priceID and quantity
  * Load checkout process if isPaying.
  */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTransition } from "react-spring";
 import Payment from "../payment/Payment";
 
 import { NUMBERS } from "../../scripts/helpers";
 
-import {ProductDisplay, ProductOrder} from "../payment";
-import {CARD_SECTION, CARD_WRAPPER, ErrorMessage, FULL_PAGE_CONTAINER} from "../payment/styled";
-import {presaleProducer} from "../payment/data";
-import MapBox from "../elements/MapBox";
 import { FaCertificate, FaLeaf } from "react-icons/fa6";
-import styled from "styled-components";
-import { useAppContext } from "../../context/AppContext";
+import MapBox from "../elements/MapBox";
+import { ProductDisplay } from "../payment";
+import { presaleProducer } from "../payment/data";
+import { CARD_SECTION, CARD_WRAPPER, FULL_PAGE_CONTAINER } from "../payment/styled";
 
 
 
 const Presale = () => {
-  const { ACTIONS } = useAppContext();
-  const [amount, setAmount] = useState(1);
+ const [amount, setAmount] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
-  const { setRoutePath } = APP?.ACTIONS || {};
-
-  useEffect(() => {
-    setRoutePath("presale");
-  }, []);
 
   //#Animation
   const transitions = useTransition(isPaying, {
