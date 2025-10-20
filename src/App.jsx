@@ -3,6 +3,8 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
 
+import LinkBadgePortal from "./components/LinkBadgePortal.jsx";
+
 import { Welcome, Home, Marketplace, NotFound } from "./routes";
 import {
   Registry,
@@ -33,10 +35,15 @@ import { useAppContext } from "./context/AppContext";
 function App() {
   const { STATES } = useAppContext();
   const { user } = STATES || {};
+
   return (
     <Router>
       <AppContainer>
         <Popups />
+
+        {/* If you use a top nav, mount it here */}
+        {/* <Navbar /> */}
+
         <Routes>
           <Route path="/" element={<Welcome />} />
 
@@ -70,6 +77,10 @@ function App() {
           <Route path="/presale" element={<Presale />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+
+        {/* 👇 Only show the connectivity badge for logged-in users.
+            The badge itself also hides unless pathname starts with /dashboard */}
+        {user?.uid && <LinkBadgePortal />}
       </AppContainer>
     </Router>
   );
