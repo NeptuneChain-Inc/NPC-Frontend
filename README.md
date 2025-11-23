@@ -1,120 +1,190 @@
-# Repository for NeptuneChain's Nutrient Pollution Certificate (NPC) Marketplace
+# Bluesignal Marketplace Dashboard
 
-## Repository Description:
-The NPC-Marketplace repository serves as the core platform for the NeptuneChain Dashboard. It is specifically designed to facilitate user dashboards and certificate transactions within NeptuneChain's ecosystem. This repository focuses on features such as credit verification, marketplace integration, and user interaction with the blockchain backend. It works in tandem with a separate registry repository, which records these transactions.
+A React-based dashboard and marketplace frontend for managing environmental certificates, user accounts, and interactions with a blockchain + registry backend. The app handles user authentication, credit/certificate workflows, media, and data visualization, and is deployed via Firebase.
 
-Considerations
-Permissions: The new contributor needs to have the appropriate permissions to access the Firebase project. This typically means being added as a member in the Firebase console by the project administrator.
+---
 
-Environment Variables: If the project uses environment variables (e.g., API keys). The new contributor will need to set these up according to the project's development documentation.
+## Overview
 
-## Deployment Instructions for Collaborator Protocol:
+This repository provides:
 
-0. **Requirements:**
+* **User Dashboards**
+  Role-based dashboards (e.g., admins, operators, landowners, farmers) with tailored navigation, metrics, and controls.
+
+* **Certificate / Credit Workflows**
+  UI for submitting, reviewing, approving, and tracking certificates or credits backed by on-chain logic.
+
+* **Registry Integration**
+  Works alongside a separate backend/registry service that records certificates, ownership, and transaction history.
+
+* **Authentication & Access Control**
+  Email/password login, protected routes, and access control to prevent non-users from accessing internal app views.
+
+* **Media & Streaming**
+  Video/media upload and streaming integration (Livepeer), plus a “My Media” dashboard for user-generated content.
+
+* **Mapping & Notifications**
+  Geospatial/map-based UI elements and user notifications for status changes, errors, and critical actions.
+
+---
+
+## Tech Stack
+
+* **Frontend:** React (SPA, `App.jsx`)
+* **Runtime:** Node.js v20+
+* **Hosting / Deployment:** Firebase Hosting
+* **Auth & Data:** Firebase Authentication, Firebase Realtime Database
+* **Media:** Livepeer (video upload/streaming)
+* **Other:**
+
+  * Notifications, modals, and confirmation prompts
+  * Responsive layout (desktop + mobile)
+
+---
+
+## Prerequisites
+
+* Node.js **v20+**
+* `git` (authenticated to a collaborator account)
+* Firebase CLI (`firebase`), logged into an account with access to the Firebase project
+
+---
+
+## Setup & Installation
+
+1. **Clone the repository**
+
    ```bash
-   * node v20+
-   * git ('logged in to a collaborator account')
-   * firebase ['Part of dependencies'] ('logged in to a collaborator account')
+   git clone https://github.com/bluesignal/Marketplace.git
+   cd Marketplace
    ```
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/NeptuneChain-Inc/NPC-Marketplace.git
-   ```
+2. **Install dependencies**
 
-2. **Install Dependencies:**
-   After cloning, navigate to the project directory and install the necessary dependencies.
    ```bash
-   cd NPC-Marketplace
    npm install
    ```
 
-3. **Log in to Firebase:**
-   The new contributor must be logged in to Firebase with an account that has permissions to access the Firebase project. If they haven’t logged in or need to switch accounts, they can use:
+3. **Firebase login (for collaborators)**
+
    ```bash
    firebase login
    ```
 
-4. **Build the Project:**
-   Before deploying, build the project to create the production version.
+   Make sure your Firebase account has been granted access to the project by an admin.
+
+---
+
+## Environment Variables
+
+This project uses environment variables (e.g., Firebase configs, API keys).
+Set them according to your existing Firebase / backend setup (typically in `.env` or via Firebase config).
+
+Examples (names will match your existing project):
+
+* Firebase API key & config values
+* Backend / registry API base URL
+* Media/streaming API key (Livepeer)
+
+Check the project’s existing config files (`.env`, Firebase config, or documentation) for the exact variable names currently in use.
+
+---
+
+## Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+(or the equivalent dev script your project uses; adjust to your existing `package.json`).
+
+You’ll typically access the app at:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Build & Deploy (Firebase)
+
+1. **Build the project**
+
    ```bash
    npm run build
    ```
 
-5. **Deploy to Firebase:**
-   Use the Firebase CLI to deploy the project.
+2. **Deploy via Firebase**
+
    ```bash
    firebase deploy
    ```
 
-## Changelog Overview:
+Deployment requires that:
 
-### Latest Update
-**Merge of Registry and Dashboard/Marketplace to one codebase**
-- Integrated the Registry into the existing Dashboard/Marketplace codebase
-- UI/UX improvements: (App.jsx)
-- Debugging: Password reset
-- Code cleanup: (App.jsx)
+* You are logged in with `firebase login`
+* Your account has permission on the Firebase project
 
-**Transfer of Ownership and Formalized Organization**
-- Repository transfered from A Mako
+---
 
-### November 6 - Credit Verification and Marketplace Integration
-- Integration with blockchain backend.
-- Development of Smart Contracts for Verification & Marketplace.
-- Addition of Marketplace UI routing.
-- Integrated User control for functions like submission, approval, etc.
+## Key Features (From Recent Iterations)
 
-### October 29 - Polishing
-- Enhanced UX (Login, Registration, Dashboard).
-- Settings Menu Enhancements.
-- Media Upload enhancements.
-- Rendering & Performance Enhancements.
-- Added Reset Password feature.
-- Dash UI Responsiveness Enhancements.
+* **Registry + Marketplace Unified Codebase**
 
-### October 15 - Minor Changes
-- Adding Code Documentation (Comments).
-- (Farmer Dashboard) Enhance Metric Components * (Ongoing Implementation).
-- Integrated/Optimized Chart Components.
-- (Farmer Dashboard) Setup Data generation testing algorithm * (Ongoing Implementation).
-- (Farmer Dashboard) Database integration for data retrieval/updates * (Ongoing Implementation).
+  * Combined dashboard + registry logic into a single app codebase
+  * Shared UI and routing for credit/certificate workflows
 
-### October 8 - Major Changes
-- Reworked account system for different account types.
-- System to load dashboard content and settings based on user types.
-- Structured templates for different user dashboards.
-- Updated Registration and login system.
-- Updated User management and local storage.
-- Migrated Dashboard data to databases for dynamic rendering.
-- Added new database functions for user dashboards.
-- Enhanced App Security (non-users revoked access to app routes).
-- Integrated search algorithm for dashboard content.
-- Updated the Sidebar component to indicate user type and dynamically render dash links.
-- Populated the Settings Menu Tabs with modal settings (Not Yet Implemented).
+* **UI/UX Enhancements**
 
-*NB: Due to the change in account systems, old user accounts will not work. (Preferred Action: Database reset).
+  * Improved login, registration, and dashboard flows
+  * Responsive design for sidebar, navbar, and layout
+  * Notification bar and alerts for user actions
 
-### October 1 - Major Changes
-- UI Enhancements (Navbar, Sidebar, Mobile Responsiveness, layout, etc).
-- Added Settings Menu (Still Needs To Be Implemented).
-- Livepeer bug fixes.
-- Livepeer Media and Stream Player Enhancements.
-- Added 'My Media' Dashboard for user-created videos and streams.
+* **Account System & User Types**
 
-### September 24 - Major Changes
-- Livepeer Integration - Video Upload/Streaming.
-- Database Integration - Userdata/Asset Data.
+  * Multiple account types with different dashboards
+  * Dynamic dashboard content and sidebar links based on user type
+  * Updated registration and login system with improved security
 
-### September 20 - Major Changes
-- Added Notification Bar.
+* **Dashboard & Metrics**
 
-### September 10 - Major Changes
-- Added Welcome Page, Register Page, and Log in Page.
-- Firebase Email/Password Authentication Implementation.
-- Error/Alert/Notification Handling.
-- Added a confirmation popup for critical functions.
-- General User Experience Enhancements.
+  * Role-specific metrics (e.g., “farmer dashboard”)
+  * Chart components and test data generation for metrics
+  * Database integration for dashboard data where implemented
 
-## Notes
-- Where a database is not yet implemented, cookies are used.
+* **Media & Streaming**
+
+  * Livepeer integration for upload + streaming
+  * “My Media” dashboard for user-created videos/streams
+  * Bug fixes and performance improvements for media playback
+
+* **Settings & Password Management**
+
+  * Settings menu and modal-based configuration UI (partially implemented)
+  * Password reset flow and bug fixes
+
+* **Security & Access Control**
+
+  * Protected routes to prevent unauthorized access
+  * Improved handling of non-authenticated users
+
+> Note: In areas where database integration is still in progress, cookies are used as a temporary mechanism for storing some state.
+
+---
+
+## Notes for Collaborators
+
+* Ensure you have the correct Firebase project selected when running `firebase deploy`.
+* If you see authentication or permission errors, verify your Firebase console access and environment configs.
+* Old accounts or test data may become invalid when the account system changes; database resets are sometimes required after major auth or schema changes.
+
+---
+
+## Support
+
+For collaborator access, environment configuration questions, or deployment help:
+**[hi@bluesignal.xyz](mailto:hi@bluesignal.xyz)**
+
+---
